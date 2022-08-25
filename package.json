@@ -60,12 +60,12 @@
       }
     ],
     "configuration": {
-      "title": "Discloud Configuration",
+      "title": "Discloud",
       "properties": {
         "discloud.token": {
           "type": "string",
           "default": "",
-          "description": "Seu token da API da Discloud."
+          "markdownDescription": "Seu token da API da [Discloud](https://discloudbot.com)."
         }
       }
     }

@@ -6,9 +6,13 @@ let uploadBar: vscode.StatusBarItem;
 export async function activate({ subscriptions }: vscode.ExtensionContext) {
 
 	const token = await checkIfHasToken();
-	if (!token || typeof token !== "string") { return; }
+	uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
+	uploadBar.command = "discloud.upload";
+	uploadBar.text = "$(cloud-upload) Upload App";
+	subscriptions.push(uploadBar);
+	uploadBar.show();
 
-	let disposable = vscode.commands.registerCommand(`discloud.upload`, async (uri) => {
+	let disposable = vscode.commands.registerCommand(`discloud.upload`, async (uri: vscode.Uri) => {
 		if (!token) { 
 			await checkIfHasToken();
 		} else {
@@ -19,12 +23,6 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 	});
 
 	subscriptions.push(disposable);
-
-	uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
-	uploadBar.command = "discloud.upload";
-	uploadBar.text = "$(cloud-upload) Upload App";
-	subscriptions.push(uploadBar);
-	uploadBar.show();
 }
 
 export function deactivate() { }
