@@ -77,11 +77,11 @@ export async function upload (uri: vscode.Uri, token: string) {
                 }
             }
             
-            statSync(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, false) : archive.file(`${targetPath}\\${file}`, { name: file });
+            statSync(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, file) : archive.file(`${targetPath}\\${file}`, { name: file });
         }
 
         if (!hasRequiredFiles.all) {
-            return vscode.window.showErrorMessage(`Para realizar um upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`);
+            return vscode.window.showErrorMessage(`Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`);
         }
     }
 
