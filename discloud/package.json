@@ -1,5 +1,5 @@
 {
-  "name": "dc",
+  "name": "discloud",
   "displayName": "Discloud",
   "description": "Usado para fazer métodos na DisCloud diretamente pelo Visual Studio Code.",
   "version": "0.0.1",
@@ -10,36 +10,66 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:dc.commit"
-  ],
-  "main": "./out/extension.js",
+		"*"
+	],
+  "main": "out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "dc.commit",
-        "title": "Faça um Commit"
+        "command": "discloud.commit",
+        "title": "Commit"
+      },
+      {
+        "command": "discloud.upload",
+        "title": "Upload"
+      },
+      {
+        "command": "discloud.start",
+        "title": "Start"
+      },
+      {
+        "command": "discloud.restart",
+        "title": "Restart"
+      },
+      {
+        "command": "discloud.stop",
+        "title": "Stop"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "dc.commit",
-          "when": "explorerResourceIsFolder",
-          "group": "2_workspace"
+          "command": "discloud.commit",
+          "group": "1_modification",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "submenu": "discloudsub",
+          "group": "1_modification"
+        }
+      ],
+      "discloudsub": [
+        {
+          "command": "discloud.commit"
         }
       ]
     },
+    "submenus": [
+      {
+        "label": "Discloud",
+        "id": "discloudsub"
+      }
+    ],
     "configuration": {
       "title": "Discloud Configuration",
       "properties": {
-        "dc.token": {
+        "discloud.token": {
           "type": "string",
           "default": "",
           "description": "Seu token da API da Discloud."
         }
       }
     }
-
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -50,6 +80,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@types/archiver": "^5.3.1",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
@@ -63,6 +94,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "discloud-api": "^2.0.0-alpha.0"
+    "archiver": "^5.3.1",
+    "axios": "^0.27.2"
   }
 }
