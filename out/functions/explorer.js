@@ -34,6 +34,7 @@ const vscode = __importStar(require("vscode"));
 const requester_1 = require("./requester");
 const form_data_1 = __importDefault(require("form-data"));
 const config_json_1 = require("../config.json");
+const checkConfig_1 = require("./checkConfig");
 async function upload(uri, token) {
     let targetPath = '';
     if (uri && uri.fsPath) {
@@ -78,19 +79,28 @@ async function upload(uri, token) {
         if (!files.includes("discloud.config")) {
             return vscode.window.showErrorMessage("Você precisa de um discloud.config para usar está função.");
         }
+        else {
+            const con = await (0, checkConfig_1.check)(targetPath + "\\discloud.config");
+            if (!con) {
+                return vscode.window.showErrorMessage("Você precisa de um discloud.config válido para usar está função.");
+            }
+        }
         let hasRequiredFiles = { checks: 0, all: false };
         for (const file of files) {
             let lang = file.split('.')[1];
             if (lang) {
-                if (!config_json_1.requiredFiles[lang]?.includes(file)) {
+                if (config_json_1.requiredFiles[lang] && !config_json_1.requiredFiles[lang]?.includes(file)) {
                     hasRequiredFiles.checks++;
                     config_json_1.requiredFiles[lang]?.length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
                 }
-                if (config_json_1.blockedFiles[lang]?.includes(file)) {
+                if (config_json_1.blockedFiles[lang] && config_json_1.blockedFiles[lang]?.includes(file)) {
                     continue;
                 }
             }
             (0, fs_1.statSync)(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, false) : archive.file(`${targetPath}\\${file}`, { name: file });
+        }
+        if (!hasRequiredFiles.all) {
+            return vscode.window.showErrorMessage(`Para realizar um upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`);
         }
     }
     if (isGenerate) {
@@ -103,7 +113,7 @@ async function upload(uri, token) {
                     "api-token": `${token}`
                 }
             }, form);
-            vscode.window.showInformationMessage(`${data} - ${archive.pointer()} bytes.`);
+            vscode.window.showInformationMessage(`${data}`);
             (0, fs_1.unlinkSync)(savePath);
         });
         archive.on('error', err => {
