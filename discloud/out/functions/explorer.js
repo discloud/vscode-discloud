@@ -33,6 +33,7 @@ const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
 const requester_1 = require("./requester");
 const form_data_1 = __importDefault(require("form-data"));
+const config_json_1 = require("../config.json");
 async function upload(uri, token) {
     let targetPath = '';
     if (uri && uri.fsPath) {
@@ -77,11 +78,19 @@ async function upload(uri, token) {
         if (!files.includes("discloud.config")) {
             return vscode.window.showErrorMessage("Você precisa de um discloud.config para usar está função.");
         }
+        let hasRequiredFiles = { checks: 0, all: false };
         for (const file of files) {
-            if (!["node_modules", "package-lock.json", ".git", "Gemfile.lock", "Cargo.lock", "target", ".vscode"].includes(file)) {
-                (0, fs_1.statSync)(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, false) : archive.file(`${targetPath}\\${file}`, { name: file });
-                continue;
+            let lang = file.split('.')[1];
+            if (lang) {
+                if (!config_json_1.requiredFiles[lang]?.includes(file)) {
+                    hasRequiredFiles.checks++;
+                    config_json_1.requiredFiles[lang].length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
+                }
+                if (config_json_1.blockedFiles[lang]?.includes(file)) {
+                    continue;
+                }
             }
+            (0, fs_1.statSync)(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, false) : archive.file(`${targetPath}\\${file}`, { name: file });
         }
     }
     if (isGenerate) {

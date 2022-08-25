@@ -61,12 +61,12 @@ export async function upload (uri: vscode.Uri, token: string) {
         for (const file of files) {
             let lang = file.split('.')[1];
             if (lang) {
-                if (!requiredFiles[(lang as LANGS)].includes(file)) {
+                if (!requiredFiles[(lang as LANGS)]?.includes(file)) {
                     hasRequiredFiles.checks++;
                     requiredFiles[(lang as LANGS)].length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
                 }
 
-                if (blockedFiles[(lang as LANGS)].includes(file)) {
+                if (blockedFiles[(lang as LANGS)]?.includes(file)) {
                     continue;
                 }
             }
