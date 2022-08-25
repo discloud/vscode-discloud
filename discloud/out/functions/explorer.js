@@ -84,7 +84,7 @@ async function upload(uri, token) {
             if (lang) {
                 if (!config_json_1.requiredFiles[lang]?.includes(file)) {
                     hasRequiredFiles.checks++;
-                    config_json_1.requiredFiles[lang].length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
+                    config_json_1.requiredFiles[lang]?.length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
                 }
                 if (config_json_1.blockedFiles[lang]?.includes(file)) {
                     continue;

@@ -63,7 +63,7 @@ export async function upload (uri: vscode.Uri, token: string) {
             if (lang) {
                 if (!requiredFiles[(lang as LANGS)]?.includes(file)) {
                     hasRequiredFiles.checks++;
-                    requiredFiles[(lang as LANGS)].length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
+                    requiredFiles[(lang as LANGS)]?.length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
                 }
 
                 if (blockedFiles[(lang as LANGS)]?.includes(file)) {
