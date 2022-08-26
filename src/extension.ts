@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { upload } from './functions/explorer';
 
+import {AppTreeDataProvider} from './functions/appsList';
+
 let uploadBar: vscode.StatusBarItem;
 
 export async function activate({ subscriptions }: vscode.ExtensionContext) {
@@ -11,6 +13,9 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 	uploadBar.text = "$(cloud-upload) Upload to Discloud";
 	subscriptions.push(uploadBar);
 	uploadBar.show();
+		
+	const apps = new AppTreeDataProvider();
+    vscode.window.registerTreeDataProvider("discloud-apps", apps);
 
 	let disposable = vscode.commands.registerCommand(`discloud.upload`, async (uri: vscode.Uri) => {
 		if (!token) { 
@@ -21,6 +26,7 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 			uploadBar.hide();
 		}
 	});
+	
 
 	subscriptions.push(disposable);
 }

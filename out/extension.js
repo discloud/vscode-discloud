@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkIfHasToken = exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const explorer_1 = require("./functions/explorer");
+const appsList_1 = require("./functions/appsList");
 let uploadBar;
 async function activate({ subscriptions }) {
     const token = await checkIfHasToken();
@@ -34,6 +35,8 @@ async function activate({ subscriptions }) {
     uploadBar.text = "$(cloud-upload) Upload to Discloud";
     subscriptions.push(uploadBar);
     uploadBar.show();
+    const apps = new appsList_1.AppTreeDataProvider();
+    vscode.window.registerTreeDataProvider("discloud-apps", apps);
     let disposable = vscode.commands.registerCommand(`discloud.upload`, async (uri) => {
         if (!token) {
             await checkIfHasToken();

@@ -16,6 +16,46 @@
   "contributes": {
     "commands": [
       {
+				"command": "discloud-apps.planIcon",
+				"title": "Plan Platinum",
+				"icon": {
+					"light": "src/assets/Platinum.webp",
+					"dark": "src/assets/Platinum.webp"
+				}
+			},
+      {
+				"command": "discloud-apps.helpButton",
+				"title": "Discloud Help",
+				"icon": {
+					"light": "src/assets/light/helper.svg",
+					"dark": "src/assets/dark/helper.svg"
+				}
+			},
+      {
+				"command": "discloud-apps.refreshButton",
+				"title": "Refresh",
+				"icon": {
+					"light": "src/assets/light/refresh.svg",
+					"dark": "src/assets/dark/refresh.svg"
+				}
+			},
+      {
+        "command": "discloud-apps.importCode",
+        "title": "Importar app para o vscode",
+        "icon": {
+          "light": "src/assets/light/code.svg",
+          "dark": "src/assets/dark/code.svg"
+        }
+      },
+      {
+        "command": "discloud-apps.deleteEntry",
+        "title": "Delete App",
+        "icon": {
+          "light": "src/assets/light/del.svg",
+          "dark": "src/assets/dark/del.svg"
+        }
+      },
+      {
         "command": "discloud.commit",
         "title": "Commit"
       },
@@ -24,16 +64,28 @@
         "title": "Upload"
       },
       {
-        "command": "discloud.start",
+        "command": "discloud-apps.startEntry",
         "title": "Start"
       },
       {
-        "command": "discloud.restart",
+        "command": "discloud-apps.stopEntry",
+        "title": "Stop"
+      },
+      {
+        "command": "discloud-apps.restartEntry",
         "title": "Restart"
       },
       {
-        "command": "discloud.stop",
-        "title": "Stop"
+        "command": "discloud-apps.backupEntry",
+        "title": "Backup"
+      },
+      {
+        "command": "discloud-apps.logsEntry",
+        "title": "Logs"
+      },
+      {
+        "command": "discloud-apps.ramEntry",
+        "title": "Ram Edit"
       }
     ],
     "viewsContainers": {
@@ -81,6 +133,59 @@
       ]
     },
     "menus": {
+      "view/title": [
+        {
+          "command": "discloud-apps.helpButton",
+          "when": "view == discloud-apps",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud-apps.planIcon",
+          "when": "view == discloud-apps",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud-apps.refreshButton",
+          "when": "view == discloud-apps",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "discloud-apps.importCode",
+          "when": "view == discloud-apps",
+          "group": "inline"
+        },
+        {
+          "command": "discloud-apps.deleteEntry",
+          "when": "view == discloud-apps",
+          "group": "inline"
+        },
+        {
+          "command": "discloud-apps.startEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.stopEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.restartEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.backupEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.logsEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.ramEntry",
+          "when": "view == discloud-apps"
+        }
+      ],
       "explorer/context": [
         {
           "command": "discloud.commit",
