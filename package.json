@@ -41,7 +41,7 @@
         {
           "id": "discloud-sidebar",
           "title": "Discloud.app",
-          "icon": "media/discloudlogo.svg"
+          "icon": "src/assets/icons/discloudlogo.svg"
         }
       ]
     },
