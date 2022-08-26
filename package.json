@@ -36,6 +36,50 @@
         "title": "Stop"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "discloud-sidebar",
+          "title": "Discloud.app",
+          "icon": "media/discloudlogo.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "discloud-apps",
+        "contents": "Você ainda não forneceu um token para ter acesso aos recursos da Discloud.\n[Send token Discloud](command:discloud.logIn)",
+        "when": "!##"
+      }
+    ],
+    "views": {
+      "discloud-sidebar": [
+        {
+          "type": "tree",
+          "id": "discloud-apps",
+          "name": "Apps",
+          "visibility": "visible"
+        },
+        {
+          "type": "tree",
+          "id": "discloud-teams",
+          "name": "Teams",
+          "visibility": "collapsed"
+        },
+        {
+          "type": "tree",
+          "id": "discloud-subdomains",
+          "name": "SubDomains",
+          "visibility": "collapsed"
+        },
+        {
+          "type": "tree",
+          "id": "discloud-domains",
+          "name": "customDomains",
+          "visibility": "collapsed"
+        }
+      ]
+    },
     "menus": {
       "explorer/context": [
         {
