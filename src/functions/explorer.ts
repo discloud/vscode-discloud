@@ -24,7 +24,6 @@ export async function upload (uri: vscode.Uri, token: string) {
         }
     }
 
-    const pathParse = parse(targetPath);
     const isDirectory = statSync(targetPath).isDirectory();
 
     const savePath = `${targetPath}/upload.zip`;

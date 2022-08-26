@@ -29,7 +29,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.upload = void 0;
 const archiver_1 = __importDefault(require("archiver"));
 const fs_1 = require("fs");
-const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
 const requester_1 = require("./requester");
 const form_data_1 = __importDefault(require("form-data"));
@@ -50,7 +49,6 @@ async function upload(uri, token) {
             return;
         }
     }
-    const pathParse = (0, path_1.parse)(targetPath);
     const isDirectory = (0, fs_1.statSync)(targetPath).isDirectory();
     const savePath = `${targetPath}/upload.zip`;
     let isExist = true;

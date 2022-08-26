@@ -8,7 +8,7 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 	const token = await checkIfHasToken();
 	uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
 	uploadBar.command = "discloud.upload";
-	uploadBar.text = "$(cloud-upload) Upload App";
+	uploadBar.text = "$(cloud-upload) Upload to Discloud";
 	subscriptions.push(uploadBar);
 	uploadBar.show();
 
@@ -16,7 +16,7 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 		if (!token) { 
 			await checkIfHasToken();
 		} else {
-			uploadBar.text = "$(loading) Upload App";
+			uploadBar.text = "$(loading) Upload to Discloud";
 			functions.upload(uri, token);
 			uploadBar.hide();
 		}
