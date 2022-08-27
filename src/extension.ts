@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { upload } from './functions/explorer';
+import { Explorer } from './functions/explorer';
 
 import {AppTreeDataProvider} from './functions/appsList';
 
@@ -22,7 +22,7 @@ export async function activate({ subscriptions }: vscode.ExtensionContext) {
 			await checkIfHasToken();
 		} else {
 			uploadBar.text = "$(loading) Upload to Discloud";
-			functions.upload(uri, token);
+			new Explorer().upload(uri, token);
 			uploadBar.hide();
 		}
 	});
@@ -56,7 +56,6 @@ const functions = {
 	commit: (context: vscode.ExtensionContext) => {
 		vscode.window.showInformationMessage("aqui");
 	},
-	upload,
 	delete: (context: vscode.ExtensionContext) => { },
 	start: (context: vscode.ExtensionContext) => { },
 	stop: (context: vscode.ExtensionContext) => { },

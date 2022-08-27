@@ -26,100 +26,100 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.upload = void 0;
-const archiver_1 = __importDefault(require("archiver"));
+exports.Explorer = void 0;
 const fs_1 = require("fs");
 const vscode = __importStar(require("vscode"));
 const requester_1 = require("./requester");
 const form_data_1 = __importDefault(require("form-data"));
 const config_json_1 = require("../config.json");
 const checkConfig_1 = require("./checkConfig");
-async function upload(uri, token) {
-    let targetPath = '';
-    if (uri && uri.fsPath) {
-        targetPath = uri.fsPath;
-    }
-    else {
-        const workspaceFolders = vscode.workspace.workspaceFolders || [];
-        if (workspaceFolders && workspaceFolders.length) {
-            targetPath = workspaceFolders[0].uri.fsPath;
+const zip_1 = require("./zip");
+class Explorer {
+    async upload(uri, token) {
+        let targetPath = '';
+        if (uri && uri.fsPath) {
+            targetPath = uri.fsPath;
         }
         else {
-            vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
-            return;
-        }
-    }
-    const isDirectory = (0, fs_1.statSync)(targetPath).isDirectory();
-    const savePath = `${targetPath}/upload.zip`;
-    let isExist = true;
-    try {
-        (0, fs_1.accessSync)(savePath);
-    }
-    catch (error) {
-        isExist = false;
-    }
-    let isGenerate = true;
-    if (isExist && isGenerate) {
-        (0, fs_1.unlinkSync)(savePath);
-    }
-    const output = (0, fs_1.createWriteStream)(savePath);
-    const archive = (0, archiver_1.default)("zip", {
-        zlib: {
-            level: 9
-        },
-    });
-    if (isDirectory) {
-        const files = (0, fs_1.readdirSync)(targetPath);
-        if (!files) {
-            return;
-        }
-        ;
-        if (!files.includes("discloud.config")) {
-            return vscode.window.showErrorMessage("Você precisa de um discloud.config para usar está função.");
-        }
-        else {
-            const con = await (0, checkConfig_1.check)(targetPath + "\\discloud.config");
-            if (!con) {
-                return vscode.window.showErrorMessage("Você precisa de um discloud.config válido para usar está função.");
+            const workspaceFolders = vscode.workspace.workspaceFolders || [];
+            if (workspaceFolders && workspaceFolders.length) {
+                targetPath = workspaceFolders[0].uri.fsPath;
+            }
+            else {
+                vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+                return;
             }
         }
-        let hasRequiredFiles = { checks: 0, all: false };
-        for (const file of files) {
-            let lang = file.split('.')[1];
-            if (lang) {
-                if (config_json_1.requiredFiles[lang] && !config_json_1.requiredFiles[lang]?.includes(file)) {
-                    hasRequiredFiles.checks++;
-                    config_json_1.requiredFiles[lang]?.length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
-                }
-                if (config_json_1.blockedFiles[lang] && config_json_1.blockedFiles[lang]?.includes(file)) {
-                    continue;
-                }
-            }
-            (0, fs_1.statSync)(`${targetPath}\\${file}`).isDirectory() ? archive.directory(`${targetPath}\\${file}`, file) : archive.file(`${targetPath}\\${file}`, { name: file });
+        const isDirectory = (0, fs_1.statSync)(targetPath).isDirectory();
+        const savePath = `${targetPath}/upload.zip`;
+        let isExist = true;
+        try {
+            (0, fs_1.accessSync)(savePath);
         }
-        if (!hasRequiredFiles.all) {
-            return vscode.window.showErrorMessage(`Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`);
+        catch (error) {
+            isExist = false;
         }
-    }
-    if (isGenerate) {
-        output.on('close', async () => {
-            const form = new form_data_1.default();
-            form.append('upFile', (0, fs_1.createReadStream)(savePath));
-            const data = await (0, requester_1.requester)('post', '/upload', {
-                headers: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": `${token}`
-                }
-            }, form);
-            vscode.window.showInformationMessage(`${data}`);
+        let isGenerate = true;
+        if (isExist && isGenerate) {
             (0, fs_1.unlinkSync)(savePath);
+        }
+        const { zip, stream, finish } = new zip_1.Zip(savePath, "zip", {
+            zlib: {
+                level: 9
+            },
         });
-        archive.on('error', err => {
-            vscode.window.showErrorMessage(JSON.stringify(err));
-        });
-        archive.pipe(output);
-        archive.finalize();
+        if (isDirectory) {
+            const files = (0, fs_1.readdirSync)(targetPath);
+            if (!files) {
+                return;
+            }
+            ;
+            if (!files.includes("discloud.config")) {
+                return vscode.window.showErrorMessage("Você precisa de um discloud.config para usar está função.");
+            }
+            else {
+                const con = await (0, checkConfig_1.check)(targetPath + "\\discloud.config");
+                if (!con) {
+                    return vscode.window.showErrorMessage("Você precisa de um discloud.config válido para usar está função.");
+                }
+            }
+            let hasRequiredFiles = { checks: 0, all: false };
+            for (const file of files) {
+                let lang = file.split('.')[1];
+                if (lang) {
+                    if (config_json_1.requiredFiles[lang] && !config_json_1.requiredFiles[lang]?.includes(file)) {
+                        hasRequiredFiles.checks++;
+                        config_json_1.requiredFiles[lang]?.length <= hasRequiredFiles.checks ? hasRequiredFiles.all = true : '';
+                    }
+                    if (config_json_1.blockedFiles[lang] && config_json_1.blockedFiles[lang]?.includes(file)) {
+                        continue;
+                    }
+                }
+                (0, fs_1.statSync)(`${targetPath}\\${file}`).isDirectory() ? zip?.directory(`${targetPath}\\${file}`, file) : zip?.file(`${targetPath}\\${file}`, { name: file });
+            }
+            if (!hasRequiredFiles.all) {
+                return vscode.window.showErrorMessage(`Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`);
+            }
+        }
+        if (isGenerate) {
+            stream?.on('close', async () => {
+                const form = new form_data_1.default();
+                form.append('upFile', (0, fs_1.createReadStream)(savePath));
+                const data = await (0, requester_1.requester)('post', '/upload', {
+                    headers: {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        "api-token": `${token}`
+                    }
+                }, form);
+                vscode.window.showInformationMessage(`${data}`);
+                finish(true);
+            });
+            zip?.on('error', err => {
+                vscode.window.showErrorMessage(JSON.stringify(err));
+            });
+            finish();
+        }
     }
 }
-exports.upload = upload;
+exports.Explorer = Explorer;
 //# sourceMappingURL=explorer.js.map

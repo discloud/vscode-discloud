@@ -43,7 +43,7 @@ async function activate({ subscriptions }) {
         }
         else {
             uploadBar.text = "$(loading) Upload to Discloud";
-            functions.upload(uri, token);
+            new explorer_1.Explorer().upload(uri, token);
             uploadBar.hide();
         }
     });
@@ -72,7 +72,6 @@ const functions = {
     commit: (context) => {
         vscode.window.showInformationMessage("aqui");
     },
-    upload: explorer_1.upload,
     delete: (context) => { },
     start: (context) => { },
     stop: (context) => { },
