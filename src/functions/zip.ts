@@ -16,13 +16,4 @@ export class Zip {
         this.stream = createWriteStream(path);
         this.zip = archiver(format, options);
     }
-
-    public async finish(deleteFile?: boolean) {
-
-        deleteFile ? unlinkSync(this.path) : false;
-        this.zip?.pipe(this.stream as WriteStream);
-        this.zip?.finalize();
-        this.zip = null;
-        return 'sucesso.';
-    }
 }

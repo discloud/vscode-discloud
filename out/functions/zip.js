@@ -17,13 +17,6 @@ class Zip {
         this.stream = (0, fs_1.createWriteStream)(path);
         this.zip = (0, archiver_1.default)(format, options);
     }
-    async finish(deleteFile) {
-        deleteFile ? (0, fs_1.unlinkSync)(this.path) : false;
-        this.zip?.pipe(this.stream);
-        this.zip?.finalize();
-        this.zip = null;
-        return 'sucesso.';
-    }
 }
 exports.Zip = Zip;
 //# sourceMappingURL=zip.js.map

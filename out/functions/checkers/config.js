@@ -60,4 +60,4 @@ function check(path) {
     return true;
 }
 exports.check = check;
-//# sourceMappingURL=checkConfig.js.map
+//# sourceMappingURL=config.js.map

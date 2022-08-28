@@ -20,5 +20,5 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 		return vscode.window.showErrorMessage(`${err}`);
 	}
 
-    return data.message;
+    return data;
 }

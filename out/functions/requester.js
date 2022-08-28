@@ -43,7 +43,7 @@ async function requester(method, url, config, d) {
     catch (err) {
         return vscode.window.showErrorMessage(`${err}`);
     }
-    return data.message;
+    return data;
 }
 exports.requester = requester;
 //# sourceMappingURL=requester.js.map

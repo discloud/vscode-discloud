@@ -22,23 +22,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = void 0;
+const command_1 = require("../../structures/command");
 const vscode = __importStar(require("vscode"));
-const tree_1 = require("./functions/api/tree");
-const extend_1 = require("./structures/extend");
-let uploadBar;
-async function activate(context) {
-    uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
-    uploadBar.command = "discloud.upload";
-    uploadBar.text = "$(cloud-upload) Upload to Discloud";
-    context.subscriptions.push(uploadBar);
-    uploadBar.show();
-    const apps = new tree_1.AppTreeDataProvider();
-    vscode.window.registerTreeDataProvider("discloud-apps", apps);
-    const discloud = new extend_1.Discloud(context);
-}
-exports.activate = activate;
-function deactivate() { }
-exports.deactivate = deactivate;
-//# sourceMappingURL=extension.js.map
+module.exports = class extends command_1.Command {
+    constructor(cache) {
+        super(cache, {
+            name: "logIn"
+        });
+        this.run = async (uri) => {
+            const input = await vscode.window.showInputBox({
+                prompt: "API TOKEN",
+                title: "Coloque seu Token da API da Discloud aqui.",
+            });
+            if (!input) {
+                return vscode.window.showErrorMessage("Token inválido.");
+            }
+            vscode.workspace.getConfiguration("discloud").update("token", input);
+            vscode.window.showInformationMessage("Token configurado com sucesso!");
+        };
+    }
+};
+//# sourceMappingURL=logIn.js.map

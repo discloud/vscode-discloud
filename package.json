@@ -86,6 +86,10 @@
       {
         "command": "discloud-apps.ramEntry",
         "title": "Ram Edit"
+      },
+      {
+        "command": "discloud.logIn",
+        "title": "Login on Discloud"
       }
     ],
     "viewsContainers": {
@@ -101,7 +105,7 @@
       {
         "view": "discloud-apps",
         "contents": "Você ainda não forneceu um token para ter acesso aos recursos da Discloud.\n[Send token Discloud](command:discloud.logIn)",
-        "when": "!##"
+        "when": "!config.discloud.token"
       }
     ],
     "views": {
