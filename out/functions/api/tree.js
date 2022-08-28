@@ -40,6 +40,8 @@ var StatusLabels;
 })(StatusLabels || (StatusLabels = {}));
 class AppTreeDataProvider {
     constructor() {
+        this._onDidChangeTreeData = new vscode.EventEmitter();
+        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this.data = [];
         this.cache = new Map();
         this.verifyApps();
@@ -65,11 +67,6 @@ class AppTreeDataProvider {
                         ? icons_1.statusIcons.rak
                         : icons_1.statusIcons.off,
             }));
-            console.log(app.online
-                ? icons_1.statusIcons.onl
-                : app.ramKilled
-                    ? icons_1.statusIcons.rak
-                    : icons_1.statusIcons.off);
         }
         this.cache.set(`apps-user_verify`, getApps);
         this.createTreeItem(tree);
@@ -86,6 +83,9 @@ class AppTreeDataProvider {
         }
         return element.children;
     }
+    refresh() {
+        this._onDidChangeTreeData.fire();
+    }
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;
 class TreeItem extends vscode.TreeItem {
@@ -93,16 +93,12 @@ class TreeItem extends vscode.TreeItem {
         super(label, options?.children === undefined
             ? vscode.TreeItemCollapsibleState.None
             : vscode.TreeItemCollapsibleState.Expanded);
-        this.print = () => {
-            console.log(this.iconName, this.iconPath);
-        };
         this.children = options?.children;
         this.iconName = options?.iconName;
         this.iconPath = {
             light: path.join(__filename, "..", "..", "..", "assets", "light", `${this.iconName}.svg`),
             dark: path.join(__filename, "..", "..", "..", "assets", "dark", `${this.iconName}.svg`),
         };
-        this.print();
     }
 }
 class ChildrenTreeItem extends vscode.TreeItem {
@@ -110,9 +106,6 @@ class ChildrenTreeItem extends vscode.TreeItem {
         super(label, options?.children === undefined
             ? vscode.TreeItemCollapsibleState.None
             : vscode.TreeItemCollapsibleState.Expanded);
-        this.print = () => {
-            console.log(this.iconName, this.iconPath);
-        };
         this.children = options?.children;
         this.description = value;
         this.iconName = this.label
@@ -123,7 +116,6 @@ class ChildrenTreeItem extends vscode.TreeItem {
             light: path.join(__filename, "..", "..", "..", "src", "assets", "light", `${icons_1.statusIcons[this.iconName]}.svg`),
             dark: path.join(__filename, "..", "..", "..", "src", "assets", "dark", `${icons_1.statusIcons[this.iconName]}.svg`),
         };
-        this.print();
     }
 }
 //# sourceMappingURL=tree.js.map

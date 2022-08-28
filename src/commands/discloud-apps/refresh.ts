@@ -1,15 +1,16 @@
 import { Command } from "../../structures/command";
-import * as vscode from 'vscode';
 import { Discloud } from "../../structures/extend";
 
 export = class extends Command {
 
     constructor(discloud: Discloud) {
         super(discloud, {
-            name: ""
+            name: "refresh"
         });
     }
 
-    run = async (uri: vscode.Uri) => {
+    run = async () => {
+        const tree = this.discloud.trees.get('apps_tree');
+        tree ? tree.refresh() : false;
     };
 };

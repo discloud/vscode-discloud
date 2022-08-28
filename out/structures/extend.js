@@ -27,33 +27,47 @@ exports.Discloud = void 0;
 const fs_1 = require("fs");
 const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
+const tree_1 = require("../functions/api/tree");
 class Discloud {
     constructor(context) {
         this.commands = [];
         this.subscriptions = context.subscriptions;
-        this.loadCommands();
-        this.init();
         this.cache = new Map();
-    }
-    init() {
-        for (const command of this.commands) {
-            let disp = vscode.commands.registerCommand(`discloud.${command.name}`, async (uri) => {
-                await command.run(this.cache, uri);
-            });
-            this.subscriptions.push(disp);
-        }
-        return console.log("[DISCLOUD] Extension has loaded all commands.");
+        this.bars = new Map();
+        this.trees = new Map();
+        this.config = vscode.workspace.getConfiguration("discloud");
+        this.loadCommands();
+        this.loadStatusBar();
+        this.loadTrees();
     }
     loadCommands() {
         const categories = (0, fs_1.readdirSync)((0, path_1.join)(__filename, "..", "..", "commands"));
         for (const category of categories) {
-            const commands = (0, fs_1.readdirSync)((0, path_1.join)(__filename, "..", "..", "commands", category)).filter(r => r.endsWith('.js'));
+            const commands = (0, fs_1.readdirSync)((0, path_1.join)(__filename, "..", "..", "commands", category)).filter((r) => r.endsWith(".js"));
             for (const command of commands) {
                 const commandClass = require((0, path_1.join)(__filename, "..", "..", "commands", category, command));
-                const cmd = new (commandClass)(this);
+                const cmd = new commandClass(this);
+                let disp = vscode.commands.registerCommand(`${category}.${cmd.name}`, async (uri) => {
+                    await cmd.run(uri);
+                });
+                this.subscriptions.push(disp);
                 this.commands.push(cmd);
             }
         }
+        console.log("[DISCLOUD] Extension has loaded all commands.");
+    }
+    loadStatusBar() {
+        const uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
+        uploadBar.command = "discloud.upload";
+        uploadBar.text = "$(cloud-upload) Upload to Discloud";
+        this.subscriptions.push(uploadBar);
+        uploadBar.show();
+        this.bars.set('upload_bar', uploadBar);
+    }
+    loadTrees() {
+        const apps = new tree_1.AppTreeDataProvider();
+        vscode.window.registerTreeDataProvider("discloud-apps", apps);
+        this.trees.set('apps_tree', apps);
     }
 }
 exports.Discloud = Discloud;

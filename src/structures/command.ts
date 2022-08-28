@@ -1,9 +1,11 @@
+import { Discloud } from "./extend";
+
 export class Command {
     name: string;
-    cache: Map<any, any>;
+    discloud: Discloud;
 
-    constructor(cache: Map<any, any>, options: { name: string }) {
-        this.cache = cache;
+    constructor(discloud: Discloud, options: { name: string }) {
+        this.discloud = discloud;
         this.name = options.name;
     }
 }

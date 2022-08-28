@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Command = void 0;
 class Command {
-    constructor(cache, options) {
-        this.cache = cache;
+    constructor(discloud, options) {
+        this.discloud = discloud;
         this.name = options.name;
     }
 }

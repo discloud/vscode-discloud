@@ -14,13 +14,8 @@ enum StatusLabels {
 }
 
 export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
-  onDidChangeTreeData?: vscode.Event<TreeItem | null | undefined> | undefined;
-  // private _onDidChangeTreeData: vscode.EventEmitter<
-  //   TreeItem | undefined | null | void
-  // > = new vscode.EventEmitter<TreeItem | undefined | null | void>();
-  // readonly onDidChangeTreeData: vscode.Event<
-  //   TreeItem | undefined | null | void
-  // > = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | null | void> = new vscode.EventEmitter<TreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
   data: TreeItem[];
   cache: Map<any, any>;
@@ -56,12 +51,6 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             : statusIcons.off,
         })
       );
-
-      console.log(app.online
-        ? statusIcons.onl
-        : app.ramKilled
-        ? statusIcons.rak
-        : statusIcons.off);
     }
 
     this.cache.set(`apps-user_verify`, getApps);
@@ -85,9 +74,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     return element.children;
   }
 
-  // refresh() {
-  //   this._onDidChangeTreeData.fire();
-  // }
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
+  }
 }
 
 class TreeItem extends vscode.TreeItem {
@@ -126,12 +115,7 @@ class TreeItem extends vscode.TreeItem {
         `${this.iconName}.svg`
       ),
     };
-    this.print();
   }
-
-  print = () => {
-    console.log(this.iconName, this.iconPath);
-  };
 }
 
 class ChildrenTreeItem extends vscode.TreeItem {
@@ -185,10 +169,5 @@ class ChildrenTreeItem extends vscode.TreeItem {
         }.svg`
       ),
     };
-    this.print();
   }
-
-  print = () => {
-    console.log(this.iconName, this.iconPath);
-  };
 }

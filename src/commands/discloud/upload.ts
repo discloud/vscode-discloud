@@ -14,19 +14,20 @@ import FormData from "form-data";
 import { requiredFiles, blockedFiles } from "../../config.json";
 import { check } from "../../functions/checkers/config";
 import { Zip } from "../../functions/zip";
+import { Discloud } from "../../structures/extend";
 type LANGS = "js" | "py" | "rb" | "rs" | "ts" | "go";
 
 export = class extends Command {
-  constructor(cache: Map<any, any>) {
-    super(cache, {
+  constructor(discloud: Discloud) {
+    super(discloud, {
       name: "upload",
     });
   }
 
   run = async (uri: vscode.Uri) => {
-    const token = vscode.workspace
-      .getConfiguration("discloud")
-      .get("token") as string;
+    const token = this.discloud.config.get("token") as string;
+    const upbar = this.discloud.bars.get("upload_bar");
+    upbar ? (upbar.text = "$(loading) Uploading...") : false;
 
     let targetPath = "";
     if (uri && uri.fsPath) {
@@ -135,6 +136,7 @@ export = class extends Command {
           form
         );
         vscode.window.showInformationMessage(`${data.message}`);
+        upbar?.hide();
         unlinkSync(savePath);
       });
 
