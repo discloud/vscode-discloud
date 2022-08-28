@@ -33,7 +33,8 @@ async function requester(method, url, config, d) {
     const methods = {
         put: axios_1.default.put,
         get: axios_1.default.get,
-        post: axios_1.default.post
+        post: axios_1.default.post,
+        del: axios_1.default.delete
     };
     config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
@@ -41,7 +42,13 @@ async function requester(method, url, config, d) {
         data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config)).data;
     }
     catch (err) {
-        return vscode.window.showErrorMessage(`${err}`);
+        if (err.response.status === 401) {
+            return vscode.window.showErrorMessage(err.response.data.message);
+        }
+        if (err.response.status === 404) {
+            return undefined;
+        }
+        return vscode.window.showErrorMessage(`${err.response.data ? err.response.data.message : err}`);
     }
     return data;
 }

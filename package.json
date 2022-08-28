@@ -16,14 +16,6 @@
   "contributes": {
     "commands": [
       {
-				"command": "discloud-apps.planIcon",
-				"title": "Plan Platinum",
-				"icon": {
-					"light": "src/assets/Platinum.webp",
-					"dark": "src/assets/Platinum.webp"
-				}
-			},
-      {
 				"command": "discloud-apps.helpButton",
 				"title": "Discloud Help",
 				"icon": {
@@ -140,11 +132,6 @@
       "view/title": [
         {
           "command": "discloud-apps.helpButton",
-          "when": "view == discloud-apps",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud-apps.planIcon",
           "when": "view == discloud-apps",
           "group": "navigation"
         },

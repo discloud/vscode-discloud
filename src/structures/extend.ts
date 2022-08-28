@@ -13,8 +13,9 @@ export class Discloud {
   subscriptions: { dispose(): any }[];
   cache: Map<string, any>;
   bars: Map<string, vscode.StatusBarItem>;
-  trees: Map<string, AppTreeDataProvider>;
+  trees: Map<string, vscode.TreeDataProvider<any>>;
   config: vscode.WorkspaceConfiguration;
+  mainTree?: AppTreeDataProvider;
 
   constructor(context: vscode.ExtensionContext) {
     this.commands = [];
@@ -22,6 +23,7 @@ export class Discloud {
     this.cache = new Map();
     this.bars = new Map();
     this.trees = new Map();
+    this.mainTree;
     this.config = vscode.workspace.getConfiguration("discloud");
     this.loadCommands();
     this.loadStatusBar();
@@ -75,6 +77,6 @@ export class Discloud {
   loadTrees() {
     const apps = new AppTreeDataProvider();
     vscode.window.registerTreeDataProvider("discloud-apps", apps);
-    this.trees.set('apps_tree', apps);
+    this.mainTree = apps;
   }
 }

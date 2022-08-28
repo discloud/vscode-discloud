@@ -35,6 +35,7 @@ class Discloud {
         this.cache = new Map();
         this.bars = new Map();
         this.trees = new Map();
+        this.mainTree;
         this.config = vscode.workspace.getConfiguration("discloud");
         this.loadCommands();
         this.loadStatusBar();
@@ -67,7 +68,7 @@ class Discloud {
     loadTrees() {
         const apps = new tree_1.AppTreeDataProvider();
         vscode.window.registerTreeDataProvider("discloud-apps", apps);
-        this.trees.set('apps_tree', apps);
+        this.mainTree = apps;
     }
 }
 exports.Discloud = Discloud;
