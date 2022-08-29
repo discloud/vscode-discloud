@@ -51,13 +51,6 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     
     if (!getApps || !getUser) { return; }
 
-    const bar = this.cache.get('upload_bar');
-    const config = this.cache.get('config');
-
-    if (getUser.user.appsStatus.filter(r => r.id === config.id)) {
-      bar.hide();
-    }
-
     const tree: TreeItem[] = [];
 
     for (const app of getUser.user.appsStatus) {
@@ -142,19 +135,8 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   refresh(): void {
-    const clicks = this.cache.get("refresh");
-    console.log(clicks);
-
-    if (clicks && clicks > 3) {
-      return;
-    } else {
       this.verifyApps();
-      this.cache.set("refresh", clicks ? clicks + 1 : 1);
-    }
-
-    setTimeout(() => {
-      return this.cache.set("refresh", clicks - 1);
-    }, 60000);
+      this._onDidChangeTreeData.fire();
   }
 }
 

@@ -28,7 +28,6 @@ const fs_1 = require("fs");
 const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
 const tree_1 = require("../functions/api/tree");
-const config_1 = require("../functions/checkers/config");
 class Discloud {
     constructor(context) {
         this.commands = [];
@@ -38,7 +37,6 @@ class Discloud {
         this.trees = new Map();
         this.mainTree;
         this.config = vscode.workspace.getConfiguration("discloud");
-        this.currentConfig;
         this.loadCommands();
         this.loadStatusBar();
         this.loadTrees();
@@ -64,12 +62,7 @@ class Discloud {
         uploadBar.command = "discloud.upload";
         uploadBar.text = "$(cloud-upload) Upload to Discloud";
         this.subscriptions.push(uploadBar);
-        const work = vscode.workspace.workspaceFolders;
-        const file = work ? work[0].uri.fsPath : '';
-        const getConfig = (0, config_1.check)(file, true);
-        this.currentConfig = getConfig;
         uploadBar.show();
-        this.cache.set('config', this.currentConfig);
         this.cache.set('upload_bar', uploadBar);
         this.bars.set('upload_bar', uploadBar);
     }

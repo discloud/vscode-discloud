@@ -29,7 +29,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requester = void 0;
 const axios_1 = __importDefault(require("axios"));
 const vscode = __importStar(require("vscode"));
+let uses = 0;
+setInterval(() => { uses > 0 ? uses-- : false; }, 60000);
 async function requester(method, url, config, d) {
+    if (uses > 5) {
+        return vscode.window.showInformationMessage("Você atingiu o limite de requisições. Tente Novamente mais tarde.");
+    }
     const methods = {
         put: axios_1.default.put,
         get: axios_1.default.get,
@@ -40,6 +45,7 @@ async function requester(method, url, config, d) {
     let data;
     try {
         data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config)).data;
+        uses++;
     }
     catch (err) {
         if (err.response.status === 401) {

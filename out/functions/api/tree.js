@@ -63,11 +63,6 @@ class AppTreeDataProvider {
         if (!getApps || !getUser) {
             return;
         }
-        const bar = this.cache.get('upload_bar');
-        const config = this.cache.get('config');
-        if (getUser.user.appsStatus.filter(r => r.id === config.id)) {
-            bar.hide();
-        }
         const tree = [];
         for (const app of getUser.user.appsStatus) {
             if (!app) {
@@ -109,18 +104,8 @@ class AppTreeDataProvider {
         return element.children;
     }
     refresh() {
-        const clicks = this.cache.get("refresh");
-        console.log(clicks);
-        if (clicks && clicks > 3) {
-            return;
-        }
-        else {
-            this.verifyApps();
-            this.cache.set("refresh", clicks ? clicks + 1 : 1);
-        }
-        setTimeout(() => {
-            return this.cache.set("refresh", clicks - 1);
-        }, 60000);
+        this.verifyApps();
+        this._onDidChangeTreeData.fire();
     }
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;
