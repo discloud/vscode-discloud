@@ -44,10 +44,8 @@ class AppTreeDataProvider {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this.data = [];
         this.cache = cache;
-        setTimeout(() => { this.refresh(); }, 10000);
     }
     async verifyApps() {
-        console.log("Call");
         const token = await (0, token_1.checkIfHasToken)();
         if (!token) {
             return;

@@ -29,11 +29,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.data = [];
     this.cache = cache;
 
-    setTimeout(() => {this.refresh();}, 10000);
   }
 
   async verifyApps() {
-    console.log("Call");
     const token = await checkIfHasToken();
     if (!token) {
       return;

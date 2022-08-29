@@ -25,7 +25,7 @@
 			},
       {
 				"command": "discloud-apps.refreshButton",
-				"title": "Refresh",
+				"title": "Recarregar Apps",
 				"icon": {
 					"light": "src/assets/light/refresh.svg",
 					"dark": "src/assets/dark/refresh.svg"
@@ -133,7 +133,7 @@
         },
         {
           "command": "discloud-apps.refreshButton",
-          "when": "view == discloud-apps",
+          "when": "editorIsOpen && view == discloud-apps",
           "group": "navigation"
         }
       ],
