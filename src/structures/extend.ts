@@ -2,6 +2,7 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import * as vscode from "vscode";
 import { AppTreeDataProvider } from "../functions/api/tree";
+import { check } from "../functions/checkers/config";
 
 interface Command {
   name: string;
@@ -16,6 +17,7 @@ export class Discloud {
   trees: Map<string, vscode.TreeDataProvider<any>>;
   config: vscode.WorkspaceConfiguration;
   mainTree?: AppTreeDataProvider;
+  currentConfig?: Record<string, { value: string | number }>;
 
   constructor(context: vscode.ExtensionContext) {
     this.commands = [];
@@ -25,6 +27,7 @@ export class Discloud {
     this.trees = new Map();
     this.mainTree;
     this.config = vscode.workspace.getConfiguration("discloud");
+    this.currentConfig;
     this.loadCommands();
     this.loadStatusBar();
     this.loadTrees();
@@ -70,12 +73,21 @@ export class Discloud {
     uploadBar.text = "$(cloud-upload) Upload to Discloud";
 
     this.subscriptions.push(uploadBar);
+
+
+    const work = vscode.workspace.workspaceFolders;
+    const file = work ? work[0].uri.fsPath : '';
+    const getConfig = check(file, true);
+    this.currentConfig = getConfig as Record<string, { value: string | number }>;
+
     uploadBar.show();
+    this.cache.set('config', this.currentConfig);
+    this.cache.set('upload_bar', uploadBar);
     this.bars.set('upload_bar', uploadBar);
   }
 
   loadTrees() {
-    const apps = new AppTreeDataProvider();
+    const apps = new AppTreeDataProvider(this.cache);
     vscode.window.registerTreeDataProvider("discloud-apps", apps);
     this.mainTree = apps;
   }

@@ -52,3 +52,18 @@ export interface BackupApp {
   id: string;
   url: string;
 }
+
+export interface Logs {
+  status: string;
+  message: string;
+  apps: AppLog | AppLog[];
+}
+
+export interface AppLog {
+  id: string;
+  terminal: {
+    big: string;
+    small: string;
+    url: string;
+  };
+};

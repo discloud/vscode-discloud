@@ -143,12 +143,12 @@
       ],
       "view/item/context": [
         {
-          "command": "discloud-apps.importCode",
+          "command": "discloud-apps.deleteEntry",
           "when": "view == discloud-apps",
           "group": "inline"
         },
         {
-          "command": "discloud-apps.deleteEntry",
+          "command": "discloud-apps.importCode",
           "when": "view == discloud-apps",
           "group": "inline"
         },

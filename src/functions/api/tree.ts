@@ -25,9 +25,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   data: TreeItem[];
   cache: Map<any, any>;
 
-  constructor() {
+  constructor(cache: Map<any, any>) {
     this.data = [];
-    this.cache = new Map();
+    this.cache = cache;
 
     this.verifyApps();
   }
@@ -48,8 +48,15 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
     });
-
+    
     if (!getApps || !getUser) { return; }
+
+    const bar = this.cache.get('upload_bar');
+    const config = this.cache.get('config');
+
+    if (getUser.user.appsStatus.filter(r => r.id === config.id)) {
+      bar.hide();
+    }
 
     const tree: TreeItem[] = [];
 
@@ -135,18 +142,18 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   refresh(): void {
-    let clicks = this.cache.get("refresh");
+    const clicks = this.cache.get("refresh");
     console.log(clicks);
 
     if (clicks && clicks > 3) {
       return;
     } else {
       this.verifyApps();
-      this.cache.set("refresh", clicks ? clicks++ : clicks = 1);
+      this.cache.set("refresh", clicks ? clicks + 1 : 1);
     }
 
     setTimeout(() => {
-      return this.cache.set("refresh", clicks--);
+      return this.cache.set("refresh", clicks - 1);
     }, 60000);
   }
 }

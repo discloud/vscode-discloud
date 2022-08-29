@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.check = void 0;
 const fs_1 = require("fs");
 const vscode = __importStar(require("vscode"));
-function check(path) {
+function check(path, getObj) {
     try {
         (0, fs_1.existsSync)(path);
     }
@@ -34,7 +34,7 @@ function check(path) {
         return null;
     }
     const file = (0, fs_1.readFileSync)(path, { encoding: "utf8" });
-    if (!file) {
+    if (!file && !getObj) {
         return vscode.window.showErrorMessage(`Você não pode usar esta função com um discloud.config inválido.\nCheque a Documentação para Dúvidas: https://docs.discloudbot.com/suporte/faq/discloud.config`);
     }
     const splited = file.split("\n").filter((r) => r.includes("="));
@@ -52,11 +52,11 @@ function check(path) {
                 : "";
         }
     }
-    if (Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
-        (!isSite.hasID && isSite.site)) {
+    if ((Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
+        (!isSite.hasID && isSite.site)) && !getObj) {
         return vscode.window.showErrorMessage("Você não adicionou parâmetros obrigatórios no discloud.config!\nhttps://docs.discloudbot.com/suporte/faq/discloud.config");
     }
-    return true;
+    return getObj ? requiredScopes : true;
 }
 exports.check = check;
 //# sourceMappingURL=config.js.map

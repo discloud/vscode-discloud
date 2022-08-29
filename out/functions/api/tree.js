@@ -39,11 +39,11 @@ var StatusLabels;
     StatusLabels["lstr"] = "\u00DAltima Reinicializa\u00E7\u00E3o";
 })(StatusLabels || (StatusLabels = {}));
 class AppTreeDataProvider {
-    constructor() {
+    constructor(cache) {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this.data = [];
-        this.cache = new Map();
+        this.cache = cache;
         this.verifyApps();
     }
     async verifyApps() {
@@ -62,6 +62,11 @@ class AppTreeDataProvider {
         });
         if (!getApps || !getUser) {
             return;
+        }
+        const bar = this.cache.get('upload_bar');
+        const config = this.cache.get('config');
+        if (getUser.user.appsStatus.filter(r => r.id === config.id)) {
+            bar.hide();
         }
         const tree = [];
         for (const app of getUser.user.appsStatus) {
@@ -104,17 +109,17 @@ class AppTreeDataProvider {
         return element.children;
     }
     refresh() {
-        let clicks = this.cache.get("refresh");
+        const clicks = this.cache.get("refresh");
         console.log(clicks);
         if (clicks && clicks > 3) {
             return;
         }
         else {
             this.verifyApps();
-            this.cache.set("refresh", clicks ? clicks++ : clicks = 1);
+            this.cache.set("refresh", clicks ? clicks + 1 : 1);
         }
         setTimeout(() => {
-            return this.cache.set("refresh", clicks--);
+            return this.cache.set("refresh", clicks - 1);
         }, 60000);
     }
 }
