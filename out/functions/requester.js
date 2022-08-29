@@ -32,7 +32,7 @@ const vscode = __importStar(require("vscode"));
 let uses = 0;
 setInterval(() => { uses > 0 ? uses-- : false; }, 60000);
 async function requester(method, url, config, d) {
-    if (uses > 5) {
+    if (uses > 10) {
         return vscode.window.showInformationMessage("Você atingiu o limite de requisições. Tente Novamente mais tarde.");
     }
     const methods = {

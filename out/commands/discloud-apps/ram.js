@@ -35,19 +35,21 @@ module.exports = class extends command_1.Command {
             if (!token) {
                 return;
             }
-            const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o bot irá usar." });
+            const tree = this.discloud.mainTree;
+            const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o app irá usar." });
             const ram = await (0, requester_1.requester)('put', `/app/${item.tooltip}/ram`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token
                 }
             }, {
-                ram: parseFloat(`${toPut}`)
+                ramMB: parseInt(`${toPut}`)
             });
             if (!ram) {
                 return;
             }
             vscode.window.showInformationMessage(`${ram.message}`);
+            setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
         };
     }
 };

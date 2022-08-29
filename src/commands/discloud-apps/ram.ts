@@ -17,8 +17,9 @@ export = class extends Command {
         if (!token) {
             return;
         }
+        const tree = this.discloud.mainTree;
 
-        const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o bot irá usar." });
+        const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o app irá usar." });
         
         const ram = await requester('put', `/app/${item.tooltip}/ram`, {
             headers: {
@@ -26,10 +27,11 @@ export = class extends Command {
                 "api-token": token
             }
         }, {
-            ram: parseFloat(`${toPut}`)
+            ramMB: parseInt(`${toPut}`)
         });
 
         if (!ram) { return; }
         vscode.window.showInformationMessage(`${ram.message}`);
+        setTimeout(() => {tree ? tree.refresh() : false;}, 10000);
     };
 };

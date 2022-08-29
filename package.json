@@ -68,10 +68,6 @@
         "title": "Restart"
       },
       {
-        "command": "discloud-apps.backupEntry",
-        "title": "Backup"
-      },
-      {
         "command": "discloud-apps.logsEntry",
         "title": "Logs"
       },
@@ -162,10 +158,6 @@
         },
         {
           "command": "discloud-apps.restartEntry",
-          "when": "view == discloud-apps"
-        },
-        {
-          "command": "discloud-apps.backupEntry",
           "when": "view == discloud-apps"
         },
         {

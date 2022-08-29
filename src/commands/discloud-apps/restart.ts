@@ -26,7 +26,7 @@ export = class extends Command {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 "api-token": token
             }
-        });
+        }, {});
 
         if (!restart) { return; }
 

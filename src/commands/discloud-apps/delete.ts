@@ -23,9 +23,7 @@ export = class extends Command {
             }
         });
 
-        // const appOnTree = tree?.data.filter(r => r.id !== item.id) as TreeItem[];
-        // tree ? tree.data = appOnTree : false;
-        tree?.refresh();
+        setTimeout(() => {tree ? tree.refresh() : false;}, 10000);
         vscode.window.showInformationMessage(`Aplicação ${item.label} deletada com sucesso!`);
     };
 };

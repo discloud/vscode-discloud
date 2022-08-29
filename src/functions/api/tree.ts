@@ -29,7 +29,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.data = [];
     this.cache = cache;
 
-    this.verifyApps();
+    setTimeout(() => {this.refresh();}, 10000);
   }
 
   async verifyApps() {

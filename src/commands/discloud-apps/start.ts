@@ -25,7 +25,7 @@ export = class extends Command {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 "api-token": token
             }
-        });
+        }, {});
 
         vscode.window.showInformationMessage(`${start.message}`);
         setTimeout(() => {tree ? tree.refresh() : false;}, 10000);

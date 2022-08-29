@@ -8,7 +8,7 @@ setInterval(() => { uses > 0 ? uses-- : false; }, 60000);
 
 export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, d?: any) {
 
-    if (uses > 5) {
+    if (uses > 10) {
         return vscode.window.showInformationMessage("Você atingiu o limite de requisições. Tente Novamente mais tarde.");
     }
 
