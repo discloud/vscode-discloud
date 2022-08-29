@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { StatusIcons, statusIcons } from "../../types/icons";
+import { statusIcons } from "../../types/icons";
 import { checkIfHasToken } from "../checkers/token";
 import { requester } from "../requester";
 import { Status, User } from "../../types/apps";
@@ -48,8 +48,10 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
     });
-    
-    if (!getApps || !getUser) { return; }
+
+    if (!getUser) {
+      return;
+    }
 
     const tree: TreeItem[] = [];
 
@@ -58,46 +60,50 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
         continue;
       }
 
-      const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+      let childrens: Record<string, ChildrenTreeItem>;
 
-      const childrens = {
-        cont: new ChildrenTreeItem(
-          StatusLabels.cont,
-          infoApp.container,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "container" }
-        ),
-        ram: new ChildrenTreeItem(
-          StatusLabels.ram,
-          infoApp.memory,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "ram" }
-        ),
-        cpu: new ChildrenTreeItem(
-          StatusLabels.cpu,
-          infoApp.cpu,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "cpu" }
-        ),
-        ssd: new ChildrenTreeItem(
-          StatusLabels.ssd,
-          infoApp.ssd,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "ssd" }
-        ),
-        net: new ChildrenTreeItem(
-          StatusLabels.net,
-          `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "network" }
-        ),
-        lstr: new ChildrenTreeItem(
-          StatusLabels.lstr,
-          infoApp.last_restart,
-          vscode.TreeItemCollapsibleState.None,
-          { iconName: "uptime" }
-        ),
-      };
+      if (getApps) {
+        const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+
+        childrens = {
+          cont: new ChildrenTreeItem(
+            StatusLabels.cont,
+            infoApp.container,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "container" }
+          ),
+          ram: new ChildrenTreeItem(
+            StatusLabels.ram,
+            infoApp.memory,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "ram" }
+          ),
+          cpu: new ChildrenTreeItem(
+            StatusLabels.cpu,
+            infoApp.cpu,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "cpu" }
+          ),
+          ssd: new ChildrenTreeItem(
+            StatusLabels.ssd,
+            infoApp.ssd,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "ssd" }
+          ),
+          net: new ChildrenTreeItem(
+            StatusLabels.net,
+            `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "network" }
+          ),
+          lstr: new ChildrenTreeItem(
+            StatusLabels.lstr,
+            infoApp.last_restart,
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "uptime" }
+          ),
+        };
+      }
 
       tree.push(
         new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
@@ -106,8 +112,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             : app.ramKilled
             ? statusIcons.rak
             : statusIcons.off,
-          children: Object.values(childrens),
-          tooltip: app.id
+            //@ts-ignore
+          children: getApps && childrens ? Object.values(childrens) : undefined,
+          tooltip: app.id,
         })
       );
     }
@@ -135,8 +142,8 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   refresh(): void {
-      this.verifyApps();
-      this._onDidChangeTreeData.fire();
+    this.verifyApps();
+    this._onDidChangeTreeData.fire();
   }
 }
 
@@ -147,11 +154,13 @@ export class TreeItem extends vscode.TreeItem {
   constructor(
     label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    options?: { children?: ChildrenTreeItem[]; iconName?: string, tooltip: string }
+    options?: {
+      children?: ChildrenTreeItem[];
+      iconName?: string;
+      tooltip: string;
+    }
   ) {
-    super(
-      label,
-      collapsibleState);
+    super(label, collapsibleState);
     this.children = options?.children;
     this.iconName = options?.iconName;
     this.tooltip = options?.tooltip;
@@ -188,9 +197,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     options?: { children?: TreeItem[]; iconName?: string }
   ) {
-    super(
-      label,
-      collapsibleState);
+    super(label, collapsibleState);
     this.children = options?.children;
     this.description = value;
     this.iconName = options?.iconName;

@@ -26,13 +26,13 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 		data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config)).data;
         uses++;
 	} catch(err: any) {
-        if (err.response.status === 401) {
+        if (err?.response?.status === 401) {
             return vscode.window.showErrorMessage(err.response.data.message);
         }
-        if (err.response.status === 404) {
+        if (err?.response?.status === 404) {
             return undefined;
         }
-		return vscode.window.showErrorMessage(`${err.response.data ? err.response.data.message : err}`);
+		return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
 	}
 
     return data;

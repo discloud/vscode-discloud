@@ -48,13 +48,13 @@ async function requester(method, url, config, d) {
         uses++;
     }
     catch (err) {
-        if (err.response.status === 401) {
+        if (err?.response?.status === 401) {
             return vscode.window.showErrorMessage(err.response.data.message);
         }
-        if (err.response.status === 404) {
+        if (err?.response?.status === 404) {
             return undefined;
         }
-        return vscode.window.showErrorMessage(`${err.response.data ? err.response.data.message : err}`);
+        return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
     }
     return data;
 }

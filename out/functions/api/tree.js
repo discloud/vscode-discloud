@@ -60,7 +60,7 @@ class AppTreeDataProvider {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { "api-token": `${token}` },
         });
-        if (!getApps || !getUser) {
+        if (!getUser) {
             return;
         }
         const tree = [];
@@ -68,23 +68,27 @@ class AppTreeDataProvider {
             if (!app) {
                 continue;
             }
-            const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
-            const childrens = {
-                cont: new ChildrenTreeItem(StatusLabels.cont, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
-                ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
-                cpu: new ChildrenTreeItem(StatusLabels.cpu, infoApp.cpu, vscode.TreeItemCollapsibleState.None, { iconName: "cpu" }),
-                ssd: new ChildrenTreeItem(StatusLabels.ssd, infoApp.ssd, vscode.TreeItemCollapsibleState.None, { iconName: "ssd" }),
-                net: new ChildrenTreeItem(StatusLabels.net, `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`, vscode.TreeItemCollapsibleState.None, { iconName: "network" }),
-                lstr: new ChildrenTreeItem(StatusLabels.lstr, infoApp.last_restart, vscode.TreeItemCollapsibleState.None, { iconName: "uptime" }),
-            };
+            let childrens;
+            if (getApps) {
+                const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+                childrens = {
+                    cont: new ChildrenTreeItem(StatusLabels.cont, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
+                    ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
+                    cpu: new ChildrenTreeItem(StatusLabels.cpu, infoApp.cpu, vscode.TreeItemCollapsibleState.None, { iconName: "cpu" }),
+                    ssd: new ChildrenTreeItem(StatusLabels.ssd, infoApp.ssd, vscode.TreeItemCollapsibleState.None, { iconName: "ssd" }),
+                    net: new ChildrenTreeItem(StatusLabels.net, `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`, vscode.TreeItemCollapsibleState.None, { iconName: "network" }),
+                    lstr: new ChildrenTreeItem(StatusLabels.lstr, infoApp.last_restart, vscode.TreeItemCollapsibleState.None, { iconName: "uptime" }),
+                };
+            }
             tree.push(new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
                 iconName: app.online
                     ? icons_1.statusIcons.onl
                     : app.ramKilled
                         ? icons_1.statusIcons.rak
                         : icons_1.statusIcons.off,
-                children: Object.values(childrens),
-                tooltip: app.id
+                //@ts-ignore
+                children: getApps && childrens ? Object.values(childrens) : undefined,
+                tooltip: app.id,
             }));
         }
         this.cache.set(`apps-user_verify`, getUser);
