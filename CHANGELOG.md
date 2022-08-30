@@ -1,9 +1,21 @@
 # Change Log
 
-All notable changes to the "discloud" extension will be documented in this file.
+Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui você poderá ver as novas novidades.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+---
 
-## [Unreleased]
+## [BETA]
 
-- Initial release
+Novas Features adicionadas na parte de **WorkSpace (Explorer)** e na **Lista de Aplicações**.
+
+- WorkSpace
+  - Upload
+  - Commit
+- Apps Options
+  - Backup
+  - Delete
+  - Logs
+  - Ram
+  - Restart
+  - Start
+  - Stop
