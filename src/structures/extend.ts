@@ -82,3 +82,7 @@ export class Discloud {
     this.mainTree = apps;
   }
 }
+
+Object.defineProperty(global, 'actualProcess', {
+  value: new Map()
+});
