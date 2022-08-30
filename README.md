@@ -6,4 +6,4 @@ Está extensão tem como objetivo facilitar o uso da DisCloud, tendo como o uso 
 
 - [Como Usar a Extensão](https://youtu.be/xm3YgoEiEDc)
 - [DisCloud](https://discloud.app)
-- [Documentação da Discloud](https://docs.discloudbot.com)
+- [Documentação da DisCloud](https://docs.discloudbot.com)
