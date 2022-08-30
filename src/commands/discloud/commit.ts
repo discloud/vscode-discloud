@@ -84,7 +84,7 @@ export = class extends Command {
 
       const data = await requester(
         "put",
-        `/app/${input.split('|')[1].replace(' ', '')}/commit`,
+        `/app/${input.split('|')[1].trim()}/commit`,
         {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,7 +93,7 @@ export = class extends Command {
         },
         form
       );
-      
+
       unlinkSync(savePath);
       vscode.window.showInformationMessage(`${data?.message}`);
     });

@@ -82,7 +82,7 @@ module.exports = class extends command_1.Command {
             stream?.on("close", async () => {
                 const form = new form_data_1.default();
                 form.append("commitFile", (0, fs_1.createReadStream)(savePath));
-                const data = await (0, requester_1.requester)("put", `/app/${input.split('|')[1].replace(' ', '')}/commit`, {
+                const data = await (0, requester_1.requester)("put", `/app/${input.split('|')[1].trim()}/commit`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         "api-token": `${token}`,
