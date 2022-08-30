@@ -29,11 +29,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requester = void 0;
 const axios_1 = __importDefault(require("axios"));
 const vscode = __importStar(require("vscode"));
-let uses = 0;
-setInterval(() => { uses > 0 ? uses-- : false; }, 60000);
+let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
+setInterval(() => { uses > 0 ? uses-- : false; }, time);
 async function requester(method, url, config, d) {
-    if (uses > 10) {
-        return vscode.window.showInformationMessage("Você atingiu o limite de requisições. Tente Novamente mais tarde.");
+    const token = vscode.workspace
+        .getConfiguration("discloud")
+        .get("token");
+    //@ts-ignore
+    const getProcess = global.actualProcess.get(`${token}`);
+    if (getProcess && getProcess !== "undefined") {
+        return vscode.window.showInformationMessage(`Você já tem um processo de ${getProcess} em execução.`);
+    }
+    else {
+        //@ts-ignore
+        global.actualProcess.set(`${token}`, `${url.split('/')[-1]}`);
+    }
+    if (uses > maxUses || remain === 0) {
+        return vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time / 1000)} segundos para usar novamente.`);
     }
     const methods = {
         put: axios_1.default.put,
@@ -44,8 +56,14 @@ async function requester(method, url, config, d) {
     config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
     try {
-        data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config)).data;
+        data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config));
         uses++;
+        maxUses = await parseInt(data.headers["ratelimit-limit"]);
+        time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
+        remain = await parseInt(data.headers["ratelimit-remaining"]);
+        data = data.data;
+        //@ts-ignore
+        global.actualProcess.delete(`${token}`);
     }
     catch (err) {
         if (err?.response?.status === 401) {

@@ -15,7 +15,7 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
     //@ts-ignore
     const getProcess = global.actualProcess.get(`${token}`);
     
-    if (getProcess) {
+    if (getProcess && getProcess !== "undefined") {
         return vscode.window.showInformationMessage(`Você já tem um processo de ${getProcess} em execução.`);
     } else {
         //@ts-ignore
@@ -39,11 +39,13 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 	try {
 		data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config));
         uses++;
-        maxUses = parseInt(data.headers["ratelimit-limit"]);
-        time = parseInt(data.headers["ratelimit-reset"]) * 1000;
-        remain = parseInt(data.headers["ratelimit-remaining"]);
+        maxUses = await parseInt(data.headers["ratelimit-limit"]);
+        time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
+        remain = await parseInt(data.headers["ratelimit-remaining"]);
         
         data = data.data;
+        //@ts-ignore
+        global.actualProcess.delete(`${token}`);
 	} catch(err: any) {
         if (err?.response?.status === 401) {
             return vscode.window.showErrorMessage(err.response.data.message);

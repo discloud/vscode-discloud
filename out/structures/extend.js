@@ -73,4 +73,7 @@ class Discloud {
     }
 }
 exports.Discloud = Discloud;
+Object.defineProperty(global, 'actualProcess', {
+    value: new Map()
+});
 //# sourceMappingURL=extend.js.map
