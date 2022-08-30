@@ -16,14 +16,6 @@
   "contributes": {
     "commands": [
       {
-				"command": "discloud-apps.planIcon",
-				"title": "Plan Platinum",
-				"icon": {
-					"light": "src/assets/Platinum.webp",
-					"dark": "src/assets/Platinum.webp"
-				}
-			},
-      {
 				"command": "discloud-apps.helpButton",
 				"title": "Discloud Help",
 				"icon": {
@@ -33,7 +25,7 @@
 			},
       {
 				"command": "discloud-apps.refreshButton",
-				"title": "Refresh",
+				"title": "Recarregar Apps",
 				"icon": {
 					"light": "src/assets/light/refresh.svg",
 					"dark": "src/assets/dark/refresh.svg"
@@ -74,10 +66,6 @@
       {
         "command": "discloud-apps.restartEntry",
         "title": "Restart"
-      },
-      {
-        "command": "discloud-apps.backupEntry",
-        "title": "Backup"
       },
       {
         "command": "discloud-apps.logsEntry",
@@ -144,24 +132,19 @@
           "group": "navigation"
         },
         {
-          "command": "discloud-apps.planIcon",
-          "when": "view == discloud-apps",
-          "group": "navigation"
-        },
-        {
           "command": "discloud-apps.refreshButton",
-          "when": "view == discloud-apps",
+          "when": "editorIsOpen && view == discloud-apps",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "discloud-apps.importCode",
+          "command": "discloud-apps.deleteEntry",
           "when": "view == discloud-apps",
           "group": "inline"
         },
         {
-          "command": "discloud-apps.deleteEntry",
+          "command": "discloud-apps.importCode",
           "when": "view == discloud-apps",
           "group": "inline"
         },
@@ -175,10 +158,6 @@
         },
         {
           "command": "discloud-apps.restartEntry",
-          "when": "view == discloud-apps"
-        },
-        {
-          "command": "discloud-apps.backupEntry",
           "when": "view == discloud-apps"
         },
         {

@@ -5,12 +5,12 @@ export = class extends Command {
 
     constructor(discloud: Discloud) {
         super(discloud, {
-            name: "refresh"
+            name: "refreshButton"
         });
     }
 
     run = async () => {
-        const tree = this.discloud.trees.get('apps_tree');
+        const tree = this.discloud.mainTree;
         tree ? tree.refresh() : false;
     };
 };

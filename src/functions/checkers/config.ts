@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 
 type KEYS = "ram" | "type" | "main" | "version";
 
-export function check(path: string) {
+export function check(path: string, getObj?: boolean) {
   try {
     existsSync(path);
   } catch (err) {
@@ -11,7 +11,7 @@ export function check(path: string) {
   }
 
   const file = readFileSync(path, { encoding: "utf8" });
-  if (!file) {
+  if (!file && !getObj) {
     return vscode.window.showErrorMessage(
       `Você não pode usar esta função com um discloud.config inválido.\nCheque a Documentação para Dúvidas: https://docs.discloudbot.com/suporte/faq/discloud.config`
     );
@@ -37,13 +37,13 @@ export function check(path: string) {
   }
 
   if (
-    Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
-    (!isSite.hasID && isSite.site)
+    (Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
+    (!isSite.hasID && isSite.site)) && !getObj
   ) {
     return vscode.window.showErrorMessage(
       "Você não adicionou parâmetros obrigatórios no discloud.config!\nhttps://docs.discloudbot.com/suporte/faq/discloud.config"
     );
   }
 
-  return true;
+  return getObj ? requiredScopes : true;
 }

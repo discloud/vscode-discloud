@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppTreeDataProvider = void 0;
+exports.TreeItem = exports.AppTreeDataProvider = void 0;
 const vscode = __importStar(require("vscode"));
 const path = __importStar(require("path"));
 const icons_1 = require("../../types/icons");
@@ -31,44 +31,65 @@ const token_1 = require("../checkers/token");
 const requester_1 = require("../requester");
 var StatusLabels;
 (function (StatusLabels) {
-    StatusLabels["cont"] = "Container";
     StatusLabels["cpu"] = "CPU";
     StatusLabels["ram"] = "RAM";
     StatusLabels["ssd"] = "SSD NVMe";
-    StatusLabels["net"] = "NetWork";
+    StatusLabels["net"] = "Network";
     StatusLabels["lstr"] = "\u00DAltima Reinicializa\u00E7\u00E3o";
 })(StatusLabels || (StatusLabels = {}));
 class AppTreeDataProvider {
-    constructor() {
+    constructor(cache) {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this.data = [];
-        this.cache = new Map();
-        this.verifyApps();
+        this.cache = cache;
     }
     async verifyApps() {
         const token = await (0, token_1.checkIfHasToken)();
         if (!token) {
             return;
         }
-        const getApps = await (0, requester_1.requester)("get", `/user`, {
+        const getUser = await (0, requester_1.requester)("get", `/user`, {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { "api-token": `${token}` },
         });
+        const getApps = await (0, requester_1.requester)("get", `app/all/status`, {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: { "api-token": `${token}` },
+        });
+        if (!getUser) {
+            return;
+        }
         const tree = [];
-        for (const app of getApps.user.appsStatus) {
+        for (const app of getUser.user.appsStatus) {
             if (!app) {
                 continue;
             }
-            tree.push(new TreeItem(`${app.name}`, {
+            let childrens;
+            if (getApps) {
+                const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+                childrens = {
+                    cont: new ChildrenTreeItem(`${infoApp.id}`, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
+                    ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
+                    cpu: new ChildrenTreeItem(StatusLabels.cpu, infoApp.cpu, vscode.TreeItemCollapsibleState.None, { iconName: "cpu" }),
+                    ssd: new ChildrenTreeItem(StatusLabels.ssd, infoApp.ssd, vscode.TreeItemCollapsibleState.None, { iconName: "ssd" }),
+                    net: new ChildrenTreeItem(StatusLabels.net, `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`, vscode.TreeItemCollapsibleState.None, { iconName: "network" }),
+                    lstr: new ChildrenTreeItem(StatusLabels.lstr, infoApp.last_restart, vscode.TreeItemCollapsibleState.None, { iconName: "uptime" }),
+                };
+            }
+            tree.push(new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
                 iconName: app.online
                     ? icons_1.statusIcons.onl
                     : app.ramKilled
                         ? icons_1.statusIcons.rak
                         : icons_1.statusIcons.off,
+                //@ts-ignore
+                children: getApps && childrens ? Object.values(childrens) : undefined,
+                tooltip: app.id,
             }));
         }
-        this.cache.set(`apps-user_verify`, getApps);
+        this.cache.set(`apps-user_verify`, getUser);
+        this.cache.set(`apps_user`, getApps);
         this.createTreeItem(tree);
     }
     createTreeItem(array) {
@@ -84,37 +105,35 @@ class AppTreeDataProvider {
         return element.children;
     }
     refresh() {
+        this.verifyApps();
         this._onDidChangeTreeData.fire();
     }
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;
 class TreeItem extends vscode.TreeItem {
-    constructor(label, options) {
-        super(label, options?.children === undefined
-            ? vscode.TreeItemCollapsibleState.None
-            : vscode.TreeItemCollapsibleState.Expanded);
+    constructor(label, collapsibleState, options) {
+        super(label, collapsibleState);
+        this.collapsibleState = collapsibleState;
         this.children = options?.children;
         this.iconName = options?.iconName;
+        this.tooltip = options?.tooltip;
         this.iconPath = {
             light: path.join(__filename, "..", "..", "..", "assets", "light", `${this.iconName}.svg`),
             dark: path.join(__filename, "..", "..", "..", "assets", "dark", `${this.iconName}.svg`),
         };
     }
 }
+exports.TreeItem = TreeItem;
 class ChildrenTreeItem extends vscode.TreeItem {
-    constructor(label, value, options) {
-        super(label, options?.children === undefined
-            ? vscode.TreeItemCollapsibleState.None
-            : vscode.TreeItemCollapsibleState.Expanded);
+    constructor(label, value, collapsibleState, options) {
+        super(label, collapsibleState);
+        this.collapsibleState = collapsibleState;
         this.children = options?.children;
         this.description = value;
-        this.iconName = this.label
-            ?.toString()
-            .toLowerCase()
-            .slice(0, 3);
+        this.iconName = options?.iconName;
         this.iconPath = {
-            light: path.join(__filename, "..", "..", "..", "src", "assets", "light", `${icons_1.statusIcons[this.iconName]}.svg`),
-            dark: path.join(__filename, "..", "..", "..", "src", "assets", "dark", `${icons_1.statusIcons[this.iconName]}.svg`),
+            light: path.join(__filename, "..", "..", "..", "assets", "light", `${this.iconName}.svg`),
+            dark: path.join(__filename, "..", "..", "..", "assets", "dark", `${this.iconName}.svg`),
         };
     }
 }

@@ -35,6 +35,7 @@ class Discloud {
         this.cache = new Map();
         this.bars = new Map();
         this.trees = new Map();
+        this.mainTree;
         this.config = vscode.workspace.getConfiguration("discloud");
         this.loadCommands();
         this.loadStatusBar();
@@ -62,12 +63,13 @@ class Discloud {
         uploadBar.text = "$(cloud-upload) Upload to Discloud";
         this.subscriptions.push(uploadBar);
         uploadBar.show();
+        this.cache.set('upload_bar', uploadBar);
         this.bars.set('upload_bar', uploadBar);
     }
     loadTrees() {
-        const apps = new tree_1.AppTreeDataProvider();
+        const apps = new tree_1.AppTreeDataProvider(this.cache);
         vscode.window.registerTreeDataProvider("discloud-apps", apps);
-        this.trees.set('apps_tree', apps);
+        this.mainTree = apps;
     }
 }
 exports.Discloud = Discloud;

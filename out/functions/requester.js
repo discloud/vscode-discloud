@@ -29,19 +29,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requester = void 0;
 const axios_1 = __importDefault(require("axios"));
 const vscode = __importStar(require("vscode"));
+let uses = 0;
+setInterval(() => { uses > 0 ? uses-- : false; }, 60000);
 async function requester(method, url, config, d) {
+    if (uses > 10) {
+        return vscode.window.showInformationMessage("Você atingiu o limite de requisições. Tente Novamente mais tarde.");
+    }
     const methods = {
         put: axios_1.default.put,
         get: axios_1.default.get,
-        post: axios_1.default.post
+        post: axios_1.default.post,
+        del: axios_1.default.delete
     };
     config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
     try {
         data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config)).data;
+        uses++;
     }
     catch (err) {
-        return vscode.window.showErrorMessage(`${err}`);
+        if (err?.response?.status === 401) {
+            return vscode.window.showErrorMessage(err.response.data.message);
+        }
+        if (err?.response?.status === 404) {
+            return undefined;
+        }
+        return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
     }
     return data;
 }

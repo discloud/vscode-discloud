@@ -27,7 +27,7 @@ export = class extends Command {
   run = async (uri: vscode.Uri) => {
     const token = this.discloud.config.get("token") as string;
     const upbar = this.discloud.bars.get("upload_bar");
-    upbar ? (upbar.text = "$(loading) Uploading...") : false;
+    upbar ? (upbar.text = "$(loading~spin) Uploading...") : false;
 
     let targetPath = "";
     if (uri && uri.fsPath) {
