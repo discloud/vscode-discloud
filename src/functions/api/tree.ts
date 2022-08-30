@@ -6,7 +6,6 @@ import { requester } from "../requester";
 import { Status, User } from "../../types/apps";
 
 enum StatusLabels {
-  cont = "Container",
   cpu = "CPU",
   ram = "RAM",
   ssd = "SSD NVMe",
@@ -65,7 +64,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
         childrens = {
           cont: new ChildrenTreeItem(
-            StatusLabels.cont,
+            `${infoApp.id}`,
             infoApp.container,
             vscode.TreeItemCollapsibleState.None,
             { iconName: "container" }
@@ -190,7 +189,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
   iconName?: string;
 
   constructor(
-    label: StatusLabels,
+    label: StatusLabels | string,
     value: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     options?: { children?: TreeItem[]; iconName?: string }

@@ -31,7 +31,6 @@ const token_1 = require("../checkers/token");
 const requester_1 = require("../requester");
 var StatusLabels;
 (function (StatusLabels) {
-    StatusLabels["cont"] = "Container";
     StatusLabels["cpu"] = "CPU";
     StatusLabels["ram"] = "RAM";
     StatusLabels["ssd"] = "SSD NVMe";
@@ -70,7 +69,7 @@ class AppTreeDataProvider {
             if (getApps) {
                 const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
                 childrens = {
-                    cont: new ChildrenTreeItem(StatusLabels.cont, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
+                    cont: new ChildrenTreeItem(`${infoApp.id}`, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
                     ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
                     cpu: new ChildrenTreeItem(StatusLabels.cpu, infoApp.cpu, vscode.TreeItemCollapsibleState.None, { iconName: "cpu" }),
                     ssd: new ChildrenTreeItem(StatusLabels.ssd, infoApp.ssd, vscode.TreeItemCollapsibleState.None, { iconName: "ssd" }),
