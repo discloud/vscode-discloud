@@ -68,7 +68,7 @@ export class Discloud {
       40
     );
     uploadBar.command = "discloud.upload";
-    uploadBar.text = "$(cloud-upload) Upload to Discloud";
+    uploadBar.text = "$(cloud-upload) Upload Discloud";
 
     this.subscriptions.push(uploadBar);
     uploadBar.show();

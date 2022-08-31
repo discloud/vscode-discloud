@@ -20,23 +20,33 @@ export = class extends Command {
         if (!token) {
             return;
         }
+
+        vscode.window.withProgress(
+            {
+              location: vscode.ProgressLocation.Notification,
+              title: "Requisitando Logs da sua aplicação...",
+            },
+            async (progress, tk) => {
+                const logs: Logs = await requester('get', `/app/${item.tooltip}/logs`, {
+                    headers: {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        "api-token": token
+                    }
+                });
         
-        const logs: Logs = await requester('get', `/app/${item.tooltip}/logs`, {
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                "api-token": token
-            }
-        });
+                if (!logs) { return; }
 
-        if (!logs) { return; }
+                progress.report({ message: "Logs recebidas com sucesso.", increment: 100 });
 
-        const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
-        if (ask === "Abrir Arquivo") {
-            await writeFileSync(join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`), (<AppLog>logs.apps).terminal.big);
-            const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`));
-            return vscode.window.showTextDocument(fileToOpenUri, { viewColumn: vscode.ViewColumn.Beside });
-        } else if (ask === "Abrir Link") {
-            return vscode.env.openExternal(vscode.Uri.parse(`${(<AppLog>logs.apps).terminal.url}`));
-        }
+                const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
+                if (ask === "Abrir Arquivo") {
+                    await writeFileSync(join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`), (<AppLog>logs.apps).terminal.big);
+                    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`));
+                    return vscode.window.showTextDocument(fileToOpenUri, { viewColumn: vscode.ViewColumn.Beside });
+                } else if (ask === "Abrir Link") {
+                    return vscode.env.openExternal(vscode.Uri.parse(`${(<AppLog>logs.apps).terminal.url}`));
+                }
+            });
+    
     };
 };

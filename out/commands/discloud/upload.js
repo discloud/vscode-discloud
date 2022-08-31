@@ -124,6 +124,7 @@ module.exports = class extends command_1.Command {
                     }, form);
                     vscode.window.showInformationMessage(`${data.message}`);
                     upbar?.hide();
+                    vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
                     (0, fs_1.unlinkSync)(savePath);
                 });
                 zip?.on("error", (err) => {

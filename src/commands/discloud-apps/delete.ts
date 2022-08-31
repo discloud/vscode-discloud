@@ -13,17 +13,31 @@ export = class extends Command {
     }
 
     run = async (item: TreeItem) => {
-        const tree = this.discloud.mainTree;
         const token = this.discloud.config.get("token") as string;
-        
-        await requester('del', `/app/${item.tooltip}/delete`, {
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                "api-token": token
-            }
-        });
+        if (!token) {
+            return;
+        }
 
-        setTimeout(() => {tree ? tree.refresh() : false;}, 10000);
-        vscode.window.showInformationMessage(`Aplicação ${item.label} deletada com sucesso!`);
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Deletando sua aplicação...",
+            cancellable: true
+        }, async (progress, tk) => {
+            tk.onCancellationRequested(() => {
+                console.log('Usuário cancelou o processo');
+            });
+
+            await requester('del', `/app/${item.tooltip}/delete`, {
+                headers: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "api-token": token
+                }
+            });
+    
+            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+            progress.report({ message: `Aplicação ${item.label} deletada com sucesso!`, increment: 100 });
+
+        });
+    
     };
 };

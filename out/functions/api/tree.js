@@ -41,8 +41,9 @@ class AppTreeDataProvider {
     constructor(cache) {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
-        this.data = [];
+        this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
         this.cache = cache;
+        this.refresh();
     }
     async verifyApps() {
         const token = await (0, token_1.checkIfHasToken)();
@@ -85,7 +86,7 @@ class AppTreeDataProvider {
             }));
         }
         this.cache.set(`apps-user_verify`, getUser);
-        this.createTreeItem(tree);
+        await this.createTreeItem(tree);
     }
     createTreeItem(array) {
         this.data = array;
@@ -99,8 +100,8 @@ class AppTreeDataProvider {
         }
         return element.children;
     }
-    refresh() {
-        this.verifyApps();
+    async refresh() {
+        await this.verifyApps();
         this._onDidChangeTreeData.fire();
     }
 }

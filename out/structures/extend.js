@@ -60,7 +60,7 @@ class Discloud {
     loadStatusBar() {
         const uploadBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 40);
         uploadBar.command = "discloud.upload";
-        uploadBar.text = "$(cloud-upload) Upload to Discloud";
+        uploadBar.text = "$(cloud-upload) Upload Discloud";
         this.subscriptions.push(uploadBar);
         uploadBar.show();
         this.cache.set('upload_bar', uploadBar);

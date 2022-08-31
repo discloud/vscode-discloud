@@ -31,16 +31,27 @@ module.exports = class extends command_1.Command {
             name: "deleteEntry"
         });
         this.run = async (item) => {
-            const tree = this.discloud.mainTree;
             const token = this.discloud.config.get("token");
-            await (0, requester_1.requester)('del', `/app/${item.tooltip}/delete`, {
-                headers: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": token
-                }
+            if (!token) {
+                return;
+            }
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "Deletando sua aplicação...",
+                cancellable: true
+            }, async (progress, tk) => {
+                tk.onCancellationRequested(() => {
+                    console.log('Usuário cancelou o processo');
+                });
+                await (0, requester_1.requester)('del', `/app/${item.tooltip}/delete`, {
+                    headers: {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        "api-token": token
+                    }
+                });
+                vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+                progress.report({ message: `Aplicação ${item.label} deletada com sucesso!`, increment: 100 });
             });
-            setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
-            vscode.window.showInformationMessage(`Aplicação ${item.label} deletada com sucesso!`);
         };
     }
 };

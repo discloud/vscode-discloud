@@ -35,7 +35,6 @@ module.exports = class extends command_1.Command {
             if (!token) {
                 return;
             }
-            const tree = this.discloud.mainTree;
             const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o app irá usar." });
             const ram = await (0, requester_1.requester)('put', `/app/${item.tooltip}/ram`, {
                 headers: {
@@ -49,7 +48,7 @@ module.exports = class extends command_1.Command {
                 return;
             }
             vscode.window.showInformationMessage(`${ram.message}`);
-            setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
+            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
         };
     }
 };

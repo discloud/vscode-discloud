@@ -137,6 +137,7 @@ export = class extends Command {
         );
         vscode.window.showInformationMessage(`${data.message}`);
         upbar?.hide();
+        vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
         unlinkSync(savePath);
       });
 

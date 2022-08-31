@@ -25,8 +25,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   cache: Map<any, any>;
 
   constructor(cache: Map<any, any>) {
-    this.data = [];
+    this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
     this.cache = cache;
+    this.refresh();
 
   }
 
@@ -35,7 +36,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     if (!token) {
       return;
     }
-
+    
     const getUser: User = await requester("get", `/vscode`, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
@@ -97,8 +98,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
         };
       }
 
-      tree.push(
-        new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
+      tree.push(new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
           iconName: app.online
             ? statusIcons.onl
             : app.ramKilled
@@ -107,12 +107,12 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             //@ts-ignore
           children: childrens ? Object.values(childrens) : undefined,
           tooltip: app.id,
-        })
-      );
+        }));
+      
     }
 
     this.cache.set(`apps-user_verify`, getUser);
-    this.createTreeItem(tree);
+    await this.createTreeItem(tree);
   }
 
   createTreeItem(array: TreeItem[]): void {
@@ -132,8 +132,8 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     return element.children;
   }
 
-  refresh(): void {
-    this.verifyApps();
+  async refresh(): Promise<void> {
+    await this.verifyApps();
     this._onDidChangeTreeData.fire();
   }
 }
@@ -148,7 +148,7 @@ export class TreeItem extends vscode.TreeItem {
     options?: {
       children?: ChildrenTreeItem[];
       iconName?: string;
-      tooltip: string;
+      tooltip?: string;
     }
   ) {
     super(label, collapsibleState);

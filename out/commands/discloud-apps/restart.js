@@ -28,25 +28,29 @@ const vscode = __importStar(require("vscode"));
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
-            name: "restartEntry"
+            name: "restartEntry",
         });
         this.run = async (item) => {
             const token = this.discloud.config.get("token");
             if (!token) {
                 return;
             }
-            const tree = this.discloud.mainTree;
-            const restart = await (0, requester_1.requester)('put', `/app/${item.tooltip}/restart`, {
-                headers: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": token
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "Reiniciando sua aplicação...",
+            }, async (progress, tk) => {
+                const restart = await (0, requester_1.requester)("put", `/app/${item.tooltip}/restart`, {
+                    headers: {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        "api-token": token,
+                    },
+                }, {});
+                if (!restart) {
+                    return;
                 }
-            }, {});
-            if (!restart) {
-                return;
-            }
-            vscode.window.showInformationMessage(`${restart.message}`);
-            setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
+                progress.report({ message: `${restart.message}`, increment: 100 });
+                vscode.commands.executeCommand("discloud-apps.refresh");
+            });
         };
     }
 };
