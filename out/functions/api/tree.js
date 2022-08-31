@@ -49,11 +49,7 @@ class AppTreeDataProvider {
         if (!token) {
             return;
         }
-        const getUser = await (0, requester_1.requester)("get", `/user`, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { "api-token": `${token}` },
-        });
-        const getApps = await (0, requester_1.requester)("get", `app/all/status`, {
+        const getUser = await (0, requester_1.requester)("get", `/vscode`, {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { "api-token": `${token}` },
         });
@@ -66,8 +62,8 @@ class AppTreeDataProvider {
                 continue;
             }
             let childrens;
-            if (getApps) {
-                const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+            if (getUser) {
+                const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
                 childrens = {
                     cont: new ChildrenTreeItem(`${infoApp.id}`, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
                     ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
@@ -84,12 +80,11 @@ class AppTreeDataProvider {
                         ? icons_1.statusIcons.rak
                         : icons_1.statusIcons.off,
                 //@ts-ignore
-                children: getApps && childrens ? Object.values(childrens) : undefined,
+                children: childrens ? Object.values(childrens) : undefined,
                 tooltip: app.id,
             }));
         }
         this.cache.set(`apps-user_verify`, getUser);
-        this.cache.set(`apps_user`, getApps);
         this.createTreeItem(tree);
     }
     createTreeItem(array) {

@@ -3,30 +3,24 @@ export interface User {
   message: string;
   user: {
     userID: string;
-    totalRamMb: boolean;
+    totalRamMb: number;
     ramUsedMb: number;
-    subdomains: string[];
-    customdomains: string[];
+    subdomains: [];
+    customdomains: [];
     apps: string[];
-    appsStatus: UserApp[];
+    appsStatus: App[];
     plan: string;
     locale: string;
+    lastDataLeft: {
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+    };
+    planDataEnd: string;
   };
 }
 
-export interface UserApp {
-  id: string;
-  name: string;
-  online: boolean;
-  ramKilled: boolean;
-  exitCode: number;
-}
-
-export interface Status {
-  status: string;
-  message: string;
-  apps: App[];
-}
 export interface App {
   id: string;
   container: string;
@@ -40,6 +34,10 @@ export interface App {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   last_restart: string;
   startedAt: string;
+  online: boolean;
+  ramKilled: boolean;
+  exitCode: number;
+  name: string;
 }
 
 export interface Backup {
@@ -66,4 +64,4 @@ export interface AppLog {
     small: string;
     url: string;
   };
-};
+}

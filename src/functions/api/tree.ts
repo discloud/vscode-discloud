@@ -3,7 +3,7 @@ import * as path from "path";
 import { statusIcons } from "../../types/icons";
 import { checkIfHasToken } from "../checkers/token";
 import { requester } from "../requester";
-import { Status, User } from "../../types/apps";
+import { User } from "../../types/apps";
 
 enum StatusLabels {
   cpu = "CPU",
@@ -36,12 +36,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       return;
     }
 
-    const getUser: User = await requester("get", `/user`, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { "api-token": `${token}` },
-    });
-
-    const getApps: Status = await requester("get", `app/all/status`, {
+    const getUser: User = await requester("get", `/vscode`, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
     });
@@ -59,8 +54,8 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
       let childrens: Record<string, ChildrenTreeItem>;
 
-      if (getApps) {
-        const infoApp = getApps.apps.filter((r) => r.id === app.id)[0];
+      if (getUser) {
+        const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
 
         childrens = {
           cont: new ChildrenTreeItem(
@@ -110,14 +105,13 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             ? statusIcons.rak
             : statusIcons.off,
             //@ts-ignore
-          children: getApps && childrens ? Object.values(childrens) : undefined,
+          children: childrens ? Object.values(childrens) : undefined,
           tooltip: app.id,
         })
       );
     }
 
     this.cache.set(`apps-user_verify`, getUser);
-    this.cache.set(`apps_user`, getApps);
     this.createTreeItem(tree);
   }
 
