@@ -1,6 +1,6 @@
 # Discloud para VSCode ![](https://cdn.discordapp.com/attachments/919212099912212540/926483349554470962/pragit.svg)
 
-A extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloudbot.com) pelo Visual Studio Code.
+Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloudbot.com) pelo Visual Studio Code.
 
 ## Características
 Aqui está uma lista de recursos que a extensão suporta atualmente.
