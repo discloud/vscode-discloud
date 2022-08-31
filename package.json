@@ -10,27 +10,27 @@
     "Other"
   ],
   "activationEvents": [
-		"*"
-	],
+    "*"
+  ],
   "main": "out/extension.js",
   "contributes": {
     "commands": [
       {
-				"command": "discloud-apps.helpButton",
-				"title": "Discloud Help",
-				"icon": {
-					"light": "src/assets/light/helper.svg",
-					"dark": "src/assets/dark/helper.svg"
-				}
-			},
+        "command": "discloud-apps.helpButton",
+        "title": "Discloud Help",
+        "icon": {
+          "light": "src/assets/light/helper.svg",
+          "dark": "src/assets/dark/helper.svg"
+        }
+      },
       {
-				"command": "discloud-apps.refreshButton",
-				"title": "Recarregar Apps",
-				"icon": {
-					"light": "src/assets/light/refresh.svg",
-					"dark": "src/assets/dark/refresh.svg"
-				}
-			},
+        "command": "discloud-apps.refreshButton",
+        "title": "Recarregar Apps",
+        "icon": {
+          "light": "src/assets/light/refresh.svg",
+          "dark": "src/assets/dark/refresh.svg"
+        }
+      },
       {
         "command": "discloud-apps.importCode",
         "title": "Importar app para o vscode",
@@ -212,6 +212,7 @@
   },
   "devDependencies": {
     "@types/archiver": "^5.3.1",
+    "@types/download": "^8.0.1",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
@@ -226,6 +227,8 @@
   },
   "dependencies": {
     "archiver": "^5.3.1",
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "decompress": "^4.2.1",
+    "download": "^8.0.0"
   }
 }

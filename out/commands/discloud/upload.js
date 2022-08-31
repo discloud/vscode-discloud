@@ -89,7 +89,7 @@ module.exports = class extends command_1.Command {
                     }
                 }
                 let hasRequiredFiles = { checks: 0, all: false };
-                for (const file of files) {
+                for await (const file of files) {
                     let lang = file.split(".")[1];
                     if (lang) {
                         if (config_json_1.requiredFiles[lang] &&

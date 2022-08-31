@@ -22,32 +22,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-const command_1 = require("../../structures/command");
-const requester_1 = require("../../functions/requester");
-const vscode = __importStar(require("vscode"));
-module.exports = class extends command_1.Command {
-    constructor(discloud) {
-        super(discloud, {
-            name: "stopEntry"
-        });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
-                return;
-            }
-            const tree = this.discloud.mainTree;
-            const stop = await (0, requester_1.requester)('put', `/app/${item.tooltip}/stop`, {
-                headers: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": token
-                }
-            }, {});
-            if (!stop) {
-                return;
-            }
-            vscode.window.showInformationMessage(`${stop.message}`);
-            setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
-        };
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-//# sourceMappingURL=stop.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.download = void 0;
+const vscode = __importStar(require("vscode"));
+const download_1 = __importDefault(require("download"));
+const fs_1 = require("fs");
+async function download(url) {
+    let targetPath = "";
+    const workspaceFolders = vscode.workspace.workspaceFolders || [];
+    if (workspaceFolders && workspaceFolders.length) {
+        targetPath = workspaceFolders[0].uri.fsPath;
+    }
+    else {
+        vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+        return;
+    }
+    if (!targetPath) {
+        vscode.window.showErrorMessage("Alguma coisa deu errado com seu Zip.");
+        return;
+    }
+    if (!(0, fs_1.existsSync)(targetPath + "\\backup")) {
+        (0, fs_1.mkdirSync)(targetPath + "\\backup");
+    }
+    await (0, download_1.default)(url, targetPath + "\\backup", { extract: true });
+    return targetPath + "\\backup";
+}
+exports.download = download;
+//# sourceMappingURL=download.js.map

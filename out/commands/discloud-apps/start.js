@@ -42,6 +42,9 @@ module.exports = class extends command_1.Command {
                     "api-token": token
                 }
             }, {});
+            if (!start) {
+                return;
+            }
             vscode.window.showInformationMessage(`${start.message}`);
             setTimeout(() => { tree ? tree.refresh() : false; }, 10000);
         };

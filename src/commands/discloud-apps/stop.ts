@@ -27,6 +27,8 @@ export = class extends Command {
             }
         }, {});
 
+        if (!stop) { return; }
+
         vscode.window.showInformationMessage(`${stop.message}`);
         setTimeout(() => {tree ? tree.refresh() : false;}, 10000);
     };

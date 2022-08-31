@@ -16,14 +16,16 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
     const getProcess = global.actualProcess.get(`${token}`);
     
     if (getProcess && getProcess !== "undefined") {
-        return vscode.window.showInformationMessage(`Você já tem um processo de ${getProcess} em execução.`);
+        vscode.window.showErrorMessage(`Você já tem um processo de ${getProcess} em execução.`);
+        return;
     } else {
         //@ts-ignore
         global.actualProcess.set(`${token}`, `${url.split('/')[-1]}`);
     }
 
     if (uses > maxUses || remain === 0) {
-        return vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time/1000)} segundos para usar novamente.`);
+        vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time/1000)} segundos para usar novamente.`);
+        return;
     }
 
     const methods = {
@@ -48,10 +50,11 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
         global.actualProcess.delete(`${token}`);
 	} catch(err: any) {
         if (err?.response?.status === 401) {
-            return vscode.window.showErrorMessage(err.response.data.message);
+            vscode.window.showErrorMessage(err.response.data.message);
+            return;
         }
         if (err?.response?.status === 404) {
-            return undefined;
+            return;
         }
 		return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
 	}

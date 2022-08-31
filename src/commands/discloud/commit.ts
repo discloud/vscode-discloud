@@ -37,9 +37,14 @@ export = class extends Command {
             "api-token": `${token}`
         }
     });
-    
 
-    const apps = await userApps.user.appsStatus.map(r => { return `${r.name} | ${r.id}`; });
+    const getApps = await userApps.user.appsStatus;
+    let hasOtherName: boolean | { name: string, id: string }[] = false;
+    const verify = getApps.filter(r => r.name.includes("|"));
+    if (verify.length > 0) {
+      hasOtherName = verify.map(r => { return { name: `${r.name} | ${r.id}`, id: r.id }; });
+    }
+    const apps = getApps.map(r => { return `${r.name} | ${r.id}`; });
     const input = await vscode.window.showQuickPick(apps, { canPickMany: false, title: "Escolha uma aplicação." });
     if (!input) {
         return vscode.window.showErrorMessage("Aplicação incorreta ou inexistente.");
@@ -82,9 +87,18 @@ export = class extends Command {
       const form = new FormData();
       form.append("commitFile", createReadStream(savePath));
 
+      let finalID = '';
+
+      const check = (hasOtherName as { name: string, id: string }[]).filter(r => r.name === input);
+      if (check.length > 0) {
+        finalID = check[0].id;
+      } else {
+        finalID = input.split('|')[1].trim();
+      }
+
       const data = await requester(
         "put",
-        `/app/${input.split('|')[1].trim()}/commit`,
+        `/app/${finalID}/commit`,
         {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
