@@ -6,7 +6,7 @@ Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discl
 Aqui está uma lista de recursos que a extensão suporta atualmente.
 
 - 📤 Upload de aplicações
-- 🗃 Commit de aplicações
+- 🗃 Commit em aplicações
 - ▶️ Inicar aplicações
 - 🔁 Reiniciar aplicações
 - ⏹ Parar aplicações
