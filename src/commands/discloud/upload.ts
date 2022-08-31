@@ -26,127 +26,154 @@ export = class extends Command {
 
   run = async (uri: vscode.Uri) => {
     const token = this.discloud.config.get("token") as string;
-    const upbar = this.discloud.bars.get("upload_bar");
-    upbar ? (upbar.text = "$(loading~spin) Uploading...") : false;
 
-    let targetPath = "";
-    if (uri && uri.fsPath) {
-      targetPath = uri.fsPath;
-    } else {
-      const workspaceFolders = vscode.workspace.workspaceFolders || [];
-
-      if (workspaceFolders && workspaceFolders.length) {
-        targetPath = workspaceFolders[0].uri.fsPath;
-      } else {
-        vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
-        return;
-      }
+    if (!token) {
+      return;
     }
 
-    const isDirectory = statSync(targetPath).isDirectory();
-
-    const savePath = `${targetPath}/upload.zip`;
-    let isExist = true;
-    try {
-      accessSync(savePath);
-    } catch (error) {
-      isExist = false;
-    }
-
-    let isGenerate = true;
-
-    if (isExist && isGenerate) {
-      unlinkSync(savePath);
-    }
-
-    const { zip, stream } = new Zip(savePath, "zip", {
-      zlib: {
-        level: 9,
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Upload",
+        cancellable: true,
       },
-    });
+      async (progress, tk) => {
+        const upbar = this.discloud.bars.get("upload_bar");
+        upbar ? (upbar.text = "$(loading~spin) Uploading...") : false;
 
-    if (isDirectory) {
-      const files: string[] = readdirSync(targetPath);
-      if (!files) {
-        return;
-      }
+        let targetPath = "";
+        if (uri && uri.fsPath) {
+          targetPath = uri.fsPath;
+        } else {
+          const workspaceFolders = vscode.workspace.workspaceFolders || [];
 
-      if (!files.includes("discloud.config")) {
-        return vscode.window.showErrorMessage(
-          "Você precisa de um discloud.config para usar está função."
-        );
-      } else {
-        const con = await check(targetPath + "\\discloud.config");
-        if (!con) {
-          return vscode.window.showErrorMessage(
-            "Você precisa de um discloud.config válido para usar está função."
-          );
-        }
-      }
-
-      let hasRequiredFiles = { checks: 0, all: false };
-
-      for await (const file of files) {
-        let lang = file.split(".")[1];
-        if (lang) {
-          if (
-            requiredFiles[lang as LANGS] &&
-            !requiredFiles[lang as LANGS]?.includes(file)
-          ) {
-            hasRequiredFiles.checks++;
-            requiredFiles[lang as LANGS]?.length <= hasRequiredFiles.checks
-              ? (hasRequiredFiles.all = true)
-              : "";
-          }
-
-          if (
-            blockedFiles[lang as LANGS] &&
-            blockedFiles[lang as LANGS]?.includes(file)
-          ) {
-            continue;
+          if (workspaceFolders && workspaceFolders.length) {
+            targetPath = workspaceFolders[0].uri.fsPath;
+          } else {
+            vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+            return;
           }
         }
 
-        statSync(`${targetPath}\\${file}`).isDirectory()
-          ? zip?.directory(`${targetPath}\\${file}`, file)
-          : zip?.file(`${targetPath}\\${file}`, { name: file });
-      }
+        const isDirectory = statSync(targetPath).isDirectory();
 
-      if (!hasRequiredFiles.all) {
-        return vscode.window.showErrorMessage(
-          `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`
-        );
-      }
-    }
+        const savePath = `${targetPath}/upload.zip`;
+        let isExist = true;
+        try {
+          accessSync(savePath);
+        } catch (error) {
+          isExist = false;
+        }
 
-    if (isGenerate) {
-      stream?.on("close", async () => {
-        const form = new FormData();
-        form.append("upFile", createReadStream(savePath));
+        let isGenerate = true;
 
-        const data = await requester(
-          "post",
-          "/upload",
-          {
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              "api-token": `${token}`,
-            },
+        if (isExist && isGenerate) {
+          unlinkSync(savePath);
+        }
+
+        const { zip, stream } = new Zip(savePath, "zip", {
+          zlib: {
+            level: 9,
           },
-          form
-        );
-        vscode.window.showInformationMessage(`${data.message}`);
-        upbar?.hide();
-        vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-        unlinkSync(savePath);
-      });
+        });
 
-      zip?.on("error", (err) => {
-        vscode.window.showErrorMessage(JSON.stringify(err));
-      });
+        progress.report({ message: "Upload - Colocando Arquivos no Zip...",
+          increment: 20,
+        });
 
-      zip?.pipe(stream as WriteStream);
-      zip?.finalize();
-    }
+        if (isDirectory) {
+          const files: string[] = readdirSync(targetPath);
+          if (!files) {
+            return;
+          }
+
+          if (!files.includes("discloud.config")) {
+            return vscode.window.showErrorMessage(
+              "Você precisa de um discloud.config para usar está função."
+            );
+          } else {
+            const con = await check(targetPath + "\\discloud.config");
+            if (!con) {
+              return vscode.window.showErrorMessage(
+                "Você precisa de um discloud.config válido para usar está função."
+              );
+            }
+          }
+
+          let hasRequiredFiles = { checks: 0, all: false };
+
+          for await (const file of files) {
+            let lang = file.split(".")[1];
+            if (lang) {
+              if (
+                requiredFiles[lang as LANGS] &&
+                !requiredFiles[lang as LANGS]?.includes(file)
+              ) {
+                hasRequiredFiles.checks++;
+                requiredFiles[lang as LANGS]?.length <= hasRequiredFiles.checks
+                  ? (hasRequiredFiles.all = true)
+                  : "";
+              }
+
+              if (
+                blockedFiles[lang as LANGS] &&
+                blockedFiles[lang as LANGS]?.includes(file)
+              ) {
+                continue;
+              }
+            }
+
+            statSync(`${targetPath}\\${file}`).isDirectory()
+              ? zip?.directory(`${targetPath}\\${file}`, file)
+              : zip?.file(`${targetPath}\\${file}`, { name: file });
+          }
+
+          if (!hasRequiredFiles.all) {
+            return vscode.window.showErrorMessage(
+              `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`
+            );
+          }
+        }
+
+        if (isGenerate) {
+          stream?.on("close", async () => {
+            const form = new FormData();
+            form.append("upFile", createReadStream(savePath));
+
+            progress.report({ message: "Upload - Requisitando Upload...",
+              increment: 50,
+            });
+
+            const data = await requester(
+              "post",
+              "/upload",
+              {
+                headers: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  "api-token": `${token}`,
+                },
+              },
+              form
+            );
+
+            progress.report({ increment: 100 });
+            vscode.window.showInformationMessage(`${data?.message}`);
+            upbar?.hide();
+            vscode.commands.executeCommand(
+              "setContext",
+              "discloud-apps.refresh"
+            );
+            unlinkSync(savePath);
+          });
+
+          zip?.on("error", (err) => {
+            vscode.window.showErrorMessage(JSON.stringify(err));
+          });
+
+          zip?.pipe(stream as WriteStream);
+          zip?.finalize();
+        }
+      }
+    );
   };
 };

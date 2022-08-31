@@ -22,7 +22,7 @@ export = class extends Command {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Requisitando Backup da sua aplicação...",
+        title: "Importar Aplicação",
       },
       async (progress, tk) => {
         const backup: Backup = await requester(
@@ -37,22 +37,22 @@ export = class extends Command {
         );
 
         if (backup) {
-          progress.report({ message: "Backup da Aplicação recebido.", increment: 20 });
+          progress.report({ message: "Importar Aplicação - Backup da Aplicação recebido.", increment: 20 });
         }
         
         if ((<BackupApp>backup?.backups)?.url) {
-          progress.report({ message: "Baixando Backup da Aplicação recebido.", increment: 40 });
+          progress.report({ message: "Importar Aplicação - Baixando Backup da Aplicação recebido.", increment: 40 });
           const downloadFile = await download(`${(<BackupApp>backup.backups).url}`);
           if (!downloadFile) {
             return;
           }
 
-          progress.report({ message: "Backup Baixado com sucesso! Descompactando...", increment: 60 });
+          progress.report({ message: "Importar Aplicação - Backup Baixado com sucesso! Descompactando...", increment: 60 });
     
           const folderPathParsed = downloadFile.split(`\\`).join(`/`);
           const folderUri = vscode.Uri.file(folderPathParsed);
 
-          await progress.report({ message: "Descompactado com sucesso!", increment: 100 });
+          await progress.report({ message: "Importar Aplicação - Descompactado com sucesso!", increment: 100 });
     
           const ask = await vscode.window.showInformationMessage(
             `Arquivo Criado com Sucesso`,

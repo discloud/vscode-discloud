@@ -39,7 +39,7 @@ module.exports = class extends command_1.Command {
             }
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Requisitando Logs da sua aplicação...",
+                title: "Logs da Aplicação",
             }, async (progress, tk) => {
                 const logs = await (0, requester_1.requester)('get', `/app/${item.tooltip}/logs`, {
                     headers: {
@@ -50,7 +50,7 @@ module.exports = class extends command_1.Command {
                 if (!logs) {
                     return;
                 }
-                progress.report({ message: "Logs recebidas com sucesso.", increment: 100 });
+                progress.report({ message: "Logs da Aplicação - Logs recebidas com sucesso.", increment: 100 });
                 const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
                 if (ask === "Abrir Arquivo") {
                     await (0, fs_1.writeFileSync)((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`), logs.apps.terminal.big);

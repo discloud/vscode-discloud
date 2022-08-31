@@ -37,8 +37,9 @@ module.exports = class extends command_1.Command {
             }
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Parando sua aplicação...",
+                title: "Parar Aplicação",
             }, async (progress, tk) => {
+                progress.report({ message: `Parar Aplicação - Pararando Aplicação...` });
                 const stop = await (0, requester_1.requester)("put", `/app/${item.tooltip}/stop`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,8 +49,9 @@ module.exports = class extends command_1.Command {
                 if (!stop) {
                     return;
                 }
-                progress.report({ message: `${stop.message}`, increment: 100 });
-                vscode.commands.executeCommand("discloud-apps.refresh");
+                progress.report({ increment: 100 });
+                vscode.window.showInformationMessage(`${stop.message}`);
+                vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
             });
         };
     }

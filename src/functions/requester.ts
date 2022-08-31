@@ -6,21 +6,19 @@ let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remai
 
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 
+let hasProcess = { i: false, p: '' };
+
 export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, d?: any) {
 
     const token = vscode.workspace
     .getConfiguration("discloud")
     .get("token") as string;
-
-    //@ts-ignore
-    const getProcess = global.actualProcess.get(`${token}`);
     
-    if (getProcess && getProcess !== "undefined") {
-        vscode.window.showErrorMessage(`Você já tem um processo de ${getProcess} em execução.`);
+    if (hasProcess.i) {
+        vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
     } else {
-        //@ts-ignore
-        global.actualProcess.set(`${token}`, `${url.split('/')[-1]}`);
+        hasProcess = { i: true, p: `${url.split('/')[url.split('/').length - 1]}` };
     }
 
     if (uses > maxUses || remain === 0) {
@@ -46,8 +44,7 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
         remain = await parseInt(data.headers["ratelimit-remaining"]);
         
         data = data.data;
-        //@ts-ignore
-        global.actualProcess.delete(`${token}`);
+        hasProcess.i = false;
 	} catch(err: any) {
         if (err?.response?.status === 401) {
             vscode.window.showErrorMessage(err.response.data.message);

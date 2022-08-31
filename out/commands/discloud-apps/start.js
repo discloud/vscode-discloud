@@ -37,8 +37,9 @@ module.exports = class extends command_1.Command {
             }
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Inicializando sua aplicação...",
+                title: "Iniciar Aplicação",
             }, async (progress, tk) => {
+                progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
                 const start = await (0, requester_1.requester)("put", `/app/${item.tooltip}/start`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,8 +49,9 @@ module.exports = class extends command_1.Command {
                 if (!start) {
                     return;
                 }
-                progress.report({ message: `${start.message}`, increment: 100 });
-                vscode.commands.executeCommand("discloud-apps.refresh");
+                progress.report({ increment: 100 });
+                vscode.window.showInformationMessage(`${start.message}`);
+                vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
             });
         };
     }

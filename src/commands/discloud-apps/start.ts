@@ -20,9 +20,12 @@ export = class extends Command {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Inicializando sua aplicação...",
+        title: "Iniciar Aplicação",
       },
       async (progress, tk) => {
+
+        progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
+
         const start = await requester(
           "put",
           `/app/${item.tooltip}/start`,
@@ -39,8 +42,9 @@ export = class extends Command {
           return;
         }
 
-        progress.report({ message: `${start.message}`, increment: 100 });
-        vscode.commands.executeCommand("discloud-apps.refresh");
+        progress.report({ increment: 100 });
+        vscode.window.showInformationMessage(`${start.message}`);
+        vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
       }
     );
   };

@@ -24,7 +24,7 @@ export = class extends Command {
         vscode.window.withProgress(
             {
               location: vscode.ProgressLocation.Notification,
-              title: "Requisitando Logs da sua aplicação...",
+              title: "Logs da Aplicação",
             },
             async (progress, tk) => {
                 const logs: Logs = await requester('get', `/app/${item.tooltip}/logs`, {
@@ -36,7 +36,7 @@ export = class extends Command {
         
                 if (!logs) { return; }
 
-                progress.report({ message: "Logs recebidas com sucesso.", increment: 100 });
+                progress.report({ message: "Logs da Aplicação - Logs recebidas com sucesso.", increment: 100 });
 
                 const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
                 if (ask === "Abrir Arquivo") {

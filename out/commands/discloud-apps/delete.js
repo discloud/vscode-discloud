@@ -37,7 +37,7 @@ module.exports = class extends command_1.Command {
             }
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Deletando sua aplicação...",
+                title: "Deletar Aplicação",
                 cancellable: true
             }, async (progress, tk) => {
                 tk.onCancellationRequested(() => {
@@ -49,8 +49,9 @@ module.exports = class extends command_1.Command {
                         "api-token": token
                     }
                 });
+                progress.report({ increment: 100 });
+                vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
                 vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-                progress.report({ message: `Aplicação ${item.label} deletada com sucesso!`, increment: 100 });
             });
         };
     }

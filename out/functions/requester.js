@@ -31,19 +31,17 @@ const axios_1 = __importDefault(require("axios"));
 const vscode = __importStar(require("vscode"));
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
+let hasProcess = { i: false, p: '' };
 async function requester(method, url, config, d) {
     const token = vscode.workspace
         .getConfiguration("discloud")
         .get("token");
-    //@ts-ignore
-    const getProcess = global.actualProcess.get(`${token}`);
-    if (getProcess && getProcess !== "undefined") {
-        vscode.window.showErrorMessage(`Você já tem um processo de ${getProcess} em execução.`);
+    if (hasProcess.i) {
+        vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
     }
     else {
-        //@ts-ignore
-        global.actualProcess.set(`${token}`, `${url.split('/')[-1]}`);
+        hasProcess = { i: true, p: `${url.split('/')[url.split('/').length - 1]}` };
     }
     if (uses > maxUses || remain === 0) {
         vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time / 1000)} segundos para usar novamente.`);
@@ -64,8 +62,7 @@ async function requester(method, url, config, d) {
         time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
         remain = await parseInt(data.headers["ratelimit-remaining"]);
         data = data.data;
-        //@ts-ignore
-        global.actualProcess.delete(`${token}`);
+        hasProcess.i = false;
     }
     catch (err) {
         if (err?.response?.status === 401) {

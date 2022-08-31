@@ -20,7 +20,7 @@ export = class extends Command {
 
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: "Deletando sua aplicação...",
+            title: "Deletar Aplicação",
             cancellable: true
         }, async (progress, tk) => {
             tk.onCancellationRequested(() => {
@@ -34,9 +34,9 @@ export = class extends Command {
                 }
             });
     
+            progress.report({ increment: 100 });
+            vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
             vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-            progress.report({ message: `Aplicação ${item.label} deletada com sucesso!`, increment: 100 });
-
         });
     
     };
