@@ -13,7 +13,7 @@ Aqui está uma lista de recursos que a extensão suporta atualmente.
 -  🗑 Deletar aplicações
 - 📜 Gerar logs das aplicações
 - ⬇️ Baixar backup aplicações
-- 💻 Importar código de algum app hospedado na Discloud para o VSCode
+- 💻 Importar código de algum app hospedado para o VSCode
 
 
 ## Requisitos
