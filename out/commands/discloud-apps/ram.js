@@ -53,7 +53,7 @@ module.exports = class extends command_1.Command {
             return;
         }
         vscode.window.showInformationMessage(`${ram.message}`);
-        await vscode.commands.executeCommand("setContext", "discloud-apps.refresh");
+        setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
     };
 };
 //# sourceMappingURL=ram.js.map

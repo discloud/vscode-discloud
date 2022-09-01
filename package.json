@@ -1,6 +1,11 @@
 {
   "name": "discloud",
   "displayName": "Discloud",
+  "icon": "https://cdn.discordapp.com/attachments/915795298780053544/1014921524966338650/discloudlogo.png",
+  "galleryBanner": {
+    "color": "#5865F2",
+    "theme": "dark"
+  },
   "description": "Usado para fazer métodos na DisCloud diretamente pelo Visual Studio Code.",
   "version": "0.0.1",
   "engines": {
