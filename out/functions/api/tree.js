@@ -55,7 +55,7 @@ class AppTreeDataProvider {
         const getUser = await (0, requester_1.requester)("get", `/vscode`, {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { "api-token": `${token}` },
-        });
+        }, { isVS: true });
         if (!getUser) {
             return;
         }
@@ -88,7 +88,7 @@ class AppTreeDataProvider {
             }));
         }
         this.cache.set(`apps-user_verify`, getUser);
-        await this.createTreeItem(tree);
+        tree.length > 0 ? await this.createTreeItem(tree) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
     }
     createTreeItem(array) {
         this.data = array;
@@ -102,9 +102,15 @@ class AppTreeDataProvider {
         }
         return element.children;
     }
-    async refresh() {
-        await this.verifyApps();
+    async refresh(data) {
+        if (data) {
+            data.length > 0 ? await this.createTreeItem(data) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
+        }
+        else {
+            await this.verifyApps();
+        }
         this._onDidChangeTreeData.fire();
+        console.log('[TREE] Refreshed.');
     }
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;

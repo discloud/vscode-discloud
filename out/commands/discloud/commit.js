@@ -126,9 +126,9 @@ module.exports = class extends command_1.Command {
                         "api-token": `${token}`,
                     },
                 }, { d: form });
-                (0, fs_1.unlinkSync)(savePath);
+                await (0, fs_1.unlinkSync)(savePath);
                 progress.report({ increment: 100 });
-                vscode.window.showInformationMessage(`${data?.message}`);
+                await vscode.window.showInformationMessage(`${data?.message}`);
             });
             zip?.on("error", (err) => {
                 vscode.window.showErrorMessage(JSON.stringify(err));

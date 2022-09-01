@@ -52,7 +52,7 @@ module.exports = class extends command_1.Command {
             }
             progress.report({ increment: 100 });
             vscode.window.showInformationMessage(`${stop.message}`);
-            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+            setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
         });
     };
 };

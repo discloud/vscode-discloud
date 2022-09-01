@@ -33,10 +33,7 @@ let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remai
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 let hasProcess = { i: false, p: '' };
 async function requester(method, url, config, options) {
-    const token = vscode.workspace
-        .getConfiguration("discloud")
-        .get("token");
-    if (hasProcess.i) {
+    if (hasProcess.i && (options && !options.isVS)) {
         vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
     }
@@ -65,6 +62,7 @@ async function requester(method, url, config, options) {
         hasProcess.i = false;
     }
     catch (err) {
+        hasProcess.i = false;
         if (err?.response?.status === 401) {
             vscode.window.showErrorMessage(err.response.data.message);
             return;

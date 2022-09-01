@@ -40,7 +40,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     const getUser: User = await requester("get", `/vscode`, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
-    });
+    }, { isVS: true });
 
     if (!getUser) {
       return;
@@ -112,7 +112,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     }
 
     this.cache.set(`apps-user_verify`, getUser);
-    await this.createTreeItem(tree);
+    tree.length > 0 ? await this.createTreeItem(tree) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
   }
 
   createTreeItem(array: TreeItem[]): void {
@@ -132,9 +132,12 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     return element.children;
   }
 
-  async refresh(): Promise<void> {
-    await this.verifyApps();
+  async refresh(data?: TreeItem[]): Promise<void> {
+    if (data) {
+      data.length > 0 ? await this.createTreeItem(data) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
+    } else {await this.verifyApps();}
     this._onDidChangeTreeData.fire();
+    console.log('[TREE] Refreshed.');
   }
 }
 

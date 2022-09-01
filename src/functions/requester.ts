@@ -10,11 +10,8 @@ let hasProcess = { i: false, p: '' };
 
 export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, options?: { d?: any, isVS?: boolean }) {
 
-    const token = vscode.workspace
-    .getConfiguration("discloud")
-    .get("token") as string;
     
-    if (hasProcess.i) {
+    if (hasProcess.i && (options && !options.isVS)) {
         vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
     } else {
@@ -46,6 +43,7 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
         data = data.data;
         hasProcess.i = false;
 	} catch(err: any) {
+        hasProcess.i = false;
         if (err?.response?.status === 401) {
             vscode.window.showErrorMessage(err.response.data.message);
             return;

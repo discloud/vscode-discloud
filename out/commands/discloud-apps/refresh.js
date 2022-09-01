@@ -8,7 +8,7 @@ module.exports = class extends command_1.Command {
     }
     run = async () => {
         const tree = this.discloud.mainTree;
-        tree ? tree.refresh() : false;
+        tree ? await tree.refresh() : false;
     };
 };
 //# sourceMappingURL=refresh.js.map

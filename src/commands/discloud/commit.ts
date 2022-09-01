@@ -137,9 +137,9 @@ export = class extends Command {
             { d: form }
           );
 
-          unlinkSync(savePath);
+          await unlinkSync(savePath);
           progress.report({ increment: 100 });
-          vscode.window.showInformationMessage(`${data?.message}`);
+          await vscode.window.showInformationMessage(`${data?.message}`);
         });
 
         zip?.on("error", (err) => {

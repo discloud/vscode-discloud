@@ -138,10 +138,12 @@ module.exports = class extends command_1.Command {
                         },
                     }, { d: form });
                     progress.report({ increment: 100 });
-                    vscode.window.showInformationMessage(`${data?.message}`);
-                    upbar?.hide();
-                    vscode.commands.executeCommand("setContext", "discloud-apps.refresh");
+                    if (data) {
+                        vscode.window.showInformationMessage(`${data?.message}`);
+                        upbar?.hide();
+                    }
                     (0, fs_1.unlinkSync)(savePath);
+                    setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
                 });
                 zip?.on("error", (err) => {
                     vscode.window.showErrorMessage(JSON.stringify(err));

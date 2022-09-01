@@ -20,12 +20,8 @@ export = class extends Command {
 
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: "Deletar Aplicação",
-            cancellable: true
+            title: "Deletar Aplicação"
         }, async (progress, tk) => {
-            tk.onCancellationRequested(() => {
-                console.log('Usuário cancelou o processo');
-            });
 
             await requester('del', `/app/${item.tooltip}/delete`, {
                 headers: {
@@ -36,7 +32,8 @@ export = class extends Command {
     
             progress.report({ increment: 100 });
             vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
-            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+            const tree = this.discloud.mainTree;
+            return tree ? await tree.refresh(tree?.data.filter(r => r.label !== item.label)) : false;
         });
     
     };

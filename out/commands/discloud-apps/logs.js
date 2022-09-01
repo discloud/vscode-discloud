@@ -30,7 +30,7 @@ const path_1 = require("path");
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
-            name: "logsEntry"
+            name: "logsEntry",
         });
     }
     run = async (item) => {
@@ -42,21 +42,35 @@ module.exports = class extends command_1.Command {
             location: vscode.ProgressLocation.Notification,
             title: "Logs da Aplicação",
         }, async (progress, tk) => {
-            const logs = await (0, requester_1.requester)('get', `/app/${item.tooltip}/logs`, {
+            const logs = await (0, requester_1.requester)("get", `/app/${item.tooltip}/logs`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": token
-                }
+                    "api-token": token,
+                },
             });
             if (!logs) {
                 return;
             }
-            progress.report({ message: "Logs da Aplicação - Logs recebidas com sucesso.", increment: 100 });
+            progress.report({
+                message: "Logs da Aplicação - Logs recebidas com sucesso.",
+                increment: 100,
+            });
             const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
             if (ask === "Abrir Arquivo") {
-                await (0, fs_1.writeFileSync)((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`), logs.apps.terminal.big);
+                let targetPath = "";
+                const workspaceFolders = vscode.workspace.workspaceFolders || [];
+                if (workspaceFolders && workspaceFolders.length) {
+                    targetPath = workspaceFolders[0].uri.fsPath;
+                }
+                else {
+                    vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+                    return;
+                }
+                await (0, fs_1.writeFileSync)(`${targetPath ? targetPath : (0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`)}`, logs.apps.terminal.big);
                 const fileToOpenUri = await vscode.Uri.file((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`));
-                return vscode.window.showTextDocument(fileToOpenUri, { viewColumn: vscode.ViewColumn.Beside });
+                return vscode.window.showTextDocument(fileToOpenUri, {
+                    viewColumn: vscode.ViewColumn.Beside,
+                });
             }
             else if (ask === "Abrir Link") {
                 return vscode.env.openExternal(vscode.Uri.parse(`${logs.apps.terminal.url}`));

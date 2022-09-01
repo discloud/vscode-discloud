@@ -156,14 +156,13 @@ export = class extends Command {
               { d: form }
             );
 
-            progress.report({ increment: 100 });
-            vscode.window.showInformationMessage(`${data?.message}`);
-            upbar?.hide();
-            vscode.commands.executeCommand(
-              "setContext",
-              "discloud-apps.refresh"
-            );
+            progress.report({ increment: 100 });   
+            if (data) {
+              vscode.window.showInformationMessage(`${data?.message}`);
+              upbar?.hide();
+            }
             unlinkSync(savePath);
+            setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
           });
 
           zip?.on("error", (err) => {
