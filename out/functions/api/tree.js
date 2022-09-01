@@ -38,9 +38,11 @@ var StatusLabels;
     StatusLabels["lstr"] = "\u00DAltima Reinicializa\u00E7\u00E3o";
 })(StatusLabels || (StatusLabels = {}));
 class AppTreeDataProvider {
+    _onDidChangeTreeData = new vscode.EventEmitter();
+    onDidChangeTreeData = this._onDidChangeTreeData.event;
+    data;
+    cache;
     constructor(cache) {
-        this._onDidChangeTreeData = new vscode.EventEmitter();
-        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
         this.cache = cache;
         this.refresh();
@@ -107,6 +109,9 @@ class AppTreeDataProvider {
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;
 class TreeItem extends vscode.TreeItem {
+    collapsibleState;
+    children;
+    iconName;
     constructor(label, collapsibleState, options) {
         super(label, collapsibleState);
         this.collapsibleState = collapsibleState;
@@ -121,6 +126,9 @@ class TreeItem extends vscode.TreeItem {
 }
 exports.TreeItem = TreeItem;
 class ChildrenTreeItem extends vscode.TreeItem {
+    collapsibleState;
+    children;
+    iconName;
     constructor(label, value, collapsibleState, options) {
         super(label, collapsibleState);
         this.collapsibleState = collapsibleState;

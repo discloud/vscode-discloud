@@ -153,7 +153,7 @@ export = class extends Command {
                   "api-token": `${token}`,
                 },
               },
-              form
+              { d: form }
             );
 
             progress.report({ increment: 100 });

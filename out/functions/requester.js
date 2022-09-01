@@ -32,7 +32,7 @@ const vscode = __importStar(require("vscode"));
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 let hasProcess = { i: false, p: '' };
-async function requester(method, url, config, d) {
+async function requester(method, url, config, options) {
     const token = vscode.workspace
         .getConfiguration("discloud")
         .get("token");
@@ -56,7 +56,7 @@ async function requester(method, url, config, d) {
     config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
     try {
-        data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config));
+        data = ((options && (options.d || options.d === {})) ? await methods[method](url, options.d, config) : await methods[method](url, config));
         uses++;
         maxUses = await parseInt(data.headers["ratelimit-limit"]);
         time = await parseInt(data.headers["ratelimit-reset"]) * 1000;

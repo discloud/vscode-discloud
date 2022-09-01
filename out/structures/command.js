@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Command = void 0;
 class Command {
+    name;
+    discloud;
     constructor(discloud, options) {
         this.discloud = discloud;
         this.name = options.name;

@@ -7,12 +7,13 @@ exports.Zip = void 0;
 const archiver_1 = __importDefault(require("archiver"));
 const fs_1 = require("fs");
 class Zip {
+    path;
     constructor(path, format, options) {
-        this.zip = null;
-        this.stream = null;
         this.create(path, format, options);
         this.path = path;
     }
+    zip = null;
+    stream = null;
     create(path, format, options) {
         this.stream = (0, fs_1.createWriteStream)(path);
         this.zip = (0, archiver_1.default)(format, options);

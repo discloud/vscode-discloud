@@ -30,30 +30,30 @@ module.exports = class extends command_1.Command {
         super(discloud, {
             name: "startEntry",
         });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
+    }
+    run = async (item) => {
+        const token = this.discloud.config.get("token");
+        if (!token) {
+            return;
+        }
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Iniciar Aplicação",
+        }, async (progress, tk) => {
+            progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
+            const start = await (0, requester_1.requester)("put", `/app/${item.tooltip}/start`, {
+                headers: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "api-token": token,
+                },
+            }, {});
+            if (!start) {
                 return;
             }
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: "Iniciar Aplicação",
-            }, async (progress, tk) => {
-                progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
-                const start = await (0, requester_1.requester)("put", `/app/${item.tooltip}/start`, {
-                    headers: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": token,
-                    },
-                }, {});
-                if (!start) {
-                    return;
-                }
-                progress.report({ increment: 100 });
-                vscode.window.showInformationMessage(`${start.message}`);
-                vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-            });
-        };
-    }
+            progress.report({ increment: 100 });
+            vscode.window.showInformationMessage(`${start.message}`);
+            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+        });
+    };
 };
 //# sourceMappingURL=start.js.map

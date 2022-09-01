@@ -32,36 +32,36 @@ module.exports = class extends command_1.Command {
         super(discloud, {
             name: "logsEntry"
         });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
-                return;
-            }
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: "Logs da Aplicação",
-            }, async (progress, tk) => {
-                const logs = await (0, requester_1.requester)('get', `/app/${item.tooltip}/logs`, {
-                    headers: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": token
-                    }
-                });
-                if (!logs) {
-                    return;
-                }
-                progress.report({ message: "Logs da Aplicação - Logs recebidas com sucesso.", increment: 100 });
-                const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
-                if (ask === "Abrir Arquivo") {
-                    await (0, fs_1.writeFileSync)((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`), logs.apps.terminal.big);
-                    const fileToOpenUri = await vscode.Uri.file((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`));
-                    return vscode.window.showTextDocument(fileToOpenUri, { viewColumn: vscode.ViewColumn.Beside });
-                }
-                else if (ask === "Abrir Link") {
-                    return vscode.env.openExternal(vscode.Uri.parse(`${logs.apps.terminal.url}`));
+    }
+    run = async (item) => {
+        const token = this.discloud.config.get("token");
+        if (!token) {
+            return;
+        }
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Logs da Aplicação",
+        }, async (progress, tk) => {
+            const logs = await (0, requester_1.requester)('get', `/app/${item.tooltip}/logs`, {
+                headers: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "api-token": token
                 }
             });
-        };
-    }
+            if (!logs) {
+                return;
+            }
+            progress.report({ message: "Logs da Aplicação - Logs recebidas com sucesso.", increment: 100 });
+            const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
+            if (ask === "Abrir Arquivo") {
+                await (0, fs_1.writeFileSync)((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`), logs.apps.terminal.big);
+                const fileToOpenUri = await vscode.Uri.file((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`));
+                return vscode.window.showTextDocument(fileToOpenUri, { viewColumn: vscode.ViewColumn.Beside });
+            }
+            else if (ask === "Abrir Link") {
+                return vscode.env.openExternal(vscode.Uri.parse(`${logs.apps.terminal.url}`));
+            }
+        });
+    };
 };
 //# sourceMappingURL=logs.js.map

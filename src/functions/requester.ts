@@ -8,7 +8,7 @@ setInterval(() => { uses > 0 ? uses-- : false; }, time);
 
 let hasProcess = { i: false, p: '' };
 
-export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, d?: any) {
+export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, options?: { d?: any, isVS?: boolean }) {
 
     const token = vscode.workspace
     .getConfiguration("discloud")
@@ -37,7 +37,7 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 
 	let data;
 	try {
-		data = ((d || d === {}) ? await methods[method](url, d, config) : await methods[method](url, config));
+		data = ((options && (options.d || options.d === {})) ? await methods[method](url, options.d, config) : await methods[method](url, config));
         uses++;
         maxUses = await parseInt(data.headers["ratelimit-limit"]);
         time = await parseInt(data.headers["ratelimit-reset"]) * 1000;

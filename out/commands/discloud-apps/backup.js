@@ -31,44 +31,44 @@ module.exports = class extends command_1.Command {
         super(discloud, {
             name: "importCode",
         });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
-                return;
-            }
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: "Importar Aplicação",
-            }, async (progress, tk) => {
-                const backup = await (0, requester_1.requester)("get", `/app/${item.tooltip}/backup`, {
-                    headers: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": token,
-                    },
-                });
-                if (backup) {
-                    progress.report({ message: "Importar Aplicação - Backup da Aplicação recebido.", increment: 20 });
-                }
-                if (backup?.backups?.url) {
-                    progress.report({ message: "Importar Aplicação - Baixando Backup da Aplicação recebido.", increment: 40 });
-                    const downloadFile = await (0, download_1.download)(`${backup.backups.url}`);
-                    if (!downloadFile) {
-                        return;
-                    }
-                    progress.report({ message: "Importar Aplicação - Backup Baixado com sucesso! Descompactando...", increment: 60 });
-                    const folderPathParsed = downloadFile.split(`\\`).join(`/`);
-                    const folderUri = vscode.Uri.file(folderPathParsed);
-                    await progress.report({ message: "Importar Aplicação - Descompactado com sucesso!", increment: 100 });
-                    const ask = await vscode.window.showInformationMessage(`Arquivo Criado com Sucesso`, `Abrir o Diretório`);
-                    if (ask === "Abrir o Diretório") {
-                        return vscode.commands.executeCommand(`vscode.openFolder`, folderUri);
-                    }
-                }
-                else {
-                    return vscode.window.showErrorMessage(`Ocorreu algum erro durante o Backup de sua Aplicação. Tente novamente mais tarde.`);
-                }
-            });
-        };
     }
+    run = async (item) => {
+        const token = this.discloud.config.get("token");
+        if (!token) {
+            return;
+        }
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Importar Aplicação",
+        }, async (progress, tk) => {
+            const backup = await (0, requester_1.requester)("get", `/app/${item.tooltip}/backup`, {
+                headers: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "api-token": token,
+                },
+            });
+            if (backup) {
+                progress.report({ message: "Importar Aplicação - Backup da Aplicação recebido.", increment: 20 });
+            }
+            if (backup?.backups?.url) {
+                progress.report({ message: "Importar Aplicação - Baixando Backup da Aplicação recebido.", increment: 40 });
+                const downloadFile = await (0, download_1.download)(`${backup.backups.url}`);
+                if (!downloadFile) {
+                    return;
+                }
+                progress.report({ message: "Importar Aplicação - Backup Baixado com sucesso! Descompactando...", increment: 60 });
+                const folderPathParsed = downloadFile.split(`\\`).join(`/`);
+                const folderUri = vscode.Uri.file(folderPathParsed);
+                await progress.report({ message: "Importar Aplicação - Descompactado com sucesso!", increment: 100 });
+                const ask = await vscode.window.showInformationMessage(`Arquivo Criado com Sucesso`, `Abrir o Diretório`);
+                if (ask === "Abrir o Diretório") {
+                    return vscode.commands.executeCommand(`vscode.openFolder`, folderUri);
+                }
+            }
+            else {
+                return vscode.window.showErrorMessage(`Ocorreu algum erro durante o Backup de sua Aplicação. Tente novamente mais tarde.`);
+            }
+        });
+    };
 };
 //# sourceMappingURL=backup.js.map

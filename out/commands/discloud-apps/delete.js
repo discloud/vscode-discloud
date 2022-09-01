@@ -30,30 +30,30 @@ module.exports = class extends command_1.Command {
         super(discloud, {
             name: "deleteEntry"
         });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
-                return;
-            }
-            vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: "Deletar Aplicação",
-                cancellable: true
-            }, async (progress, tk) => {
-                tk.onCancellationRequested(() => {
-                    console.log('Usuário cancelou o processo');
-                });
-                await (0, requester_1.requester)('del', `/app/${item.tooltip}/delete`, {
-                    headers: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": token
-                    }
-                });
-                progress.report({ increment: 100 });
-                vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
-                vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-            });
-        };
     }
+    run = async (item) => {
+        const token = this.discloud.config.get("token");
+        if (!token) {
+            return;
+        }
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Deletar Aplicação",
+            cancellable: true
+        }, async (progress, tk) => {
+            tk.onCancellationRequested(() => {
+                console.log('Usuário cancelou o processo');
+            });
+            await (0, requester_1.requester)('del', `/app/${item.tooltip}/delete`, {
+                headers: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "api-token": token
+                }
+            });
+            progress.report({ increment: 100 });
+            vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
+            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
+        });
+    };
 };
 //# sourceMappingURL=delete.js.map

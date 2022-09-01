@@ -28,28 +28,32 @@ const vscode = __importStar(require("vscode"));
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
-            name: "ramEntry"
+            name: "ramEntry",
         });
-        this.run = async (item) => {
-            const token = this.discloud.config.get("token");
-            if (!token) {
-                return;
-            }
-            const toPut = await vscode.window.showInputBox({ title: "Coloque a nova quantidade de RAM que o app irá usar." });
-            const ram = await (0, requester_1.requester)('put', `/app/${item.tooltip}/ram`, {
-                headers: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "api-token": token
-                }
-            }, {
-                ramMB: parseInt(`${toPut}`)
-            });
-            if (!ram) {
-                return;
-            }
-            vscode.window.showInformationMessage(`${ram.message}`);
-            vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');
-        };
     }
+    run = async (item) => {
+        const token = this.discloud.config.get("token");
+        if (!token) {
+            return;
+        }
+        const toPut = await vscode.window.showInputBox({
+            title: "Coloque a nova quantidade de RAM que o app irá usar.",
+        });
+        const ram = await (0, requester_1.requester)("put", `/app/${item.tooltip}/ram`, {
+            headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                "api-token": token,
+            },
+        }, {
+            d: {
+                ramMB: parseInt(`${toPut}`),
+            },
+        });
+        if (!ram) {
+            return;
+        }
+        vscode.window.showInformationMessage(`${ram.message}`);
+        vscode.commands.executeCommand("setContext", "discloud-apps.refresh");
+    };
 };
 //# sourceMappingURL=ram.js.map

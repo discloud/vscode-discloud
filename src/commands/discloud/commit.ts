@@ -46,6 +46,10 @@ export = class extends Command {
           },
         });
 
+        if (!userApps) { return vscode.window.showErrorMessage(
+          "Nenhuma Aplicação encontrada."
+        ); }
+
         const getApps = await userApps.user.appsStatus;
         let hasOtherName: boolean | { name: string; id: string }[] = false;
         const verify = getApps.filter((r) => r.name.includes("|"));
@@ -97,10 +101,9 @@ export = class extends Command {
         progress.report({ message: "Commit - Adicionando seus arquivos ao Zip...", increment: 60 });
 
         for await (const pth of paths) {
-          const splitted = pth.replace("\r", "").split("\\");
-          statSync(
-            paths[0][0].toLowerCase() + paths[0].slice(1)
-          ).isDirectory()
+          const splitted = pth.replaceAll("\r", "").split("\\");
+          const newPath = pth[0].toLowerCase() + pth.slice(1);
+          statSync(newPath.replaceAll("\r", "")).isDirectory()
             ? zip.directory(pth, splitted[splitted.length - 1])
             : zip.file(pth, { name: splitted[splitted.length - 1] });
         }
@@ -131,7 +134,7 @@ export = class extends Command {
                 "api-token": `${token}`,
               },
             },
-            form
+            { d: form }
           );
 
           unlinkSync(savePath);

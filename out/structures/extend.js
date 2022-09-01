@@ -29,6 +29,13 @@ const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
 const tree_1 = require("../functions/api/tree");
 class Discloud {
+    commands;
+    subscriptions;
+    cache;
+    bars;
+    trees;
+    config;
+    mainTree;
     constructor(context) {
         this.commands = [];
         this.subscriptions = context.subscriptions;
