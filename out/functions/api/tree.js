@@ -60,7 +60,7 @@ class AppTreeDataProvider {
             return;
         }
         const tree = [];
-        for (const app of getUser.user.appsStatus) {
+        for await (const app of getUser.user.appsStatus) {
             if (!app) {
                 continue;
             }
@@ -68,7 +68,7 @@ class AppTreeDataProvider {
             if (getUser) {
                 const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
                 childrens = {
-                    cont: new ChildrenTreeItem(`${infoApp.id}`, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
+                    cont: new ChildrenTreeItem(`Container`, infoApp.container, vscode.TreeItemCollapsibleState.None, { iconName: "container" }),
                     ram: new ChildrenTreeItem(StatusLabels.ram, infoApp.memory, vscode.TreeItemCollapsibleState.None, { iconName: "ram" }),
                     cpu: new ChildrenTreeItem(StatusLabels.cpu, infoApp.cpu, vscode.TreeItemCollapsibleState.None, { iconName: "cpu" }),
                     ssd: new ChildrenTreeItem(StatusLabels.ssd, infoApp.ssd, vscode.TreeItemCollapsibleState.None, { iconName: "ssd" }),

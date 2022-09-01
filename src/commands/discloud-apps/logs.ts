@@ -60,7 +60,7 @@ export = class extends Command {
           }
 
           await writeFileSync(
-            `${targetPath ? targetPath : join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`)}`,
+            `${targetPath ? targetPath : join(__filename, "..", "..", "..", `${item.label?.toString().replaceAll(' ', '_').toLowerCase()}.log`)}`,
             (<AppLog>logs.apps).terminal.big
           );
           const fileToOpenUri: vscode.Uri = await vscode.Uri.file(

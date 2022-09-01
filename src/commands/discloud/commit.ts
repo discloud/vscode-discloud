@@ -139,7 +139,7 @@ export = class extends Command {
 
           await unlinkSync(savePath);
           progress.report({ increment: 100 });
-          await vscode.window.showInformationMessage(`${data?.message}`);
+          await   vscode.window.showInformationMessage(`${data?.message}`);
         });
 
         zip?.on("error", (err) => {

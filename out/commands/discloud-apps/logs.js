@@ -66,7 +66,7 @@ module.exports = class extends command_1.Command {
                     vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
                     return;
                 }
-                await (0, fs_1.writeFileSync)(`${targetPath ? targetPath : (0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`)}`, logs.apps.terminal.big);
+                await (0, fs_1.writeFileSync)(`${targetPath ? targetPath : (0, path_1.join)(__filename, "..", "..", "..", `${item.label?.toString().replaceAll(' ', '_').toLowerCase()}.log`)}`, logs.apps.terminal.big);
                 const fileToOpenUri = await vscode.Uri.file((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`));
                 return vscode.window.showTextDocument(fileToOpenUri, {
                     viewColumn: vscode.ViewColumn.Beside,

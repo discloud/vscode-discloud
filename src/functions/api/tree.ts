@@ -48,7 +48,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
     const tree: TreeItem[] = [];
 
-    for (const app of getUser.user.appsStatus) {
+    for await (const app of getUser.user.appsStatus) {
       if (!app) {
         continue;
       }
@@ -60,7 +60,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
         childrens = {
           cont: new ChildrenTreeItem(
-            `${infoApp.id}`,
+            `Container`,
             infoApp.container,
             vscode.TreeItemCollapsibleState.None,
             { iconName: "container" }
