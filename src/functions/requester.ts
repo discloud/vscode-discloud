@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as vscode from 'vscode';
+import { createLogs } from './toLogs';
 
 type METHODS = "put" | "get" | "post" | "del";
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
@@ -34,7 +35,7 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 
 	let data;
 	try {
-		data = ((options && (options.d || options.d === {})) ? await methods[method](url, options.d, config) : await methods[method](url, config));
+		data = ((options && (options.d && Object.keys(options.d).length > 1)) ? await methods[method](url, options.d, config) : await methods[method](url, config));
         uses++;
         maxUses = await parseInt(data.headers["ratelimit-limit"]);
         time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
@@ -48,11 +49,17 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
             vscode.window.showErrorMessage(err.response.data.message);
             return;
         }
-        if (err?.response?.status === 404) {
+        if (err?.response?.statusCode === 404) {
             return;
         }
+
 		return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
 	}
+
+    if ([504, 222].includes(data.statusCode) && data.status === "error") {
+        createLogs(data.message, { text: data.logs }, "error_app.log");
+        return 222;
+    }
 
     return data;
 }

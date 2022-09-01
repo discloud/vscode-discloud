@@ -25,8 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 const requester_1 = require("../../functions/requester");
 const command_1 = require("../../structures/command");
 const vscode = __importStar(require("vscode"));
-const fs_1 = require("fs");
-const path_1 = require("path");
+const toLogs_1 = require("../../functions/toLogs");
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
@@ -55,26 +54,9 @@ module.exports = class extends command_1.Command {
                 message: "Logs da Aplicação - Logs recebidas com sucesso.",
                 increment: 100,
             });
-            const ask = await vscode.window.showInformationMessage("Logs acessadas com sucesso. Selecione uma das Opções:", "Abrir Arquivo", `Abrir Link`);
-            if (ask === "Abrir Arquivo") {
-                let targetPath = "";
-                const workspaceFolders = vscode.workspace.workspaceFolders || [];
-                if (workspaceFolders && workspaceFolders.length) {
-                    targetPath = workspaceFolders[0].uri.fsPath;
-                }
-                else {
-                    vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
-                    return;
-                }
-                await (0, fs_1.writeFileSync)(`${targetPath ? targetPath : (0, path_1.join)(__filename, "..", "..", "..", `${item.label?.toString().replaceAll(' ', '_').toLowerCase()}.log`)}`, logs.apps.terminal.big);
-                const fileToOpenUri = await vscode.Uri.file((0, path_1.join)(__filename, "..", "..", "..", `${logs.apps.id}.log`));
-                return vscode.window.showTextDocument(fileToOpenUri, {
-                    viewColumn: vscode.ViewColumn.Beside,
-                });
-            }
-            else if (ask === "Abrir Link") {
-                return vscode.env.openExternal(vscode.Uri.parse(`${logs.apps.terminal.url}`));
-            }
+            return (0, toLogs_1.createLogs)("Logs acessadas com sucesso. Selecione uma das Opções:", {
+                text: logs.apps.terminal.big,
+            }, `${item.label?.toString().replaceAll(" ", "_").toLowerCase()}.log`);
         });
     };
 };

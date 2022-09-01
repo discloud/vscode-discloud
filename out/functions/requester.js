@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requester = void 0;
 const axios_1 = __importDefault(require("axios"));
 const vscode = __importStar(require("vscode"));
+const toLogs_1 = require("./toLogs");
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 let hasProcess = { i: false, p: '' };
@@ -53,7 +54,7 @@ async function requester(method, url, config, options) {
     config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
     try {
-        data = ((options && (options.d || options.d === {})) ? await methods[method](url, options.d, config) : await methods[method](url, config));
+        data = ((options && (options.d && Object.keys(options.d).length > 1)) ? await methods[method](url, options.d, config) : await methods[method](url, config));
         uses++;
         maxUses = await parseInt(data.headers["ratelimit-limit"]);
         time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
@@ -67,10 +68,14 @@ async function requester(method, url, config, options) {
             vscode.window.showErrorMessage(err.response.data.message);
             return;
         }
-        if (err?.response?.status === 404) {
+        if (err?.response?.statusCode === 404) {
             return;
         }
         return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
+    }
+    if ([504, 222].includes(data.statusCode) && data.status === "error") {
+        (0, toLogs_1.createLogs)(data.message, { text: data.logs }, "error_app.log");
+        return 222;
     }
     return data;
 }

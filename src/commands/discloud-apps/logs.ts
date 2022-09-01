@@ -6,6 +6,7 @@ import * as vscode from "vscode";
 import { writeFileSync } from "fs";
 import { AppLog, Logs } from "../../types/apps";
 import { join } from "path";
+import { createLogs } from "../../functions/toLogs";
 
 export = class extends Command {
   constructor(discloud: Discloud) {
@@ -42,38 +43,13 @@ export = class extends Command {
           increment: 100,
         });
 
-        const ask = await vscode.window.showInformationMessage(
+        return createLogs(
           "Logs acessadas com sucesso. Selecione uma das Opções:",
-          "Abrir Arquivo",
-          `Abrir Link`
+          {
+            text: (<AppLog>logs.apps).terminal.big,
+          },
+          `${item.label?.toString().replaceAll(" ", "_").toLowerCase()}.log`
         );
-        if (ask === "Abrir Arquivo") {
-          let targetPath = "";
-
-          const workspaceFolders = vscode.workspace.workspaceFolders || [];
-
-          if (workspaceFolders && workspaceFolders.length) {
-            targetPath = workspaceFolders[0].uri.fsPath;
-          } else {
-            vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
-            return;
-          }
-
-          await writeFileSync(
-            `${targetPath ? targetPath : join(__filename, "..", "..", "..", `${item.label?.toString().replaceAll(' ', '_').toLowerCase()}.log`)}`,
-            (<AppLog>logs.apps).terminal.big
-          );
-          const fileToOpenUri: vscode.Uri = await vscode.Uri.file(
-            join(__filename, "..", "..", "..", `${(<AppLog>logs.apps).id}.log`)
-          );
-          return vscode.window.showTextDocument(fileToOpenUri, {
-            viewColumn: vscode.ViewColumn.Beside,
-          });
-        } else if (ask === "Abrir Link") {
-          return vscode.env.openExternal(
-            vscode.Uri.parse(`${(<AppLog>logs.apps).terminal.url}`)
-          );
-        }
       }
     );
   };

@@ -157,13 +157,15 @@ export = class extends Command {
             );
 
             progress.report({ increment: 100 });   
-            if (data) {
+            if (data && data !== 222) {
               await upbar?.hide();
               vscode.window.showInformationMessage(`${data?.message}`);
               this.discloud.mainTree?.refresh();
-
             }
             await unlinkSync(savePath);
+            if (data === 222) {
+              await upbar?.hide();
+            }
           });
 
           zip?.on("error", (err) => {

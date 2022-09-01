@@ -138,12 +138,15 @@ module.exports = class extends command_1.Command {
                         },
                     }, { d: form });
                     progress.report({ increment: 100 });
-                    if (data) {
+                    if (data && data !== 222) {
                         await upbar?.hide();
                         vscode.window.showInformationMessage(`${data?.message}`);
                         this.discloud.mainTree?.refresh();
                     }
                     await (0, fs_1.unlinkSync)(savePath);
+                    if (data === 222) {
+                        await upbar?.hide();
+                    }
                 });
                 zip?.on("error", (err) => {
                     vscode.window.showErrorMessage(JSON.stringify(err));
