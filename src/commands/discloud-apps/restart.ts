@@ -44,7 +44,7 @@ export = class extends Command {
         
         progress.report({ increment: 100 });
         vscode.window.showInformationMessage(`${restart.message}`);
-        setTimeout(async () => {await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh');}, 5000);
+        this.discloud.mainTree?.refresh();
       }
     );
   };

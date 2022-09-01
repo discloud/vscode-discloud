@@ -77,7 +77,7 @@ export = class extends Command {
           },
         });
 
-        progress.report({ message: "Upload - Colocando Arquivos no Zip...",
+        await progress.report({ message: "Upload - Colocando Arquivos no Zip...",
           increment: 20,
         });
 
@@ -140,7 +140,7 @@ export = class extends Command {
             const form = new FormData();
             form.append("upFile", createReadStream(savePath));
 
-            progress.report({ message: "Upload - Requisitando Upload...",
+            await progress.report({ message: "Upload - Requisitando Upload...",
               increment: 50,
             });
 
@@ -158,11 +158,12 @@ export = class extends Command {
 
             progress.report({ increment: 100 });   
             if (data) {
+              await upbar?.hide();
               vscode.window.showInformationMessage(`${data?.message}`);
-              upbar?.hide();
+              this.discloud.mainTree?.refresh();
+
             }
-            unlinkSync(savePath);
-            setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
+            await unlinkSync(savePath);
           });
 
           zip?.on("error", (err) => {

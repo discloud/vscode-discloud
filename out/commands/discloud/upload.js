@@ -83,7 +83,7 @@ module.exports = class extends command_1.Command {
                     level: 9,
                 },
             });
-            progress.report({ message: "Upload - Colocando Arquivos no Zip...",
+            await progress.report({ message: "Upload - Colocando Arquivos no Zip...",
                 increment: 20,
             });
             if (isDirectory) {
@@ -128,7 +128,7 @@ module.exports = class extends command_1.Command {
                 stream?.on("close", async () => {
                     const form = new form_data_1.default();
                     form.append("upFile", (0, fs_1.createReadStream)(savePath));
-                    progress.report({ message: "Upload - Requisitando Upload...",
+                    await progress.report({ message: "Upload - Requisitando Upload...",
                         increment: 50,
                     });
                     const data = await (0, requester_1.requester)("post", "/upload", {
@@ -139,11 +139,11 @@ module.exports = class extends command_1.Command {
                     }, { d: form });
                     progress.report({ increment: 100 });
                     if (data) {
+                        await upbar?.hide();
                         vscode.window.showInformationMessage(`${data?.message}`);
-                        upbar?.hide();
+                        this.discloud.mainTree?.refresh();
                     }
-                    (0, fs_1.unlinkSync)(savePath);
-                    setTimeout(async () => { await vscode.commands.executeCommand('setContext', 'discloud-apps.refresh'); }, 5000);
+                    await (0, fs_1.unlinkSync)(savePath);
                 });
                 zip?.on("error", (err) => {
                     vscode.window.showErrorMessage(JSON.stringify(err));

@@ -40,6 +40,9 @@ module.exports = class extends command_1.Command {
             location: vscode.ProgressLocation.Notification,
             title: "Deletar Aplicação"
         }, async (progress, tk) => {
+            if (!item.tooltip) {
+                return vscode.window.showInformationMessage("Aplicação não encontrada.");
+            }
             await (0, requester_1.requester)('del', `/app/${item.tooltip}/delete`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,7 +52,7 @@ module.exports = class extends command_1.Command {
             progress.report({ increment: 100 });
             vscode.window.showInformationMessage(`Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`);
             const tree = this.discloud.mainTree;
-            return tree ? await tree.refresh(tree?.data.filter(r => r.label !== item.label)) : false;
+            return tree ? await tree.refresh(tree?.data.filter(r => r.tooltip !== item.tooltip)) : false;
         });
     };
 };
