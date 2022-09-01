@@ -6,13 +6,20 @@
     "color": "#5865F2",
     "theme": "dark"
   },
-  "description": "Usado para fazer métodos na DisCloud diretamente pelo Visual Studio Code.",
+  "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.70.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "discloud",
+    "discloud.app",
+    "discloudbot",
+    "discord",
+    "host"
   ],
   "activationEvents": [
     "*"
