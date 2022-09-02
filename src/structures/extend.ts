@@ -2,8 +2,6 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import * as vscode from "vscode";
 import { AppTreeDataProvider } from "../functions/api/tree";
-import { check } from "../functions/checkers/config";
-
 interface Command {
   name: string;
   run: (uri: vscode.Uri) => void;

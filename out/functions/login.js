@@ -22,24 +22,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-const command_1 = require("../../structures/command");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.login = void 0;
 const vscode = __importStar(require("vscode"));
-module.exports = class extends command_1.Command {
-    constructor(discloud) {
-        super(discloud, {
-            name: "logIn",
-        });
-        this.run = async () => {
-            const input = await vscode.window.showInputBox({
-                prompt: "API TOKEN",
-                title: "Coloque seu Token da API da Discloud aqui.",
-            });
-            if (!input) {
-                return vscode.window.showErrorMessage("Token inválido.");
-            }
-            vscode.workspace.getConfiguration("discloud").update("token", input);
-            vscode.window.showInformationMessage("Token configurado com sucesso!");
-        };
+async function login() {
+    const input = await vscode.window.showInputBox({
+        prompt: "API TOKEN",
+        title: "Coloque seu Token da API da Discloud aqui.",
+    });
+    if (!input) {
+        return vscode.window.showErrorMessage("Token inválido.");
     }
-};
-//# sourceMappingURL=logIn.js.map
+    vscode.workspace.getConfiguration("discloud").update("token", input);
+    vscode.window.showInformationMessage("Token configurado com sucesso!");
+}
+exports.login = login;
+//# sourceMappingURL=login.js.map

@@ -4,6 +4,7 @@ import { statusIcons } from "../../types/icons";
 import { checkIfHasToken } from "../checkers/token";
 import { requester } from "../requester";
 import { User } from "../../types/apps";
+import { login } from "../login";
 
 enum StatusLabels {
   cpu = "CPU",
@@ -133,6 +134,13 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   async refresh(data?: TreeItem[]): Promise<void> {
+
+    const token = vscode.workspace.getConfiguration("discloud").get('token');
+    if (!token) {
+      await login();
+      return;
+    }
+
     if (data) {
       data.length > 0 ? await this.createTreeItem(data) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
     } else {await this.verifyApps();}

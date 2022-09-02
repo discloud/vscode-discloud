@@ -1,10 +1,15 @@
 {
   "name": "discloud",
   "displayName": "Discloud",
-  "icon": "https://cdn.discordapp.com/attachments/915795298780053544/1014921524966338650/discloudlogo.png",
+  "icon": "out/assets/icons/discloudlogo.png",
   "galleryBanner": {
     "color": "#5865F2",
     "theme": "dark"
+  },
+  "publisher": "discloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/discloud/vscode-discloud.git"
   },
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "version": "0.0.1",
@@ -22,7 +27,19 @@
     "host"
   ],
   "activationEvents": [
-    "*"
+    "onCommand:discloud-apps.helpButton",
+    "onCommand:discloud-apps.refreshButton",
+    "onCommand:discloud-apps.importCode",
+    "onCommand:discloud-apps.deleteEntry",
+    "onCommand:discloud-apps.startEntry",
+    "onCommand:discloud-apps.stopEntry",
+    "onCommand:discloud-apps.restartEntry",
+    "onCommand:discloud-apps.logsEntry",
+    "onCommand:discloud-apps.ramEntry",
+    "onCommand:discloud.logIn",
+    "onCommand:discloud.commit",
+    "onCommand:discloud.upload",
+    "onView:discloud-apps"
   ],
   "main": "out/extension.js",
   "contributes": {
@@ -241,6 +258,7 @@
     "archiver": "^5.3.1",
     "axios": "^0.27.2",
     "decompress": "^4.2.1",
-    "download": "^8.0.0"
+    "download": "^8.0.0",
+    "vsce": "^2.11.0"
   }
 }

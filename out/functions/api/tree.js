@@ -29,6 +29,7 @@ const path = __importStar(require("path"));
 const icons_1 = require("../../types/icons");
 const token_1 = require("../checkers/token");
 const requester_1 = require("../requester");
+const login_1 = require("../login");
 var StatusLabels;
 (function (StatusLabels) {
     StatusLabels["cpu"] = "CPU";
@@ -103,6 +104,11 @@ class AppTreeDataProvider {
         return element.children;
     }
     async refresh(data) {
+        const token = vscode.workspace.getConfiguration("discloud").get('token');
+        if (!token) {
+            await (0, login_1.login)();
+            return;
+        }
         if (data) {
             data.length > 0 ? await this.createTreeItem(data) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
         }
