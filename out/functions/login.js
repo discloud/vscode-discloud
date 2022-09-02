@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = void 0;
 const vscode = __importStar(require("vscode"));
-async function login() {
+async function login(tree) {
     const input = await vscode.window.showInputBox({
         prompt: "API TOKEN",
         title: "Coloque seu Token da API da Discloud aqui.",
@@ -36,6 +36,7 @@ async function login() {
     }
     vscode.workspace.getConfiguration("discloud").update("token", input, true);
     vscode.window.showInformationMessage("Token configurado com sucesso!");
+    tree ? tree.refresh() : false;
 }
 exports.login = login;
 //# sourceMappingURL=login.js.map

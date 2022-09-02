@@ -39,7 +39,8 @@
     "onCommand:discloud.logIn",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
-    "onView:discloud-apps"
+    "onView:discloud-apps",
+    "*"
   ],
   "main": "out/extension.js",
   "contributes": {

@@ -8,7 +8,8 @@ module.exports = class extends command_1.Command {
         });
     }
     run = async () => {
-        await (0, login_1.login)();
+        const tree = this.discloud.mainTree;
+        await (0, login_1.login)(tree);
     };
 };
 //# sourceMappingURL=logIn.js.map

@@ -71,6 +71,9 @@ async function requester(method, url, config, options) {
         if (err?.response?.statusCode === 404) {
             return;
         }
+        if (err === "ECONNREFUSED 127.0.0.1:80") {
+            return vscode.window.showErrorMessage(`Algum erro com o Axios ocorreu, reinicie o VS Code, ou contate a staff.`);
+        }
         return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
     }
     if ([504, 222].includes(data.statusCode) && data.status === "error") {
