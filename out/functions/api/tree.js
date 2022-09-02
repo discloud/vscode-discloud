@@ -29,7 +29,6 @@ const path = __importStar(require("path"));
 const icons_1 = require("../../types/icons");
 const token_1 = require("../checkers/token");
 const requester_1 = require("../requester");
-const login_1 = require("../login");
 var StatusLabels;
 (function (StatusLabels) {
     StatusLabels["cpu"] = "CPU";
@@ -44,8 +43,9 @@ class AppTreeDataProvider {
     data;
     cache;
     constructor(cache) {
-        this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
+        this.data = [];
         this.cache = cache;
+        this.init();
         this.refresh();
     }
     async verifyApps() {
@@ -106,7 +106,7 @@ class AppTreeDataProvider {
     async refresh(data) {
         const token = vscode.workspace.getConfiguration("discloud").get('token');
         if (!token) {
-            await (0, login_1.login)();
+            await (0, token_1.checkIfHasToken)();
             return;
         }
         if (data) {
@@ -117,6 +117,15 @@ class AppTreeDataProvider {
         }
         this._onDidChangeTreeData.fire();
         console.log('[TREE] Refreshed.');
+    }
+    async init() {
+        const token = vscode.workspace.getConfiguration("discloud").get('token');
+        if (!token) {
+            return;
+        }
+        else {
+            this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
+        }
     }
 }
 exports.AppTreeDataProvider = AppTreeDataProvider;

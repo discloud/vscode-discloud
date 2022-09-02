@@ -26,8 +26,9 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   cache: Map<any, any>;
 
   constructor(cache: Map<any, any>) {
-    this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
+    this.data = [];
     this.cache = cache;
+    this.init();
     this.refresh();
 
   }
@@ -137,7 +138,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
     const token = vscode.workspace.getConfiguration("discloud").get('token');
     if (!token) {
-      await login();
+      await checkIfHasToken();
       return;
     }
 
@@ -146,6 +147,16 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     } else {await this.verifyApps();}
     this._onDidChangeTreeData.fire();
     console.log('[TREE] Refreshed.');
+  }
+
+  async init() {
+
+    const token = vscode.workspace.getConfiguration("discloud").get('token');
+    if (!token) {
+      return;
+    } else {
+      this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
+    }
   }
 }
 
