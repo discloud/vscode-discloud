@@ -6,8 +6,9 @@ export async function login() {
     title: "Coloque seu Token da API da Discloud aqui.",
   });
   if (!input) {
-    return vscode.window.showErrorMessage("Token inválido.");
+    vscode.window.showErrorMessage("Token inválido.");
+    return;
   }
-  vscode.workspace.getConfiguration("discloud").update("token", input);
+  vscode.workspace.getConfiguration("discloud").update("token", input, true);
   vscode.window.showInformationMessage("Token configurado com sucesso!");
 }

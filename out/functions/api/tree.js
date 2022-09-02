@@ -140,8 +140,8 @@ class TreeItem extends vscode.TreeItem {
         this.iconName = options?.iconName;
         this.tooltip = options?.tooltip;
         this.iconPath = {
-            light: path.join(__filename, "..", "..", "..", "assets", "light", `${this.iconName}.svg`),
-            dark: path.join(__filename, "..", "..", "..", "assets", "dark", `${this.iconName}.svg`),
+            light: path.join(__filename, "..", "..", "..", "images", "light", `${this.iconName}.svg`),
+            dark: path.join(__filename, "..", "..", "..", "images", "dark", `${this.iconName}.svg`),
         };
     }
 }
@@ -157,8 +157,8 @@ class ChildrenTreeItem extends vscode.TreeItem {
         this.description = value;
         this.iconName = options?.iconName;
         this.iconPath = {
-            light: path.join(__filename, "..", "..", "..", "assets", "light", `${this.iconName}.svg`),
-            dark: path.join(__filename, "..", "..", "..", "assets", "dark", `${this.iconName}.svg`),
+            light: path.join(__filename, "..", "..", "..", "images", "light", `${this.iconName}.svg`),
+            dark: path.join(__filename, "..", "..", "..", "images", "dark", `${this.iconName}.svg`),
         };
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "discloud",
   "displayName": "Discloud",
-  "icon": "out/assets/icons/discloudlogo.png",
+  "icon": "out/images/icons/discloudlogo.png",
   "galleryBanner": {
     "color": "#5865F2",
     "theme": "dark"
@@ -48,32 +48,32 @@
         "command": "discloud-apps.helpButton",
         "title": "Discloud Help",
         "icon": {
-          "light": "src/assets/light/helper.svg",
-          "dark": "src/assets/dark/helper.svg"
+          "light": "out/images/light/helper.svg",
+          "dark": "out/images/dark/helper.svg"
         }
       },
       {
         "command": "discloud-apps.refreshButton",
         "title": "Recarregar Apps",
         "icon": {
-          "light": "src/assets/light/refresh.svg",
-          "dark": "src/assets/dark/refresh.svg"
+          "light": "out/images/light/refresh.svg",
+          "dark": "out/images/dark/refresh.svg"
         }
       },
       {
         "command": "discloud-apps.importCode",
         "title": "Importar app para o vscode",
         "icon": {
-          "light": "src/assets/light/code.svg",
-          "dark": "src/assets/dark/code.svg"
+          "light": "out/images/light/code.svg",
+          "dark": "out/images/dark/code.svg"
         }
       },
       {
         "command": "discloud-apps.deleteEntry",
         "title": "Delete App",
         "icon": {
-          "light": "src/assets/light/del.svg",
-          "dark": "src/assets/dark/del.svg"
+          "light": "out/images/light/del.svg",
+          "dark": "out/images/dark/del.svg"
         }
       },
       {
@@ -114,7 +114,7 @@
         {
           "id": "discloud-sidebar",
           "title": "Discloud.app",
-          "icon": "src/assets/icons/discloudlogo.svg"
+          "icon": "out/images/icons/discloudlogo.svg"
         }
       ]
     },
@@ -236,7 +236,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint out --ext ts",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {

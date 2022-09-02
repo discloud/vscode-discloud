@@ -183,7 +183,7 @@ export class TreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "assets",
+        "images",
         "light",
         `${this.iconName}.svg`
       ),
@@ -192,7 +192,7 @@ export class TreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "assets",
+        "images",
         "dark",
         `${this.iconName}.svg`
       ),
@@ -220,7 +220,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "assets",
+        "images",
         "light",
         `${this.iconName}.svg`
       ),
@@ -229,7 +229,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "assets",
+        "images",
         "dark",
         `${this.iconName}.svg`
       ),
