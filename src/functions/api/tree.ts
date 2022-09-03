@@ -222,12 +222,14 @@ class ChildrenTreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
+        "..",
         "resources",
         "light",
         `${this.iconName}.svg`
       ),
       dark: path.join(
         __filename,
+        "..",
         "..",
         "..",
         "..",

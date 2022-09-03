@@ -158,8 +158,8 @@ class ChildrenTreeItem extends vscode.TreeItem {
         this.description = value;
         this.iconName = options?.iconName;
         this.iconPath = {
-            light: path.join(__filename, "..", "..", "..", "resources", "light", `${this.iconName}.svg`),
-            dark: path.join(__filename, "..", "..", "..", "resources", "dark", `${this.iconName}.svg`),
+            light: path.join(__filename, "..", "..", "..", "..", "resources", "light", `${this.iconName}.svg`),
+            dark: path.join(__filename, "..", "..", "..", "..", "resources", "dark", `${this.iconName}.svg`),
         };
     }
 }
