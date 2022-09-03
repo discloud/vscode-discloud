@@ -41,12 +41,13 @@ module.exports = class extends command_1.Command {
             title: "Reinciar Aplicação",
         }, async (progress, tk) => {
             progress.report({ message: `Reinciar Aplicação - Reinciando Aplicação...` });
-            const restart = await (0, requester_1.requester)("put", `/app/${item.tooltip}/restart`, {
+            const restart = await (0, requester_1.requester)(`/app/${item.tooltip}/restart`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
                 },
-            }, {});
+                method: "PUT"
+            });
             if (!restart) {
                 return;
             }

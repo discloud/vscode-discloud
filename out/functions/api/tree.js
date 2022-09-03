@@ -53,9 +53,10 @@ class AppTreeDataProvider {
         if (!token) {
             return;
         }
-        const getUser = await (0, requester_1.requester)("get", `/vscode`, {
+        const getUser = await (0, requester_1.requester)(`/vscode`, {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { "api-token": `${token}` },
+            method: "GET"
         }, { isVS: true });
         if (!getUser) {
             return;

@@ -54,11 +54,12 @@ module.exports = class extends command_1.Command {
                 return vscode.window.showInformationMessage("Nenhum arquivo foi encontrado.");
             }
             progress.report({ message: "Commit - Requisitando suas Aplicações...", increment: 20 });
-            const userApps = await (0, requester_1.requester)("get", "/vscode", {
+            const userApps = await (0, requester_1.requester)("/vscode", {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": `${token}`,
                 },
+                method: "GET"
             });
             if (!userApps) {
                 return vscode.window.showErrorMessage("Nenhuma Aplicação encontrada.");
@@ -120,12 +121,14 @@ module.exports = class extends command_1.Command {
                 else {
                     finalID = input.split("|")[1].trim();
                 }
-                const data = await (0, requester_1.requester)("put", `/app/${finalID}/commit`, {
+                const data = await (0, requester_1.requester)(`/app/${finalID}/commit`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         "api-token": `${token}`,
                     },
-                }, { d: form });
+                    method: "PUT",
+                    body: form
+                });
                 await (0, fs_1.unlinkSync)(savePath);
                 progress.report({ increment: 100 });
                 await vscode.window.showInformationMessage(`${data?.message}`);

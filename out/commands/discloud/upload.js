@@ -131,12 +131,14 @@ module.exports = class extends command_1.Command {
                     await progress.report({ message: "Upload - Requisitando Upload...",
                         increment: 50,
                     });
-                    const data = await (0, requester_1.requester)("post", "/upload", {
+                    const data = await (0, requester_1.requester)("/upload", {
                         headers: {
                             // eslint-disable-next-line @typescript-eslint/naming-convention
                             "api-token": `${token}`,
                         },
-                    }, { d: form });
+                        method: "POST",
+                        body: form
+                    });
                     progress.report({ increment: 100 });
                     if (data && data !== 222) {
                         await upbar?.hide();

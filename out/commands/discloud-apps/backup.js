@@ -41,11 +41,12 @@ module.exports = class extends command_1.Command {
             location: vscode.ProgressLocation.Notification,
             title: "Importar Aplicação",
         }, async (progress, tk) => {
-            const backup = await (0, requester_1.requester)("get", `/app/${item.tooltip}/backup`, {
+            const backup = await (0, requester_1.requester)(`/app/${item.tooltip}/backup`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
                 },
+                method: "GET"
             });
             if (backup) {
                 progress.report({ message: "Importar Aplicação - Backup da Aplicação recebido.", increment: 20 });

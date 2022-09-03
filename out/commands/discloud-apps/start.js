@@ -41,12 +41,13 @@ module.exports = class extends command_1.Command {
             title: "Iniciar Aplicação",
         }, async (progress, tk) => {
             progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
-            const start = await (0, requester_1.requester)("put", `/app/${item.tooltip}/start`, {
+            const start = await (0, requester_1.requester)(`/app/${item.tooltip}/start`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
+                    method: "PUT"
                 },
-            }, {});
+            });
             if (!start) {
                 return;
             }

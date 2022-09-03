@@ -22,18 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requester = void 0;
-const axios_1 = __importDefault(require("axios"));
+const undici_1 = require("undici");
 const vscode = __importStar(require("vscode"));
 const toLogs_1 = require("./toLogs");
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 let hasProcess = { i: false, p: '' };
-async function requester(method, url, config, options) {
+async function requester(url, config, options) {
     if (hasProcess.i && (options && !options.isVS)) {
         vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
@@ -45,21 +42,13 @@ async function requester(method, url, config, options) {
         vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time / 1000)} segundos para usar novamente.`);
         return;
     }
-    const methods = {
-        put: axios_1.default.put,
-        get: axios_1.default.get,
-        post: axios_1.default.post,
-        del: axios_1.default.delete
-    };
-    config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
     let data;
     try {
-        data = ((options && (options.d && Object.keys(options.d).length > 1)) ? await methods[method](url, options.d, config) : await methods[method](url, config));
+        data = (await (0, undici_1.request)("https://api.discloud.app/v2" + url, config));
         uses++;
-        maxUses = await parseInt(data.headers["ratelimit-limit"]);
-        time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
-        remain = await parseInt(data.headers["ratelimit-remaining"]);
-        data = data.data;
+        maxUses = parseInt(`${data.headers["ratelimit-limit"]}`);
+        time = await parseInt(`${data.headers["ratelimit-reset"]}`) * 1000;
+        remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
         hasProcess.i = false;
     }
     catch (err) {
@@ -76,11 +65,12 @@ async function requester(method, url, config, options) {
         }
         return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
     }
-    if ([504, 222].includes(data.statusCode) && data.status === "error") {
-        (0, toLogs_1.createLogs)(data.message, { text: data.logs }, "error_app.log");
+    const fixData = await data.body.json();
+    if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
+        (0, toLogs_1.createLogs)(fixData.message, { text: fixData.logs }, "error_app.log");
         return 222;
     }
-    return data;
+    return fixData;
 }
 exports.requester = requester;
 //# sourceMappingURL=requester.js.map

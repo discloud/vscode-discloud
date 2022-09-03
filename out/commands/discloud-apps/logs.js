@@ -41,11 +41,12 @@ module.exports = class extends command_1.Command {
             location: vscode.ProgressLocation.Notification,
             title: "Logs da Aplicação",
         }, async (progress, tk) => {
-            const logs = await (0, requester_1.requester)("get", `/app/${item.tooltip}/logs`, {
+            const logs = await (0, requester_1.requester)(`/app/${item.tooltip}/logs`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
                 },
+                method: "GET"
             });
             if (!logs) {
                 return;

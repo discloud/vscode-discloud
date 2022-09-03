@@ -41,12 +41,13 @@ module.exports = class extends command_1.Command {
             title: "Parar Aplicação",
         }, async (progress, tk) => {
             progress.report({ message: `Parar Aplicação - Pararando Aplicação...` });
-            const stop = await (0, requester_1.requester)("put", `/app/${item.tooltip}/stop`, {
+            const stop = await (0, requester_1.requester)(`/app/${item.tooltip}/stop`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
+                    method: "PUT"
                 },
-            }, {});
+            });
             if (!stop) {
                 return;
             }
