@@ -74,7 +74,7 @@ async function requester(url, config, options) {
     }
     const fixData = await data.body.json();
     if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
-        (0, toLogs_1.createLogs)(fixData.message, { text: fixData.logs }, "error_app.log");
+        (0, toLogs_1.createLogs)(fixData.message, { text: fixData.logs }, "error_app.log", { type: "normal" });
         return 222;
     }
     return fixData;

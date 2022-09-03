@@ -1,9 +1,8 @@
 import * as vscode from "vscode";
 import down from "download";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import decompress from "decompress";
+import { existsSync, mkdirSync } from "fs";
 
-export async function download(url: string) {
+export async function download(url: string, uncompact: boolean = false) {
   let targetPath = "";
 
   const workspaceFolders = vscode.workspace.workspaceFolders || [];
@@ -24,7 +23,7 @@ export async function download(url: string) {
     mkdirSync(targetPath + "\\backup");
   }
 
-  await down(url, targetPath + "\\backup", { extract: true });
+  uncompact ? await down(url, targetPath + "\\backup", { extract: true }) : await down(url, targetPath + "\\backup");
 
   return targetPath + "\\backup";
 }

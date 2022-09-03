@@ -9,7 +9,7 @@ import { download } from "../../functions/download";
 export = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
-      name: "backupEntry",
+      name: "importCode",
     });
   }
 
@@ -22,7 +22,7 @@ export = class extends Command {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Backup da Aplicação",
+        title: "Importar Aplicação",
       },
       async (progress, tk) => {
         const backup: Backup = await requester(
@@ -42,16 +42,25 @@ export = class extends Command {
         
         if ((<BackupApp>backup?.backups)?.url) {
           progress.report({ message: " Baixando Backup da Aplicação recebido.", increment: 40 });
-          const downloadFile = await download(`${(<BackupApp>backup.backups).url}`);
+          const downloadFile = await download(`${(<BackupApp>backup.backups).url}`, true);
           if (!downloadFile) {
             return;
           }
 
-          progress.report({ message: " Backup Baixado com sucesso!", increment: 100 });
+          progress.report({ message: " Backup Baixado com sucesso! Descompactando...", increment: 60 });
     
-          vscode.window.showInformationMessage(
-            `Arquivo Criado com Sucesso`
+          const folderPathParsed = downloadFile.split(`\\`).join(`/`);
+          const folderUri = vscode.Uri.file(folderPathParsed);
+
+          await progress.report({ message: " Descompactado com sucesso!", increment: 100 });
+    
+          const ask = await vscode.window.showInformationMessage(
+            `Arquivo Criado com Sucesso`,
+            `Abrir o Diretório`
           );
+          if (ask === "Abrir o Diretório") {
+            return vscode.commands.executeCommand(`vscode.openFolder`, folderUri);
+          }
         } else {
           return vscode.window.showErrorMessage(
             `Ocorreu algum erro durante o Backup de sua Aplicação. Tente novamente mais tarde.`

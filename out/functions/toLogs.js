@@ -27,10 +27,13 @@ exports.createLogs = void 0;
 const fs_1 = require("fs");
 const path_1 = require("path");
 const vscode = __importStar(require("vscode"));
-async function createLogs(message, logs, logName) {
-    const ask = logs.link
-        ? await vscode.window.showInformationMessage(message, "Abrir Logs", "Abrir Link")
-        : await vscode.window.showInformationMessage(message, "Abrir Logs");
+async function createLogs(message, logs, logName, options) {
+    const msg = {
+        withLink: () => { return vscode.window.showInformationMessage(message, "Abrir Logs", "Abrir Link"); },
+        normal: () => { return vscode.window.showInformationMessage(message, "Abrir Logs"); },
+        without: () => { return vscode.window.showInformationMessage(message); }
+    };
+    const ask = await msg[(options && options?.type ? options?.type : 'without')]();
     if (ask === "Abrir Logs") {
         let targetPath = "";
         const workspaceFolders = vscode.workspace.workspaceFolders || [];
@@ -41,9 +44,7 @@ async function createLogs(message, logs, logName) {
             vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
             return;
         }
-        const path = targetPath
-            ? targetPath + `\\${logName}`
-            : (0, path_1.join)(__filename, "..", "..", "..", `${logName}`);
+        const path = (0, path_1.join)(__filename, "..", "..", "..", `${logName}`);
         await (0, fs_1.writeFileSync)(path, logs.text);
         let exist = true;
         try {

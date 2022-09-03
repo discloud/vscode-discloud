@@ -39,15 +39,17 @@ export = class extends Command {
 
         progress.report({
           message: " Logs recebidas com sucesso.",
-          increment: 100,
+          increment: 100
         });
 
         return createLogs(
           "Logs acessadas com sucesso. Selecione uma das Opções:",
           {
             text: (<AppLog>logs.apps).terminal.big,
+            link: (<AppLog>logs.apps).terminal.url
           },
-          `${item.label?.toString().replaceAll(" ", "_").toLowerCase()}.log`
+          `${item.label?.toString().replaceAll(" ", "_").toLowerCase()}.log`,
+          { type: "withLink" }
         );
       }
     );

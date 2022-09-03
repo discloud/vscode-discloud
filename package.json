@@ -36,6 +36,7 @@
     "onCommand:discloud-apps.restartEntry",
     "onCommand:discloud-apps.logsEntry",
     "onCommand:discloud-apps.ramEntry",
+    "onCommand:discloud-apps.backupEntry",
     "onCommand:discloud.logIn",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
@@ -104,6 +105,10 @@
       {
         "command": "discloud-apps.ramEntry",
         "title": "Ram Edit"
+      },
+      {
+        "command": "discloud-apps.backupEntry",
+        "title": "Backup"
       },
       {
         "command": "discloud.logIn",
@@ -196,6 +201,10 @@
         },
         {
           "command": "discloud-apps.ramEntry",
+          "when": "view == discloud-apps"
+        },
+        {
+          "command": "discloud-apps.backupEntry",
           "when": "view == discloud-apps"
         }
       ],

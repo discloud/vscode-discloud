@@ -2,18 +2,26 @@ import { existsSync, writeFileSync } from "fs";
 import { join } from "path";
 import * as vscode from "vscode";
 
+type LogTypes = "withLink" | "normal" | "without";
+
 export async function createLogs(
   message: string,
   logs: { text: string; link?: string },
-  logName: string
+  logName: string,
+  options?: {
+    type?: LogTypes
+  }
 ) {
-  const ask = logs.link
-    ? await vscode.window.showInformationMessage(
-        message,
-        "Abrir Logs",
-        "Abrir Link"
-      )
-    : await vscode.window.showInformationMessage(message, "Abrir Logs");
+  
+
+    const msg = {
+      withLink: () => { return vscode.window.showInformationMessage(message, "Abrir Logs", "Abrir Link"); },
+      normal: () => { return vscode.window.showInformationMessage(message, "Abrir Logs"); },
+      without: () => {  return vscode.window.showInformationMessage(message); }
+    };
+
+    const ask = await msg[(options && options?.type ? options?.type : 'without')]();
+
 
   if (ask === "Abrir Logs") {
     let targetPath = "";
@@ -27,9 +35,7 @@ export async function createLogs(
       return;
     }
 
-    const path = targetPath
-    ? targetPath + `\\${logName}`
-    : join(__filename, "..", "..", "..", `${logName}`);
+    const path = join(__filename, "..", "..", "..", `${logName}`);
 
     await writeFileSync(
       path,

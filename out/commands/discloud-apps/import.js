@@ -25,11 +25,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 const requester_1 = require("../../functions/requester");
 const command_1 = require("../../structures/command");
 const vscode = __importStar(require("vscode"));
-const toLogs_1 = require("../../functions/toLogs");
+const download_1 = require("../../functions/download");
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
-            name: "logsEntry",
+            name: "importCode",
         });
     }
     run = async (item) => {
@@ -39,27 +39,37 @@ module.exports = class extends command_1.Command {
         }
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: "Logs da Aplicação",
+            title: "Importar Aplicação",
         }, async (progress, tk) => {
-            const logs = await (0, requester_1.requester)(`/app/${item.tooltip}/logs`, {
+            const backup = await (0, requester_1.requester)(`/app/${item.tooltip}/backup`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token,
                 },
                 method: "GET"
             });
-            if (!logs) {
-                return;
+            if (backup) {
+                progress.report({ message: " Backup da Aplicação recebido.", increment: 20 });
             }
-            progress.report({
-                message: " Logs recebidas com sucesso.",
-                increment: 100
-            });
-            return (0, toLogs_1.createLogs)("Logs acessadas com sucesso. Selecione uma das Opções:", {
-                text: logs.apps.terminal.big,
-                link: logs.apps.terminal.url
-            }, `${item.label?.toString().replaceAll(" ", "_").toLowerCase()}.log`, { type: "withLink" });
+            if (backup?.backups?.url) {
+                progress.report({ message: " Baixando Backup da Aplicação recebido.", increment: 40 });
+                const downloadFile = await (0, download_1.download)(`${backup.backups.url}`, true);
+                if (!downloadFile) {
+                    return;
+                }
+                progress.report({ message: " Backup Baixado com sucesso! Descompactando...", increment: 60 });
+                const folderPathParsed = downloadFile.split(`\\`).join(`/`);
+                const folderUri = vscode.Uri.file(folderPathParsed);
+                await progress.report({ message: " Descompactado com sucesso!", increment: 100 });
+                const ask = await vscode.window.showInformationMessage(`Arquivo Criado com Sucesso`, `Abrir o Diretório`);
+                if (ask === "Abrir o Diretório") {
+                    return vscode.commands.executeCommand(`vscode.openFolder`, folderUri);
+                }
+            }
+            else {
+                return vscode.window.showErrorMessage(`Ocorreu algum erro durante o Backup de sua Aplicação. Tente novamente mais tarde.`);
+            }
         });
     };
 };
-//# sourceMappingURL=logs.js.map
+//# sourceMappingURL=import.js.map

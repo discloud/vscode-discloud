@@ -30,7 +30,7 @@ exports.download = void 0;
 const vscode = __importStar(require("vscode"));
 const download_1 = __importDefault(require("download"));
 const fs_1 = require("fs");
-async function download(url) {
+async function download(url, uncompact = false) {
     let targetPath = "";
     const workspaceFolders = vscode.workspace.workspaceFolders || [];
     if (workspaceFolders && workspaceFolders.length) {
@@ -47,7 +47,7 @@ async function download(url) {
     if (!(0, fs_1.existsSync)(targetPath + "\\backup")) {
         (0, fs_1.mkdirSync)(targetPath + "\\backup");
     }
-    await (0, download_1.default)(url, targetPath + "\\backup", { extract: true });
+    uncompact ? await (0, download_1.default)(url, targetPath + "\\backup", { extract: true }) : await (0, download_1.default)(url, targetPath + "\\backup");
     return targetPath + "\\backup";
 }
 exports.download = download;
