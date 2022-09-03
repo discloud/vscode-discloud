@@ -22,18 +22,17 @@ export = class extends Command {
     });
 
     const ram = await requester(
-      "put",
       `/app/${item.tooltip}/ram`,
       {
         headers: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           "api-token": token,
         },
-      },
-      {
-        d: {
+        body: {
+          //@ts-ignore
           ramMB: parseInt(`${toPut}`),
         },
+        method: "PUT"
       }
     );
 

@@ -27,15 +27,14 @@ export = class extends Command {
         progress.report({ message: `Iniciar Aplicação - Inicializando Aplicação...` });
 
         const start = await requester(
-          "put",
           `/app/${item.tooltip}/start`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               "api-token": token,
+              method: "PUT"
             },
-          },
-          {}
+          }
         );
 
         if (!start) {

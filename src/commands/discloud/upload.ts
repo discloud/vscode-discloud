@@ -145,15 +145,15 @@ export = class extends Command {
             });
 
             const data = await requester(
-              "post",
               "/upload",
               {
                 headers: {
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   "api-token": `${token}`,
                 },
-              },
-              { d: form }
+                method: "POST",
+                body: form
+              }
             );
 
             progress.report({ increment: 100 });   

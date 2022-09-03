@@ -39,9 +39,10 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       return;
     }
     
-    const getUser: User = await requester("get", `/vscode`, {
+    const getUser: User = await requester(`/vscode`, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
+      method: "GET"
     }, { isVS: true });
 
     if (!getUser) {

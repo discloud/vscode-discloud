@@ -27,15 +27,14 @@ export = class extends Command {
         progress.report({ message: `Parar Aplicação - Pararando Aplicação...` });
 
         const stop = await requester(
-          "put",
           `/app/${item.tooltip}/stop`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               "api-token": token,
+              method: "PUT"
             },
-          },
-          {}
+          }
         );
 
         if (!stop) {

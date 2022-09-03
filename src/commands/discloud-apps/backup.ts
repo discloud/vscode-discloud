@@ -26,13 +26,13 @@ export = class extends Command {
       },
       async (progress, tk) => {
         const backup: Backup = await requester(
-          "get",
           `/app/${item.tooltip}/backup`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               "api-token": token,
             },
+            method: "GET"
           }
         );
 

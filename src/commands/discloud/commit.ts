@@ -39,11 +39,12 @@ export = class extends Command {
 
         progress.report({ message: "Commit - Requisitando suas Aplicações...", increment: 20 });
 
-        const userApps: User = await requester("get", "/vscode", {
+        const userApps: User = await requester("/vscode", {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             "api-token": `${token}`,
           },
+          method: "GET"
         });
 
         if (!userApps) { return vscode.window.showErrorMessage(
@@ -126,15 +127,15 @@ export = class extends Command {
           }
 
           const data = await requester(
-            "put",
             `/app/${finalID}/commit`,
             {
               headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 "api-token": `${token}`,
               },
-            },
-            { d: form }
+              method: "PUT",
+              body: form
+            }
           );
 
           await unlinkSync(savePath);

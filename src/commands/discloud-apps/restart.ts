@@ -27,15 +27,14 @@ export = class extends Command {
         progress.report({ message: `Reinciar Aplicação - Reinciando Aplicação...` });
 
         const restart = await requester(
-          "put",
           `/app/${item.tooltip}/restart`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               "api-token": token,
             },
-          },
-          {}
+            method: "PUT"
+          }
         );
 
         if (!restart) {

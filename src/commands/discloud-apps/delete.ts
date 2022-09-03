@@ -27,11 +27,12 @@ export = class extends Command {
                 return vscode.window.showInformationMessage("Aplicação não encontrada.");
             }
 
-            await requester('del', `/app/${item.tooltip}/delete`, {
+            await requester(`/app/${item.tooltip}/delete`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token
-                }
+                },
+                method: "PUT"
             });
     
             progress.report({ increment: 100 });

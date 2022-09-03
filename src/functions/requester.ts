@@ -1,15 +1,14 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import { Dispatcher, request } from 'undici';
 import * as vscode from 'vscode';
 import { createLogs } from './toLogs';
 
-type METHODS = "put" | "get" | "post" | "del";
 let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
 
 setInterval(() => { uses > 0 ? uses-- : false; }, time);
 
 let hasProcess = { i: false, p: '' };
 
-export async function requester(method: METHODS, url: string, config?: AxiosRequestConfig<any> | undefined, options?: { d?: any, isVS?: boolean }) {
+export async function requester(url: string, config?: ({ dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>) | undefined, options?: { d?: any, isVS?: boolean }) {
 
     
     if (hasProcess.i && (options && !options.isVS)) {
@@ -24,24 +23,16 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
         return;
     }
 
-    const methods = {
-        put: axios.put,
-        get: axios.get,
-        post: axios.post,
-        del: axios.delete
-    };
-    
-    config ? config['baseURL'] = "https://api.discloud.app/v2" : config = { baseURL: "https://api.discloud.app/v2" };
-
 	let data;
 	try {
-		data = ((options && (options.d && Object.keys(options.d).length > 1)) ? await methods[method](url, options.d, config) : await methods[method](url, config));
+
+        data = (await request("https://api.discloud.app/v2" + url, config));
+
         uses++;
-        maxUses = await parseInt(data.headers["ratelimit-limit"]);
-        time = await parseInt(data.headers["ratelimit-reset"]) * 1000;
-        remain = await parseInt(data.headers["ratelimit-remaining"]);
+        maxUses = parseInt(`${data.headers["ratelimit-limit"]}`);
+        time = await parseInt(`${data.headers["ratelimit-reset"]}`) * 1000;
+        remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
         
-        data = data.data;
         hasProcess.i = false;
 	} catch(err: any) {
         hasProcess.i = false;
@@ -59,10 +50,12 @@ export async function requester(method: METHODS, url: string, config?: AxiosRequ
 		return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
 	}
 
-    if ([504, 222].includes(data.statusCode) && data.status === "error") {
-        createLogs(data.message, { text: data.logs }, "error_app.log");
+    const fixData = await data.body.json();
+
+    if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
+        createLogs(fixData.message, { text: fixData.logs }, "error_app.log");
         return 222;
     }
 
-    return data;
+    return fixData;
 }

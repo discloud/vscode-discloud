@@ -1,7 +1,7 @@
 {
   "name": "discloud",
   "displayName": "Discloud",
-  "icon": "out/images/icons/discloudlogo.png",
+  "icon": "images/icons/discloudlogo.png",
   "galleryBanner": {
     "color": "#5865F2",
     "theme": "dark"
@@ -42,39 +42,39 @@
     "onView:discloud-apps",
     "*"
   ],
-  "main": "out/extension.js",
+  "main": "extension.js",
   "contributes": {
     "commands": [
       {
         "command": "discloud-apps.helpButton",
         "title": "Discloud Help",
         "icon": {
-          "light": "out/images/light/helper.svg",
-          "dark": "out/images/dark/helper.svg"
+          "light": "images/light/helper.svg",
+          "dark": "images/dark/helper.svg"
         }
       },
       {
         "command": "discloud-apps.refreshButton",
         "title": "Recarregar Apps",
         "icon": {
-          "light": "out/images/light/refresh.svg",
-          "dark": "out/images/dark/refresh.svg"
+          "light": "images/light/refresh.svg",
+          "dark": "images/dark/refresh.svg"
         }
       },
       {
         "command": "discloud-apps.importCode",
         "title": "Importar app para o vscode",
         "icon": {
-          "light": "out/images/light/code.svg",
-          "dark": "out/images/dark/code.svg"
+          "light": "images/light/code.svg",
+          "dark": "images/dark/code.svg"
         }
       },
       {
         "command": "discloud-apps.deleteEntry",
         "title": "Delete App",
         "icon": {
-          "light": "out/images/light/del.svg",
-          "dark": "out/images/dark/del.svg"
+          "light": "images/light/del.svg",
+          "dark": "images/dark/del.svg"
         }
       },
       {
@@ -115,7 +115,7 @@
         {
           "id": "discloud-sidebar",
           "title": "Discloud.app",
-          "icon": "out/images/icons/discloudlogo.svg"
+          "icon": "images/icons/discloudlogo.svg"
         }
       ]
     },
@@ -238,7 +238,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint out --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./test/runTest.js"
   },
   "devDependencies": {
     "@types/archiver": "^5.3.1",
@@ -257,9 +257,10 @@
   },
   "dependencies": {
     "archiver": "^5.3.1",
-    "axios": "^0.27.2",
     "decompress": "^4.2.1",
     "download": "^8.0.0",
+    "form-data": "^4.0.0",
+    "undici": "^5.10.0",
     "vsce": "^2.11.0"
   }
 }
