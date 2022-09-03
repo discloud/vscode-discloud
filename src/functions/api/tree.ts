@@ -4,7 +4,6 @@ import { statusIcons } from "../../types/icons";
 import { checkIfHasToken } from "../checkers/token";
 import { requester } from "../requester";
 import { User } from "../../types/apps";
-import { login } from "../login";
 
 enum StatusLabels {
   cpu = "CPU",
@@ -184,7 +183,8 @@ export class TreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "images",
+        "..",
+        "resources",
         "light",
         `${this.iconName}.svg`
       ),
@@ -193,7 +193,8 @@ export class TreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "images",
+        "..",
+        "resources",
         "dark",
         `${this.iconName}.svg`
       ),
@@ -221,7 +222,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "images",
+        "resources",
         "light",
         `${this.iconName}.svg`
       ),
@@ -230,7 +231,7 @@ class ChildrenTreeItem extends vscode.TreeItem {
         "..",
         "..",
         "..",
-        "images",
+        "resources",
         "dark",
         `${this.iconName}.svg`
       ),
