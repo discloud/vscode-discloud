@@ -1,4 +1,4 @@
-import { writeFileSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import { join } from "path";
 import * as vscode from "vscode";
 
@@ -27,15 +27,30 @@ export async function createLogs(
       return;
     }
 
+    const path = targetPath
+    ? targetPath + `\\${logName}`
+    : join(__filename, "..", "..", "..", `${logName}`);
+
     await writeFileSync(
-      targetPath
-        ? targetPath + `\\${logName}`
-        : join(__filename, "..", "..", "..", `${logName}`),
+      path,
       logs.text
     );
-    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(
-      targetPath ? targetPath + `\\${logName}` : join(__filename, "..", "..", "..", `${logName}`)
-    );
+
+    let exist = true;
+
+    try {
+      await existsSync(targetPath);
+    } catch(err) {
+      exist = false;
+    }
+
+    if (!exist) {
+      vscode.window.showInformationMessage("Arquivo para abrir não foi encontrado.");
+      return;
+    }
+
+    const finalPath = path[0].toUpperCase() + path.slice(1);
+    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(finalPath);
     return vscode.window.showTextDocument(fileToOpenUri, {
       viewColumn: vscode.ViewColumn.Beside,
     });
