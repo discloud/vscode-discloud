@@ -27,16 +27,23 @@ exports.requester = void 0;
 const undici_1 = require("undici");
 const vscode = __importStar(require("vscode"));
 const toLogs_1 = require("./toLogs");
-let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
-setInterval(() => { uses > 0 ? uses-- : false; }, time);
-let hasProcess = { i: false, p: '' };
+let { maxUses, uses, time, remain } = {
+    maxUses: 60,
+    uses: 0,
+    time: 60000,
+    remain: 60,
+};
+setInterval(() => {
+    uses > 0 ? uses-- : false;
+}, time);
+let hasProcess = { i: false, p: "" };
 async function requester(url, config, options) {
-    if (hasProcess.i && (options && !options.isVS)) {
+    if (hasProcess.i && (options && !options.isVS || !options)) {
         vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
         return;
     }
     else {
-        hasProcess = { i: true, p: `${url.split('/')[url.split('/').length - 1]}` };
+        hasProcess = { i: true, p: `${url.split("/")[url.split("/").length - 1]}` };
     }
     if (uses > maxUses || remain === 0) {
         vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time / 1000)} segundos para usar novamente.`);
@@ -44,26 +51,26 @@ async function requester(url, config, options) {
     }
     let data;
     try {
-        data = (await (0, undici_1.request)("https://api.discloud.app/v2" + url, config));
+        data = await (0, undici_1.request)(`https://api.discloud.app/v2${url}`, config);
         uses++;
-        maxUses = parseInt(`${data.headers["ratelimit-limit"]}`);
-        time = await parseInt(`${data.headers["ratelimit-reset"]}`) * 1000;
+        maxUses = await parseInt(`${data.headers["ratelimit-limit"]}`);
+        time = (await parseInt(`${data.headers["ratelimit-reset"]}`)) * 1000;
         remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
         hasProcess.i = false;
     }
     catch (err) {
         hasProcess.i = false;
-        if (err?.response?.status === 401) {
-            vscode.window.showErrorMessage(err.response.data.message);
+        if (err?.status === 401) {
+            vscode.window.showErrorMessage(err.body.message);
             return;
         }
-        if (err?.response?.statusCode === 404) {
+        if (err?.statusCode === 404) {
             return;
         }
-        if (err === "ECONNREFUSED 127.0.0.1:80") {
-            return vscode.window.showErrorMessage(`Algum erro com o Axios ocorreu, reinicie o VS Code, ou contate a staff.`);
+        if (err === "Invalid endpoint") {
+            return vscode.window.showErrorMessage(`https://api.discloud.app/v2/${url}`);
         }
-        return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
+        return vscode.window.showErrorMessage(`${err.body ? err.body.message : err}`);
     }
     const fixData = await data.body.json();
     if ([504, 222].includes(data.statusCode) && fixData.status === "error") {

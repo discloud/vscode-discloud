@@ -52,7 +52,7 @@ module.exports = class extends command_1.Command {
                 return;
             }
             progress.report({
-                message: "Logs da Aplicação - Logs recebidas com sucesso.",
+                message: " Logs recebidas com sucesso.",
                 increment: 100,
             });
             return (0, toLogs_1.createLogs)("Logs acessadas com sucesso. Selecione uma das Opções:", {

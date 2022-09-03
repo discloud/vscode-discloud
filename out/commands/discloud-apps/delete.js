@@ -43,6 +43,7 @@ module.exports = class extends command_1.Command {
             if (!item.tooltip) {
                 return vscode.window.showInformationMessage("Aplicação não encontrada.");
             }
+            progress.report({ message: " Deletando Aplicação..." });
             await (0, requester_1.requester)(`/app/${item.tooltip}/delete`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention

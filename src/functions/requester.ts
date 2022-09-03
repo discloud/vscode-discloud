@@ -1,61 +1,85 @@
-import { Dispatcher, request } from 'undici';
-import * as vscode from 'vscode';
-import { createLogs } from './toLogs';
+import { Dispatcher, request } from "undici";
+import * as vscode from "vscode";
+import { createLogs } from "./toLogs";
 
-let { maxUses, uses, time, remain } = { maxUses: 60, uses: 0, time: 60000, remain: 60 };
+let { maxUses, uses, time, remain } = {
+  maxUses: 60,
+  uses: 0,
+  time: 60000,
+  remain: 60,
+};
 
-setInterval(() => { uses > 0 ? uses-- : false; }, time);
+setInterval(() => {
+  uses > 0 ? uses-- : false;
+}, time);
 
-let hasProcess = { i: false, p: '' };
+let hasProcess = { i: false, p: "" };
 
-export async function requester(url: string, config?: ({ dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>) | undefined, options?: { d?: any, isVS?: boolean }) {
+export async function requester(
+  url: string,
+  config?:
+    | ({ dispatcher?: Dispatcher } & Omit<
+        Dispatcher.RequestOptions,
+        "origin" | "path" | "method"
+      > &
+        Partial<Pick<Dispatcher.RequestOptions, "method">>)
+    | undefined,
+  options?: { isVS?: boolean }
+) {
+  if (hasProcess.i && (options && !options.isVS || !options)) {
+    vscode.window.showErrorMessage(
+      `Você já tem um processo de ${hasProcess.p} em execução.`
+    );
+    return;
+  } else {
+    hasProcess = { i: true, p: `${url.split("/")[url.split("/").length - 1]}` };
+  }
 
-    
-    if (hasProcess.i && (options && !options.isVS)) {
-        vscode.window.showErrorMessage(`Você já tem um processo de ${hasProcess.p} em execução.`);
-        return;
-    } else {
-        hasProcess = { i: true, p: `${url.split('/')[url.split('/').length - 1]}` };
+  if (uses > maxUses || remain === 0) {
+    vscode.window.showInformationMessage(
+      `Você atingiu o limite de requisições. Espere ${Math.floor(
+        time / 1000
+      )} segundos para usar novamente.`
+    );
+    return;
+  }
+
+  let data;
+  try {
+    data = await request(`https://api.discloud.app/v2${url}`, config);
+
+    uses++;
+    maxUses = await parseInt(`${data.headers["ratelimit-limit"]}`);
+    time = (await parseInt(`${data.headers["ratelimit-reset"]}`)) * 1000;
+    remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
+
+    hasProcess.i = false;
+  } catch (err: any) {
+    hasProcess.i = false;
+    if (err?.status === 401) {
+      vscode.window.showErrorMessage(err.body.message);
+      return;
+    }
+    if (err?.statusCode === 404) {
+      return;
+    }
+    if (err === "Invalid endpoint") {
+      return vscode.window.showErrorMessage(
+        `https://api.discloud.app/v2/${url}`
+      );
     }
 
-    if (uses > maxUses || remain === 0) {
-        vscode.window.showInformationMessage(`Você atingiu o limite de requisições. Espere ${Math.floor(time/1000)} segundos para usar novamente.`);
-        return;
-    }
+    return vscode.window.showErrorMessage(
+      `${err.body ? err.body.message : err}`
+    );
+  }
 
-	let data;
-	try {
+  const fixData = await data.body.json();
 
-        data = (await request("https://api.discloud.app/v2" + url, config));
+  if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
+    createLogs(fixData.message, { text: fixData.logs }, "error_app.log");
+    return 222;
+  }
 
-        uses++;
-        maxUses = parseInt(`${data.headers["ratelimit-limit"]}`);
-        time = await parseInt(`${data.headers["ratelimit-reset"]}`) * 1000;
-        remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
-        
-        hasProcess.i = false;
-	} catch(err: any) {
-        hasProcess.i = false;
-        if (err?.response?.status === 401) {
-            vscode.window.showErrorMessage(err.response.data.message);
-            return;
-        }
-        if (err?.response?.statusCode === 404) {
-            return;
-        }
-        if (err === "ECONNREFUSED 127.0.0.1:80") {
-            return vscode.window.showErrorMessage(`Algum erro com o Axios ocorreu, reinicie o VS Code, ou contate a staff.`);
-        }
-
-		return vscode.window.showErrorMessage(`${err.response?.data ? err.response.data?.message : err}`);
-	}
-
-    const fixData = await data.body.json();
-
-    if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
-        createLogs(fixData.message, { text: fixData.logs }, "error_app.log");
-        return 222;
-    }
-
-    return fixData;
+  return fixData;
 }

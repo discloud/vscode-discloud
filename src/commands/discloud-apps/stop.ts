@@ -24,16 +24,16 @@ export = class extends Command {
       },
       async (progress, tk) => {
 
-        progress.report({ message: `Parar Aplicação - Pararando Aplicação...` });
+        progress.report({ message: ` Pararando Aplicação...` });
 
         const stop = await requester(
           `/app/${item.tooltip}/stop`,
           {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              "api-token": token,
-              method: "PUT"
+              "api-token": token
             },
+            method: "PUT"
           }
         );
 

@@ -38,7 +38,7 @@ export = class extends Command {
         }
 
         progress.report({
-          message: "Logs da Aplicação - Logs recebidas com sucesso.",
+          message: " Logs recebidas com sucesso.",
           increment: 100,
         });
 
