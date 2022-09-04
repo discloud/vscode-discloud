@@ -5,16 +5,16 @@ import {
   statSync,
   accessSync,
   unlinkSync,
-  createReadStream,
   readdirSync,
   WriteStream,
 } from "fs";
 import { requester } from "../../functions/requester";
-import FormData from "form-data";
+import { FormData } from "undici";
 import { requiredFiles, blockedFiles } from "../../config.json";
 import { check } from "../../functions/checkers/config";
 import { Zip } from "../../functions/zip";
 import { Discloud } from "../../structures/extend";
+import { streamtoBlob } from "../../functions/streamToBlob";
 type LANGS = "js" | "py" | "rb" | "rs" | "ts" | "go";
 
 export = class extends Command {
@@ -57,7 +57,7 @@ export = class extends Command {
 
         const isDirectory = statSync(targetPath).isDirectory();
 
-        const savePath = `${targetPath}/upload.zip`;
+        const savePath = `${targetPath}\\upload.zip`;
         let isExist = true;
         try {
           accessSync(savePath);
@@ -103,6 +103,7 @@ export = class extends Command {
           let hasRequiredFiles = { checks: 0, all: false };
 
           for await (const file of files) {
+            if (file === "upload.zip") { continue; }
             let lang = file.split(".")[1];
             if (lang) {
               if (
@@ -138,12 +139,13 @@ export = class extends Command {
         if (isGenerate) {
           stream?.on("close", async () => {
             const form = new FormData();
-            form.append("upFile", createReadStream(savePath));
+            form.append("file", await streamtoBlob(savePath), "upload.zip");
 
             await progress.report({ message: "Upload - Requisitando Upload...",
               increment: 50,
             });
 
+            console.log(form);
             const data = await requester(
               "/upload",
               {

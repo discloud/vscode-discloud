@@ -69,6 +69,7 @@ export async function requester(
       );
     }
 
+    console.log(err);
     return vscode.window.showErrorMessage(
       `${err.body ? err.body.message : err}`
     );

@@ -49,7 +49,7 @@ class AppTreeDataProvider {
         this.refresh();
     }
     async verifyApps() {
-        const token = await (0, token_1.checkIfHasToken)();
+        const token = await vscode.workspace.getConfiguration("discloud").get("token");
         if (!token) {
             return;
         }

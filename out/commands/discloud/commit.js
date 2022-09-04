@@ -22,15 +22,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 const command_1 = require("../../structures/command");
 const vscode = __importStar(require("vscode"));
 const zip_1 = require("../../functions/zip");
 const fs_1 = require("fs");
-const form_data_1 = __importDefault(require("form-data"));
+const undici_1 = require("undici");
 const requester_1 = require("../../functions/requester");
+const streamToBlob_1 = require("../../functions/streamToBlob");
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
@@ -51,17 +49,22 @@ module.exports = class extends command_1.Command {
             const folders = await vscode.env.clipboard.readText();
             const paths = folders.split("\n");
             if (!folders) {
+                progress.report({ increment: 100 });
                 return vscode.window.showInformationMessage("Nenhum arquivo foi encontrado.");
             }
-            progress.report({ message: "Commit - Requisitando suas Aplicações...", increment: 20 });
+            await progress.report({
+                message: " Requisitando suas Aplicações...",
+                increment: 20,
+            });
             const userApps = await (0, requester_1.requester)("/vscode", {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": `${token}`,
                 },
-                method: "GET"
+                method: "GET",
             });
             if (!userApps) {
+                progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Nenhuma Aplicação encontrada.");
             }
             const getApps = await userApps.user.appsStatus;
@@ -80,6 +83,7 @@ module.exports = class extends command_1.Command {
                 title: "Escolha uma aplicação.",
             });
             if (!input) {
+                progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Aplicação incorreta ou inexistente.");
             }
             let targetPath = "";
@@ -91,7 +95,10 @@ module.exports = class extends command_1.Command {
                 vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
                 return;
             }
-            progress.report({ message: "Commit - Criando arquivo Zip...", increment: 40 });
+            await progress.report({
+                message: " Criando arquivo Zip...",
+                increment: 40,
+            });
             const savePath = `${targetPath}\\commit.zip`;
             const { zip, stream } = new zip_1.Zip(savePath, "zip", {
                 zlib: {
@@ -99,10 +106,17 @@ module.exports = class extends command_1.Command {
                 },
             });
             if (!zip) {
+                progress.report({ increment: 100 });
                 return vscode.window.showInformationMessage("Alguma Coisa com seu .zip deu errado.");
             }
-            progress.report({ message: "Commit - Adicionando seus arquivos ao Zip...", increment: 60 });
+            await progress.report({
+                message: " Adicionando seus arquivos ao Zip...",
+                increment: 60,
+            });
             for await (const pth of paths) {
+                if (pth === savePath) {
+                    continue;
+                }
                 const splitted = pth.replaceAll("\r", "").split("\\");
                 const newPath = pth[0].toLowerCase() + pth.slice(1);
                 (0, fs_1.statSync)(newPath.replaceAll("\r", "")).isDirectory()
@@ -110,11 +124,17 @@ module.exports = class extends command_1.Command {
                     : zip.file(pth, { name: splitted[splitted.length - 1] });
             }
             stream?.on("close", async () => {
-                const form = new form_data_1.default();
-                form.append("commitFile", (0, fs_1.createReadStream)(savePath));
-                progress.report({ message: "Commit - Requisitando Commit...", increment: 80 });
+                const form = new undici_1.FormData();
+                form.append("file", await (0, streamToBlob_1.streamtoBlob)(savePath), "commit.zip");
+                console.log(form);
+                await progress.report({
+                    message: "Commit - Requisitando Commit...",
+                    increment: 80,
+                });
                 let finalID = "";
-                const check = typeof hasOtherName === 'object' ? hasOtherName?.filter((r) => r.name === input) : [];
+                const check = typeof hasOtherName !== "boolean"
+                    ? hasOtherName?.filter((r) => r.name === input)
+                    : [];
                 if (check.length > 0) {
                     finalID = check[0].id;
                 }
@@ -124,14 +144,17 @@ module.exports = class extends command_1.Command {
                 const data = await (0, requester_1.requester)(`/app/${finalID}/commit`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": `${token}`,
+                        "api-token": `${token}`
                     },
                     method: "PUT",
                     body: form
                 });
                 await (0, fs_1.unlinkSync)(savePath);
-                progress.report({ increment: 100 });
-                await vscode.window.showInformationMessage(`${data?.message}`);
+                await progress.report({ increment: 100 });
+                if (!data) {
+                    return;
+                }
+                vscode.window.showInformationMessage(`${data?.message}`);
             });
             zip?.on("error", (err) => {
                 vscode.window.showErrorMessage(JSON.stringify(err));

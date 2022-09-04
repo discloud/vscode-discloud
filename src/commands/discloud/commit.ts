@@ -2,10 +2,11 @@ import { Command } from "../../structures/command";
 import * as vscode from "vscode";
 import { Discloud } from "../../structures/extend";
 import { Zip } from "../../functions/zip";
-import { statSync, unlinkSync, createReadStream, WriteStream } from "fs";
-import FormData from "form-data";
+import { statSync, unlinkSync, WriteStream } from "fs";
+import { FormData } from "undici";
 import { requester } from "../../functions/requester";
 import { User } from "../../types/apps";
+import { streamtoBlob } from "../../functions/streamToBlob";
 
 export = class extends Command {
   constructor(discloud: Discloud) {
@@ -32,24 +33,31 @@ export = class extends Command {
         const paths = folders.split("\n");
 
         if (!folders) {
+          progress.report({ increment: 100 });
           return vscode.window.showInformationMessage(
             "Nenhum arquivo foi encontrado."
           );
         }
 
-        progress.report({ message: "Commit - Requisitando suas Aplicações...", increment: 20 });
+        await progress.report({
+          message: " Requisitando suas Aplicações...",
+          increment: 20,
+        });
 
         const userApps: User = await requester("/vscode", {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             "api-token": `${token}`,
           },
-          method: "GET"
+          method: "GET",
         });
 
-        if (!userApps) { return vscode.window.showErrorMessage(
-          "Nenhuma Aplicação encontrada."
-        ); }
+        if (!userApps) {
+          progress.report({ increment: 100 });
+          return vscode.window.showErrorMessage(
+            "Nenhuma Aplicação encontrada."
+          );
+        }
 
         const getApps = await userApps.user.appsStatus;
         let hasOtherName: boolean | { name: string; id: string }[] = false;
@@ -67,6 +75,7 @@ export = class extends Command {
           title: "Escolha uma aplicação.",
         });
         if (!input) {
+          progress.report({ increment: 100 });
           return vscode.window.showErrorMessage(
             "Aplicação incorreta ou inexistente."
           );
@@ -83,7 +92,10 @@ export = class extends Command {
           return;
         }
 
-        progress.report({ message: "Commit - Criando arquivo Zip...", increment: 40 });
+        await progress.report({
+          message: " Criando arquivo Zip...",
+          increment: 40,
+        });
 
         const savePath = `${targetPath}\\commit.zip`;
 
@@ -94,14 +106,19 @@ export = class extends Command {
         });
 
         if (!zip) {
+          progress.report({ increment: 100 });
           return vscode.window.showInformationMessage(
             "Alguma Coisa com seu .zip deu errado."
           );
         }
 
-        progress.report({ message: "Commit - Adicionando seus arquivos ao Zip...", increment: 60 });
+        await progress.report({
+          message: " Adicionando seus arquivos ao Zip...",
+          increment: 60,
+        });
 
         for await (const pth of paths) {
+          if (pth === savePath) { continue; }
           const splitted = pth.replaceAll("\r", "").split("\\");
           const newPath = pth[0].toLowerCase() + pth.slice(1);
           statSync(newPath.replaceAll("\r", "")).isDirectory()
@@ -111,36 +128,44 @@ export = class extends Command {
 
         stream?.on("close", async () => {
           const form = new FormData();
-          form.append("commitFile", createReadStream(savePath));
+          form.append("file", await streamtoBlob(savePath), "commit.zip");
+          console.log(form);
 
-          progress.report({ message: "Commit - Requisitando Commit...", increment: 80 });
+          await progress.report({
+            message: "Commit - Requisitando Commit...",
+            increment: 80,
+          });
 
           let finalID = "";
 
-          const check = typeof hasOtherName === 'object' ? (hasOtherName as { name: string; id: string }[])?.filter(
-            (r) => r.name === input
-          ) : []; 
+          const check =
+            typeof hasOtherName !== "boolean"
+              ? (hasOtherName as { name: string; id: string }[])?.filter(
+                  (r) => r.name === input
+                )
+              : [];
+
           if (check.length > 0) {
             finalID = check[0].id;
           } else {
             finalID = input.split("|")[1].trim();
           }
 
-          const data = await requester(
-            `/app/${finalID}/commit`,
-            {
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                "api-token": `${token}`,
-              },
-              method: "PUT",
-              body: form
-            }
-          );
+          const data = await requester(`/app/${finalID}/commit`, {
+            headers: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              "api-token": `${token}`
+            },
+            method: "PUT",
+            body: form
+          });
 
           await unlinkSync(savePath);
-          progress.report({ increment: 100 });
-          await   vscode.window.showInformationMessage(`${data?.message}`);
+          await progress.report({ increment: 100 });
+          if (!data) {
+            return;
+          }
+          vscode.window.showInformationMessage(`${data?.message}`);
         });
 
         zip?.on("error", (err) => {

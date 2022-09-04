@@ -22,17 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 const command_1 = require("../../structures/command");
 const vscode = __importStar(require("vscode"));
 const fs_1 = require("fs");
 const requester_1 = require("../../functions/requester");
-const form_data_1 = __importDefault(require("form-data"));
+const undici_1 = require("undici");
 const config_json_1 = require("../../config.json");
 const config_1 = require("../../functions/checkers/config");
 const zip_1 = require("../../functions/zip");
+const streamToBlob_1 = require("../../functions/streamToBlob");
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
@@ -66,7 +64,7 @@ module.exports = class extends command_1.Command {
                 }
             }
             const isDirectory = (0, fs_1.statSync)(targetPath).isDirectory();
-            const savePath = `${targetPath}/upload.zip`;
+            const savePath = `${targetPath}\\upload.zip`;
             let isExist = true;
             try {
                 (0, fs_1.accessSync)(savePath);
@@ -102,6 +100,9 @@ module.exports = class extends command_1.Command {
                 }
                 let hasRequiredFiles = { checks: 0, all: false };
                 for await (const file of files) {
+                    if (file === "upload.zip") {
+                        continue;
+                    }
                     let lang = file.split(".")[1];
                     if (lang) {
                         if (config_json_1.requiredFiles[lang] &&
@@ -126,11 +127,12 @@ module.exports = class extends command_1.Command {
             }
             if (isGenerate) {
                 stream?.on("close", async () => {
-                    const form = new form_data_1.default();
-                    form.append("upFile", (0, fs_1.createReadStream)(savePath));
+                    const form = new undici_1.FormData();
+                    form.append("file", await (0, streamToBlob_1.streamtoBlob)(savePath), "upload.zip");
                     await progress.report({ message: "Upload - Requisitando Upload...",
                         increment: 50,
                     });
+                    console.log(form);
                     const data = await (0, requester_1.requester)("/upload", {
                         headers: {
                             // eslint-disable-next-line @typescript-eslint/naming-convention
