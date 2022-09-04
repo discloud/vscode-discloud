@@ -53,8 +53,7 @@ module.exports = class extends command_1.Command {
                 return vscode.window.showInformationMessage("Nenhum arquivo foi encontrado.");
             }
             await progress.report({
-                message: " Requisitando suas Aplicações...",
-                increment: 20,
+                message: " Requisitando Aplicações..."
             });
             const userApps = await (0, requester_1.requester)("/vscode", {
                 headers: {
@@ -66,6 +65,12 @@ module.exports = class extends command_1.Command {
             if (!userApps) {
                 progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Nenhuma Aplicação encontrada.");
+            }
+            const hasBar = this.discloud.bars.get('upload_bar');
+            console.log(hasBar);
+            if (hasBar && ["$(cloud-upload) Upload Discloud", "$(loading~spin) Upload Discloud"].includes(`${hasBar?.text}`)) {
+                hasBar.text = "$(loading~spin) Commiting Discloud";
+                hasBar.show();
             }
             const getApps = await userApps.user.appsStatus;
             let hasOtherName = false;
@@ -83,7 +88,8 @@ module.exports = class extends command_1.Command {
                 title: "Escolha uma aplicação.",
             });
             if (!input) {
-                progress.report({ increment: 100 });
+                console.log(progress);
+                //progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Aplicação incorreta ou inexistente.");
             }
             let targetPath = "";
@@ -95,10 +101,6 @@ module.exports = class extends command_1.Command {
                 vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
                 return;
             }
-            await progress.report({
-                message: " Criando arquivo Zip...",
-                increment: 40,
-            });
             const savePath = `${targetPath}\\commit.zip`;
             const { zip, stream } = new zip_1.Zip(savePath, "zip", {
                 zlib: {
@@ -109,10 +111,6 @@ module.exports = class extends command_1.Command {
                 progress.report({ increment: 100 });
                 return vscode.window.showInformationMessage("Alguma Coisa com seu .zip deu errado.");
             }
-            await progress.report({
-                message: " Adicionando seus arquivos ao Zip...",
-                increment: 60,
-            });
             for await (const pth of paths) {
                 if (pth === savePath) {
                     continue;
@@ -126,11 +124,6 @@ module.exports = class extends command_1.Command {
             stream?.on("close", async () => {
                 const form = new undici_1.FormData();
                 form.append("file", await (0, streamToBlob_1.streamtoBlob)(savePath), "commit.zip");
-                console.log(form);
-                await progress.report({
-                    message: "Commit - Requisitando Commit...",
-                    increment: 80,
-                });
                 let finalID = "";
                 const check = typeof hasOtherName !== "boolean"
                     ? hasOtherName?.filter((r) => r.name === input)
@@ -151,6 +144,7 @@ module.exports = class extends command_1.Command {
                 });
                 await (0, fs_1.unlinkSync)(savePath);
                 await progress.report({ increment: 100 });
+                hasBar?.hide();
                 if (!data) {
                     return;
                 }

@@ -6,7 +6,6 @@ const fs_1 = require("fs");
 async function streamtoBlob(file) {
     return new Promise(async (resolve, reject) => {
         const stream = await (0, fs_1.createReadStream)(file);
-        console.log(stream);
         const chunks = [];
         stream
             .on("data", chunk => chunks.push(chunk))

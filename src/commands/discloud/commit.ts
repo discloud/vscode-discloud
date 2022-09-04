@@ -40,8 +40,7 @@ export = class extends Command {
         }
 
         await progress.report({
-          message: " Requisitando suas Aplicações...",
-          increment: 20,
+          message: " Requisitando Aplicações..."
         });
 
         const userApps: User = await requester("/vscode", {
@@ -57,6 +56,13 @@ export = class extends Command {
           return vscode.window.showErrorMessage(
             "Nenhuma Aplicação encontrada."
           );
+        }
+
+        const hasBar = this.discloud.bars.get('upload_bar');
+        console.log(hasBar);
+        if (hasBar && ["$(cloud-upload) Upload Discloud", "$(loading~spin) Upload Discloud"].includes(`${hasBar?.text}`)) {
+          hasBar.text = "$(loading~spin) Commiting Discloud";
+          hasBar.show();
         }
 
         const getApps = await userApps.user.appsStatus;
@@ -75,7 +81,8 @@ export = class extends Command {
           title: "Escolha uma aplicação.",
         });
         if (!input) {
-          progress.report({ increment: 100 });
+          console.log(progress);
+          //progress.report({ increment: 100 });
           return vscode.window.showErrorMessage(
             "Aplicação incorreta ou inexistente."
           );
@@ -92,11 +99,6 @@ export = class extends Command {
           return;
         }
 
-        await progress.report({
-          message: " Criando arquivo Zip...",
-          increment: 40,
-        });
-
         const savePath = `${targetPath}\\commit.zip`;
 
         const { zip, stream } = new Zip(savePath, "zip", {
@@ -112,11 +114,6 @@ export = class extends Command {
           );
         }
 
-        await progress.report({
-          message: " Adicionando seus arquivos ao Zip...",
-          increment: 60,
-        });
-
         for await (const pth of paths) {
           if (pth === savePath) { continue; }
           const splitted = pth.replaceAll("\r", "").split("\\");
@@ -129,12 +126,6 @@ export = class extends Command {
         stream?.on("close", async () => {
           const form = new FormData();
           form.append("file", await streamtoBlob(savePath), "commit.zip");
-          console.log(form);
-
-          await progress.report({
-            message: "Commit - Requisitando Commit...",
-            increment: 80,
-          });
 
           let finalID = "";
 
@@ -162,6 +153,7 @@ export = class extends Command {
 
           await unlinkSync(savePath);
           await progress.report({ increment: 100 });
+          hasBar?.hide();
           if (!data) {
             return;
           }

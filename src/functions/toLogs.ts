@@ -45,7 +45,7 @@ export async function createLogs(
     let exist = true;
 
     try {
-      await existsSync(targetPath);
+      await existsSync(path);
     } catch(err) {
       exist = false;
     }
@@ -55,7 +55,9 @@ export async function createLogs(
       return;
     }
 
+    console.log(path);
     const finalPath = path[0].toUpperCase() + path.slice(1);
+    console.log(finalPath);
     const fileToOpenUri: vscode.Uri = await vscode.Uri.file(finalPath);
     return vscode.window.showTextDocument(fileToOpenUri, {
       viewColumn: vscode.ViewColumn.Beside,

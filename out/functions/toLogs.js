@@ -48,7 +48,7 @@ async function createLogs(message, logs, logName, options) {
         await (0, fs_1.writeFileSync)(path, logs.text);
         let exist = true;
         try {
-            await (0, fs_1.existsSync)(targetPath);
+            await (0, fs_1.existsSync)(path);
         }
         catch (err) {
             exist = false;
@@ -57,7 +57,9 @@ async function createLogs(message, logs, logName, options) {
             vscode.window.showInformationMessage("Arquivo para abrir não foi encontrado.");
             return;
         }
+        console.log(path);
         const finalPath = path[0].toUpperCase() + path.slice(1);
+        console.log(finalPath);
         const fileToOpenUri = await vscode.Uri.file(finalPath);
         return vscode.window.showTextDocument(fileToOpenUri, {
             viewColumn: vscode.ViewColumn.Beside,
