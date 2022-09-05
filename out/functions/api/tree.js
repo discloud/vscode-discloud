@@ -84,7 +84,6 @@ class AppTreeDataProvider {
                     : app.ramKilled
                         ? icons_1.statusIcons.rak
                         : icons_1.statusIcons.off,
-                //@ts-ignore
                 children: childrens ? Object.values(childrens) : undefined,
                 tooltip: app.id,
             }));

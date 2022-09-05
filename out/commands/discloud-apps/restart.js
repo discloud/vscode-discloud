@@ -25,7 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 const command_1 = require("../../structures/command");
 const requester_1 = require("../../functions/requester");
 const vscode = __importStar(require("vscode"));
-let i = 0;
 module.exports = class extends command_1.Command {
     constructor(discloud) {
         super(discloud, {
@@ -42,7 +41,6 @@ module.exports = class extends command_1.Command {
             title: "Reinciar Aplicação",
         }, async (progress, tk) => {
             progress.report({ message: ` Reinciando Aplicação...` });
-            console.log(i++);
             const restart = await (0, requester_1.requester)(`/app/${item.tooltip}/restart`, {
                 headers: {
                     // eslint-disable-next-line @typescript-eslint/naming-convention

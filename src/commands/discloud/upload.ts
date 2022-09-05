@@ -145,7 +145,6 @@ export = class extends Command {
               increment: 50,
             });
 
-            console.log(form);
             const data = await requester(
               "/upload",
               {

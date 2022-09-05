@@ -21,6 +21,19 @@ export = class extends Command {
       return;
     }
 
+    const hasBar = this.discloud.bars.get("upload_bar");
+
+    if (
+      hasBar &&
+      [
+        "$(cloud-upload) Upload Discloud",
+        "$(loading~spin) Upload Discloud",
+      ].includes(`${hasBar?.text}`)
+    ) {
+      hasBar.text = "$(loading~spin) Commiting Discloud";
+      hasBar.show();
+    }
+
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
@@ -40,7 +53,7 @@ export = class extends Command {
         }
 
         await progress.report({
-          message: " Requisitando Aplicações..."
+          message: " Requisitando Aplicações...",
         });
 
         const userApps: User = await requester("/vscode", {
@@ -56,13 +69,6 @@ export = class extends Command {
           return vscode.window.showErrorMessage(
             "Nenhuma Aplicação encontrada."
           );
-        }
-
-        const hasBar = this.discloud.bars.get('upload_bar');
-        console.log(hasBar);
-        if (hasBar && ["$(cloud-upload) Upload Discloud", "$(loading~spin) Upload Discloud"].includes(`${hasBar?.text}`)) {
-          hasBar.text = "$(loading~spin) Commiting Discloud";
-          hasBar.show();
         }
 
         const getApps = await userApps.user.appsStatus;
@@ -81,8 +87,7 @@ export = class extends Command {
           title: "Escolha uma aplicação.",
         });
         if (!input) {
-          console.log(progress);
-          //progress.report({ increment: 100 });
+          progress.report({ increment: 100 });
           return vscode.window.showErrorMessage(
             "Aplicação incorreta ou inexistente."
           );
@@ -115,7 +120,9 @@ export = class extends Command {
         }
 
         for await (const pth of paths) {
-          if (pth === savePath) { continue; }
+          if (pth === savePath) {
+            continue;
+          }
           const splitted = pth.replaceAll("\r", "").split("\\");
           const newPath = pth[0].toLowerCase() + pth.slice(1);
           statSync(newPath.replaceAll("\r", "")).isDirectory()
@@ -145,10 +152,10 @@ export = class extends Command {
           const data = await requester(`/app/${finalID}/commit`, {
             headers: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              "api-token": `${token}`
+              "api-token": `${token}`,
             },
             method: "PUT",
-            body: form
+            body: form,
           });
 
           await unlinkSync(savePath);

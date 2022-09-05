@@ -132,7 +132,6 @@ module.exports = class extends command_1.Command {
                     await progress.report({ message: "Upload - Requisitando Upload...",
                         increment: 50,
                     });
-                    console.log(form);
                     const data = await (0, requester_1.requester)("/upload", {
                         headers: {
                             // eslint-disable-next-line @typescript-eslint/naming-convention

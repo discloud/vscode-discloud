@@ -4,8 +4,6 @@ import { TreeItem } from "../../functions/api/tree";
 import { requester } from "../../functions/requester";
 import * as vscode from "vscode";
 
-let i = 0;
-
 export = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
@@ -27,7 +25,6 @@ export = class extends Command {
       async (progress, tk) => {
 
         progress.report({ message: ` Reinciando Aplicação...` });
-        console.log(i++);
 
         const restart = await requester(
           `/app/${item.tooltip}/restart`,

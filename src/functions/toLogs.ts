@@ -35,30 +35,8 @@ export async function createLogs(
       return;
     }
 
-    const path = join(__filename, "..", "..", "..", `${logName}`);
-
-    await writeFileSync(
-      path,
-      logs.text
-    );
-
-    let exist = true;
-
-    try {
-      await existsSync(path);
-    } catch(err) {
-      exist = false;
-    }
-
-    if (!exist) {
-      vscode.window.showInformationMessage("Arquivo para abrir não foi encontrado.");
-      return;
-    }
-
-    console.log(path);
-    const finalPath = path[0].toUpperCase() + path.slice(1);
-    console.log(finalPath);
-    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(finalPath);
+    await writeFileSync(join(__filename, "..", "..", "..", `${logName}`), logs.text);
+    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(__filename, "..", "..", "..", `${logName}`));
     return vscode.window.showTextDocument(fileToOpenUri, {
       viewColumn: vscode.ViewColumn.Beside,
     });

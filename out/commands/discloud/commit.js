@@ -40,6 +40,15 @@ module.exports = class extends command_1.Command {
         if (!token) {
             return;
         }
+        const hasBar = this.discloud.bars.get("upload_bar");
+        if (hasBar &&
+            [
+                "$(cloud-upload) Upload Discloud",
+                "$(loading~spin) Upload Discloud",
+            ].includes(`${hasBar?.text}`)) {
+            hasBar.text = "$(loading~spin) Commiting Discloud";
+            hasBar.show();
+        }
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: "Commit",
@@ -53,7 +62,7 @@ module.exports = class extends command_1.Command {
                 return vscode.window.showInformationMessage("Nenhum arquivo foi encontrado.");
             }
             await progress.report({
-                message: " Requisitando Aplicações..."
+                message: " Requisitando Aplicações...",
             });
             const userApps = await (0, requester_1.requester)("/vscode", {
                 headers: {
@@ -65,12 +74,6 @@ module.exports = class extends command_1.Command {
             if (!userApps) {
                 progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Nenhuma Aplicação encontrada.");
-            }
-            const hasBar = this.discloud.bars.get('upload_bar');
-            console.log(hasBar);
-            if (hasBar && ["$(cloud-upload) Upload Discloud", "$(loading~spin) Upload Discloud"].includes(`${hasBar?.text}`)) {
-                hasBar.text = "$(loading~spin) Commiting Discloud";
-                hasBar.show();
             }
             const getApps = await userApps.user.appsStatus;
             let hasOtherName = false;
@@ -88,8 +91,7 @@ module.exports = class extends command_1.Command {
                 title: "Escolha uma aplicação.",
             });
             if (!input) {
-                console.log(progress);
-                //progress.report({ increment: 100 });
+                progress.report({ increment: 100 });
                 return vscode.window.showErrorMessage("Aplicação incorreta ou inexistente.");
             }
             let targetPath = "";
@@ -137,10 +139,10 @@ module.exports = class extends command_1.Command {
                 const data = await (0, requester_1.requester)(`/app/${finalID}/commit`, {
                     headers: {
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        "api-token": `${token}`
+                        "api-token": `${token}`,
                     },
                     method: "PUT",
-                    body: form
+                    body: form,
                 });
                 await (0, fs_1.unlinkSync)(savePath);
                 await progress.report({ increment: 100 });

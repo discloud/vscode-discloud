@@ -55,7 +55,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
         continue;
       }
 
-      let childrens: Record<string, ChildrenTreeItem>;
+      let childrens: Record<string, ChildrenTreeItem> | undefined;
 
       if (getUser) {
         const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
@@ -106,7 +106,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             : app.ramKilled
             ? statusIcons.rak
             : statusIcons.off,
-            //@ts-ignore
+            
           children: childrens ? Object.values(childrens) : undefined,
           tooltip: app.id,
         }));

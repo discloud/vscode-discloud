@@ -70,7 +70,6 @@ async function requester(url, config, options) {
         if (err === "Invalid endpoint") {
             return vscode.window.showErrorMessage(`https://api.discloud.app/v2/${url}`);
         }
-        console.log(err);
         return vscode.window.showErrorMessage(`${err.body ? err.body.message : err}`);
     }
     const fixData = await data.body.json();
