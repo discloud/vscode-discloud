@@ -10,14 +10,14 @@ Aqui está uma lista de recursos que a extensão suporta atualmente.
 - ▶️ Inicar aplicações
 - 🔁 Reiniciar aplicações
 - ⏹ Parar aplicações
--  🗑 Deletar aplicações
+- ❌ Deletar aplicações
 - 📜 Gerar logs das aplicações
 - ⬇️ Baixar backup aplicações
 - 💻 Importar código de algum app hospedado para o VSCode
 
 
 ## Requisitos
-- Esta registrado em nosso site discloudbot.com e ter gerado um [token]() de acesso para a nossa API.
+- Esta registrado em nosso site discloudbot.com e ter gerado um [token](https://docs.discloudbot.com/suporte/comandos/api) de acesso para a nossa API.
 
 ## Instalação
 - Instale a extensão
