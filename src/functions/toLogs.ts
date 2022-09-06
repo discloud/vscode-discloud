@@ -1,4 +1,4 @@
-import { existsSync, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 import { join } from "path";
 import * as vscode from "vscode";
 
@@ -35,8 +35,8 @@ export async function createLogs(
       return;
     }
 
-    await writeFileSync(join(__filename, "..", "..", "..", `${logName}`), logs.text);
-    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(__filename, "..", "..", "..", `${logName}`));
+    writeFileSync(join(targetPath, `console.log`), logs.text);
+    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(targetPath, `console.log`));
     return vscode.window.showTextDocument(fileToOpenUri, {
       viewColumn: vscode.ViewColumn.Beside,
     });
