@@ -52,6 +52,7 @@ async function requester(url, config, options) {
     let data;
     try {
         data = await (0, undici_1.request)(`https://api.discloud.app/v2${url}`, config);
+        console.log(config);
         uses++;
         maxUses = await parseInt(`${data.headers["ratelimit-limit"]}`);
         time = (await parseInt(`${data.headers["ratelimit-reset"]}`)) * 1000;

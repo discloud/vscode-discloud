@@ -40,7 +40,7 @@ module.exports = class extends command_1.Command {
         if (!token) {
             return;
         }
-        const hasBar = this.discloud.bars.get("upload_bar");
+        const hasBar = await this.discloud.bars.get("upload_bar");
         if (hasBar &&
             [
                 "$(cloud-upload) Upload Discloud",

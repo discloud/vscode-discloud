@@ -47,6 +47,7 @@ export async function requester(
   let data;
   try {
     data = await request(`https://api.discloud.app/v2${url}`, config);
+    console.log(config);
 
     uses++;
     maxUses = await parseInt(`${data.headers["ratelimit-limit"]}`);

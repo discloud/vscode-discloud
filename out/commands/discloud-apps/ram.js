@@ -39,19 +39,26 @@ module.exports = class extends command_1.Command {
         const toPut = await vscode.window.showInputBox({
             title: "Coloque a nova quantidade de RAM que o app irá usar.",
         });
+        if (!toPut || !Number.isInteger(parseInt(`${toPut}`))) {
+            return vscode.window.showErrorMessage("Operação cancelada pois valor recebido é inválido.");
+        }
+        const obj = {
+            ramMB: parseInt(`${toPut}`),
+        };
         const ram = await (0, requester_1.requester)(`/app/${item.tooltip}/ram`, {
             headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 "api-token": token,
+                "Content-type": "application/json"
             },
-            body: `{ ramMB: ${toPut} }`,
-            method: "PUT"
+            body: JSON.stringify(obj),
+            method: "PUT",
         });
         if (!ram) {
             return;
         }
         vscode.window.showInformationMessage(`${ram.message}`);
-        this.discloud.mainTree?.refresh();
+        await this.discloud.mainTree?.refresh();
     };
 };
 //# sourceMappingURL=ram.js.map

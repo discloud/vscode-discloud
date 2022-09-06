@@ -21,7 +21,7 @@ export = class extends Command {
       return;
     }
 
-    const hasBar = this.discloud.bars.get("upload_bar");
+    const hasBar = await this.discloud.bars.get("upload_bar");
 
     if (
       hasBar &&
