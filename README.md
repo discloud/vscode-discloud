@@ -5,7 +5,7 @@ Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discl
 ## Requisitos
 - Esta registrado em nosso site discloudbot.com e ter gerado um [token](https://docs.discloudbot.com/suporte/comandos/api) de acesso para a nossa API.
 
-![](https://media.discordapp.net/attachments/685903739130740759/1016803316644188192/token.gif)
+![](https://media.discordapp.net/attachments/685903739130740759/1016822188839551026/token.gif)
 
 ## State das Aplicações
 
