@@ -27,7 +27,6 @@ exports.TreeItem = exports.AppTreeDataProvider = void 0;
 const vscode = __importStar(require("vscode"));
 const path = __importStar(require("path"));
 const icons_1 = require("../../types/icons");
-const token_1 = require("../checkers/token");
 const requester_1 = require("../requester");
 var StatusLabels;
 (function (StatusLabels) {
@@ -106,7 +105,6 @@ class AppTreeDataProvider {
     async refresh(data) {
         const token = vscode.workspace.getConfiguration("discloud").get('token');
         if (!token) {
-            await (0, token_1.checkIfHasToken)();
             return;
         }
         if (data) {

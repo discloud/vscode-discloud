@@ -12,5 +12,5 @@ export async function login(tree?: AppTreeDataProvider) {
   }
   vscode.workspace.getConfiguration("discloud").update("token", input, true);
   vscode.window.showInformationMessage("Token configurado com sucesso!");
-  tree ? tree.refresh() : false;
+  tree ? await tree.refresh() : false;
 }

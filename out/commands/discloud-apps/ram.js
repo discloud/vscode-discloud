@@ -49,6 +49,7 @@ module.exports = class extends command_1.Command {
             headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 "api-token": token,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 "Content-type": "application/json"
             },
             body: JSON.stringify(obj),

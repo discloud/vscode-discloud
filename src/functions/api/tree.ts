@@ -138,7 +138,6 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
     const token = vscode.workspace.getConfiguration("discloud").get('token');
     if (!token) {
-      await checkIfHasToken();
       return;
     }
 

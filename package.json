@@ -12,7 +12,7 @@
     "url": "https://github.com/discloud/vscode-discloud.git"
   },
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -40,8 +40,7 @@
     "onCommand:discloud.logIn",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
-    "onView:discloud-apps",
-    "*"
+    "onView:discloud-apps"
   ],
   "main": "out/extension.js",
   "contributes": {

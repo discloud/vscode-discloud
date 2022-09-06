@@ -26,14 +26,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkIfHasToken = void 0;
 const vscode = __importStar(require("vscode"));
 const login_1 = require("../login");
-async function checkIfHasToken() {
+async function checkIfHasToken(tree) {
     const token = vscode.workspace
         .getConfiguration("discloud")
         .get("token");
     if (!token || token.length < 0) {
         const ask = await vscode.window.showWarningMessage("Você não tem um Token configurado. Deseja configurar um?", "Sim", "Não");
         if (ask === "Sim") {
-            await (0, login_1.login)();
+            const tree = await (0, login_1.login)();
         }
         else {
             return;
