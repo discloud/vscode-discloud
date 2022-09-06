@@ -33,7 +33,7 @@ export = class extends Command {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "api-token": token
                 },
-                method: "PUT"
+                method: "DELETE"
             });
     
             progress.report({ increment: 100 });
