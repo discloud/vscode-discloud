@@ -1,30 +1,12 @@
-import * as vscode from "vscode";
-import * as path from "path";
-import { statusIcons } from "../../types/icons";
-import { checkIfHasToken } from "../checkers/token";
-import { requester } from "../requester";
-import { User } from "../../types/apps";
+const vscode = require("vscode");
+const path = require("path");
+const { statusIcons } = require("../../types/icons");
+const { requester }  = require("../requester");
+const { User }  = require("../../types/apps");
 
-enum StatusLabels {
-  cpu = "CPU",
-  ram = "RAM",
-  ssd = "SSD NVMe",
-  net = "Network",
-  lstr = "Última Reinicialização",
-}
+module.exports = class AppTreeDataProvider {
 
-export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<
-    TreeItem | undefined | null | void
-  > = new vscode.EventEmitter<TreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<
-    TreeItem | undefined | null | void
-  > = this._onDidChangeTreeData.event;
-
-  data: TreeItem[];
-  cache: Map<any, any>;
-
-  constructor(cache: Map<any, any>) {
+  constructor(cache) {
     this.data = [];
     this.cache = cache;
     this.init();
@@ -38,7 +20,7 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       return;
     }
     
-    const getUser: User = await requester(`/vscode`, {
+    const getUser = await requester(`/vscode`, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { "api-token": `${token}` },
       method: "GET"
@@ -48,14 +30,14 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       return;
     }
 
-    const tree: TreeItem[] = [];
+    const tree = [];
 
     for await (const app of getUser.user.appsStatus) {
       if (!app) {
         continue;
       }
 
-      let childrens: Record<string, ChildrenTreeItem> | undefined;
+      let childrens;
 
       if (getUser) {
         const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
@@ -117,24 +99,24 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     tree.length > 0 ? await this.createTreeItem(tree) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
   }
 
-  createTreeItem(array: TreeItem[]): void {
+  createTreeItem(array) {
     this.data = array;
   }
 
-  getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element) {
     return element;
   }
 
   getChildren(
-    element?: TreeItem | undefined
-  ): vscode.ProviderResult<TreeItem[]> {
+    element
+  ) {
     if (element === undefined) {
       return this.data;
     }
     return element.children;
   }
 
-  async refresh(data?: TreeItem[]): Promise<void> {
+  async refresh(data) {
 
     const token = vscode.workspace.getConfiguration("discloud").get('token');
     if (!token) {
@@ -159,18 +141,12 @@ export class AppTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 }
 
-export class TreeItem extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  iconName?: string;
+module.exports = class TreeItem extends vscode.TreeItem {
 
   constructor(
-    label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    options?: {
-      children?: ChildrenTreeItem[];
-      iconName?: string;
-      tooltip?: string;
-    }
+    label,
+    collapsibleState,
+    options
   ) {
     super(label, collapsibleState);
     this.children = options?.children;
@@ -202,14 +178,12 @@ export class TreeItem extends vscode.TreeItem {
 }
 
 class ChildrenTreeItem extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  iconName?: string;
 
   constructor(
-    label: StatusLabels | string,
-    value: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    options?: { children?: TreeItem[]; iconName?: string }
+    label,
+    value,
+    collapsibleState,
+    options
   ) {
     super(label, collapsibleState);
     this.children = options?.children;

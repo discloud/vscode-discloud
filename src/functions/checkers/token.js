@@ -1,11 +1,11 @@
-import * as vscode from "vscode";
-import { AppTreeDataProvider } from "../api/tree";
-import { login } from "../login";
+const vscode = require("vscode");
+const { AppTreeDataProvider } = require("../api/tree");
+const { login } = require("../login");
 
-export async function checkIfHasToken(tree?: AppTreeDataProvider) {
+export async function checkIfHasToken(tree) {
     const token = vscode.workspace
       .getConfiguration("discloud")
-      .get("token") as string;
+      .get("token");
     if (!token || token.length < 0) {
       const ask = await vscode.window.showWarningMessage(
         "Você não tem um Token configurado. Deseja configurar um?",
@@ -14,7 +14,6 @@ export async function checkIfHasToken(tree?: AppTreeDataProvider) {
       );
 
       if (ask === "Sim") {
-        const tree = 
         await login();
       } else {
         return;

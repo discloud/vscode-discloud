@@ -1,9 +1,7 @@
-import { readFileSync, existsSync } from "fs";
-import * as vscode from "vscode";
+const { readFileSync, existsSync } = require("fs");
+const vscode = require("vscode");
 
-type KEYS = "ram" | "type" | "main" | "version";
-
-export function check(path: string, getObj?: boolean) {
+module.exports = function check(path, getObj) {
   try {
     existsSync(path);
   } catch (err) {
@@ -18,13 +16,13 @@ export function check(path: string, getObj?: boolean) {
   }
 
   const splited = file.split("\n").filter((r) => r.includes("="));
-  let requiredScopes: Record<string, { value: string | number }> = {};
+  let requiredScopes = {};
   let isSite = { hasID: false, site: false };
   for (const item of splited) {
     if (
       Object.keys(requiredScopes).includes(item.split("=")[0].toLowerCase())
     ) {
-      requiredScopes[item.split("=")[0].toLowerCase() as KEYS].value =
+      requiredScopes[item.split("=")[0].toLowerCase()].value =
         item.split("=")[1];
     }
 
