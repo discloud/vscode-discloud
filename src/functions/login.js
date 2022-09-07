@@ -12,4 +12,4 @@ module.exports = async function login(tree) {
   vscode.workspace.getConfiguration("discloud").update("token", input, true);
   vscode.window.showInformationMessage("Token configurado com sucesso!");
   tree ? await tree.refresh() : false;
-}
+};

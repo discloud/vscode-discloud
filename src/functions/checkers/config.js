@@ -36,7 +36,8 @@ module.exports = function check(path, getObj) {
 
   if (
     (Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
-    (!isSite.hasID && isSite.site)) && !getObj
+      (!isSite.hasID && isSite.site)) &&
+    !getObj
   ) {
     return vscode.window.showErrorMessage(
       "Você não adicionou parâmetros obrigatórios no discloud.config!\nhttps://docs.discloudbot.com/suporte/faq/discloud.config"
@@ -44,4 +45,4 @@ module.exports = function check(path, getObj) {
   }
 
   return getObj ? requiredScopes : true;
-}
+};

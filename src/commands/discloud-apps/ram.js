@@ -1,18 +1,16 @@
-import { TreeItem } from "../../functions/api/tree";
-import { requester } from "../../functions/requester";
-import { Command } from "../../structures/command";
-import { Discloud } from "../../structures/extend";
+const { requester } = require("../../functions/requester");
+const { Command } = require("../../structures/command");
 const vscode = require("vscode");
 
 module.exports = class extends Command {
-  constructor(discloud: Discloud) {
+  constructor(discloud) {
     super(discloud, {
       name: "ramEntry",
     });
   }
 
-  run = async (item: TreeItem) => {
-    const token = this.discloud.config.get("token") as string;
+  run = async (item) => {
+    const token = this.discloud.config.get("token");
     if (!token) {
       return;
     }
@@ -22,7 +20,9 @@ module.exports = class extends Command {
     });
 
     if (!toPut || !Number.isInteger(parseInt(`${toPut}`))) {
-      return vscode.window.showErrorMessage("Operação cancelada pois valor recebido é inválido.");
+      return vscode.window.showErrorMessage(
+        "Operação cancelada pois valor recebido é inválido."
+      );
     }
 
     const obj = {
@@ -34,7 +34,7 @@ module.exports = class extends Command {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         "api-token": token,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        "Content-type": "application/json"
+        "Content-type": "application/json",
       },
       body: JSON.stringify(obj),
       method: "PUT",

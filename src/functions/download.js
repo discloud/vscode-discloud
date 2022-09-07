@@ -23,7 +23,9 @@ module.exports = async function download(url, uncompact) {
     mkdirSync(targetPath + "\\backup");
   }
 
-  uncompact ? await down(url, targetPath + "\\backup", { extract: true }) : await down(url, targetPath + "\\backup");
+  uncompact
+    ? await down(url, targetPath + "\\backup", { extract: true })
+    : await down(url, targetPath + "\\backup");
 
   return targetPath + "\\backup";
-}
+};

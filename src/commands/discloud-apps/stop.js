@@ -1,18 +1,16 @@
-import { Command } from "../../structures/command";
-import { Discloud } from "../../structures/extend";
-import { TreeItem } from "../../functions/api/tree";
-import { requester } from "../../functions/requester";
+const { Command } = require("../../structures/command");
+const { requester } = require("../../functions/requester");
 const vscode = require("vscode");
 
 module.exports = class extends Command {
-  constructor(discloud: Discloud) {
+  constructor(discloud) {
     super(discloud, {
       name: "stopEntry",
     });
   }
 
-  run = async (item: TreeItem) => {
-    const token = this.discloud.config.get("token") as string;
+  run = async (item) => {
+    const token = this.discloud.config.get("token");
     if (!token) {
       return;
     }
@@ -23,19 +21,15 @@ module.exports = class extends Command {
         title: "Parar Aplicação",
       },
       async (progress, tk) => {
-
         progress.report({ message: ` Pararando Aplicação...` });
 
-        const stop = await requester(
-          `/app/${item.tooltip}/stop`,
-          {
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              "api-token": token
-            },
-            method: "PUT"
-          }
-        );
+        const stop = await requester(`/app/${item.tooltip}/stop`, {
+          headers: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            "api-token": token,
+          },
+          method: "PUT",
+        });
 
         if (!stop) {
           return;

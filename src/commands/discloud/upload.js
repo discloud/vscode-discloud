@@ -1,31 +1,23 @@
-import { Command } from "../../structures/command";
+const { Command } = require("../../structures/command");
 const vscode = require("vscode");
 
-import {
-  statSync,
-  accessSync,
-  unlinkSync,
-  readdirSync,
-  WriteStream,
-} from "fs";
-import { requester } from "../../functions/requester";
-import { FormData } from "undici";
-import { requiredFiles, blockedFiles } from "../../config.json";
-import { check } from "../../functions/checkers/config";
-import { Zip } from "../../functions/zip";
-import { Discloud } from "../../structures/extend";
-import { streamtoBlob } from "../../functions/streamToBlob";
-type LANGS = "js" | "py" | "rb" | "rs" | "ts" | "go";
+const { statSync, accessSync, unlinkSync, readdirSync } = require("fs");
+const { requester } = require("../../functions/requester");
+const { FormData } = require("undici");
+const { requiredFiles, blockedFiles } = require("../../config.json");
+const { check } = require("../../functions/checkers/config");
+const { Zip } = require("../../functions/zip");
+const { streamtoBlob } = require("../../functions/streamToBlob");
 
 module.exports = class extends Command {
-  constructor(discloud: Discloud) {
+  constructor(discloud) {
     super(discloud, {
       name: "upload",
     });
   }
 
-  run = async (uri: vscode.Uri) => {
-    const token = this.discloud.config.get("token") as string;
+  run = async (uri) => {
+    const token = this.discloud.config.get("token");
 
     if (!token) {
       return;
@@ -77,12 +69,13 @@ module.exports = class extends Command {
           },
         });
 
-        await progress.report({ message: "Upload - Colocando Arquivos no Zip...",
+        await progress.report({
+          message: "Upload - Colocando Arquivos no Zip...",
           increment: 20,
         });
 
         if (isDirectory) {
-          const files: string[] = readdirSync(targetPath);
+          const files = readdirSync(targetPath);
           if (!files) {
             return;
           }
@@ -103,23 +96,19 @@ module.exports = class extends Command {
           let hasRequiredFiles = { checks: 0, all: false };
 
           for await (const file of files) {
-            if (file === "upload.zip") { continue; }
+            if (file === "upload.zip") {
+              continue;
+            }
             let lang = file.split(".")[1];
             if (lang) {
-              if (
-                requiredFiles[lang as LANGS] &&
-                !requiredFiles[lang as LANGS]?.includes(file)
-              ) {
+              if (requiredFiles[lang] && !requiredFiles[lang]?.includes(file)) {
                 hasRequiredFiles.checks++;
-                requiredFiles[lang as LANGS]?.length <= hasRequiredFiles.checks
+                requiredFiles[lang]?.length <= hasRequiredFiles.checks
                   ? (hasRequiredFiles.all = true)
                   : "";
               }
 
-              if (
-                blockedFiles[lang as LANGS] &&
-                blockedFiles[lang as LANGS]?.includes(file)
-              ) {
+              if (blockedFiles[lang] && blockedFiles[lang]?.includes(file)) {
                 continue;
               }
             }
@@ -141,23 +130,21 @@ module.exports = class extends Command {
             const form = new FormData();
             form.append("file", await streamtoBlob(savePath), "upload.zip");
 
-            await progress.report({ message: "Upload - Requisitando Upload...",
+            await progress.report({
+              message: "Upload - Requisitando Upload...",
               increment: 50,
             });
 
-            const data = await requester(
-              "/upload",
-              {
-                headers: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  "api-token": `${token}`,
-                },
-                method: "POST",
-                body: form
-              }
-            );
+            const data = await requester("/upload", {
+              headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                "api-token": `${token}`,
+              },
+              method: "POST",
+              body: form,
+            });
 
-            progress.report({ increment: 100 });   
+            progress.report({ increment: 100 });
             if (data && data !== 222) {
               await upbar?.hide();
               vscode.window.showInformationMessage(`${data?.message}`);
@@ -173,7 +160,7 @@ module.exports = class extends Command {
             vscode.window.showErrorMessage(JSON.stringify(err));
           });
 
-          zip?.pipe(stream as WriteStream);
+          zip?.pipe(stream);
           zip?.finalize();
         }
       }

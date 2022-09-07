@@ -1,22 +1,20 @@
-import { Command } from "../../structures/command";
+const { Command } = require("../../structures/command");
 const vscode = require("vscode");
-import { Discloud } from "../../structures/extend";
-import { Zip } from "../../functions/zip";
-import { statSync, unlinkSync, WriteStream } from "fs";
-import { FormData } from "undici";
-import { requester } from "../../functions/requester";
-import { User } from "../../types/apps";
-import { streamtoBlob } from "../../functions/streamToBlob";
+const { Zip } = require("../../functions/zip");
+const { statSync, unlinkSync } = require("fs");
+const { FormData } = require("undici");
+const { requester } = require("../../functions/requester");
+const { streamtoBlob } = require("../../functions/streamToBlob");
 
 module.exports = class extends Command {
-  constructor(discloud: Discloud) {
+  constructor(discloud) {
     super(discloud, {
       name: "commit",
     });
   }
 
-  run = async (uri: vscode.Uri) => {
-    const token = this.discloud.config.get("token") as string;
+  run = async (uri) => {
+    const token = this.discloud.config.get("token");
     if (!token) {
       return;
     }
@@ -56,7 +54,7 @@ module.exports = class extends Command {
           message: " Requisitando Aplicações...",
         });
 
-        const userApps: User = await requester("/vscode", {
+        const userApps = await requester("/vscode", {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             "api-token": `${token}`,
@@ -72,7 +70,7 @@ module.exports = class extends Command {
         }
 
         const getApps = await userApps.user.appsStatus;
-        let hasOtherName: boolean | { name: string; id: string }[] = false;
+        let hasOtherName = false;
         const verify = getApps.filter((r) => r.name.includes("|"));
         if (verify.length > 0) {
           hasOtherName = verify.map((r) => {
@@ -138,9 +136,7 @@ module.exports = class extends Command {
 
           const check =
             typeof hasOtherName !== "boolean"
-              ? (hasOtherName as { name: string; id: string }[])?.filter(
-                  (r) => r.name === input
-                )
+              ? hasOtherName?.filter((r) => r.name === input)
               : [];
 
           if (check.length > 0) {
@@ -171,7 +167,7 @@ module.exports = class extends Command {
           vscode.window.showErrorMessage(JSON.stringify(err));
         });
 
-        zip?.pipe(stream as WriteStream);
+        zip?.pipe(stream);
         zip?.finalize();
       }
     );

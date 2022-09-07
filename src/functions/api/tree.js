@@ -1,30 +1,34 @@
 const vscode = require("vscode");
 const path = require("path");
 const { statusIcons } = require("../../types/icons");
-const { requester }  = require("../requester");
-const { User }  = require("../../types/apps");
+const { requester } = require("../requester");
+const { User } = require("../../types/apps");
 
 module.exports = class AppTreeDataProvider {
-
   constructor(cache) {
     this.data = [];
     this.cache = cache;
     this.init();
     this.refresh();
-
   }
 
   async verifyApps() {
-    const token = await vscode.workspace.getConfiguration("discloud").get("token");
+    const token = await vscode.workspace
+      .getConfiguration("discloud")
+      .get("token");
     if (!token) {
       return;
     }
-    
-    const getUser = await requester(`/vscode`, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { "api-token": `${token}` },
-      method: "GET"
-    }, { isVS: true });
+
+    const getUser = await requester(
+      `/vscode`,
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { "api-token": `${token}` },
+        method: "GET",
+      },
+      { isVS: true }
+    );
 
     if (!getUser) {
       return;
@@ -40,7 +44,9 @@ module.exports = class AppTreeDataProvider {
       let childrens;
 
       if (getUser) {
-        const infoApp = getUser.user.appsStatus.filter((r) => r.id === app.id)[0];
+        const infoApp = getUser.user.appsStatus.filter(
+          (r) => r.id === app.id
+        )[0];
 
         childrens = {
           cont: new ChildrenTreeItem(
@@ -82,21 +88,30 @@ module.exports = class AppTreeDataProvider {
         };
       }
 
-      tree.push(new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
+      tree.push(
+        new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
           iconName: app.online
             ? statusIcons.onl
             : app.ramKilled
             ? statusIcons.rak
             : statusIcons.off,
-            
+
           children: childrens ? Object.values(childrens) : undefined,
           tooltip: app.id,
-        }));
-      
+        })
+      );
     }
 
     this.cache.set(`apps-user_verify`, getUser);
-    tree.length > 0 ? await this.createTreeItem(tree) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
+    tree.length > 0
+      ? await this.createTreeItem(tree)
+      : await this.createTreeItem([
+          new TreeItem(
+            "Nenhuma aplicação foi encontrada.",
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "x" }
+          ),
+        ]);
   }
 
   createTreeItem(array) {
@@ -107,9 +122,7 @@ module.exports = class AppTreeDataProvider {
     return element;
   }
 
-  getChildren(
-    element
-  ) {
+  getChildren(element) {
     if (element === undefined) {
       return this.data;
     }
@@ -117,37 +130,46 @@ module.exports = class AppTreeDataProvider {
   }
 
   async refresh(data) {
-
-    const token = vscode.workspace.getConfiguration("discloud").get('token');
+    const token = vscode.workspace.getConfiguration("discloud").get("token");
     if (!token) {
       return;
     }
 
     if (data) {
-      data.length > 0 ? await this.createTreeItem(data) : await this.createTreeItem([new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })]);
-    } else {await this.verifyApps();}
+      data.length > 0
+        ? await this.createTreeItem(data)
+        : await this.createTreeItem([
+            new TreeItem(
+              "Nenhuma aplicação foi encontrada.",
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "x" }
+            ),
+          ]);
+    } else {
+      await this.verifyApps();
+    }
     this._onDidChangeTreeData.fire();
-    console.log('[TREE] Refreshed.');
+    console.log("[TREE] Refreshed.");
   }
 
   async init() {
-
-    const token = vscode.workspace.getConfiguration("discloud").get('token');
+    const token = vscode.workspace.getConfiguration("discloud").get("token");
     if (!token) {
       return;
     } else {
-      this.data = [new TreeItem('Nenhuma aplicação foi encontrada.', vscode.TreeItemCollapsibleState.None, { iconName: 'x' })];
+      this.data = [
+        new TreeItem(
+          "Nenhuma aplicação foi encontrada.",
+          vscode.TreeItemCollapsibleState.None,
+          { iconName: "x" }
+        ),
+      ];
     }
   }
-}
+};
 
 module.exports = class TreeItem extends vscode.TreeItem {
-
-  constructor(
-    label,
-    collapsibleState,
-    options
-  ) {
+  constructor(label, collapsibleState, options) {
     super(label, collapsibleState);
     this.children = options?.children;
     this.iconName = options?.iconName;
@@ -175,16 +197,10 @@ module.exports = class TreeItem extends vscode.TreeItem {
       ),
     };
   }
-}
+};
 
 class ChildrenTreeItem extends vscode.TreeItem {
-
-  constructor(
-    label,
-    value,
-    collapsibleState,
-    options
-  ) {
+  constructor(label, value, collapsibleState, options) {
     super(label, collapsibleState);
     this.children = options?.children;
     this.description = value;

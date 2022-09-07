@@ -15,12 +15,8 @@ setInterval(() => {
 
 let hasProcess = { i: false, p: "" };
 
-module.exports = async function requester(
-  url,
-  config,
-  options
-) {
-  if (hasProcess.i && (options && !options.isVS || !options)) {
+module.exports = async function requester(url, config, options) {
+  if (hasProcess.i && ((options && !options.isVS) || !options)) {
     vscode.window.showErrorMessage(
       `Você já tem um processo de ${hasProcess.p} em execução.`
     );
@@ -71,9 +67,11 @@ module.exports = async function requester(
   const fixData = await data.body.json();
 
   if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
-    createLogs(fixData.message, { text: fixData.logs }, "error_app.log", { type: "normal" });
+    createLogs(fixData.message, { text: fixData.logs }, "error_app.log", {
+      type: "normal",
+    });
     return 222;
   }
 
   return fixData;
-}
+};
