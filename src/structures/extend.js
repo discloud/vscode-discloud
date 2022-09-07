@@ -1,22 +1,12 @@
-import { readdirSync } from "fs";
-import { join } from "path";
+const { readdirSync } = require("fs");
+const { join } = require("path");
 const vscode = require("vscode");
-import { AppTreeDataProvider } from "../functions/api/tree";
-interface Command {
-  name: string;
-  run: (uri: vscode.Uri) => void;
-}
+const { AppTreeDataProvider } = require("../functions/api/tree");
+
 
 module.exports = class Discloud {
-  commands: Command[];
-  subscriptions: { dispose(): any }[];
-  cache: Map<string, any>;
-  bars: Map<string, vscode.StatusBarItem>;
-  trees: Map<string, vscode.TreeDataProvider<any>>;
-  config: vscode.WorkspaceConfiguration;
-  mainTree?: AppTreeDataProvider;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context) {
     this.commands = [];
     this.subscriptions = context.subscriptions;
     this.cache = new Map();
@@ -48,7 +38,7 @@ module.exports = class Discloud {
 
         let disp = vscode.commands.registerCommand(
             `${category}.${cmd.name}`,
-            async (uri: vscode.Uri) => {
+            async (uri) => {
               await cmd.run(uri);
             }
         );
