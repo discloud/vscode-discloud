@@ -14,7 +14,7 @@
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "version": "0.0.4",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.71.0"
   },
   "categories": [
     "Other"
@@ -40,9 +40,10 @@
     "onCommand:discloud.logIn",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
-    "onView:discloud-apps"
+    "onView:discloud-apps",
+    "onStartupFinished"
   ],
-  "main": "out/extension.js",
+  "main": "extension.js",
   "contributes": {
     "commands": [
       {
@@ -241,33 +242,24 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint out --ext ts",
+    "lint": "eslint .",
+    "pretest": "yarn run lint",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
-    "@types/archiver": "^5.3.1",
-    "@types/download": "^8.0.1",
+    "@types/vscode": "^1.71.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.70.0",
-    "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
-    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "@vscode/test-electron": "^2.1.5"
   },
   "dependencies": {
     "archiver": "^5.3.1",
-    "decompress": "^4.2.1",
     "download": "^8.0.0",
-    "undici": "^5.10.0",
-    "vsce": "^2.11.0"
+    "undici": "^5.10.0"
   }
 }
