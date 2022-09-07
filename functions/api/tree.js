@@ -96,11 +96,13 @@ class AppTreeDataProvider {
             ? "ramKilled"
             : "off",
 
-          children: childrens ? Object.values(childrens) : undefined,
+          children: childrens && app.online ? Object.values(childrens) : undefined,
           tooltip: app.id,
         })
       );
     }
+
+    vscode.window.showInformationMessage(`${tree.length} Apps initliazed.`);
 
     this.cache.set(`apps-user_verify`, getUser);
     tree.length > 0

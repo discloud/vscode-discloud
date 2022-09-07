@@ -1,6 +1,7 @@
 const vscode = require("vscode");
-const down = require("download");
-const { existsSync, mkdirSync } = require("fs");
+const { existsSync, mkdirSync, unlinkSync } = require("fs");
+const AdmZip = require("adm-zip");
+const { downloadFile } = require("./mkDownload");
 
 async function download(url, uncompact) {
   let targetPath = "";
@@ -23,9 +24,10 @@ async function download(url, uncompact) {
     mkdirSync(targetPath + "\\backup");
   }
 
-  uncompact
-    ? await down(url, targetPath + "\\backup", { extract: true })
-    : await down(url, targetPath + "\\backup");
+  const file = await downloadFile(url, targetPath + "\\backup\\backup.zip")
+
+  uncompact ? new AdmZip(file).extractAllTo(targetPath + "\\backup") : '';
+  uncompact ? unlinkSync(file) : false;
 
   return targetPath + "\\backup";
 };

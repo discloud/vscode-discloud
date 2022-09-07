@@ -12,7 +12,7 @@
     "url": "https://github.com/discloud/vscode-discloud.git"
   },
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -40,8 +40,9 @@
     "onCommand:discloud.logIn",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
-    "onView:discloud-apps",
-    "onStartupFinished"
+    "onView:discloud-apps.refreshButton",
+    "onView:discloud-apps.helpButton",
+    "*"
   ],
   "main": "extension.js",
   "contributes": {
@@ -246,20 +247,20 @@
     "pretest": "yarn run lint",
     "test": "node ./test/runTest.js"
   },
+  "dependencies": {
+    "adm-zip": "^0.5.9",
+    "archiver": "^5.3.1",
+    "undici": "^5.10.0"
+  },
   "devDependencies": {
-    "@types/vscode": "^1.71.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.71.0",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
-    "@vscode/test-electron": "^2.1.5"
-  },
-  "dependencies": {
-    "archiver": "^5.3.1",
-    "download": "^8.0.0",
-    "undici": "^5.10.0"
+    "typescript": "^4.7.4"
   }
 }

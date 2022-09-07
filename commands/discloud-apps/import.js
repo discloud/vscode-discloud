@@ -6,7 +6,7 @@ const { download } = require("../../functions/download");
 module.exports = class extends Command {
   constructor(discloud) {
     super(discloud, {
-      name: "constCode",
+      name: "importCode",
     });
   }
 
@@ -19,7 +19,7 @@ module.exports = class extends Command {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "constar Aplicação",
+        title: "Importar Aplicação",
       },
       async (progress) => {
         const backup = await requester(`/app/${item.tooltip}/backup`, {
