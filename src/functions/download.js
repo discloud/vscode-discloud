@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
-import down from "download";
-import { existsSync, mkdirSync } from "fs";
+const vscode = require("vscode");
+const down = require("download");
+const { existsSync, mkdirSync } = require("fs");
 
-export async function download(url: string, uncompact: boolean = false) {
+module.exports = async function download(url, uncompact) {
   let targetPath = "";
 
   const workspaceFolders = vscode.workspace.workspaceFolders || [];

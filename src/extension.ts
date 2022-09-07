@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
+const vscode = require("vscode");
 import { Discloud } from "./structures/extend";
 
-export async function activate(context: vscode.ExtensionContext) {
+module.exports = async function activate(context: vscode.ExtensionContext) {
   new Discloud(context);
 }
-export function deactivate() {}
+module.exports = function deactivate() {}

@@ -1,5 +1,5 @@
 import { Command } from "../../structures/command";
-import * as vscode from "vscode";
+const vscode = require("vscode");
 import { Discloud } from "../../structures/extend";
 import { Zip } from "../../functions/zip";
 import { statSync, unlinkSync, WriteStream } from "fs";
@@ -8,7 +8,7 @@ import { requester } from "../../functions/requester";
 import { User } from "../../types/apps";
 import { streamtoBlob } from "../../functions/streamToBlob";
 
-export = class extends Command {
+module.exports = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
       name: "commit",

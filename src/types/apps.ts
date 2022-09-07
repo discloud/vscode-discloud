@@ -1,4 +1,4 @@
-export interface User {
+module.exports = interface User {
   status: string;
   message: string;
   user: {
@@ -21,7 +21,7 @@ export interface User {
   };
 }
 
-export interface App {
+module.exports = interface App {
   id: string;
   container: string;
   cpu: string;
@@ -40,24 +40,24 @@ export interface App {
   name: string;
 }
 
-export interface Backup {
+module.exports = interface Backup {
   status: string;
   message: string;
   backups: BackupApp[] | BackupApp;
 }
 
-export interface BackupApp {
+module.exports = interface BackupApp {
   id: string;
   url: string;
 }
 
-export interface Logs {
+module.exports = interface Logs {
   status: string;
   message: string;
   apps: AppLog | AppLog[];
 }
 
-export interface AppLog {
+module.exports = interface AppLog {
   id: string;
   terminal: {
     big: string;

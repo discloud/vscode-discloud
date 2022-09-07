@@ -1,7 +1,7 @@
 import { Command } from "../../structures/command";
 import { Discloud } from "../../structures/extend";
 
-export = class extends Command {
+module.exports = class extends Command {
 
     constructor(discloud: Discloud) {
         super(discloud, {

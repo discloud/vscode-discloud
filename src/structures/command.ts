@@ -1,6 +1,6 @@
 import { Discloud } from "./extend";
 
-export class Command {
+module.exports = class Command {
     name: string;
     discloud: Discloud;
 

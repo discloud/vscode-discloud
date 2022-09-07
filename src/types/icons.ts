@@ -1,4 +1,4 @@
-export type StatusIcons = {
+module.exports = type StatusIcons = {
   boo: "boolean";
   cod: "code";
   con: "container";
@@ -21,7 +21,7 @@ export type StatusIcons = {
   str: "string";
   upt: "uptime";
 };
-export const statusIcons = {
+module.exports = const statusIcons = {
   boo: "boolean",
   cod: "code",
   con: "container",
@@ -45,7 +45,7 @@ export const statusIcons = {
   upt: "uptime",
 };
 
-export type Plans = {
+module.exports = type Plans = {
   free: "free";
   carb: "Carbon";
   gold: "Gold";

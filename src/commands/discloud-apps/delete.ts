@@ -4,7 +4,7 @@ import { Command } from "../../structures/command";
 import { Discloud } from "../../structures/extend";
 import * as vscode from 'vscode';
 
-export = class extends Command {
+module.exports = class extends Command {
 
     constructor(discloud: Discloud) {
         super(discloud, {

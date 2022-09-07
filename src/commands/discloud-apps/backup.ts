@@ -2,11 +2,11 @@ import { TreeItem } from "../../functions/api/tree";
 import { requester } from "../../functions/requester";
 import { Command } from "../../structures/command";
 import { Discloud } from "../../structures/extend";
-import * as vscode from "vscode";
+const vscode = require("vscode");
 import { Backup, BackupApp } from "../../types/apps";
 import { download } from "../../functions/download";
 
-export = class extends Command {
+module.exports = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
       name: "backupEntry",

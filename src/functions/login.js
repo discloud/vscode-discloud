@@ -1,7 +1,6 @@
-import * as vscode from 'vscode';
-import { AppTreeDataProvider } from './api/tree';
+const vscode = require("vscode");
 
-export async function login(tree?: AppTreeDataProvider) {
+module.exports = async function login(tree) {
   const input = await vscode.window.showInputBox({
     prompt: "API TOKEN",
     title: "Coloque seu Token da API da Discloud aqui.",

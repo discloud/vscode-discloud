@@ -1,8 +1,7 @@
 const vscode = require("vscode");
-const { AppTreeDataProvider } = require("../api/tree");
 const { login } = require("../login");
 
-export async function checkIfHasToken(tree) {
+module.exports = async function checkIfHasToken() {
     const token = vscode.workspace
       .getConfiguration("discloud")
       .get("token");

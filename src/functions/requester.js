@@ -1,6 +1,6 @@
-import { Dispatcher, request } from "undici";
-import * as vscode from "vscode";
-import { createLogs } from "./toLogs";
+const { Dispatcher, request } = require("undici");
+const vscode = require("vscode");
+const { createLogs } = require("./toLogs");
 
 let { maxUses, uses, time, remain } = {
   maxUses: 60,
@@ -15,16 +15,10 @@ setInterval(() => {
 
 let hasProcess = { i: false, p: "" };
 
-export async function requester(
-  url: string,
-  config?:
-    | ({ dispatcher?: Dispatcher } & Omit<
-        Dispatcher.RequestOptions,
-        "origin" | "path" | "method"
-      > &
-        Partial<Pick<Dispatcher.RequestOptions, "method">>)
-    | undefined,
-  options?: { isVS?: boolean }
+module.exports = async function requester(
+  url,
+  config,
+  options
 ) {
   if (hasProcess.i && (options && !options.isVS || !options)) {
     vscode.window.showErrorMessage(
@@ -54,7 +48,7 @@ export async function requester(
     remain = await parseInt(`${data.headers["ratelimit-remaining"]}`);
 
     hasProcess.i = false;
-  } catch (err: any) {
+  } catch (err) {
     hasProcess.i = false;
     if (err?.status === 401) {
       vscode.window.showErrorMessage(err.body.message);

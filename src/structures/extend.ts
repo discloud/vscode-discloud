@@ -1,13 +1,13 @@
 import { readdirSync } from "fs";
 import { join } from "path";
-import * as vscode from "vscode";
+const vscode = require("vscode");
 import { AppTreeDataProvider } from "../functions/api/tree";
 interface Command {
   name: string;
   run: (uri: vscode.Uri) => void;
 }
 
-export class Discloud {
+module.exports = class Discloud {
   commands: Command[];
   subscriptions: { dispose(): any }[];
   cache: Map<string, any>;

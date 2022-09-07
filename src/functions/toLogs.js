@@ -1,16 +1,11 @@
-import { writeFileSync } from "fs";
-import { join } from "path";
-import * as vscode from "vscode";
+const { writeFileSync } = require("fs");
+const { join } = require("path");
+const vscode = require("vscode");
 
-type LogTypes = "withLink" | "normal" | "without";
-
-export async function createLogs(
-  message: string,
-  logs: { text: string; link?: string },
-  logName: string,
-  options?: {
-    type?: LogTypes
-  }
+module.exports = async function createLogs(
+  message,
+  logs,
+  options
 ) {
   
 
@@ -36,7 +31,7 @@ export async function createLogs(
     }
 
     writeFileSync(join(targetPath, `console.log`), logs.text);
-    const fileToOpenUri: vscode.Uri = await vscode.Uri.file(join(targetPath, `console.log`));
+    const fileToOpenUri = await vscode.Uri.file(join(targetPath, `console.log`));
     return vscode.window.showTextDocument(fileToOpenUri, {
       viewColumn: vscode.ViewColumn.Beside,
     });

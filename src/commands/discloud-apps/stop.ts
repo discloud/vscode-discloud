@@ -2,9 +2,9 @@ import { Command } from "../../structures/command";
 import { Discloud } from "../../structures/extend";
 import { TreeItem } from "../../functions/api/tree";
 import { requester } from "../../functions/requester";
-import * as vscode from "vscode";
+const vscode = require("vscode");
 
-export = class extends Command {
+module.exports = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
       name: "stopEntry",

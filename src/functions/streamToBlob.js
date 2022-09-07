@@ -1,11 +1,10 @@
-import { Blob } from "buffer";
-import { BinaryLike } from "crypto";
-import { createReadStream } from "fs";
+const { Blob } = require("buffer");
+const { createReadStream } = require("fs");
 
-export async function streamtoBlob(file: string) {
+module.exports = async function streamtoBlob(file) {
     return new Promise(async (resolve, reject) => {
         const stream = await createReadStream(file);
-        const chunks: (Blob | BinaryLike)[] | (string | Buffer)[] = [];
+        const chunks = [];
         stream
             .on("data", chunk => chunks.push(chunk))
             .once("end", () => resolve(new Blob(chunks)))

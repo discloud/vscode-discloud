@@ -1,5 +1,5 @@
 import { Command } from "../../structures/command";
-import * as vscode from "vscode";
+const vscode = require("vscode");
 
 import {
   statSync,
@@ -17,7 +17,7 @@ import { Discloud } from "../../structures/extend";
 import { streamtoBlob } from "../../functions/streamToBlob";
 type LANGS = "js" | "py" | "rb" | "rs" | "ts" | "go";
 
-export = class extends Command {
+module.exports = class extends Command {
   constructor(discloud: Discloud) {
     super(discloud, {
       name: "upload",
