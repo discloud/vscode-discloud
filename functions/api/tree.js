@@ -102,8 +102,6 @@ class AppTreeDataProvider {
       );
     }
 
-    vscode.window.showInformationMessage(`${tree.length} Apps initliazed.`);
-
     this.cache.set(`apps-user_verify`, getUser);
     tree.length > 0
       ? await this.createTreeItem(tree)
