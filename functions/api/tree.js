@@ -91,7 +91,7 @@ class AppTreeDataProvider {
       }
 
       tree.push(
-        new TreeItem(`${app.name}`, Object.values(childrens).length <= 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed, {
+        new TreeItem(`${app.name}`, childrens == undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed, {
           iconName: app.online
             ? "on"
             : app.ramKilled
