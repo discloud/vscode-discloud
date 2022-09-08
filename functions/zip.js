@@ -5,8 +5,6 @@ class Zip {
   constructor(path, format, options) {
     this.create(path, format, options);
     this.path = path;
-    this.zip = null;
-    this.stream = null;
   }
 
   create(path, format, options) {

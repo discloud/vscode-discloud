@@ -8,7 +8,7 @@ const { requiredFiles, blockedFiles } = require("../../config.json");
 const { check } = require("../../functions/checkers/config");
 const { Zip } = require("../../functions/zip");
 const { streamtoBlob } = require("../../functions/streamToBlob");
-const { extname, join } = require("path");
+const { join } = require("path");
 
 module.exports = class extends Command {
   constructor(discloud) {
@@ -82,12 +82,14 @@ module.exports = class extends Command {
           }
 
           if (!files.includes("discloud.config")) {
+            progress.report({ increment: 100 })
             return vscode.window.showErrorMessage(
               "Você precisa de um discloud.config para usar está função."
             );
           } else {
             const con = await check(join(targetPath, "discloud.config"));
             if (!con) {
+              progress.report({ increment: 100 })
               return vscode.window.showErrorMessage(
                 "Você precisa de um discloud.config válido para usar está função."
               );
@@ -100,7 +102,8 @@ module.exports = class extends Command {
             if (file === "upload.zip") {
               continue;
             }
-            let lang = extname(file);
+            let lang = file.split(".")[1];
+            
             if (lang) {
               if (requiredFiles[lang] && !requiredFiles[lang]?.includes(file)) {
                 hasRequiredFiles.checks++;
@@ -122,6 +125,7 @@ module.exports = class extends Command {
           }
 
           if (!hasRequiredFiles.all) {
+            progress.report({ increment: 100 })
             return vscode.window.showErrorMessage(
               `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`
             );
