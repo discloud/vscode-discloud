@@ -48,55 +48,57 @@ class AppTreeDataProvider {
           (r) => r.id === app.id
         )[0];
 
-        childrens = {
-          cont: new ChildrenTreeItem(
-            `Container`,
-            infoApp.container,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "container" }
-          ),
-          ram: new ChildrenTreeItem(
-            "RAM",
-            infoApp.memory,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "ram" }
-          ),
-          cpu: new ChildrenTreeItem(
-            "CPU",
-            infoApp.cpu,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "cpu" }
-          ),
-          ssd: new ChildrenTreeItem(
-            "SSD NVMe",
-            infoApp.ssd,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "ssd" }
-          ),
-          net: new ChildrenTreeItem(
-            "Network",
-            `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "network" }
-          ),
-          lstr: new ChildrenTreeItem(
-            "Última Reinicialização",
-            infoApp.last_restart,
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "uptime" }
-          ),
-        };
+        if (infoApp.container !== "Offline") {
+          childrens = {
+            cont: new ChildrenTreeItem(
+              `Container`,
+              infoApp.container,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "container" }
+            ),
+            ram: new ChildrenTreeItem(
+              "RAM",
+              infoApp.memory,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "ram" }
+            ),
+            cpu: new ChildrenTreeItem(
+              "CPU",
+              infoApp.cpu,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "cpu" }
+            ),
+            ssd: new ChildrenTreeItem(
+              "SSD NVMe",
+              infoApp.ssd,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "ssd" }
+            ),
+            net: new ChildrenTreeItem(
+              "Network",
+              `⬆${infoApp.netIO.up} ⬇${infoApp.netIO.down}`,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "network" }
+            ),
+            lstr: new ChildrenTreeItem(
+              "Última Reinicialização",
+              infoApp.last_restart,
+              vscode.TreeItemCollapsibleState.None,
+              { iconName: "uptime" }
+            ),
+          };
+        }
       }
 
       tree.push(
-        new TreeItem(`${app.name}`, vscode.TreeItemCollapsibleState.Collapsed, {
+        new TreeItem(`${app.name}`, Object.values(childrens).length <= 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed, {
           iconName: app.online
             ? "on"
             : app.ramKilled
             ? "ramKilled"
-            : "off",
+            : app.exitCode == 1 ? "errorCode" : "off",
 
-          children: childrens && app.online ? Object.values(childrens) : undefined,
+          children: (childrens && app.online) ? Object.values(childrens) : undefined,
           tooltip: app.id,
         })
       );
