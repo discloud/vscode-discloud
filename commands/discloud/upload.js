@@ -50,7 +50,7 @@ module.exports = class extends Command {
 
         const isDirectory = statSync(targetPath).isDirectory();
 
-        const savePath = `${targetPath}\\upload.zip`;
+        const savePath = join(`${targetPath}`, `upload.zip`);
         let isExist = true;
         try {
           accessSync(savePath);
@@ -86,7 +86,7 @@ module.exports = class extends Command {
               "Você precisa de um discloud.config para usar está função."
             );
           } else {
-            const con = await check(targetPath + "\\discloud.config");
+            const con = await check(join(targetPath, "discloud.config"));
             if (!con) {
               return vscode.window.showErrorMessage(
                 "Você precisa de um discloud.config válido para usar está função."
