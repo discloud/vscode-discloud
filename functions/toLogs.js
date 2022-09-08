@@ -48,5 +48,44 @@ async function createLogs(message, logs, options) {
     }
   }
 };
+async function createStatus(message, status, options) {
+  const msg = {
+    withLink: () => {
+      return vscode.window.showInformationMessage(
+        message,
+        "Ver Status"
+      );
+    },
+    normal: () => {
+      return vscode.window.showInformationMessage(message, "Ver Status");
+    },
+    without: () => {
+      return vscode.window.showInformationMessage(message);
+    },
+  };
 
-module.exports = { createLogs }
+  const ask = await msg[options && options.type ? options.type : "without"]();
+
+  if (ask === "Ver Status") {
+    let targetPath = "";
+
+    const workspaceFolders = vscode.workspace.workspaceFolders || [];
+
+    if (workspaceFolders && workspaceFolders.length) {
+      targetPath = workspaceFolders[0].uri.fsPath;
+    } else {
+      vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+      return;
+    }
+
+    writeFileSync(join(targetPath, `status.log`), status.text);
+    const fileToOpenUri = await vscode.Uri.file(
+      join(targetPath, `status.log`)
+    );
+    return vscode.window.showTextDocument(fileToOpenUri, {
+      viewColumn: vscode.ViewColumn.Beside,
+    });
+  }
+};
+
+module.exports = { createLogs, createStatus }
