@@ -82,7 +82,7 @@ class AppTreeDataProvider {
             ),
             lstr: new ChildrenTreeItem(
               "Última Reinicialização",
-              infoApp.last_restart,
+              infoApp.last_restart, 
               vscode.TreeItemCollapsibleState.None,
               { iconName: "uptime" }
             ),

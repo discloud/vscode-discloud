@@ -9,7 +9,7 @@ function check(path, getObj) {
   }
 
   const file = readFileSync(path, { encoding: "utf8" });
-  if (!file && !getObj) {
+  if (!file) {
     return vscode.window.showErrorMessage(
       `Você não pode usar esta função com um discloud.config inválido.\nCheque a Documentação para Dúvidas: https://docs.discloudbot.com/suporte/faq/discloud.config`
     );
