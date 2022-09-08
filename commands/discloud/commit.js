@@ -4,6 +4,8 @@ const { Zip } = require("../../functions/zip");
 const { statSync, unlinkSync } = require("fs");
 const { FormData } = require("undici");
 const { requester } = require("../../functions/requester");
+const { basename } = require("path");
+const { transPath } = require("../../functions/convertPath");
 const { streamtoBlob } = require("../../functions/streamToBlob");
 
 module.exports = class extends Command {
@@ -101,7 +103,7 @@ module.exports = class extends Command {
           return;
         }
 
-        const savePath = `${targetPath}\\commit.zip`;
+        const savePath = transPath(`${targetPath}\\commit.zip`);
 
         const { zip, stream } = new Zip(savePath, "zip", {
           zlib: {
@@ -120,11 +122,11 @@ module.exports = class extends Command {
           if (pth === savePath) {
             continue;
           }
-          const splitted = pth.replaceAll("\r", "").split("\\");
-          const newPath = pth[0].toLowerCase() + pth.slice(1);
-          statSync(newPath.replaceAll("\r", "")).isDirectory()
-            ? zip.directory(pth, splitted[splitted.length - 1])
-            : zip.file(pth, { name: splitted[splitted.length - 1] });
+          const base = basename(pth.replaceAll("\r", ""));
+          const newPath = pth.replaceAll("\r", '');
+          statSync(newPath).isDirectory()
+            ? zip.directory(pth, base)
+            : zip.file(pth, { name: base });
         }
 
         stream?.on("close", async () => {

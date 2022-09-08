@@ -8,6 +8,7 @@ const { requiredFiles, blockedFiles } = require("../../config.json");
 const { check } = require("../../functions/checkers/config");
 const { Zip } = require("../../functions/zip");
 const { streamtoBlob } = require("../../functions/streamToBlob");
+const { extname, join } = require("path");
 
 module.exports = class extends Command {
   constructor(discloud) {
@@ -99,7 +100,7 @@ module.exports = class extends Command {
             if (file === "upload.zip") {
               continue;
             }
-            let lang = file.split(".")[1];
+            let lang = extname(file);
             if (lang) {
               if (requiredFiles[lang] && !requiredFiles[lang]?.includes(file)) {
                 hasRequiredFiles.checks++;
@@ -113,9 +114,11 @@ module.exports = class extends Command {
               }
             }
 
-            statSync(`${targetPath}\\${file}`).isDirectory()
-              ? zip?.directory(`${targetPath}\\${file}`, file)
-              : zip?.file(`${targetPath}\\${file}`, { name: file });
+            const path = join(targetPath, `${file}`)
+
+            statSync(path).isDirectory()
+              ? zip?.directory(path, file)
+              : zip?.file(path, { name: file });
           }
 
           if (!hasRequiredFiles.all) {

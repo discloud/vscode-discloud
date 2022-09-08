@@ -2,6 +2,7 @@ const vscode = require("vscode");
 const { existsSync, mkdirSync, unlinkSync } = require("fs");
 const AdmZip = require("adm-zip");
 const { downloadFile } = require("./mkDownload");
+const { join } = require("path");
 
 async function download(url, uncompact) {
   let targetPath = "";
@@ -20,16 +21,18 @@ async function download(url, uncompact) {
     return;
   }
 
-  if (!existsSync(targetPath + "\\backup")) {
-    mkdirSync(targetPath + "\\backup");
+  const path = join(targetPath, `backup`)
+
+  if (!existsSync(path)) {
+    mkdirSync(path);
   }
 
-  const file = await downloadFile(url, targetPath + "\\backup\\backup.zip")
+  const file = await downloadFile(url, join(path, "backup.zip"))
 
-  uncompact ? new AdmZip(file).extractAllTo(targetPath + "\\backup") : '';
+  uncompact ? new AdmZip(file).extractAllTo(path) : '';
   uncompact ? unlinkSync(file) : false;
 
-  return targetPath + "\\backup";
+  return path;
 };
 
 module.exports = { download }
