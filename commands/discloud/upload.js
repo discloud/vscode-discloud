@@ -4,7 +4,7 @@ const vscode = require("vscode");
 const { statSync, accessSync, unlinkSync, readdirSync } = require("fs");
 const { requester } = require("../../functions/requester");
 const { FormData } = require("undici");
-const { requiredFiles, blockedFiles } = require("../../config.json");
+const { requiredFiles, blockedFullFiles } = require("../../config.json");
 const { check } = require("../../functions/checkers/config");
 const { Zip } = require("../../functions/zip");
 const { streamtoBlob } = require("../../functions/streamToBlob");
@@ -99,7 +99,7 @@ module.exports = class extends Command {
           let hasRequiredFiles = { checks: 0, all: false };
 
           for await (const file of files) {
-            if (file === "upload.zip") {
+            if (file.endsWith('.zip') ) {
               continue;
             }
             let lang = file.split(".")[1];
@@ -111,10 +111,9 @@ module.exports = class extends Command {
                   ? (hasRequiredFiles.all = true)
                   : "";
               }
-
-              if (blockedFiles[lang] && blockedFiles[lang]?.includes(file)) {
-                continue;
-              }
+            }
+            if (blockedFullFiles.includes(file)) {
+              continue;
             }
 
             const path = join(targetPath, `${file}`)
@@ -150,10 +149,11 @@ module.exports = class extends Command {
               body: form,
             });
 
+
             progress.report({ increment: 100 });
             if (data && data !== 222) {
               await upbar?.hide();
-              vscode.window.showInformationMessage(`${data?.message}`);
+              vscode.window.showInformationMessage(`${data?.message} - ID: ${data.app.id}`);
               this.discloud.mainTree?.refresh();
             }
             await unlinkSync(savePath);

@@ -16,6 +16,12 @@ module.exports = class extends Command {
       return;
     }
 
+    const workspaceFolders = vscode.workspace.workspaceFolders || [];
+    if (workspaceFolders.length == 0) {
+      vscode.window.showErrorMessage("Você precisa abrir alguma pasta com o VSCode antes de realizar essa ação.");
+      return;
+    }
+
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,

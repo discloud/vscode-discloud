@@ -5,7 +5,7 @@ const { statSync, unlinkSync } = require("fs");
 const { FormData } = require("undici");
 const { requester } = require("../../functions/requester");
 const { basename } = require("path");
-const { transPath } = require("../../functions/convertPath");
+const { resolve } = require("path");
 const { streamtoBlob } = require("../../functions/streamToBlob");
 
 module.exports = class extends Command {
@@ -103,7 +103,7 @@ module.exports = class extends Command {
           return;
         }
 
-        const savePath = transPath(`${targetPath}\\commit.zip`);
+        const savePath = resolve(targetPath, 'commit.zip');
 
         const { zip, stream } = new Zip(savePath, "zip", {
           zlib: {

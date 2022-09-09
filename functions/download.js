@@ -4,7 +4,7 @@ const AdmZip = require("adm-zip");
 const { downloadFile } = require("./mkDownload");
 const { join } = require("path");
 
-async function download(url, uncompact) {
+async function download(url, uncompact, appName) {
   let targetPath = "";
 
   const workspaceFolders = vscode.workspace.workspaceFolders || [];
@@ -12,7 +12,7 @@ async function download(url, uncompact) {
   if (workspaceFolders && workspaceFolders.length) {
     targetPath = workspaceFolders[0].uri.fsPath;
   } else {
-    vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
+    vscode.window.showErrorMessage("Você precisa abrir alguma pasta com o VSCode antes de realizar essa ação.");
     return;
   }
 
@@ -21,13 +21,13 @@ async function download(url, uncompact) {
     return;
   }
 
-  const path = join(targetPath, `backup`)
+  const path = uncompact == true ?  join(targetPath, 'discloud_backup', appName.replace(/([^A-Za-z])/g, '').replace(' ', '_')) : join(targetPath, 'discloud_backup')
 
   if (!existsSync(path)) {
-    mkdirSync(path);
+    mkdirSync(path, { recursive: true });
   }
 
-  const file = await downloadFile(url, join(path, "backup.zip"))
+  const file = await downloadFile(url, join(path, `${appName.replace(/([^A-Za-z])/g, '').replace(' ', '_')}.zip`))
 
   uncompact ? new AdmZip(file).extractAllTo(path) : '';
   uncompact ? unlinkSync(file) : false;

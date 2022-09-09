@@ -16,6 +16,12 @@ module.exports = class extends Command {
       return;
     }
 
+    const workspaceFolders = vscode.workspace.workspaceFolders || [];
+    if (workspaceFolders.length == 0) {
+      vscode.window.showErrorMessage("Você precisa abrir alguma pasta com o VSCode antes de realizar essa ação.");
+      return;
+    }
+
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
@@ -41,7 +47,7 @@ module.exports = class extends Command {
             message: " Baixando Backup da Aplicação recebido.",
             increment: 40,
           });
-          const downloadFile = await download(`${backup?.backups?.url}`);
+          const downloadFile = await download(`${backup?.backups?.url}`, false, item.label.trim());
           if (!downloadFile) {
             return;
           }
