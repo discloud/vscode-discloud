@@ -36,7 +36,14 @@ class AppTreeDataProvider {
 
     const tree = [];
 
-    for await (const app of getUser.user.appsStatus) {
+    const alphabeticApps = getUser.user.appsStatus.sort((a, b) => {
+      if(a.name < b.name) { return -1; }
+      if(a.name > b.name) { return 1; }
+      return 0;
+    });
+    console.log(alphabeticApps);
+
+    for await (const app of alphabeticApps) {
       if (!app) {
         continue;
       }
