@@ -37,7 +37,6 @@ Aqui está uma lista de recursos que a extensão suporta atualmente.
 
 ## Links Úteis
 
-- [Como Usar a Extensão]()
 - [DisCloud](https://discloud.app)
 - [Documentação da DisCloud](https://docs.discloudbot.com)
 
