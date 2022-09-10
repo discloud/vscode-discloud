@@ -59,6 +59,7 @@ module.exports = class Discloud {
     uploadBar.text = "$(cloud-upload) Upload Discloud";
 
     this.subscriptions.push(uploadBar);
+    uploadBar.tooltip = "Upload to Discloud";
     uploadBar.show();
     this.cache.set('upload_bar', uploadBar);
     this.bars.set('upload_bar', uploadBar);

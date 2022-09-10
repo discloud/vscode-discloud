@@ -28,9 +28,11 @@ module.exports = class extends Command {
       [
         "$(cloud-upload) Upload Discloud",
         "$(loading~spin) Upload Discloud",
+        "$(loading~spin) Commiting Discloud"
       ].includes(`${hasBar?.text}`)
     ) {
       hasBar.text = "$(loading~spin) Commiting Discloud";
+      hasBar.tooltip = "Commit to Discloud"
       hasBar.show();
     }
 
