@@ -21,7 +21,7 @@ module.exports = class extends Command {
         title: "Reinciar Aplicação",
       },
       async (progress) => {
-        progress.report({ message: ` Reinciando Aplicação...` });
+        progress.report({ message: ` Iniciando Processo...` });
 
         const restart = await requester(`/app/${item.tooltip}/restart`, {
           headers: {

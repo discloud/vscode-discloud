@@ -21,7 +21,7 @@ module.exports = class extends Command {
         title: "Parar Aplicação",
       },
       async (progress) => {
-        progress.report({ message: ` Pararando Aplicação...` });
+        progress.report({ message: ` Iniciando Processo...` });
 
         const stop = await requester(`/app/${item.tooltip}/stop`, {
           headers: {

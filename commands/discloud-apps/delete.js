@@ -15,6 +15,15 @@ module.exports = class extends Command {
       return;
     }
 
+    const quest = await vscode.window.showInformationMessage(
+      "Deseja realmente deletar essa Aplicação?",
+      "Sim",
+      "Cancelar"
+    );
+    if (quest === "Cancelar") {
+      return;
+    }
+
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
