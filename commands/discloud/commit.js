@@ -155,7 +155,7 @@ module.exports = class extends Command {
             },
             method: "PUT",
             body: form,
-            headersTimeout: 300,
+            headersTimeout: 420,
           });
 
           await unlinkSync(savePath);

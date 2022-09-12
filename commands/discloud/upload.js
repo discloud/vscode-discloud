@@ -147,7 +147,7 @@ module.exports = class extends Command {
               },
               method: "POST",
               body: form,
-              headersTimeout: 300,
+              headersTimeout: 420,
             });
 
 
