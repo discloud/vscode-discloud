@@ -4,7 +4,6 @@ const { Zip } = require("../../functions/zip");
 const { statSync, unlinkSync } = require("fs");
 const { FormData } = require("undici");
 const { requester } = require("../../functions/requester");
-const { basename } = require("path");
 const { resolve } = require("path");
 const { streamtoBlob } = require("../../functions/streamToBlob");
 
@@ -45,7 +44,7 @@ module.exports = class extends Command {
       async (progress,) => {
         await vscode.commands.executeCommand("copyFilePath");
         const folders = await vscode.env.clipboard.readText();
-        const paths = folders.split("\n");
+        const paths = folders.split(/\r?\n/);
 
         if (!folders) {
           progress.report({ increment: 100 });
@@ -124,9 +123,8 @@ module.exports = class extends Command {
           if (pth === savePath) {
             continue;
           }
-          const base = basename(pth.replaceAll("\r", ""));
-          const newPath = pth.replaceAll("\r", '');
-          statSync(newPath).isDirectory()
+          const base = pth.split(/\\|\//).pop();
+          statSync(pth).isDirectory()
             ? zip.directory(pth, base)
             : zip.file(pth, { name: base });
         }
