@@ -17,6 +17,9 @@ module.exports = class extends Command {
     });
   }
 
+  /**
+   * @param {vscode.Uri} uri 
+   */
   run = async (uri) => {
     const token = this.discloud.config.get("token");
 
@@ -90,11 +93,15 @@ module.exports = class extends Command {
             const con = await check(join(targetPath, "discloud.config"));
             if (!con) {
               progress.report({ increment: 100 })
+              upbar?.dispose()
+              this.discloud.loadStatusBar()
               return vscode.window.showErrorMessage(
                 "Você precisa de um discloud.config válido para usar está função."
               );
             }
           }
+
+          const config = await check(join(targetPath, "discloud.config"), true);
 
           let hasRequiredFiles = { checks: 0, all: false };
 
@@ -102,7 +109,7 @@ module.exports = class extends Command {
             if (file.endsWith('.zip') ) {
               continue;
             }
-            let lang = file.split(".")[1];
+            const lang = config.MAIN.split(".").pop();
             
             if (lang) {
               if (requiredFiles[lang] && !requiredFiles[lang]?.includes(file)) {
@@ -118,13 +125,17 @@ module.exports = class extends Command {
 
             const path = join(targetPath, `${file}`)
 
+            const filename = file.split(/\\|\//).pop()
+
             statSync(path).isDirectory()
-              ? zip?.directory(path, file)
-              : zip?.file(path, { name: file });
+              ? zip?.directory(path, filename)
+              : zip?.file(path, { name: filename });
           }
 
           if (!hasRequiredFiles.all) {
             progress.report({ increment: 100 })
+            upbar?.dispose()
+            this.discloud.loadStatusBar()
             return vscode.window.showErrorMessage(
               `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`
             );
@@ -168,7 +179,7 @@ module.exports = class extends Command {
           });
 
           zip?.pipe(stream);
-          zip?.finalize();
+          await zip?.finalize();
         }
       }
     );

@@ -1,6 +1,12 @@
 const { readFileSync, existsSync } = require("fs");
 const vscode = require("vscode");
 
+const required_scopes = ["MAIN", "NAME", "TYPE", "RAM", "VERSION"]
+
+function getMissingValues(obj, values) {
+  return values.filter(key => !obj[key]);
+}
+
 function check(path, getObj) {
   try {
     existsSync(path);
@@ -15,36 +21,26 @@ function check(path, getObj) {
     );
   }
 
-  const splited = file.split("\n").filter((r) => r.includes("="));
-  let requiredScopes = {};
-  let isSite = { hasID: false, site: false };
-  for (const item of splited) {
-    if (
-      Object.keys(requiredScopes).includes(item.split("=")[0].toLowerCase())
-    ) {
-      requiredScopes[item.split("=")[0].toLowerCase()].value =
-        item.split("=")[1];
-    }
+  const scopes = Object.fromEntries(file.split(/\r?\n/).map(a => a.split("=")));
 
-    if (item === "TYPE=site") {
-      isSite.site = true;
-      splited.filter((r) => r.includes("ID=")).length > 0
-        ? (isSite.hasID = true)
-        : "";
-    }
+  let isSite = { hasID: false, site: false };
+  if (scopes.TYPE === 'site') {
+    isSite.site = true
+    if (scopes.ID)
+      isSite.hasID = true
   }
 
   if (
-    (Object.values(requiredScopes).filter((r) => !r.value).length > 0 ||
-      (!isSite.hasID && isSite.site)) &&
-    !getObj
+    getObj ? false :
+      (getMissingValues(scopes, required_scopes).length ||
+        (!isSite.hasID && isSite.site))
   ) {
     return vscode.window.showErrorMessage(
       "Você não adicionou parâmetros obrigatórios no discloud.config!\nhttps://docs.discloudbot.com/suporte/faq/discloud.config"
     );
   }
 
-  return getObj ? requiredScopes : true;
+  return getObj ? scopes : true;
 };
 
 module.exports = { check };
