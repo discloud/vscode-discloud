@@ -1,0 +1,7 @@
+{
+    "language": {
+        "selectLang": "Select the language",
+        "mandatory": "You have to choose which language you want to switch to",
+        "success": "Language successfully changed to {{lang}}"
+    }
+}
