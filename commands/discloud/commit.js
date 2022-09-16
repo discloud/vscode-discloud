@@ -1,4 +1,5 @@
 const { Command } = require("../../structures/command");
+const { blockedFullFiles } = require("../../config.json");
 const vscode = require("vscode");
 const { Zip } = require("../../functions/zip");
 const { statSync, unlinkSync } = require("fs");
@@ -6,6 +7,8 @@ const { FormData } = require("undici");
 const { requester } = require("../../functions/requester");
 const { resolve } = require("path");
 const { streamtoBlob } = require("../../functions/streamToBlob");
+
+const regex = RegExp(`(${blockedFullFiles.join('|')})`, 'i')
 
 module.exports = class extends Command {
   constructor(discloud) {
@@ -44,7 +47,7 @@ module.exports = class extends Command {
       async (progress,) => {
         await vscode.commands.executeCommand("copyFilePath");
         const folders = await vscode.env.clipboard.readText();
-        const paths = folders.split(/\r?\n/);
+        const paths = folders.split(/\r?\n/).filter(path => !regex.test(path));
 
         if (!folders) {
           progress.report({ increment: 100 });
