@@ -188,13 +188,11 @@ module.exports = class extends Command {
             }
 
             if (data.statusCode === 222 && data.status === "error") {
-              console.log("aqui!")
               await upbar?.hide();
               return this.discloud.mainTree?.refresh();
             }
             
             if (data.statusCode === 504 && data.status === "error") {
-              console.log("aqui")
               //await upbar?.hide();
               progress.report({ increment: 100 })
               upbar?.dispose()
