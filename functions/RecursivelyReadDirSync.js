@@ -14,7 +14,7 @@ class RecursivelyReadDirSync {
 
   /**
    * @param {string} path 
-   * @param {?FileSystemOptions} options 
+   * @param {FileSystemOptions} [options] 
    */
   constructor(path, options) {
     /**
@@ -136,7 +136,7 @@ module.exports = { RecursivelyReadDirSync };
 
 /**
  * @typedef FileSystemOptions
- * @property {?string[]} ignore
- * @property {?string|string[]} ignoreFile
- * @property {?string[]} pattern
+ * @property {string[]} [ignore]
+ * @property {string|string[]} [ignoreFile]
+ * @property {string[]} [pattern]
  */
