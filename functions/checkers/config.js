@@ -36,7 +36,7 @@ function check(path, getObj) {
         (!isSite.hasID && isSite.site))
   ) {
     return vscode.window.showErrorMessage(
-      "Você não adicionou parâmetros obrigatórios no discloud.config!\nhttps://docs.discloudbot.com/suporte/faq/discloud.config"
+      `Você não adicionou parâmetros obrigatórios no discloud.config!\nCheque a documentação: https://docs.discloudbot.com/suporte/faq/discloud.config`
     );
   }
 

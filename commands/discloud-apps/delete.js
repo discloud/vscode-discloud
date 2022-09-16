@@ -45,6 +45,10 @@ module.exports = class extends Command {
         });
 
         progress.report({ increment: 100 });
+        
+        let upBar = this.discloud.bars.get("upload_bar")
+        if(!upBar._visible) this.discloud.loadStatusBar()
+
         vscode.window.showInformationMessage(
           `Deletar Aplicação - Aplicação ${item.label} deletada com sucesso!`
         );

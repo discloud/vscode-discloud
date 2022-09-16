@@ -66,11 +66,10 @@ async function requester(url, config, options) {
 
   const fixData = await data.body.json();
 
-  if ([504, 222].includes(data.statusCode) && fixData.status === "error") {
+  if ([504, 222].includes(fixData.statusCode) && fixData.status === "error") {
     createLogs(fixData.message, { text: fixData.logs }, {
       type: "normal",
     });
-    return 222;
   }
 
   return fixData;

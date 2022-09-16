@@ -9,6 +9,7 @@ const { check } = require("../../functions/checkers/config");
 const { Zip } = require("../../functions/zip");
 const { streamtoBlob } = require("../../functions/streamToBlob");
 const { join } = require("path");
+const fs = require("fs");
 
 module.exports = class extends Command {
   constructor(discloud) {
@@ -49,6 +50,13 @@ module.exports = class extends Command {
             vscode.window.showErrorMessage("Nenhum arquivo encontrado.");
             return;
           }
+        }
+
+        let verifyConfig = await check(join(targetPath, "discloud.config"));
+        if(verifyConfig === undefined) {
+          progress.report({ increment: 100 })
+          upbar?.dispose()
+          return this.discloud.loadStatusBar()
         }
 
         const isDirectory = statSync(targetPath).isDirectory();
@@ -103,23 +111,39 @@ module.exports = class extends Command {
 
           const config = await check(join(targetPath, "discloud.config"), true);
 
-          let hasRequiredFiles = { checks: 0, all: false };
+          try {
+            fs.readFileSync(join(targetPath, config.MAIN));
+          } catch (error) {
+            progress.report({ increment: 100 })
+            upbar?.dispose()
+            this.discloud.loadStatusBar()
+            return vscode.window.showErrorMessage(
+              `O arquivo ${config.MAIN} especificado não existe.\nCheque a documentação: https://docs.discloudbot.com/suporte/faq/discloud.config`
+            );
+          }
+          const verifyDir = fs.readdirSync(join(targetPath))
+          if (requiredFiles[config.MAIN.split(".").pop()] && requiredFiles[config.MAIN.split(".").pop()].some(f => !verifyDir.includes(f))){
+            progress.report({ increment: 100 })
+            upbar?.dispose()
+            this.discloud.loadStatusBar()
+            return vscode.window.showErrorMessage(
+              `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/suporte/linguagens`
+            );
+          }
+
+          let discloudIgnore = verifyDir.includes('.discloudignore') ? fs.readFileSync(join(targetPath, `.discloudignore`), "utf8") : ''
+          let discloudIgnoreArray = verifyDir.includes('.discloudignore') ? discloudIgnore.split("\n") : []
 
           for await (const file of files) {
             if (file.endsWith('.zip') ) {
               continue;
             }
-            const lang = config.MAIN.split(".").pop();
-            
-            if (lang) {
-              if (requiredFiles[lang] && !requiredFiles[lang]?.includes(file)) {
-                hasRequiredFiles.checks++;
-                requiredFiles[lang]?.length <= hasRequiredFiles.checks
-                  ? (hasRequiredFiles.all = true)
-                  : "";
-              }
-            }
+
             if (blockedFullFiles.includes(file)) {
+              continue;
+            }
+
+            if (discloudIgnoreArray.includes(file)) {
               continue;
             }
 
@@ -130,15 +154,6 @@ module.exports = class extends Command {
             statSync(path).isDirectory()
               ? zip?.directory(path, filename)
               : zip?.file(path, { name: filename });
-          }
-
-          if (!hasRequiredFiles.all) {
-            progress.report({ increment: 100 })
-            upbar?.dispose()
-            this.discloud.loadStatusBar()
-            return vscode.window.showErrorMessage(
-              `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/`
-            );
           }
         }
 
@@ -163,15 +178,35 @@ module.exports = class extends Command {
 
 
             progress.report({ increment: 100 });
-            if (data && data !== 222) {
+
+            unlinkSync(savePath);
+
+            if (data && data.status !== 'error') {
               await upbar?.hide();
               vscode.window.showInformationMessage(`${data?.message} - ID: ${data.app.id}`);
-              this.discloud.mainTree?.refresh();
+              return this.discloud.mainTree?.refresh();
             }
-            await unlinkSync(savePath);
-            if (data === 222) {
+
+            if (data.statusCode === 222 && data.status === "error") {
+              console.log("aqui!")
               await upbar?.hide();
+              return this.discloud.mainTree?.refresh();
             }
+            
+            if (data.statusCode === 504 && data.status === "error") {
+              console.log("aqui")
+              //await upbar?.hide();
+              progress.report({ increment: 100 })
+              upbar?.dispose()
+              return this.discloud.loadStatusBar()
+            }
+            if (data && data.status == 'error') {
+              vscode.window.showInformationMessage(`${data?.message}`);
+              progress.report({ increment: 100 })
+              upbar?.dispose()
+              return this.discloud.loadStatusBar()
+            }
+            
           });
 
           zip?.on("error", (err) => {
