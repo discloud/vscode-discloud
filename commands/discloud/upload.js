@@ -1,15 +1,15 @@
 const { Command } = require("../../structures/command");
 const vscode = require("vscode");
 
-const { statSync, accessSync, unlinkSync, readdirSync } = require("fs");
-const { requester } = require("../../functions/requester");
+const { statSync, accessSync, unlinkSync, existsSync, readdirSync, createReadStream } = require("node:fs");
+const { join } = require("node:path");
 const { FormData } = require("undici");
 const { requiredFiles, blockedFullFiles } = require("../../config.json");
 const { check } = require("../../functions/checkers/config");
-const { Zip } = require("../../functions/zip");
+const { RecursivelyReadDirSync } = require("../../functions/RecursivelyReadDirSync");
+const { requester } = require("../../functions/requester");
 const { streamtoBlob } = require("../../functions/streamToBlob");
-const { join } = require("path");
-const fs = require("fs");
+const { Zip } = require("../../functions/zip");
 
 module.exports = class extends Command {
   constructor(discloud) {
@@ -52,14 +52,14 @@ module.exports = class extends Command {
           }
         }
 
+        targetPath = targetPath.replace(/\\/g, "/")
+
         let verifyConfig = await check(join(targetPath, "discloud.config"));
-        if(verifyConfig === undefined) {
+        if (verifyConfig === undefined) {
           progress.report({ increment: 100 })
           upbar?.dispose()
           return this.discloud.loadStatusBar()
         }
-
-        const isDirectory = statSync(targetPath).isDirectory();
 
         const savePath = join(`${targetPath}`, `upload.zip`);
         let isExist = true;
@@ -75,87 +75,73 @@ module.exports = class extends Command {
           unlinkSync(savePath);
         }
 
+        await progress.report({
+          message: "Upload - Colocando Arquivos no Zip...",
+          increment: 20,
+        });
+
+        const { found } = new RecursivelyReadDirSync(targetPath, {
+          ignore: blockedFullFiles.concat("**.zip"),
+          ignoreFile: join(targetPath, ".discloudignore")
+        })
+
+        const discloudConfigPath = join(targetPath, "discloud.config")
+
+        if (existsSync(discloudConfigPath)) {
+          const con = await check(discloudConfigPath);
+          if (!con) {
+            progress.report({ increment: 100 })
+            upbar?.dispose()
+            this.discloud.loadStatusBar()
+            return vscode.window.showErrorMessage(
+              "Você precisa de um discloud.config válido para usar está função."
+            );
+          }
+        } else {
+          progress.report({ increment: 100 })
+          return vscode.window.showErrorMessage(
+            "Você precisa de um discloud.config para usar está função."
+          );
+        }
+
+        const config = await check(discloudConfigPath, true);
+
+        if (!existsSync(join(targetPath, config.MAIN))) {
+          progress.report({ increment: 100 })
+          upbar?.dispose()
+          this.discloud.loadStatusBar()
+          return vscode.window.showErrorMessage(
+            `O arquivo ${config.MAIN} especificado não existe.\nCheque a documentação: https://docs.discloudbot.com/suporte/faq/discloud.config`
+          );
+        }
+
+        const verifyDir = readdirSync(join(targetPath))
+        const fileExt = config.MAIN.split(".").pop()
+        if (requiredFiles[fileExt] && requiredFiles[fileExt].some(f => !verifyDir.includes(f))) {
+          progress.report({ increment: 100 })
+          upbar?.dispose()
+          this.discloud.loadStatusBar()
+          return vscode.window.showErrorMessage(
+            `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/suporte/linguagens`
+          );
+        }
+
         const { zip, stream } = new Zip(savePath, "zip", {
           zlib: {
             level: 9,
           },
         });
 
-        await progress.report({
-          message: "Upload - Colocando Arquivos no Zip...",
-          increment: 20,
-        });
+        zip?.pipe(stream);
 
-        if (isDirectory) {
-          const files = readdirSync(targetPath);
-          if (!files) {
-            return;
-          }
+        for await (const file of found) {
+          const filename = file.replace(targetPath, "")
 
-          if (!files.includes("discloud.config")) {
-            progress.report({ increment: 100 })
-            return vscode.window.showErrorMessage(
-              "Você precisa de um discloud.config para usar está função."
-            );
-          } else {
-            const con = await check(join(targetPath, "discloud.config"));
-            if (!con) {
-              progress.report({ increment: 100 })
-              upbar?.dispose()
-              this.discloud.loadStatusBar()
-              return vscode.window.showErrorMessage(
-                "Você precisa de um discloud.config válido para usar está função."
-              );
-            }
-          }
-
-          const config = await check(join(targetPath, "discloud.config"), true);
-
-          try {
-            fs.readFileSync(join(targetPath, config.MAIN));
-          } catch (error) {
-            progress.report({ increment: 100 })
-            upbar?.dispose()
-            this.discloud.loadStatusBar()
-            return vscode.window.showErrorMessage(
-              `O arquivo ${config.MAIN} especificado não existe.\nCheque a documentação: https://docs.discloudbot.com/suporte/faq/discloud.config`
-            );
-          }
-          const verifyDir = fs.readdirSync(join(targetPath))
-          if (requiredFiles[config.MAIN.split(".").pop()] && requiredFiles[config.MAIN.split(".").pop()].some(f => !verifyDir.includes(f))){
-            progress.report({ increment: 100 })
-            upbar?.dispose()
-            this.discloud.loadStatusBar()
-            return vscode.window.showErrorMessage(
-              `Para realizar um Upload, você precisa dos arquivos necessários para a hospedagem.\nCheque a documentação: https://docs.discloudbot.com/suporte/linguagens`
-            );
-          }
-
-          let discloudIgnore = verifyDir.includes('.discloudignore') ? fs.readFileSync(join(targetPath, `.discloudignore`), "utf8") : ''
-          let discloudIgnoreArray = verifyDir.includes('.discloudignore') ? discloudIgnore.split("\n") : []
-
-          for await (const file of files) {
-            if (file.endsWith('.zip') ) {
-              continue;
-            }
-
-            if (blockedFullFiles.includes(file)) {
-              continue;
-            }
-
-            if (discloudIgnoreArray.includes(file)) {
-              continue;
-            }
-
-            const path = join(targetPath, `${file}`)
-
-            const filename = file.split(/\\|\//).pop()
-
-            statSync(path).isDirectory()
-              ? zip?.directory(path, filename)
-              : zip?.file(path, { name: filename });
-          }
+          if (statSync(file).isFile())
+            zip?.append(createReadStream(file), { name: filename });
         }
+
+        await zip?.finalize();
 
         if (isGenerate) {
           stream?.on("close", async () => {
@@ -191,7 +177,7 @@ module.exports = class extends Command {
               await upbar?.hide();
               return this.discloud.mainTree?.refresh();
             }
-            
+
             if (data.statusCode === 504 && data.status === "error") {
               //await upbar?.hide();
               progress.report({ increment: 100 })
@@ -204,15 +190,12 @@ module.exports = class extends Command {
               upbar?.dispose()
               return this.discloud.loadStatusBar()
             }
-            
+
           });
 
           zip?.on("error", (err) => {
             vscode.window.showErrorMessage(JSON.stringify(err));
           });
-
-          zip?.pipe(stream);
-          await zip?.finalize();
         }
       }
     );
