@@ -1,7 +1,8 @@
 const { readdirSync } = require("fs");
-const { join } = require("path");
+const { join, resolve } = require("path");
 const vscode = require("vscode");
 const { AppTreeDataProvider } = require("../functions/api/tree");
+const TextsSystem = require('./TextsSystem');
 
 
 module.exports = class Discloud {
@@ -14,6 +15,8 @@ module.exports = class Discloud {
     this.trees = new Map();
     this.mainTree;
     this.config = vscode.workspace.getConfiguration("discloud");
+    this.language = this.config.get("language") || 'pt-BR';
+    this.textsSystem = new TextsSystem({ pathToTexts: resolve(__dirname, '..', 'languages'), defaultLanguage: 'pt-BR' });
     this.loadCommands();
     this.loadStatusBar();
     this.loadTrees();

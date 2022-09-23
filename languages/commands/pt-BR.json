@@ -1,0 +1,7 @@
+{
+    "language": {
+        "selectLang": "Selecione a língua",
+        "mandatory": "Tens de escolher para qual idioma queres trocar",
+        "success": "Linguagem alterada com sucesso para {{lang}}"
+    }
+}

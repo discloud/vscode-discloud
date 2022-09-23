@@ -42,6 +42,7 @@
     "onCommand:discloud-apps.ramEntry",
     "onCommand:discloud-apps.backupEntry",
     "onCommand:discloud.logIn",
+    "onCommand:discloud.language",
     "onCommand:discloud.commit",
     "onCommand:discloud.upload",
     "onView:discloud-apps.refreshButton",
@@ -122,6 +123,10 @@
       {
         "command": "discloud.logIn",
         "title": "Login on Discloud"
+      },
+      {
+        "command": "discloud.language",
+        "title": "Change Language"
       }
     ],
     "viewsContainers": {
