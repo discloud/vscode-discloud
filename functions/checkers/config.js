@@ -1,7 +1,7 @@
 const { readFileSync, existsSync } = require("fs");
 const vscode = require("vscode");
 
-const required_scopes = ["MAIN", "NAME", "TYPE", "RAM", "VERSION"]
+const required_scopes = ["MAIN", "TYPE", "RAM", "VERSION"]
 
 function getMissingValues(obj, values) {
   return values.filter(key => !obj[key]);
@@ -23,18 +23,13 @@ function check(path, getObj) {
 
   const scopes = Object.fromEntries(file.split(/\r?\n/).map(a => a.split("=")));
 
-  let isSite = { hasID: false, site: false };
   if (scopes.TYPE === 'site') {
-    isSite.site = true
-    if (scopes.ID)
-      isSite.hasID = true
+    required_scopes.push("ID")
+  } else {
+    required_scopes.push("NAME")
   }
 
-  if (
-    getObj ? false :
-      (getMissingValues(scopes, required_scopes).length ||
-        (!isSite.hasID && isSite.site))
-  ) {
+  if (getObj ? false : getMissingValues(scopes, required_scopes).length) {
     return vscode.window.showErrorMessage(
       `Você não adicionou parâmetros obrigatórios no discloud.config!\nCheque a documentação: https://docs.discloudbot.com/suporte/faq/discloud.config`
     );
