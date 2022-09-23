@@ -123,7 +123,7 @@ module.exports = class extends Command {
           if (pth === savePath) {
             continue;
           }
-          const base = pth.split(/\\|\//).pop();
+          const base = pth.split(vscode.workspace.name).pop();
           statSync(pth).isDirectory()
             ? zip.directory(pth, base)
             : zip.file(pth, { name: base });
