@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  vscodediscloud:
+    image: vscodediscloud
+    build:
+      context: .
+      dockerfile: ./Dockerfile
