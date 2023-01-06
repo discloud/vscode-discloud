@@ -10,7 +10,7 @@ let { maxUses, uses, time, remain } = {
 };
 
 setInterval(() => {
-  uses > 0 ? uses-- : false;
+  uses = 0
 }, time);
 
 let hasProcess = { i: false, p: "" };
@@ -48,10 +48,10 @@ async function requester(url, config, options) {
     hasProcess.i = false;
     if (err.status === 401) {
       vscode.window.showErrorMessage(err.body.message);
-      return;
+      return err.status;
     }
     if (err.statusCode === 404) {
-      return;
+      return err.statusCode;
     }
     if (err === "Invalid endpoint") {
       return vscode.window.showErrorMessage(

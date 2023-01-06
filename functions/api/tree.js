@@ -1,10 +1,14 @@
 const vscode = require("vscode");
+// eslint-disable-next-line no-unused-vars
+const Discloud = require("../../structures/extend");
 const { requester } = require("../requester");
 const { ChildrenTreeItem, TreeItem } = require("./treeItem");
 
 class AppTreeDataProvider {
 
-  constructor(cache) {
+  /** @param {Discloud} discloud */
+  constructor(cache, discloud) {
+    this.discloud = discloud;
     this.data = [];
     this.cache = cache;
     this.init();
@@ -37,11 +41,10 @@ class AppTreeDataProvider {
     const tree = [];
 
     const alphabeticApps = getUser.user.appsStatus.sort((a, b) => {
-      if(a.name < b.name) { return -1; }
-      if(a.name > b.name) { return 1; }
+      if (a.name < b.name) { return -1; }
+      if (a.name > b.name) { return 1; }
       return 0;
     });
-    console.log(alphabeticApps);
 
     for await (const app of alphabeticApps) {
       if (!app) {
@@ -89,7 +92,7 @@ class AppTreeDataProvider {
             ),
             lstr: new ChildrenTreeItem(
               "Última Reinicialização",
-              infoApp.last_restart, 
+              infoApp.last_restart,
               vscode.TreeItemCollapsibleState.None,
               { iconName: "uptime" }
             ),
@@ -102,8 +105,8 @@ class AppTreeDataProvider {
           iconName: app.online
             ? "on"
             : app.ramKilled
-            ? "ramKilled"
-            : app.exitCode == 1 ? "errorCode" : "off",
+              ? "ramKilled"
+              : app.exitCode == 1 ? "errorCode" : "off",
 
           children: (childrens && app.online) ? Object.values(childrens) : undefined,
           tooltip: app.id,
@@ -115,12 +118,12 @@ class AppTreeDataProvider {
     tree.length > 0
       ? await this.createTreeItem(tree)
       : await this.createTreeItem([
-          new TreeItem(
-            "Nenhuma aplicação foi encontrada.",
-            vscode.TreeItemCollapsibleState.None,
-            { iconName: "x" }
-          ),
-        ]);
+        new TreeItem(
+          "Nenhuma aplicação foi encontrada.",
+          vscode.TreeItemCollapsibleState.None,
+          { iconName: "x" }
+        ),
+      ]);
   }
 
   createTreeItem(array) {
@@ -148,12 +151,12 @@ class AppTreeDataProvider {
       data.length > 0
         ? await this.createTreeItem(data)
         : await this.createTreeItem([
-            new TreeItem(
-              "Nenhuma aplicação foi encontrada.",
-              vscode.TreeItemCollapsibleState.None,
-              { iconName: "x" }
-            ),
-          ]);
+          new TreeItem(
+            "Nenhuma aplicação foi encontrada.",
+            vscode.TreeItemCollapsibleState.None,
+            { iconName: "x" }
+          ),
+        ]);
     } else {
       await this.verifyApps();
     }

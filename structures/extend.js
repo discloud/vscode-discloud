@@ -2,11 +2,13 @@ const { readdirSync } = require("fs");
 const { join } = require("path");
 const vscode = require("vscode");
 const { AppTreeDataProvider } = require("../functions/api/tree");
+const { tokenLocation } = require("../functions/tokenLocation");
 
 
 module.exports = class Discloud {
-
+  /** @param {vscode.ExtensionContext} context */
   constructor(context) {
+    this.secrets = context.secrets
     this.commands = [];
     this.subscriptions = context.subscriptions;
     this.cache = new Map();
@@ -37,10 +39,10 @@ module.exports = class Discloud {
         const cmd = new commandClass(this);
 
         let disp = vscode.commands.registerCommand(
-            `${category}.${cmd.name}`,
-            async (uri) => {
-              await cmd.run(uri);
-            }
+          `${category}.${cmd.name}`,
+          async (uri) => {
+            await cmd.run(uri);
+          }
         );
         this.subscriptions.push(disp);
 
@@ -66,7 +68,7 @@ module.exports = class Discloud {
   }
 
   loadTrees() {
-    const apps = new AppTreeDataProvider(this.cache);
+    const apps = new AppTreeDataProvider(this.cache, this);
     vscode.window.registerTreeDataProvider("discloud-apps", apps);
     this.mainTree = apps;
   }

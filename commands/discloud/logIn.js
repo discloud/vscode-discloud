@@ -9,7 +9,6 @@ module.exports = class extends Command {
   }
 
   run = async () => {
-    const tree = this.discloud.mainTree;
-    await login(tree);
+    await login(this.discloud);
   };
 };
