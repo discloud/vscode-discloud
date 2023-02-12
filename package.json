@@ -3,7 +3,7 @@
   "displayName": "Discloud",
   "icon": "resources/icons/discloudlogo.png",
   "galleryBanner": {
-    "color": "#5865F2",
+    "color": "#0b0b0b",
     "theme": "dark"
   },
   "publisher": "discloud",
