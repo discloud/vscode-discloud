@@ -31,7 +31,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if (("ramUsedMb" in data) && ("totalRamMb" in data))
       this.children.set("ram", new UserChildTreeItem({
-        label: t("available.ram"),
+        label: t("label.available.ram"),
         description: `${data.ramUsedMb}/${data.totalRamMb}`,
       }));
 
@@ -49,25 +49,25 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if ("apps" in data)
       this.children.set("apps", new UserChildTreeItem({
-        label: t("apps.amount"),
+        label: t("label.apps.amount"),
         description: `${data.apps?.length}`,
       }));
 
     if ("appsTeam" in data)
       this.children.set("team", new UserChildTreeItem({
-        label: t("team.apps.amount"),
+        label: t("label.team.apps.amount"),
         description: `${data.appsTeam?.length}`,
       }));
 
     if ("customdomains" in data)
       this.children.set("domains", new UserChildTreeItem({
-        label: t("domains.amount"),
+        label: t("label.domains.amount"),
         description: `${data.customdomains?.length}`,
       }));
 
     if ("subdomains" in data)
       this.children.set("subdomains", new UserChildTreeItem({
-        label: t("subdomains.amount"),
+        label: t("label.subdomains.amount"),
         description: `${data.subdomains?.length}`,
       }));
 
