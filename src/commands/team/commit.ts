@@ -36,8 +36,6 @@ export default class extends Command {
     task.progress.report({ message: `${item.appId} - ${t("choose.files")}` });
 
     const paths = await window.showOpenDialog({
-      canSelectFiles: true,
-      canSelectFolders: true,
       canSelectMany: true,
     });
     if (!paths?.length) return;
