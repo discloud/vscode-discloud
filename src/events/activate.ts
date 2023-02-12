@@ -6,6 +6,7 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import DiagnosticProvider from "../providers/DiagnosticProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
+import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 
 extension.once("activate", (context) => {
   extension.loadStatusBar();
@@ -19,6 +20,7 @@ extension.once("activate", (context) => {
   extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
   extension.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
   extension.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
+  extension.userTree = new UserTreeDataProvider("discloud-user");
 
   extension.loadCommands();
 

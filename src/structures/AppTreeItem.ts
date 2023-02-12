@@ -1,5 +1,4 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
 import { getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";

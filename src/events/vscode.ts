@@ -1,6 +1,9 @@
 import extension from "../extension";
 
 extension.on("vscode", (user) => {
+  if (user)
+    extension.userTree.update(Object.create(user));
+
   if ("appsStatus" in user)
     extension.appTree.addRawApps(user.appsStatus);
 

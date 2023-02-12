@@ -9,6 +9,7 @@ import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
+import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import AutoRefresh from "./AutoRefresh";
 import Command from "./Command";
 import StatusBarItem from "./StatusBarItem";
@@ -34,6 +35,7 @@ class Discloud extends EventEmitter {
   customDomainTree!: CustomDomainTreeDataProvider;
   subDomainTree!: SubDomainTreeDataProvider;
   teamAppTree!: TeamAppTreeDataProvider;
+  userTree!: UserTreeDataProvider;
   statusBar!: StatusBarItem;
   cache = new Map();
   commands = new Map<string, Command>();

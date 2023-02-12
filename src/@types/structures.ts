@@ -56,6 +56,14 @@ export interface TeamAppChildTreeItemData extends BaseTreeItemData {
   tooltip?: string
 }
 
+export interface UserTreeItemData extends Partial<BaseTreeItemData> {
+  userID?: string
+  children?: TeamAppTreeItem[]
+  description?: string
+  iconName?: string
+  tooltip?: string
+}
+
 export interface Events {
   activate: [context: ExtensionContext]
   ready: [extension: Discloud]

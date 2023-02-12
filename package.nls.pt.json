@@ -34,6 +34,7 @@
   "view.domain.title": "Domínios personalizados",
   "view.subdomain.title": "Subdomínios",
   "view.team.title": "Apps de equipe",
+  "view.user.title": "Usuário",
   "welcome": "Bem vindo!",
   "welcome.token.missing": "Você ainda não forneceu um token para ter acesso aos recursos da Discloud.\n[Envie seu token Discloud](command:discloud.login)"
 }

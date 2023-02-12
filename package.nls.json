@@ -34,6 +34,7 @@
   "view.domain.title": "Custom domains",
   "view.subdomain.title": "Subdomains",
   "view.team.title": "Team apps",
+  "view.user.title": "User",
   "welcome": "Welcome!",
   "welcome.token.missing": "You have not yet provided a token to access Discloud resources.\n[Submit your Discloud token](command:discloud.login)"
 }

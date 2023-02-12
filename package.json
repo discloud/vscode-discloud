@@ -389,24 +389,34 @@
           "type": "tree",
           "id": "discloud-apps",
           "name": "%view.apps.title%",
-          "visibility": "visible"
+          "visibility": "visible",
+          "when": "config.discloud.token"
         },
         {
           "type": "tree",
           "id": "discloud-teams",
           "name": "%view.team.title%",
-          "visibility": "collapsed"
+          "visibility": "collapsed",
+          "when": "config.discloud.token"
         },
         {
           "type": "tree",
           "id": "discloud-subdomains",
           "name": "%view.subdomain.title%",
-          "visibility": "collapsed"
+          "visibility": "collapsed",
+          "when": "config.discloud.token"
         },
         {
           "type": "tree",
           "id": "discloud-domains",
           "name": "%view.domain.title%",
+          "visibility": "collapsed",
+          "when": "config.discloud.token"
+        },
+        {
+          "type": "tree",
+          "id": "discloud-user",
+          "name": "%view.user.title%",
           "visibility": "collapsed"
         }
       ]
@@ -427,7 +437,7 @@
         "when": "config.discloud.token"
       },
       {
-        "view": "discloud-apps",
+        "view": "discloud-user",
         "contents": "%welcome.token.missing%",
         "when": "!config.discloud.token"
       }
