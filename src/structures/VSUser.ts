@@ -14,6 +14,7 @@ export default class VSUser {
   subdomains: string[] = [];
   totalRamMb?: number;
   userID?: string;
+  username?: string;
 
   constructor(protected readonly discloud: Discloud) { }
 

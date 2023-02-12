@@ -10,9 +10,9 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   userID?: string;
 
   constructor(data: Partial<UserTreeItemData & VSUser>) {
-    data.label ??= "userID" in data ?
-      `${data.userID}` :
-      `${data.label}`;
+    data.label ??= data.username ?
+      `${data.username} - ID ${data.userID}` :
+      `${data.userID}`;
 
     super(data.label, data.collapsibleState ??= TreeItemCollapsibleState.Expanded);
 
