@@ -39,14 +39,13 @@ export default class extends Command {
 
     if (!ram) return;
 
-    ram = parseInt(ram);
-
     if (!await this.confirmAction()) return;
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.appRam(item.appId), {
       body: JSON.stringify({
-        ramMB: ram,
+        ramMB: parseInt(ram),
       }),
+      method: "PUT",
     });
 
     if ("status" in res) {

@@ -39,6 +39,9 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   config.throwOnError = true;
   config.headersTimeout = config.headersTimeout ?? 60000;
   config.headers = {
+    ...(typeof config.body === "string" ? {
+      "Content-Type": "application/json",
+    } : {}),
     "api-token": `${extension.token}`,
     ...(config.headers ?? {}),
     "User-Agent": `vscode/${version} (${os_name} ${os_release}; ${os_platform}; ${cpu_arch})`,
