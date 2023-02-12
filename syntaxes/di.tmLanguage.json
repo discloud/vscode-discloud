@@ -1,0 +1,30 @@
+{
+  "scopeName": "discloudignore",
+  "patterns": [
+    {
+      "comment": "Comments",
+      "match": "^(#.*)$",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#inline"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "repository": {
+    "inline": {
+      "comment": "inline",
+      "match": "^(#.*)$",
+      "name": "comment.line.number-sign",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment"
+        }
+      }
+    }
+  }
+}

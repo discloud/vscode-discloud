@@ -1,0 +1,106 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "scopeName": "source.discloud",
+  "patterns": [
+    {
+      "comment": "Comments",
+      "match": "^(#.*)$",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#inline"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "comment": "Entries",
+      "match": "^(\\w+)(\\=)(.*)$",
+      "captures": {
+        "1": {
+          "name": "variable.parameter"
+        },
+        "2": {
+          "name": "keyword.operator.assignment"
+        },
+        "3": {
+          "patterns": [
+            {
+              "include": "#boolean"
+            },
+            {
+              "include": "#numeric"
+            },
+            {
+              "include": "#unquoted"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "repository": {
+    "inline": {
+      "comment": "inline",
+      "match": "^(#.*)$",
+      "name": "comment.line.number-sign",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment"
+        }
+      }
+    },
+    "boolean": {
+      "comment": "Boolean Constants",
+      "match": "\\b(true|false)\\b",
+      "captures": {
+        "1": {
+          "name": "constant.language"
+        }
+      }
+    },
+    "numeric": {
+      "comment": "Numeric",
+      "match": "([+-])?(\\d+[eE][+-]?\\d+|0[xX][\\da-fA-F]+|\\d+(?:[.]\\d*)?|[.]\\d+)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator"
+        },
+        "2": {
+          "name": "constant.numeric"
+        }
+      }
+    },
+    "variable": {
+      "patterns": [
+        {
+          "match": "(?x)(\\$+)([a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*?\\b)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable variable.other"
+            },
+            "2": {
+              "name": "variable.other"
+            }
+          }
+        }
+      ]
+    },
+    "unquoted": {
+      "comment": "Strings (none)",
+      "name": "string.unquoted",
+      "match": "(.*)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#variable"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
