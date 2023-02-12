@@ -2,7 +2,6 @@ import { IgnoreFiles } from "discloud.app";
 import { GlobSync } from "glob";
 import { statSync } from "node:fs";
 import { isAbsolute } from "node:path";
-import { blocked_files } from "./constants";
 
 export class GS {
   found: string[] = [];
@@ -19,13 +18,8 @@ export class GS {
 
     this.found = new GlobSync(this.path, {
       dot: true,
-      ignore: this.ignore.list.concat(this.#getDiscloudIgnore()),
+      ignore: this.ignore.list,
     }).found;
-  }
-
-  #getDiscloudIgnore(path = this.path) {
-    return [...new Set(Object.values(blocked_files).flat())]
-      .map(a => [a, `${a}/**`, `**/${a}`, `**/${a}/**`, `${path}/${a}`, `${path}/${a}/**`]).flat();
   }
 
   #normalizePath(path: string) {

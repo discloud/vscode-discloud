@@ -9,7 +9,7 @@ export const os_platform = platform();
 export const cpu_arch = arch();
 
 export const blocked_files = {
-  common: [".git", ".vscode", "discloud"],
+  common: [".git", ".vscode"],
   go: [],
   js: ["node_modules", "package-lock.json", "yarn.lock"],
   py: [],

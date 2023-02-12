@@ -44,6 +44,7 @@ export default class extends Command {
     const { list } = new IgnoreFiles({
       fileName: ".discloudignore",
       path: workspaceFolder,
+      optionalIgnoreList: [`${workspaceFolder}/discloud/**`],
     });
 
     let files = [];

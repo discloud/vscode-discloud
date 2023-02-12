@@ -50,7 +50,7 @@ export default class extends Command {
       return;
     };
 
-    const { found } = new GS(targetPath, "\.discloudignore");
+    const { found } = new GS(targetPath, "\\.discloudignore", [`${targetPath}/discloud/**`]);
 
     if (!found.length) {
       extension.resetStatusBar();
