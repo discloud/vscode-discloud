@@ -445,21 +445,21 @@
     "@vscode/l10n": "^0.0.11",
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
-    "discloud.app": "^0.4.12",
+    "discloud.app": "^0.4.13",
     "glob": "^8.1.0",
-    "undici": "^5.17.1"
+    "undici": "^5.18.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/archiver": "^5.3.1",
     "@types/glob": "^8.0.1",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.11.19",
+    "@types/node": "^18.13.0",
     "@types/vscode": "^1.75.0",
-    "@typescript-eslint/eslint-plugin": "^5.50.0",
-    "@typescript-eslint/parser": "^5.50.0",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
     "@vscode/test-electron": "^2.2.3",
-    "eslint": "^8.33.0",
+    "eslint": "^8.34.0",
     "mocha": "^10.2.0",
     "typescript": "^4.9.5"
   }
