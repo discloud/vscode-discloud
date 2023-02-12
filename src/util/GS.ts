@@ -1,6 +1,7 @@
 import { IgnoreFiles } from "discloud.app";
 import { GlobSync } from "glob";
 import { statSync } from "node:fs";
+import { isAbsolute } from "node:path";
 import { blocked_files } from "./constants";
 
 export class GS {
@@ -28,8 +29,14 @@ export class GS {
   }
 
   #normalizePath(path: string) {
-    path = path.replace(/^(\.|~)$|^(\.|~)\/|^\/|\/$/g, "") || "**";
-    path = statSync(path).isDirectory() ? path + "/**" : path;
+    try {
+      if (!isAbsolute(path)) 
+        path = path.replace(/^(\.|~)$|^(\.|~)\/|^\/|\/$/g, "") || "**";
+
+      path = statSync(path).isDirectory() ? path + "/**" : path;
+    } catch {
+      path = path + "/**";
+    }
     return path;
   }
 }
