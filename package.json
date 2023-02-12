@@ -82,6 +82,11 @@
         "icon": "$(git-commit)"
       },
       {
+        "command": "discloud.apps.copy.id",
+        "title": "%command.apps.copy.id%",
+        "icon": "$(clippy)"
+      },
+      {
         "command": "discloud.apps.delete",
         "title": "%command.apps.delete%",
         "icon": "$(trash)"
@@ -140,6 +145,11 @@
         "command": "discloud.team.commit",
         "title": "%command.team.commit%",
         "icon": "$(git-commit)"
+      },
+      {
+        "command": "discloud.team.copy.id",
+        "title": "%command.team.copy.id%",
+        "icon": "$(clippy)"
       },
       {
         "command": "discloud.team.import",
@@ -254,6 +264,10 @@
           "when": "view == discloud-apps"
         },
         {
+          "command": "discloud.apps.copy.id",
+          "when": "view == discloud-apps"
+        },
+        {
           "command": "discloud.apps.delete",
           "when": "view == discloud-apps"
         },
@@ -290,6 +304,10 @@
         },
         {
           "command": "discloud.team.commit",
+          "when": "view == discloud-teams"
+        },
+        {
+          "command": "discloud.team.copy.id",
           "when": "view == discloud-teams"
         },
         {
