@@ -2,8 +2,8 @@ import { t } from "@vscode/l10n";
 import { RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
 import { TaskData } from "../../@types";
-import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { requester } from "../../util";
 
 export default class extends Command {
@@ -17,7 +17,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
+  async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!item.appId) {
       task.progress.report({ message: t("choose.app") });
 

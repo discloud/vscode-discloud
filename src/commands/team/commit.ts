@@ -6,8 +6,8 @@ import { FormData } from "undici";
 import { ProgressLocation, window, workspace } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
-import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { GS, requester, Zip } from "../../util";
 
 export default class extends Command {
@@ -21,7 +21,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
+  async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
 
