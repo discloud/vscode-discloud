@@ -154,10 +154,7 @@
       {
         "command": "discloud.team.import",
         "title": "%command.team.import%",
-        "icon": {
-          "light": "resources/light/code.svg",
-          "dark": "resources/dark/code.svg"
-        }
+        "icon": "$(edit)"
       },
       {
         "command": "discloud.team.logs",
