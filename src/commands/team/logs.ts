@@ -31,10 +31,10 @@ export default class extends Command {
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!res.apps) return;
 
-    const output = window.createOutputChannel(res.apps.id);
+    const output = window.createOutputChannel(res.apps.id, { log: true });
 
-    output.append(res.apps.terminal.big);
+    output.info(res.apps.terminal.big);
 
-    output.show();
+    setTimeout(() => output.show(), 100);
   }
 }
