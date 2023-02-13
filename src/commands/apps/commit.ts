@@ -1,6 +1,5 @@
 import { t } from "@vscode/l10n";
-import { IgnoreFiles, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
-import { existsSync, statSync } from "fs";
+import { resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "path";
 import { FormData } from "undici";
 import { ProgressLocation, window, workspace } from "vscode";
@@ -35,28 +34,7 @@ export default class extends Command {
 
     task.progress.report({ message: `${item.appId} - ${t("choose.files")}` });
 
-    const paths = await window.showOpenDialog({
-      canSelectMany: true,
-    });
-    if (!paths?.length) return;
-
-    const { list } = new IgnoreFiles({
-      fileName: ".discloudignore",
-      path: workspaceFolder,
-      optionalIgnoreList: [`${workspaceFolder}/discloud/**`],
-    });
-
-    let files = [];
-    for (const path of paths) {
-      if (existsSync(path.fsPath))
-        if (statSync(path.fsPath).isFile()) {
-          files.push(path.fsPath);
-        } else {
-          const { found } = new GS(path.fsPath, "", list);
-          files.push(found);
-        }
-    }
-    files = [...new Set(files.flat())];
+    const { found } = new GS(workspaceFolder, "\\.discloudignore", [`${workspaceFolder}/discloud/**`]);
 
     task.progress.report({ message: t("files.zipping") });
 
@@ -66,7 +44,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(files, workspaceFolder);
+      zipper.appendFileList(found, workspaceFolder);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
