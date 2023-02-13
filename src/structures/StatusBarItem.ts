@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { StatusBarItem as IStatusBarItem, window, workspace } from "vscode";
+import { StatusBarItem as IStatusBarItem, ThemeColor, window, workspace } from "vscode";
 import extension from "../extension";
 import { bindFunctions } from "../util";
 
@@ -20,6 +20,10 @@ export default class StatusBarItem implements IStatusBarItem {
     }
   }
 
+  get limited() {
+    return this.text === t("status.text.ratelimited");
+  }
+
   get loading() {
     return this.data.text.includes("$(loading~spin)");
   }
@@ -29,6 +33,8 @@ export default class StatusBarItem implements IStatusBarItem {
   }
 
   reset(data: Partial<IStatusBarItem> = this.originalData) {
+    if (this.limited) return;
+
     this.accessibilityInformation = data.accessibilityInformation ?? this.originalData.accessibilityInformation;
     this.backgroundColor = data.backgroundColor ?? this.originalData.backgroundColor;
     this.color = data.color ?? this.originalData.color;
@@ -55,36 +61,60 @@ export default class StatusBarItem implements IStatusBarItem {
   }
 
   setLogin() {
+    if (this.limited) return;
+
     this.command = "discloud.login";
     this.text = t("status.text.login");
     this.tooltip = t("status.tooltip.login");
   }
 
   setCommiting() {
+    if (this.limited) return;
+
     this.command = undefined;
     this.text = t("status.text.commiting");
     this.tooltip = undefined;
   }
 
   setLoading() {
+    if (this.limited) return;
+
     this.command = undefined;
     this.text = t("status.text.loading");
     this.tooltip = undefined;
   }
 
+  setRateLimited(force?: boolean) {
+    if (!force && this.limited) {
+      this.text = this.originalData.text;
+      this.reset();
+    } else {
+      this.command = undefined;
+      this.backgroundColor = new ThemeColor("statusBarItem.warningBackground");
+      this.text = t("status.text.ratelimited");
+      this.tooltip = t("status.tooltip.ratelimited");
+    }
+  }
+
   setUpload() {
+    if (this.limited) return;
+
     this.command = "discloud.upload";
     this.text = t("status.text.upload");
     this.tooltip = t("status.tooltip.upload");
   }
 
   setUploading() {
+    if (this.limited) return;
+
     this.command = undefined;
     this.text = t("status.text.uploading");
     this.tooltip = undefined;
   }
 
   setText(text: string) {
+    if (this.limited) return;
+
     if (typeof text === "string") this.text = text;
   }
 

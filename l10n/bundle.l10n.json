@@ -79,10 +79,12 @@
   "status.text.login": "$(log-in) Login Discloud",
   "status.text.commiting": "$(loading~spin) Commiting...",
   "status.text.loading": "$(loading~spin) Loading...",
+  "status.text.ratelimited": "$(warning) DISCLOUD RATE LIMITED!",
   "status.text.upload": "$(cloud-upload) Upload Discloud",
   "status.text.uploading": "$(loading~spin) Uploading...",
   "status.tooltip": "Discloud",
   "status.tooltip.login": "Login to Discloud",
+  "status.tooltip.ratelimited": "You have reached the request limit.\nWait a moment...",
   "status.tooltip.upload": "Upload to Discloud",
   "uploading": "Uploading...",
   "valid.token": "Token set up successfully!"

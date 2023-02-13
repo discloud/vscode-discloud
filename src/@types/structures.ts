@@ -3,6 +3,7 @@ import AppTreeItem from "../structures/AppTreeItem";
 import Discloud from "../structures/Discloud";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
+import { RateLimitData } from "./rest";
 
 export interface CommandData {
   noToken?: boolean;
@@ -66,6 +67,6 @@ export interface UserTreeItemData extends Partial<BaseTreeItemData> {
 
 export interface Events {
   activate: [context: ExtensionContext]
-  ready: [extension: Discloud]
+  rateLimited: [rateLimitData: RateLimitData]
   vscode: [user: VSUser]
 }

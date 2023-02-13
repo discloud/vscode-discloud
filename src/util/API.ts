@@ -33,6 +33,10 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   if (!remain || maxUses < uses) {
     window.showInformationMessage(t("ratelimited", { s: Math.floor(time / 1000) }));
 
+    extension.emit("rateLimited", {
+      time,
+    });
+
     return <T>false;
   }
 
@@ -57,6 +61,11 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     time = parseInt(`${response.headers["ratelimit-reset"]}`) * 1000;
     remain = parseInt(`${response.headers["ratelimit-remaining"]}`);
     initTimer();
+
+    if (!remain || maxUses < uses)
+      extension.emit("rateLimited", {
+        time,
+      });
 
     return response.body.json();
   } catch (error: any) {
