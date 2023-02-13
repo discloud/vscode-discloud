@@ -92,7 +92,8 @@ export default class StatusBarItem implements IStatusBarItem {
         this.text = t("status.text.ratelimited");
         this.tooltip = t("status.tooltip.ratelimited");
       } else {
-        this.set(this.originalData);
+        this.text = this.originalData.text;
+        this.reset();
       }
     } else {
       this.setRateLimited(!this.limited);
