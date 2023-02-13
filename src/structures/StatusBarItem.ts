@@ -84,15 +84,18 @@ export default class StatusBarItem implements IStatusBarItem {
     this.tooltip = undefined;
   }
 
-  setRateLimited(force?: boolean) {
-    if (!force && this.limited) {
-      this.text = this.originalData.text;
-      this.reset();
+  setRateLimited(limited?: boolean) {
+    if (typeof limited === "boolean") {
+      if (limited) {
+        this.command = undefined;
+        this.backgroundColor = new ThemeColor("statusBarItem.warningBackground");
+        this.text = t("status.text.ratelimited");
+        this.tooltip = t("status.tooltip.ratelimited");
+      } else {
+        this.set(this.originalData);
+      }
     } else {
-      this.command = undefined;
-      this.backgroundColor = new ThemeColor("statusBarItem.warningBackground");
-      this.text = t("status.text.ratelimited");
-      this.tooltip = t("status.tooltip.ratelimited");
+      this.setRateLimited(!this.limited);
     }
   }
 
