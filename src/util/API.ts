@@ -22,16 +22,9 @@ async function initTimer() {
 const processes: string[] = [];
 
 export async function requester<T = any>(url: string | URL, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
-  if (!isVS)
-    if (processes.length) {
-      window.showErrorMessage(t("process.already.running"));
-      return <T>false;
-    } else {
-      processes.push(url.toString().split("/").pop()!);
-    }
-
   if (!remain || maxUses < uses) {
     window.showInformationMessage(t("ratelimited", { s: Math.floor(time / 1000) }));
+
 
     extension.emit("rateLimited", {
       time,
@@ -39,6 +32,14 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
 
     return <T>false;
   }
+
+  if (!isVS)
+    if (processes.length) {
+      window.showErrorMessage(t("process.already.running"));
+      return <T>false;
+    } else {
+      processes.push(url.toString().split("/").pop()!);
+    }
 
   config.throwOnError = true;
   config.headersTimeout = config.headersTimeout ?? 60000;
