@@ -28,6 +28,7 @@
   ],
   "activationEvents": [
     "onCommand:discloud.apps.commit",
+    "onCommand:discloud.apps.copy.id",
     "onCommand:discloud.apps.delete",
     "onCommand:discloud.apps.import",
     "onCommand:discloud.apps.logs",
@@ -40,6 +41,7 @@
     "onCommand:discloud.domain.refresh",
     "onCommand:discloud.subdomain.refresh",
     "onCommand:discloud.team.commit",
+    "onCommand:discloud.team.copy.id",
     "onCommand:discloud.team.import",
     "onCommand:discloud.team.logs",
     "onCommand:discloud.team.ram",
