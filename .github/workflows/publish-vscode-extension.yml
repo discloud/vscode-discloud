@@ -13,6 +13,9 @@ jobs:
         with:
           node-version: 16
       - run: yarn
+      - if: ${{ github.event.release.prerelease }}
+        run: |
+          npm version prerelease --preid=beta.$(date +%s) --no-git-tag-version
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v1
         id: publishToOpenVSX
