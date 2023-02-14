@@ -77,6 +77,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     switch (error.status ?? error.statusCode) {
       case 401:
         tokenIsValid = false;
+        extension.statusBar.setLogin();
         break;
       default:
         break;
