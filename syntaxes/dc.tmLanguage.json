@@ -4,7 +4,7 @@
   "patterns": [
     {
       "comment": "Comments",
-      "match": "^(#.*)$",
+      "match": "(\\s*#.*)",
       "captures": {
         "1": {
           "patterns": [
@@ -44,7 +44,7 @@
   "repository": {
     "inline": {
       "comment": "inline",
-      "match": "^(#.*)$",
+      "match": "\\s*(#.*)",
       "name": "comment.line.number-sign",
       "captures": {
         "1": {
