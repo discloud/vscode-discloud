@@ -7,11 +7,12 @@ import { RequestOptions } from "../@types";
 import extension from "../extension";
 import { cpu_arch, os_name, os_platform, os_release, version } from "./constants";
 
-let { maxUses, uses, time, remain } = {
+let { maxUses, uses, time, remain, tokenIsValid } = {
   maxUses: 60,
   uses: 0,
   time: 60000,
   remain: 60,
+  tokenIsValid: true,
 };
 
 async function initTimer() {
@@ -22,10 +23,9 @@ async function initTimer() {
 const processes: string[] = [];
 
 export async function requester<T = any>(url: string | URL, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
+  if (!tokenIsValid) return <T>false;
+
   if (!remain || maxUses < uses) {
-    window.showInformationMessage(t("ratelimited", { s: Math.floor(time / 1000) }));
-
-
     extension.emit("rateLimited", {
       time,
     });
@@ -58,9 +58,9 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
 
     if (!isVS) processes.shift();
 
-    maxUses = parseInt(`${response.headers["ratelimit-limit"]}`);
-    time = parseInt(`${response.headers["ratelimit-reset"]}`) * 1000;
-    remain = parseInt(`${response.headers["ratelimit-remaining"]}`);
+    maxUses = Number(response.headers["ratelimit-limit"]);
+    time = Number(response.headers["ratelimit-reset"]);
+    remain = Number(response.headers["ratelimit-remaining"]);
     initTimer();
 
     if (!remain || maxUses < uses)
@@ -72,7 +72,15 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   } catch (error: any) {
     if (!isVS) processes.shift();
 
-    window.showErrorMessage(`${error.body?.message ? error.body.message : error}`);
+    extension.emit("error", error);
+
+    switch (error.status ?? error.statusCode) {
+      case 401:
+        tokenIsValid = false;
+        break;
+      default:
+        break;
+    }
 
     return error;
   }
@@ -81,8 +89,10 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
 export async function tokenValidator(token: string) {
   try {
     await discloud.login(token);
+    tokenIsValid = true;
     return true;
   } catch {
+    tokenIsValid = false;
     return false;
   }
 }
