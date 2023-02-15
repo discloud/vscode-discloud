@@ -16,19 +16,13 @@
     "@discloudapp/util" "^0.3.1"
     undici "^5.16.0"
 
-"@discloudapp/util@^0.3.1":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.3.4.tgz#39a7bbab0ae9be0201373984ed08426c05534156"
-  integrity sha512-/hDo8esCJVJfObXVSU0bshtzmbd/5N87QrDS2zn8HDAiMaevvl+JACokwFUMvruyEiB38CuA9AvuxlpY/+6OZg==
+"@discloudapp/util@^0.3.1", "@discloudapp/util@^0.3.10":
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.3.10.tgz#3686c760cd79f25eae2aec67dcda126fbd6db730"
+  integrity sha512-SGL4UH/KWnAe4C3qtk5FNPLMAsvz1RuwnOB5klzIltx49AARoYuT1P3Fbpylr3oAXGbYrGp1WSwL0ZrlPFJaUQ==
   dependencies:
-    undici "^5.17.1"
-
-"@discloudapp/util@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.3.6.tgz#154a0d2786a479d93b760bb21f0c9cf294c832cb"
-  integrity sha512-0Y9MA/QzrwFweIywhuT3E+MxjyUT8yov0i1+jJsN5Ew3e00alzlFQWjpZZ9PI3Dj3qqNnazSL7iNNBmoQyR3dQ==
-  dependencies:
-    undici "^5.18.0"
+    fs-jetpack "^5.1.0"
+    undici "^5.19.1"
 
 "@eslint/eslintrc@^1.4.1":
   version "1.4.1"
@@ -578,15 +572,15 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.4.13:
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.4.13.tgz#628c42ab0ffb2b8d489e216665ca3476f79a45a3"
-  integrity sha512-J0gAPEhZzD2McAsyH8D7EgpGywiyBVWoS3kg+/z8Dtbyj0Ol5r/p2IXjVkMLLIDJ0Z3vBWzqXL20+YBkvih0jw==
+discloud.app@^0.4.17:
+  version "0.4.17"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.4.17.tgz#9b40f7c8823b31b141ffa8e3ccc22f23b90d04c6"
+  integrity sha512-ve/a7plCKkpmzxLB+f+Vdm6R1qweOVkTEMZuS9xpwX4ndUp9Kk/JZMluMiXFCtEuBNlb0oPFZLQPS+aeIubxCg==
   dependencies:
     "@discloudapp/api-types" "^0.2.6"
     "@discloudapp/rest" "^0.5.2"
-    "@discloudapp/util" "^0.3.6"
-    undici "^5.18.0"
+    "@discloudapp/util" "^0.3.10"
+    undici "^5.19.1"
 
 doctrine@^3.0.0:
   version "3.0.0"
@@ -817,6 +811,13 @@ fs-constants@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
+
+fs-jetpack@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/fs-jetpack/-/fs-jetpack-5.1.0.tgz#dcd34d709b69007c9dc2420a6f2b9e8f986cff0d"
+  integrity sha512-Xn4fDhLydXkuzepZVsr02jakLlmoARPy+YWIclo4kh0GyNGUHnTqeH/w/qIsVn50dFxtp8otPL2t/HcPJBbxUA==
+  dependencies:
+    minimatch "^5.1.0"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -1561,7 +1562,7 @@ typescript@^4.9.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
-undici@^5.16.0, undici@^5.17.1, undici@^5.18.0, undici@^5.19.1:
+undici@^5.16.0, undici@^5.19.1:
   version "5.19.1"
   resolved "https://registry.yarnpkg.com/undici/-/undici-5.19.1.tgz#92b1fd3ab2c089b5a6bd3e579dcda8f1934ebf6d"
   integrity sha512-YiZ61LPIgY73E7syxCDxxa3LV2yl3sN8spnIuTct60boiiRaE1J8mNWHO8Im2Zi/sFrPusjLlmRPrsyraSqX6A==
