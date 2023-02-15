@@ -36,7 +36,7 @@ class AutoRefresh {
     this.stop();
 
     if (interval)
-      this.timer = setInterval(this.refresh, interval * 1000);
+      this.timer = setInterval(() => this.refresh, interval * 1000);
   }
 }
 
