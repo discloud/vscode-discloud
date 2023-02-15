@@ -82,6 +82,14 @@ export default class extends Command {
       } else {
         window.showWarningMessage(`${res.status}${res.statusCode ? ` ${res.statusCode}` : ""}: ${res?.message}`);
       }
+
+      if (res.logs) {
+        const output = window.createOutputChannel(item.appId, { log: true });
+
+        output.info(res.logs);
+
+        setTimeout(() => output.show(), 100);
+      }
     }
   }
 }
