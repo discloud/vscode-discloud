@@ -55,6 +55,10 @@ extension.once("activate", (context) => {
     disposableWorkspaceFolders,
   );
 
-  if (tokenIsDiscloudJwt(extension.token))
+  if (tokenIsDiscloudJwt(extension.token)) {
+    extension.statusBar.setUpload();
     extension.user.fetch(true);
+  } else {
+    extension.statusBar.setLogin();
+  }
 });
