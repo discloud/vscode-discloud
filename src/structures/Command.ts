@@ -9,7 +9,9 @@ export default abstract class Command {
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
-  async pickApp() {
+  async pickApp(task?: TaskData) {
+    task?.progress.report({ message: t("choose.app") });
+
     const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
     if (!res.apps?.length) return;
 
@@ -20,10 +22,16 @@ export default abstract class Command {
     });
     if (!picked) return;
 
-    return picked.split(" - ")[0];
+    const id = picked.split(" - ")[0];
+
+    task?.progress.report({ message: id });
+
+    return id;
   }
 
-  async pickTeamApp() {
+  async pickTeamApp(task?: TaskData) {
+    task?.progress.report({ message: t("choose.app") });
+
     const res = await requester<RESTGetApiTeamResult>(Routes.team());
     if (!res.apps?.length) return;
 
@@ -34,7 +42,11 @@ export default abstract class Command {
     });
     if (!picked) return;
 
-    return picked.split(" - ")[0];
+    const id = picked.split(" - ")[0];
+
+    task?.progress.report({ message: id });
+
+    return id;
   }
 
   async confirmAction(data?: string | ActionOptions) {

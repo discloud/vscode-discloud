@@ -20,8 +20,6 @@ export default class extends Command {
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
     if (!item.appId) {
-      task.progress.report({ message: t("choose.app") });
-
       item.appId = await this.pickApp();
 
       if (!item.appId) return;

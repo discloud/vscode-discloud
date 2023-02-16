@@ -30,10 +30,7 @@ export default class extends Command {
 
     extension.statusBar.setCommiting();
 
-    task.progress.report({ message: t("choose.app") });
-
     const appId = await this.pickApp();
-
     if (!appId) return;
 
     task.progress.report({
