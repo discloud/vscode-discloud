@@ -7,14 +7,14 @@ import DiagnosticProvider from "../providers/DiagnosticProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
+import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 extension.once("activate", (context) => {
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
+  new CompletionItemProvider();
   new DiagnosticProvider();
-
-  const completionItemProvider = new CompletionItemProvider();
 
   extension.appTree = new AppTreeDataProvider("discloud-apps");
   extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
@@ -26,7 +26,11 @@ extension.once("activate", (context) => {
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
-      extension.statusBar.reset();
+      if (extension.token) {
+        tokenValidator(extension.token);
+      } else {
+        extension.statusBar.setLogin();
+      }
     }
 
     if (event.affectsConfiguration("discloud.auto.refresh")) {
@@ -47,13 +51,10 @@ extension.once("activate", (context) => {
   });
 
   context.subscriptions.push(
-    completionItemProvider.disposable,
     disposableConfiguration,
     disposableWorkspaceFolders,
   );
 
-  extension.statusBar.reset();
-
-  if (extension.token)
+  if (tokenIsDiscloudJwt(extension.token))
     extension.user.fetch(true);
 });

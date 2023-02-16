@@ -67,7 +67,9 @@ export interface UserTreeItemData extends Partial<BaseTreeItemData> {
 
 export interface Events {
   activate: [context: ExtensionContext]
+  authorized: []
   error: [error: any]
   rateLimited: [rateLimitData: RateLimitData]
+  unauthorized: []
   vscode: [user: VSUser]
 }
