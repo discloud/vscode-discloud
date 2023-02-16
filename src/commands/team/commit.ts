@@ -25,7 +25,7 @@ export default class extends Command {
     const workspaceFolder = extension.workspaceFolder;
 
     if (!item.appId) {
-      item.appId = await this.pickTeamApp();
+      item.appId = await this.pickTeamApp(task);
 
       if (!item.appId) return;
     }
