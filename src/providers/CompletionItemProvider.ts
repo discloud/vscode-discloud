@@ -1,7 +1,8 @@
 import { APT, APTPackages } from "discloud.app";
 import { existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { CompletionItem, CompletionItemKind, Disposable, languages, TextDocument, TextLine } from "vscode";
+import { CompletionItem, CompletionItemKind, languages, TextDocument, TextLine } from "vscode";
+import extension from "../extension";
 
 const DiscloudConfigScopes = [
   "ID",
@@ -16,10 +17,8 @@ const DiscloudConfigScopes = [
 ];
 
 export default class CompletionItemProvider {
-  disposable: Disposable;
-
   constructor() {
-    this.disposable = languages.registerCompletionItemProvider("discloud.config", {
+    const disposable = languages.registerCompletionItemProvider("discloud.config", {
       provideCompletionItems(document, position, token, context) {
         if (!position.character)
           return DiscloudConfigScopes.map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
@@ -41,6 +40,8 @@ export default class CompletionItemProvider {
         return CompletionItemProvider[<"MAIN">splitted[0]]?.(splitted[1], document);
       },
     });
+
+    extension.context.subscriptions.push(disposable);
   }
 
   static APT(text: string) {

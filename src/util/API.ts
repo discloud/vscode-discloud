@@ -1,5 +1,6 @@
 import { t } from "@vscode/l10n";
 import { discloud } from "discloud.app";
+import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "node:timers/promises";
 import { request } from "undici";
 import { window } from "vscode";
@@ -77,7 +78,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     switch (error.status ?? error.statusCode) {
       case 401:
         tokenIsValid = false;
-        extension.statusBar.setLogin();
+        extension.emit("unauthorized");
         break;
       default:
         break;
@@ -87,13 +88,26 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   }
 }
 
+export function tokenIsDiscloudJwt(token = extension.token): boolean {
+  const payload = decode(token!, { json: true });
+  return payload && "id" in payload && "key" in payload || false;
+}
+
 export async function tokenValidator(token: string) {
   try {
-    await discloud.login(token);
-    tokenIsValid = true;
-    return true;
+    if (tokenIsDiscloudJwt(token)) {
+      await discloud.login(token);
+      tokenIsValid = true;
+      extension.emit("authorized");
+      return true;
+    } else {
+      tokenIsValid = false;
+      extension.emit("unauthorized");
+      return false;
+    }
   } catch {
     tokenIsValid = false;
+    extension.emit("unauthorized");
     return false;
   }
 }
