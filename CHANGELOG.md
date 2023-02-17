@@ -1,8 +1,24 @@
+<!-- markdownlint-disable MD024 -->
+
 # Change Log
 
 Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui você poderá ver as novas novidades.
 
 ---
+
+## v2.1.0
+
+### Bugs fixes
+
+- Corrigido mensagem de rate limit intermitente
+
+### Features
+
+- Adicionado logs em caso de erros em upload/commit
+- Adicionado verificação melhorada de alterações no token
+- Adicionado gerenciamento de MODs de aplicativos
+- Alterado padrão do auto refresh para 0 (desativado)
+- Adicionado debug output channel
 
 ## v2.0.0
 
