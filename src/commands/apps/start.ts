@@ -24,8 +24,6 @@ export default class extends Command {
       if (!item.appId) return;
     }
 
-    task.progress.report({ message: item.appId });
-
     const res = await requester<RESTPutApiAppStartResult>(Routes.appStart(item.appId), {
       method: "PUT",
     });

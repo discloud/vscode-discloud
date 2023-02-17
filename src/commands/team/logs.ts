@@ -23,8 +23,6 @@ export default class extends Command {
       if (!item.appId) return;
     }
 
-    task.progress.report({ message: item.appId });
-
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!res.apps) return;
 

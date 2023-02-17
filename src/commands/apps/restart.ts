@@ -19,14 +19,12 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!await this.confirmAction()) return;
-
     if (!item.appId) {
       item.appId = await this.pickApp(task);
       if (!item.appId) return;
     }
 
-    task.progress.report({ message: item.appId });
+    if (!await this.confirmAction()) return;
 
     const res = await requester<RESTPutApiAppRestartResult>(Routes.appRestart(item.appId), {
       method: "PUT",
