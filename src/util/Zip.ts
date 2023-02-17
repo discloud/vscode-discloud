@@ -17,11 +17,12 @@ export class Zip {
     this.zip.pipe(this.stream);
   }
 
-  appendFileList(fileList: string[] = [], targetPath: string) {
+  appendFileList(fileList: string[], targetPath: string) {
+    if (!fileList?.length) return;
+
     const targetRegex = RegExp(`${targetPath}\\/?`, "i");
 
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i];
+    for (const file of fileList) {
       const name = file.replace(targetRegex, "");
 
       if (existsSync(file))

@@ -1,16 +1,14 @@
 import { CancellationToken, EventEmitter, ProviderResult, TreeDataProvider, TreeItem, window } from "vscode";
 import extension from "../extension";
 
-export default abstract class BaseTreeDataProvider<T = any> implements TreeDataProvider<T> {
-  protected _onDidChangeTreeData = new EventEmitter<T>();
-  get onDidChangeTreeData() {
-    return this._onDidChangeTreeData.event;
-  };
+export default abstract class BaseTreeDataProvider<T> implements TreeDataProvider<T> {
+  protected _onDidChangeTreeData = new EventEmitter<T | null | undefined | void>();
+  onDidChangeTreeData = this._onDidChangeTreeData.event;
   children: Map<string, T> = new Map();
 
   constructor(public viewId: string) {
     const disposable = window.registerTreeDataProvider(viewId, this);
-    extension.context.subscriptions.push(disposable);
+    extension.context.subscriptions.push(disposable, this._onDidChangeTreeData);
   }
   getTreeItem(element: T): TreeItem | Thenable<TreeItem> {
     return element as TreeItem;
@@ -26,6 +24,6 @@ export default abstract class BaseTreeDataProvider<T = any> implements TreeDataP
   }
 
   refresh() {
-    this._onDidChangeTreeData.fire(<T>undefined);
+    this._onDidChangeTreeData.fire();
   }
 }

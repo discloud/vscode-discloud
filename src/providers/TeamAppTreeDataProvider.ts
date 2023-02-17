@@ -6,7 +6,7 @@ import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-export default class TeamAppTreeDataProvider extends BaseTreeDataProvider {
+export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {
   constructor(viewId: string) {
     super(viewId);
   }

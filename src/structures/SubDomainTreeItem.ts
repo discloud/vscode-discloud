@@ -6,7 +6,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
   subdomain!: string;
   iconName!: string;
 
-  constructor(data: SubDomainTreeItemData) {
+  constructor(public data: SubDomainTreeItemData) {
     data.label ??= data.subdomain;
 
     super(data.label, data.collapsibleState);

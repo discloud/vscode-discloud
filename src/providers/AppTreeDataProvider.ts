@@ -7,7 +7,7 @@ import AppTreeItem from "../structures/AppTreeItem";
 import { requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-export default class AppTreeDataProvider extends BaseTreeDataProvider {
+export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
   constructor(viewId: string) {
     super(viewId);
   }

@@ -6,7 +6,7 @@ export default class CustomDomainTreeItem extends BaseTreeItem<any> {
   domain!: string;
   iconName!: string;
 
-  constructor(data: CustomDomainTreeItemData) {
+  constructor(public data: CustomDomainTreeItemData) {
     data.label ??= data.domain;
 
     super(data.label, data.collapsibleState);

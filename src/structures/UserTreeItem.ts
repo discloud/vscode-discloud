@@ -9,7 +9,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   iconName?: string;
   userID?: string;
 
-  constructor(data: Partial<UserTreeItemData & VSUser>) {
+  constructor(public data: Partial<UserTreeItemData & VSUser>) {
     data.label ??= data.username ?
       `${data.username} - ID ${data.userID}` :
       `${data.userID}`;
