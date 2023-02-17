@@ -12,6 +12,10 @@ export default class extends Command {
   }
 
   async run(_: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
+    if (!item.appId) {
+      item.appId = await this.pickApp(null, true);
+    }
+
     if (!item.appId)
       return window.showWarningMessage(t("missing.appid"));
 

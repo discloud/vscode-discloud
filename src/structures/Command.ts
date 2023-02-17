@@ -2,6 +2,7 @@ import { t } from "@vscode/l10n";
 import { RESTGetApiAppAllResult, RESTGetApiAppResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { window } from "vscode";
 import { CommandData, TaskData } from "../@types";
+import extension from "../extension";
 import { requester } from "../util";
 
 export default abstract class Command {
@@ -9,13 +10,23 @@ export default abstract class Command {
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
-  async pickApp(task?: TaskData) {
+  async pickApp(task?: TaskData | null, ofTree: boolean = true) {
     task?.progress.report({ message: t("choose.app") });
 
-    const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
-    if (!res.apps?.length) return;
-
-    const apps = res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? t("online") : t("offline")}`);
+    const apps = [];
+    if (ofTree && extension.appTree.children.size) {
+      for (const app of extension.appTree.children.values()) {
+        apps.push(
+          `${app.appId}`
+          + ("name" in app.data ? ` - ${app.data.name}` : "")
+          + ("online" in app.data ? ` - ${app.data.online ? t("online") : t("offline")}` : "")
+        );
+      }
+    } else {
+      const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
+      if (!res.apps?.length) return;
+      apps.push(...res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? t("online") : t("offline")}`));
+    }
 
     const picked = await window.showQuickPick(apps, {
       canPickMany: false,
@@ -29,7 +40,7 @@ export default abstract class Command {
     return id;
   }
 
-  async pickAppMod(appId: string, task?: TaskData) {
+  async pickAppMod(appId: string, task?: TaskData | null, ofTree: boolean = true) {
     task?.progress.report({ message: t("choose.mod") });
 
     const res = await requester<RESTGetApiAppResult>(Routes.app(appId));
@@ -45,13 +56,22 @@ export default abstract class Command {
     return picked;
   }
 
-  async pickTeamApp(task?: TaskData) {
+  async pickTeamApp(task?: TaskData | null, ofTree: boolean = true) {
     task?.progress.report({ message: t("choose.app") });
 
-    const res = await requester<RESTGetApiTeamResult>(Routes.team());
-    if (!res.apps?.length) return;
-
-    const apps = res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? "Online" : "Offline"}`);
+    const apps = [];
+    if (ofTree && extension.teamAppTree.children.size) {
+      for (const app of extension.teamAppTree.children.values()) {
+        apps.push(
+          `${app.appId}`
+          + ("online" in app.data ? ` - ${app.data.online ? t("online") : t("offline")}` : "")
+        );
+      }
+    } else {
+      const res = await requester<RESTGetApiTeamResult>(Routes.team());
+      if (!res.apps?.length) return;
+      apps.push(...res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? t("online") : t("offline")}`));
+    }
 
     const picked = await window.showQuickPick(apps, {
       canPickMany: false,
