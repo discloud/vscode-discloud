@@ -3,6 +3,8 @@ import { window } from "vscode";
 import extension from "../extension";
 
 extension.on("rateLimited", (rateLimitData) => {
+  extension.logger.warn("Rate limited by " + rateLimitData.time + " seconds");
+
   extension.statusBar.setRateLimited(true);
 
   setTimeout(() => {

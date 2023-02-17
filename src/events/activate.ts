@@ -7,15 +7,19 @@ import DiagnosticProvider from "../providers/DiagnosticProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
+import AutoRefresh from "../structures/AutoRefresh";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 extension.once("activate", (context) => {
+  extension.logger.append("Activate: begin");
+
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
   new CompletionItemProvider();
   new DiagnosticProvider();
 
+  extension.autoRefresher = new AutoRefresh();
   extension.appTree = new AppTreeDataProvider("discloud-apps");
   extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
   extension.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
@@ -61,4 +65,6 @@ extension.once("activate", (context) => {
   } else {
     extension.statusBar.setLogin();
   }
+
+  extension.logger.info("Activate: done");
 });
