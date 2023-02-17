@@ -104,6 +104,21 @@
         "icon": "$(console)"
       },
       {
+        "command": "discloud.apps.mods.add",
+        "title": "%command.apps.mods.add%",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "discloud.apps.mods.edit",
+        "title": "%command.apps.mods.edit%",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "discloud.apps.mods.rem",
+        "title": "%command.apps.mods.rem%",
+        "icon": "$(organization)"
+      },
+      {
         "command": "discloud.apps.ram",
         "title": "%command.apps.ram%",
         "icon": "$(circuit-board)"
@@ -205,7 +220,7 @@
           },
           "discloud.auto.refresh": {
             "type": "number",
-            "default": 60,
+            "default": 0,
             "title": "%config.auto.refresh.title%",
             "markdownDescription": "%config.auto.refresh.description%"
           }
@@ -339,6 +354,10 @@
         {
           "command": "discloud.team.stop",
           "when": "view == discloud-teams"
+        },
+        {
+          "submenu": "discloud.apps.mods",
+          "when": "view == discloud-apps"
         }
       ],
       "view/title": [
@@ -377,12 +396,27 @@
         {
           "command": "discloud.create.config"
         }
+      ],
+      "discloud.apps.mods": [
+        {
+          "command": "discloud.apps.mods.add"
+        },
+        {
+          "command": "discloud.apps.mods.edit"
+        },
+        {
+          "command": "discloud.apps.mods.rem"
+        }
       ]
     },
     "submenus": [
       {
         "label": "Discloud",
         "id": "discloudsub"
+      },
+      {
+        "label": "%submenu.manage.mods%",
+        "id": "discloud.apps.mods"
       }
     ],
     "views": {

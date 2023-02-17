@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppAllResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { RESTGetApiAppAllResult, RESTGetApiAppResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import { requester } from "../util";
@@ -27,6 +27,22 @@ export default abstract class Command {
     task?.progress.report({ message: id });
 
     return id;
+  }
+
+  async pickAppMod(appId: string, task?: TaskData) {
+    task?.progress.report({ message: t("choose.mod") });
+
+    const res = await requester<RESTGetApiAppResult>(Routes.app(appId));
+    if (!res.apps?.mods?.length) return;
+
+    const picked = await window.showQuickPick(res.apps.mods, {
+      canPickMany: false,
+    });
+    if (!picked) return;
+
+    task?.progress.report({ message: picked });
+
+    return picked;
   }
 
   async pickTeamApp(task?: TaskData) {
