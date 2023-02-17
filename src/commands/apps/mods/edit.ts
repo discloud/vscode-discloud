@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ModPermissions, RESTPostApiAppTeamResult, Routes } from "discloud.app";
+import { ModPermissions, RESTPutApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
@@ -35,7 +35,7 @@ export default class extends Command {
 
     if (!await this.confirmAction()) return;
 
-    const res = await requester<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
+    const res = await requester<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: JSON.stringify({
         modID,
         perms,
@@ -45,7 +45,7 @@ export default class extends Command {
 
     if ("status" in res) {
       if (res.status === "ok") {
-        window.showInformationMessage(`${res.status}: ${res.message} - ID: ${item.appId}`);
+        window.showInformationMessage(`${res.status} - ID: ${item.appId}`);
       } else {
         window.showWarningMessage(`${res.status}: ${res?.message}`);
       }

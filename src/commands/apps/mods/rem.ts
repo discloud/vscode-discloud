@@ -35,7 +35,7 @@ export default class extends Command {
 
     if ("status" in res) {
       if (res.status === "ok") {
-        window.showInformationMessage(`${res.status}: ${res.message} - ID: ${item.appId}`);
+        window.showInformationMessage(`${res.status} - ID: ${item.appId}`);
       } else {
         window.showWarningMessage(`${res.status}: ${res?.message}`);
       }
