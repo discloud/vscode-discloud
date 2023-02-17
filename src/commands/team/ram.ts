@@ -19,9 +19,10 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
+    if (!await this.confirmAction()) return;
+    
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task);
-
       if (!item.appId) return;
     }
 
@@ -35,8 +36,6 @@ export default class extends Command {
         false);
 
     if (!ram) return;
-
-    if (!await this.confirmAction()) return;
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.teamLogs(item.appId), {
       body: JSON.stringify({

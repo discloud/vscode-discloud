@@ -24,9 +24,10 @@ export default class extends Command {
     if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
 
+    if (!await this.confirmAction()) return;
+
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task);
-
       if (!item.appId) return;
     }
 
@@ -65,8 +66,6 @@ export default class extends Command {
     }
 
     task.progress.report({ message: item.appId });
-
-    if (!await this.confirmAction()) return;
 
     const res = await requester<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), {
       body: form,

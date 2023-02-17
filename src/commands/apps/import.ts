@@ -29,7 +29,6 @@ export default class extends Command {
 
     if (!item.appId) {
       item.appId = await this.pickApp(task);
-
       if (!item.appId) return;
     }
 
