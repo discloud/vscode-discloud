@@ -7,19 +7,11 @@ import Command from "../../structures/Command";
 export default class extends Command {
   constructor() {
     super({
-      progress: {
-        location: ProgressLocation.Notification,
-        cancellable: true,
-        title: t("progress.copy.id.title"),
-      },
+      noToken: true,
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!item.appId) {
-      item.appId = await this.pickApp(task);
-    }
-
+  async run(_: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
     if (!item.appId)
       return window.showWarningMessage(t("missing.appid"));
 
