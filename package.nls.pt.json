@@ -33,7 +33,7 @@
   "config.auto.refresh.title": "Auto atualizar",
   "config.token.description": "Seu token da API da [Discloud](https://discloudbot.com).",
   "loading": "Carregando...",
-  "submenu.manage.mods": "Gerenciar MODs",
+  "submenu.manage.mods": "Gerenciar equipe",
   "view.apps.title": "Apps",
   "view.domain.title": "Domínios personalizados",
   "view.subdomain.title": "Subdomínios",

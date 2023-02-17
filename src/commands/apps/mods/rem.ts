@@ -19,17 +19,15 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!await this.confirmAction()) return;
-
     if (!item.appId) {
       item.appId = await this.pickApp(task);
       if (!item.appId) return;
     }
 
-    const modID = await window.showInputBox({
-      prompt: t("input.mod.rem.prompt"),
-    });
+    const modID = await this.pickAppMod(item.appId, task);
     if (!modID) return;
+
+    if (!await this.confirmAction()) return;
 
     const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, modID), {
       method: "DELETE",

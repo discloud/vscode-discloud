@@ -18,8 +18,6 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!await this.confirmAction()) return;
-
     if (!item.appId) {
       item.appId = await this.pickApp(task);
       if (!item.appId) return;
@@ -31,11 +29,13 @@ export default class extends Command {
     if (!modID) return;
 
     const permissions = Object.keys(ModPermissions)
-      .map(perm => `${perm} - ${t(`permission.${perm}`)}`);
+      .map(perm => `${t(`permission.${perm}`)} - ${perm}`);
 
     const perms = await window.showQuickPick(permissions, {
       canPickMany: true,
-    }).then(values => values?.map(value => value.split(" - ")[0]) ?? []);
+    }).then(values => values?.map(value => value.split(" - ").pop()!) ?? []);
+
+    if (!await this.confirmAction()) return;
 
     const res = await requester<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: JSON.stringify({
