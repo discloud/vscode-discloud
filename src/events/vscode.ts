@@ -1,6 +1,8 @@
 import extension from "../extension";
 
 extension.on("vscode", (user) => {
+  extension.logger.info("Get vscode");
+
   if (user)
     extension.userTree.update(Object.create(user));
 

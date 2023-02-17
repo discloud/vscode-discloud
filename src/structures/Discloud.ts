@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { extname, join } from "node:path";
 import { commands, env, ExtensionContext, StatusBarAlignment, window, workspace } from "vscode";
 import { Events, TaskData } from "../@types";
+import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
@@ -54,6 +55,10 @@ class Discloud extends EventEmitter {
     if (this.token) return true;
     window.showErrorMessage(t("missing.token"));
     return false;
+  }
+
+  get logger() {
+    return logger;
   }
 
   get token() {
@@ -170,7 +175,6 @@ class Discloud extends EventEmitter {
   activate(context: ExtensionContext) {
     this.context = context;
     this.emit("activate", context);
-    this.autoRefresher = new AutoRefresh();
   }
 }
 
