@@ -8,6 +8,41 @@ export const os_release = release().split?.(".").slice(0, 2).join(".") ?? releas
 export const os_platform = platform();
 export const cpu_arch = arch();
 
+export const DiscloudConfigScopes = [
+  "ID",
+  "TYPE",
+  "MAIN",
+  "NAME",
+  "AVATAR",
+  "RAM",
+  "VERSION",
+  "AUTORESTART",
+  "APT",
+];
+
+export const requiredScopes = {
+  common: [
+    "TYPE",
+    "MAIN",
+    "RAM",
+    "VERSION",
+  ],
+  bot: [
+    "NAME",
+    "TYPE",
+    "MAIN",
+    "RAM",
+    "VERSION",
+  ],
+  site: [
+    "ID",
+    "TYPE",
+    "MAIN",
+    "RAM",
+    "VERSION",
+  ],
+};
+
 export const blocked_files = {
   common: [".git", ".vscode"],
   go: [],

@@ -3,18 +3,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { CompletionItem, CompletionItemKind, languages, TextDocument, TextLine } from "vscode";
 import extension from "../extension";
-
-const DiscloudConfigScopes = [
-  "ID",
-  "TYPE",
-  "MAIN",
-  "NAME",
-  "AVATAR",
-  "RAM",
-  "VERSION",
-  "AUTORESTART",
-  "APT",
-];
+import { DiscloudConfigScopes } from "../util";
 
 export default class CompletionItemProvider {
   constructor() {

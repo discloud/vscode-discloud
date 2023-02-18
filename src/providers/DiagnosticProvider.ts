@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { Diagnostic, DiagnosticSeverity, Disposable, languages, Position, Range, TextDocument, window, workspace } from "vscode";
 import extension from "../extension";
+import { DiscloudConfigScopes, requiredScopes } from "../util";
 
 export default class DiagnosticProvider {
   collection = languages.createDiagnosticCollection("discloud.config");
@@ -281,38 +282,3 @@ interface DiagnosticData {
   start?: number
   end?: number
 }
-
-const DiscloudConfigScopes = [
-  "ID",
-  "TYPE",
-  "MAIN",
-  "NAME",
-  "AVATAR",
-  "RAM",
-  "VERSION",
-  "AUTORESTART",
-  "APT",
-];
-
-const requiredScopes = {
-  common: [
-    "TYPE",
-    "MAIN",
-    "RAM",
-    "VERSION",
-  ],
-  bot: [
-    "NAME",
-    "TYPE",
-    "MAIN",
-    "RAM",
-    "VERSION",
-  ],
-  site: [
-    "ID",
-    "TYPE",
-    "MAIN",
-    "RAM",
-    "VERSION",
-  ],
-};
