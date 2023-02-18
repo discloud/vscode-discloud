@@ -1,7 +1,6 @@
 import { ApiVscodeApp, RESTGetApiVscode } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
-import Discloud from "./Discloud";
 
 export default class VSUser {
   apps: string[] = [];
@@ -16,7 +15,7 @@ export default class VSUser {
   userID?: string;
   username?: string;
 
-  constructor(protected readonly discloud: Discloud) { }
+  constructor() { }
 
   async fetch(isVS?: boolean) {
     const res = await requester<RESTGetApiVscode>("/vscode", {

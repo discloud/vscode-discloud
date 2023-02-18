@@ -41,7 +41,7 @@ class Discloud extends EventEmitter {
   cache = new Map();
   commands = new Map<string, Command>();
   bars = new Map<string, StatusBarItem>();
-  user = new VSUser(this);
+  user = new VSUser();
 
   constructor() {
     super();
