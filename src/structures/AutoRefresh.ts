@@ -15,10 +15,11 @@ class AutoRefresh {
     return extension.config.get<number>("auto.refresh");
   }
 
-  private refresh() {
+  private async refresh() {
     if (extension.token) {
+      extension.logger.info("Auto refresh run");
       extension.statusBar.setLoading();
-      extension.user.fetch(true);
+      await extension.user.fetch(true);
       extension.statusBar.reset();
     }
   }
@@ -28,7 +29,13 @@ class AutoRefresh {
   }
 
   setInterval(interval: number | undefined = this.interval) {
+    if (typeof interval !== "number") interval = this.interval;
+
     if (interval && interval < 30) {
+      extension.logger.warn(
+        `${interval} seconds interval is not allowed.`
+        + " Intervals of less than 30 seconds are not allowed."
+      );
       interval = 30;
       extension.config.update("auto.refresh", 30, true);
     }
@@ -36,7 +43,7 @@ class AutoRefresh {
     this.stop();
 
     if (interval)
-      this.timer = setInterval(() => this.refresh, interval * 1000);
+      this.timer = setInterval(() => this.refresh(), interval * 1000);
   }
 }
 
