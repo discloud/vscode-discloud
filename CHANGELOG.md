@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.1.1
+
+### Bugs fixes
+
+- Corrigido execução do auto refresh
+
 ## v2.1.0
 
 ### Bugs fixes
