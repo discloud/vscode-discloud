@@ -71,7 +71,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     if ("netIO" in data)
       this.children.set("netIO", new AppChildTreeItem({
         label: t("network"),
-        description: `⬆${data.netIO?.up} ⬇${data.netIO?.down}`,
+        description: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
         iconName: "network",
         appId: this.appId,
       }));
