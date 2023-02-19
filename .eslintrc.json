@@ -15,7 +15,8 @@
     "no-throw-literal": "warn",
     "prefer-const": "warn",
     "quotes": ["warn", "double"],
-    "semi": ["warn", "always"]
+    "semi": ["warn", "always"],
+    "no-unused-vars": "warn"
   },
   "ignorePatterns": ["out", "**/*.d.ts"]
 }
