@@ -40,7 +40,7 @@ export default abstract class Command {
     return id;
   }
 
-  async pickAppMod(appId: string, task?: TaskData | null, ofTree: boolean = true) {
+  async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ message: t("choose.mod") });
 
     const res = await requester<RESTGetApiAppResult>(Routes.app(appId));
@@ -105,6 +105,30 @@ export default abstract class Command {
 
     return quickPick === actionOk;
   }
+
+  logger(name: string, log: string, show = true) {
+    const output = window.createOutputChannel(name, { log: true });
+
+    output.info(log);
+
+    if (show) setTimeout(() => output.show(), 100);
+  }
+
+  showApiMessage(data: Data) {
+    if ("status" in data) {
+      const status = t(`${data.status}`);
+
+      if (data.status === "ok") {
+        window.showInformationMessage(`${status}: ${data.message}`);
+      } else {
+        window.showWarningMessage(
+          `${status}`
+          + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
+          + (data.message ? `: ${data.message}` : "")
+        );
+      }
+    }
+  }
 }
 
 type ActionTypes = "showErrorMessage" | "showInformationMessage" | "showQuickPick" | "showWarningMessage";
@@ -113,4 +137,10 @@ interface ActionOptions {
   action?: string
   title: string;
   type?: ActionTypes;
+}
+
+interface Data {
+  status?: string
+  statusCode?: number
+  message?: string
 }

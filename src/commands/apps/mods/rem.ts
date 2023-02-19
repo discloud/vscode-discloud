@@ -1,8 +1,7 @@
 import { t } from "@vscode/l10n";
 import { RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation } from "vscode";
 import { TaskData } from "../../../@types";
-import extension from "../../../extension";
 import AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { requester } from "../../../util";
@@ -34,11 +33,7 @@ export default class extends Command {
     });
 
     if ("status" in res) {
-      if (res.status === "ok") {
-        window.showInformationMessage(`${res.status} - ID: ${item.appId}`);
-      } else {
-        window.showWarningMessage(`${res.status}: ${res?.message}`);
-      }
+      this.showApiMessage(res);
     }
   }
 }

@@ -45,10 +45,9 @@ export default class extends Command {
     });
 
     if ("status" in res) {
-      window.showWarningMessage(`${res.status}: ${res.message}`);
+      this.showApiMessage(res);
 
-      if (res.status === "ok")
-        await extension.teamAppTree.getStatus(item.appId);
+      await extension.teamAppTree.getStatus(item.appId);
     }
   }
 }

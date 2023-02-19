@@ -74,21 +74,11 @@ export default class extends Command {
     extension.resetStatusBar();
 
     if ("status" in res) {
-      if (res.status === "ok") {
-        window.showInformationMessage(`${res.status}: ${res.message} - ID: ${item.appId}`);
+      this.showApiMessage(res);
 
-        await extension.appTree.getStatus(item.appId);
-      } else {
-        window.showWarningMessage(`${res.status}${res.statusCode ? ` ${res.statusCode}` : ""}: ${res?.message}`);
-      }
+      await extension.appTree.getStatus(item.appId);
 
-      if (res.logs) {
-        const output = window.createOutputChannel(item.appId, { log: true });
-
-        output.info(res.logs);
-
-        setTimeout(() => output.show(), 100);
-      }
+      if (res.logs) this.logger(item.appId, res.logs);
     }
   }
 }
