@@ -50,11 +50,13 @@ export default class extends Command {
     new AdmZip(backupFilePath).extractAllTo(join(backupDir, res.backups.id));
     unlinkSync(backupFilePath);
 
-    const actionOk = t("open.dir");
-    const action = await window.showInformationMessage(t("import.success"), actionOk);
-    if (action === actionOk)
-      commands.executeCommand("vscode.openFolder", Uri.file(backupFolderPath), {
-        forceNewWindow: true,
-      });
+    (async () => {
+      const actionOk = t("open.dir");
+      const action = await window.showInformationMessage(t("import.success"), actionOk);
+      if (action === actionOk)
+        commands.executeCommand("vscode.openFolder", Uri.file(backupFolderPath), {
+          forceNewWindow: true,
+        });
+    })();
   }
 }

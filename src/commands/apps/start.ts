@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RESTPutApiAppStartResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import AppTreeItem from "../../structures/AppTreeItem";
@@ -29,10 +29,9 @@ export default class extends Command {
     });
 
     if ("status" in res) {
-      window.showWarningMessage(`${res.status}: ${res.message}`);
+      this.showApiMessage(res);
 
-      if (res.status === "ok")
-        await extension.appTree.getStatus(item.appId);
+      await extension.appTree.getStatus(item.appId);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { env, ProgressLocation, window } from "vscode";
+import { env, window } from "vscode";
 import { TaskData } from "../../@types";
 import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";

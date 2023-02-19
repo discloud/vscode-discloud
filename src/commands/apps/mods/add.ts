@@ -46,12 +46,7 @@ export default class extends Command {
     });
 
     if ("status" in res) {
-      if (res.status === "ok") {
-        console.log(res);
-        window.showInformationMessage(`${res.status} - ID: ${item.appId}`);
-      } else {
-        window.showWarningMessage(`${res.status}: ${res?.message}`);
-      }
+      this.showApiMessage(res);
     }
   }
 }
