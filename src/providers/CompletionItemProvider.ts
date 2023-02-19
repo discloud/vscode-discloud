@@ -8,7 +8,7 @@ import { DiscloudConfigScopes } from "../util";
 export default class CompletionItemProvider {
   constructor() {
     const disposable = languages.registerCompletionItemProvider("discloud.config", {
-      provideCompletionItems(document, position, token, context) {
+      provideCompletionItems(document, position, _token, _context) {
         if (!position.character)
           return DiscloudConfigScopes.map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
             .concat(new CompletionItem("# https://docs.discloudbot.com/discloud.config", CompletionItemKind.Reference));

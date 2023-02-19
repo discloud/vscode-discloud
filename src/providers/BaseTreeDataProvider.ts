@@ -19,7 +19,7 @@ export default abstract class BaseTreeDataProvider<T> implements TreeDataProvide
   getParent?(element: T): ProviderResult<T> {
     return element;
   }
-  resolveTreeItem?(item: TreeItem, element: T, token: CancellationToken): ProviderResult<TreeItem> {
+  resolveTreeItem?(item: TreeItem, element: T, _token: CancellationToken): ProviderResult<TreeItem> {
     return element ?? item;
   }
 
