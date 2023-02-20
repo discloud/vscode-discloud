@@ -5,6 +5,7 @@
   "choose.app": "Choose an application.",
   "choose.files": "Select the files.",
   "choose.mod": "Choose a MOD.",
+  "command.declined.auto.refresh.is.activated": "Refresh command was declined because automatic Refresh is enabled.",
   "commiting": "Commiting...",
   "common.confirm": "Are you sure that you want to do it?",
   "container": "Container",

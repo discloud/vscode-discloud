@@ -5,6 +5,7 @@
   "choose.app": "Escolha um aplicativo.",
   "choose.files": "Selecione os arquivos.",
   "choose.mod": "Escolha um MOD.",
+  "command.declined.auto.refresh.is.activated": "O comando atualizar foi recusado porque a atualização automática está habilitada.",
   "commiting": "Commitando...",
   "common.confirm": "Tem certeza que quer fazer isso?",
   "container": "Container",
