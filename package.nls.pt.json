@@ -24,7 +24,7 @@
   "command.team.import": "Importar código do aplicativo de equipe",
   "command.team.logs": "Obter registros do aplicativo de equipe",
   "command.team.ram": "Definir quantidade de ram do aplicativo de equipe",
-  "command.team.refresh": "Atualizar aplicativo de equipe list",
+  "command.team.refresh": "Atualizar lista de aplicativo de equipe",
   "command.team.restart": "Reiniciar aplicativo de equipe",
   "command.team.start": "Iniciar aplicativo de equipe",
   "command.team.status": "Atualizar estado do aplicativo de equipe",
