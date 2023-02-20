@@ -21,7 +21,15 @@ async function initTimer() {
   uses = 0;
 }
 
+interface ProcessData {
+  isVS: boolean
+  method: RequestOptions["method"]
+  path: string
+  url: string
+}
+
 const processes: string[] = [];
+const vsProcesses = new Map<string, ProcessData>();
 
 export async function requester<T = any>(url: string | URL, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
   if (!tokenIsValid) return <T>false;
@@ -34,13 +42,33 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     return <T>false;
   }
 
-  if (!isVS)
+  url = url.toString();
+
+  const processPath = url.split("/").pop()!;
+  const processKey = `${config.method ??= "GET"}.${processPath}`;
+
+  if (isVS) {
+    const existing = vsProcesses.get(processKey);
+
+    if (existing) {
+      window.showErrorMessage(t("process.already.running"));
+      return <T>false;
+    } else {
+      vsProcesses.set(processKey, {
+        isVS: true,
+        method: config.method,
+        path: processPath,
+        url,
+      });
+    }
+  } else {
     if (processes.length) {
       window.showErrorMessage(t("process.already.running"));
       return <T>false;
     } else {
-      processes.push(url.toString().split("/").pop()!);
+      processes.push(processPath);
     }
+  }
 
   config.throwOnError = true;
   config.headersTimeout = config.headersTimeout ?? 60000;
@@ -57,7 +85,11 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   try {
     const response = await request(`https://api.discloud.app/v2${url}`, config);
 
-    if (!isVS) processes.shift();
+    if (isVS) {
+      vsProcesses.delete(processKey);
+    } else {
+      processes.shift();
+    }
 
     maxUses = Number(response.headers["ratelimit-limit"]);
     time = Number(response.headers["ratelimit-reset"]);
@@ -71,11 +103,15 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
 
     return response.body.json();
   } catch (error: any) {
-    if (!isVS) processes.shift();
+    if (isVS) {
+      vsProcesses.delete(processKey);
+    } else {
+      processes.shift();
+    }
 
     extension.emit("error", error);
 
-    switch (error.status ?? error.statusCode) {
+    switch (error.statusCode ?? error.status) {
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
