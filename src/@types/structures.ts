@@ -1,6 +1,5 @@
 import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import AppTreeItem from "../structures/AppTreeItem";
-import Discloud from "../structures/Discloud";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
 import { RateLimitData } from "./rest";
