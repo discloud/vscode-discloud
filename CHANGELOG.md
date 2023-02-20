@@ -6,6 +6,18 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.1.2
+
+### Bug fixes
+
+- Corrigido mensagens de aviso ao invés de informação em alguns comandos
+- Corrigido mensagem de progresso persistente ao comando import ser concluído
+- Corrigido nome de comando em pt
+
+### Features
+
+- Recusa comandos para atualizar a visualização de apps caso a atualização automática esteja habilitada
+
 ## 2.1.1
 
 ### Bugs fixes
