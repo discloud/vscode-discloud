@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { ModPermissions, RESTPostApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation, QuickPickItem, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
@@ -28,12 +28,15 @@ export default class extends Command {
     });
     if (!modID) return;
 
-    const permissions = Object.keys(ModPermissions)
-      .map(perm => `${t(`permission.${perm}`)} - ${perm}`);
+    const permissions = Object.keys(ModPermissions).map(perm => <QuickPickItem>{
+      label: t(`permission.${perm}`),
+      description: perm,
+    });
 
     const perms = await window.showQuickPick(permissions, {
       canPickMany: true,
-    }).then(values => values?.map(value => value.split(" - ").pop()!) ?? []);
+    }).then(values => values?.map(value => value.description!));
+    if (!perms) return;
 
     if (!await this.confirmAction()) return;
 
