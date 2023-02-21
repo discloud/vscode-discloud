@@ -1,10 +1,12 @@
 import { t } from "@vscode/l10n";
 import { ModPermissions, RESTPutApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation, QuickPickItem, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { requester } from "../../../util";
+
+const cachePerms = new Map<string, Set<string>>();
 
 export default class extends Command {
   constructor() {
@@ -26,12 +28,20 @@ export default class extends Command {
     const modID = await this.pickAppMod(item.appId, task);
     if (!modID) return;
 
-    const permissions = Object.keys(ModPermissions)
-      .map(perm => `${t(`permission.${perm}`)} - ${perm}`);
+    const cacheModPerms = cachePerms.get(`${item.appId}.${modID}`);
+
+    const permissions = Object.keys(ModPermissions).map(perm => <QuickPickItem>{
+      label: t(`permission.${perm}`),
+      description: perm,
+      picked: cacheModPerms?.has(perm),
+    });
 
     const perms = await window.showQuickPick(permissions, {
       canPickMany: true,
-    }).then(values => values?.map(value => value.split(" - ").pop()!) ?? []);
+    }).then(values => values?.map(value => value.description!));
+    if (!perms) return;
+
+    cachePerms.set(`${item.appId}.${modID}`, new Set(perms));
 
     if (!await this.confirmAction()) return;
 
