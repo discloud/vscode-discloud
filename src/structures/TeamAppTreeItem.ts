@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ApiAppStatus, ApiTeamApps } from "discloud.app";
+import { ApiStatusApp, ApiTeamApps } from "discloud.app";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { getIconName, getIconPath } from "../util";
@@ -11,7 +11,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   appId?: string;
   appType?: string;
 
-  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiAppStatus>) {
+  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
     data.label ??= "name" in data ?
       `${data.name}${data.name?.includes(`${data.id}`) ? "" :
         ` - ID ${data.id}`}` :
@@ -22,7 +22,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this._patch(data);
   }
 
-  protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiAppStatus>): this {
+  protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
     this.appId ??= data.appId ?? data.id;
 
     data.label ??= "name" in data ?

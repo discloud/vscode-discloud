@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ApiAppStatus, ApiUploadApp, RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { ApiStatusApp, ApiUploadApp, RESTGetApiAppStatusResult, Routes } from "discloud.app";
 import { TreeItemCollapsibleState, window } from "vscode";
 import { ApiVscodeApp, BaseApiApp } from "../@types";
 import extension from "../extension";
@@ -48,7 +48,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     this.refresh();
   }
 
-  edit(appId: string, data: (ApiUploadApp | ApiVscodeApp | ApiAppStatus)) {
+  edit(appId: string, data: (ApiUploadApp | ApiVscodeApp | ApiStatusApp)) {
     const app = this.children.get(appId) as AppTreeItem;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

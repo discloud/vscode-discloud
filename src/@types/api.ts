@@ -1,4 +1,4 @@
-import type { ApiAppStatus, RESTApiBaseResult } from "discloud.app";
+import type { ApiStatusApp, RESTApiBaseResult } from "discloud.app";
 
 export interface RESTGetApiVscode extends RESTApiBaseResult {
   user: ApiVscodeUser
@@ -21,7 +21,7 @@ export interface ApiVscodeUser {
   userID: string
 }
 
-export interface ApiVscodeApp extends ApiAppStatus {
+export interface ApiVscodeApp extends ApiStatusApp {
   exitCode: number
   name: string
   online: boolean
