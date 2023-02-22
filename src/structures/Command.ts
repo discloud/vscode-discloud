@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppAllResult, RESTGetApiAppResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { window } from "vscode";
+import { RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { QuickPickItem, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
@@ -43,17 +43,27 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ message: t("choose.mod") });
 
-    const res = await requester<RESTGetApiAppResult>(Routes.app(appId));
-    if (!res.apps?.mods?.length) return;
+    const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId));
+    if (!res.team?.length) return;
 
-    const picked = await window.showQuickPick(res.apps.mods, {
+    const mods = new Map(res.team.map(team => [team.modID, {
+      id: team.modID,
+      perms: new Set(team.perms),
+    }]));
+
+    const options = res.team.map(team => <QuickPickItem>{
+      label: team.modID,
+      description: team.perms.join(", "),
+    });
+
+    const picked = await window.showQuickPick(options, {
       canPickMany: false,
     });
     if (!picked) return;
 
-    task?.progress.report({ message: picked });
+    task?.progress.report({ message: picked.label });
 
-    return picked;
+    return mods.get(picked.label);
   }
 
   async pickTeamApp(task?: TaskData | null, ofTree: boolean = true) {

@@ -23,12 +23,12 @@ export default class extends Command {
       if (!item.appId) return;
     }
 
-    const modID = await this.pickAppMod(item.appId, task);
-    if (!modID) return;
+    const mod = await this.pickAppMod(item.appId, task);
+    if (!mod) return;
 
     if (!await this.confirmAction()) return;
 
-    const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, modID), {
+    const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id), {
       method: "DELETE",
     });
 
