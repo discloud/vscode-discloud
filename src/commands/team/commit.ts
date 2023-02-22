@@ -46,7 +46,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(found, workspaceFolder);
+      zipper.appendFileList(found, workspaceFolder, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();

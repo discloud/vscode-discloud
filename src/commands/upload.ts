@@ -22,7 +22,7 @@ export default class extends Command {
 
   async run(task: TaskData) {
     if (!extension.workspaceFolder) return;
-    const targetPath = extension.workspaceFolder;
+    const workspaceFolder = extension.workspaceFolder;
 
     if (!await this.confirmAction()) return;
 
@@ -33,7 +33,7 @@ export default class extends Command {
       increment: 10,
     });
 
-    const dConfig = new DiscloudConfig(targetPath);
+    const dConfig = new DiscloudConfig(workspaceFolder);
 
     if (!dConfig.exists || dConfig.missingProps.length) {
       extension.resetStatusBar();
@@ -41,7 +41,7 @@ export default class extends Command {
       return;
     }
 
-    if (!existsSync(join(targetPath, dConfig.data.MAIN))) {
+    if (!existsSync(join(workspaceFolder, dConfig.data.MAIN))) {
       extension.resetStatusBar();
       window.showErrorMessage(t("invalid.discloud.config.main", {
         file: dConfig.data.MAIN,
@@ -50,7 +50,7 @@ export default class extends Command {
       return;
     };
 
-    const { found } = new GS(targetPath, "\\.discloudignore", [`${targetPath}/discloud/**`]);
+    const { found } = new GS(workspaceFolder, "\\.discloudignore", [`${workspaceFolder}/discloud/**`]);
 
     if (!found.length) {
       extension.resetStatusBar();
@@ -72,12 +72,12 @@ export default class extends Command {
     });
 
     const zipName = `${workspace.name}.zip`;
-    const savePath = join(targetPath, zipName);
+    const savePath = join(workspaceFolder, zipName);
 
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(found, targetPath);
+      zipper.appendFileList(found, workspaceFolder, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
