@@ -502,7 +502,7 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/archiver": "^5.3.1",
-    "@types/glob": "^8.0.1",
+    "@types/glob": "^8.1.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.0",

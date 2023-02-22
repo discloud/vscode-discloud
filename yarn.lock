@@ -98,10 +98,10 @@
   dependencies:
     "@types/glob" "*"
 
-"@types/glob@*", "@types/glob@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-8.0.1.tgz#6e3041640148b7764adf21ce5c7138ad454725b0"
-  integrity sha512-8bVUjXZvJacUFkJXHdyZ9iH1Eaj5V7I8c4NdH5sQJsdXkqT4CA5Dhb4yb4VE/3asyx4L9ayZr1NIhTsWHczmMw==
+"@types/glob@*", "@types/glob@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-8.1.0.tgz#b63e70155391b0584dce44e7ea25190bbc38f2fc"
+  integrity sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==
   dependencies:
     "@types/minimatch" "^5.1.2"
     "@types/node" "*"
@@ -579,10 +579,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.0.tgz#6eba2740af7b993092e51e16285e0e7aaaa5a4f5"
-  integrity sha512-+2NyTdnDPGslfKEPQVFnFULVLr/kfbdoJkQYPLPm30+4/4cH9kZvc0Y2ENNoQCqnl+eZD5zGcb3mjtGd4Vs75w==
+discloud.app@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.1.tgz#997d5f7521ea3f05ea5f72e6d01e53d0a80c207c"
+  integrity sha512-StDamzFpeNmqCzR8U6vwIJfXnEkBI4cbQ2eCuT7PFn+oy5/HJEAB/nkrzhVlrPPUUOkeBqjtpxih0+N12NutSA==
   dependencies:
     "@discloudapp/api-types" "^0.2.7"
     "@discloudapp/rest" "^0.6.0"
@@ -720,9 +720,9 @@ espree@^9.4.0:
     eslint-visitor-keys "^3.3.0"
 
 esquery@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.4.0.tgz#2148ffc38b82e8c7057dfed48425b3e61f0f24a5"
-  integrity sha512-cCDispWt5vHHtwMY2YrAQ4ibFkAL8RbH5YGBnZBc90MolvvfkkQcJro/aZiAQUlQ3qgrYS6D6v8Gc5G5CQsc9w==
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.4.2.tgz#c6d3fee05dd665808e2ad870631f221f5617b1d1"
+  integrity sha512-JVSoLdTlTDkmjFmab7H/9SL9qGSyjElT3myyKp7krqjVFQCDLmj1QFaCLRFBszBKI0XVZaiiXvuPIX3ZwHe1Ng==
   dependencies:
     estraverse "^5.1.0"
 
@@ -1214,9 +1214,9 @@ minimatch@^5.0.1, minimatch@^5.1.0:
     brace-expansion "^2.0.1"
 
 minimist@^1.2.6:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.7.tgz#daa1c4d91f507390437c6a8bc01078e7000c4d18"
-  integrity sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+  integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
 "mkdirp@>=0.5 0":
   version "0.5.6"
