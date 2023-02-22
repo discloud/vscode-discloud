@@ -119,7 +119,11 @@ export default abstract class Command {
       const status = t(`${data.status}`);
 
       if (data.status === "ok") {
-        window.showInformationMessage(`${status}: ${data.message}`);
+        window.showInformationMessage(
+          `${status}`
+          + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
+          + (data.message ? `: ${data.message}` : "")
+        );
       } else {
         window.showWarningMessage(
           `${status}`
