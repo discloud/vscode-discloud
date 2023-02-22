@@ -6,6 +6,21 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.1.3
+
+### Bug fixes
+
+- Corrigido parar comando caso não confirme as permissões de mod nos comando de gerenciamento de equipe
+
+### Features
+
+- Procurar mods na API no método `Command#pickAppMod`
+- Zip pastas vazias também
+
+### Features
+
+- Escolhas de permissões de mod são salvas para reutilização do comando
+
 ## 2.1.2
 
 ### Bug fixes
