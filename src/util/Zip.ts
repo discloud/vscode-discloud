@@ -17,17 +17,20 @@ export class Zip {
     this.zip.pipe(this.stream);
   }
 
-  appendFileList(fileList: string[], targetPath: string) {
+  appendFileList(fileList: string[], targetPath: string | RegExp, zipEmptyDirs?: boolean) {
     if (!fileList?.length) return;
 
-    const targetRegex = RegExp(`${targetPath}\\/?`, "i");
+    targetPath = RegExp(`^${targetPath}\\/?`, "i");
 
     for (const file of fileList) {
-      const name = file.replace(targetRegex, "");
+      const name = file.replace(targetPath, "");
 
       if (existsSync(file))
-        if (statSync(file).isFile())
+        if (statSync(file).isFile()) {
           this.zip.file(file, { name });
+        } else if (zipEmptyDirs && statSync(file).isDirectory()) {
+          this.zip.file(file, { name });
+        }
     }
   }
 
