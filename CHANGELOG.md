@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.1.4
+
+### Features
+
+- Mostrar ícones de ações somente em títulos de visualização de apps
+
 ## 2.1.3
 
 ### Bug fixes
