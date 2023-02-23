@@ -13,6 +13,8 @@ abstract class BaseTreeItem<T> extends TreeItem {
     super(label, collapsibleState);
   }
 
+  contextValue = "TreeItem";
+
   protected _clone(): this {
     return Object.assign(Object.create(this), this);
   }

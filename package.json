@@ -291,12 +291,12 @@
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-apps && viewItem == TreeItem"
         },
         {
           "command": "discloud.apps.logs",
           "group": "inline",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-apps && viewItem == TreeItem"
         },
         {
           "command": "discloud.apps.ram",
@@ -313,7 +313,7 @@
         {
           "command": "discloud.apps.status",
           "group": "inline",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-apps && viewItem == TreeItem"
         },
         {
           "command": "discloud.apps.stop",
