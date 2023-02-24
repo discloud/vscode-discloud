@@ -2,8 +2,8 @@ import { Archiver, ArchiverOptions, create } from "archiver";
 import { createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync, WriteStream } from "node:fs";
 
 export class Zip {
-  stream!: WriteStream;
-  zip!: Archiver;
+  declare stream: WriteStream;
+  declare zip: Archiver;
 
   constructor(public file: string, format = "zip", public options: ArchiverOptions = {}) {
     if (existsSync(file)) try { rmSync(file); } catch { };

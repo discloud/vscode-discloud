@@ -3,8 +3,8 @@ import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class SubDomainTreeItem extends BaseTreeItem<any> {
-  subdomain!: string;
-  iconName!: string;
+  declare subdomain: string;
+  declare iconName: string;
 
   constructor(public data: SubDomainTreeItemData) {
     data.label ??= data.subdomain;
