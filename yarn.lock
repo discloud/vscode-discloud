@@ -24,6 +24,14 @@
     fs-jetpack "^5.1.0"
     undici "^5.19.1"
 
+"@discloudapp/util@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.3.11.tgz#64e5782f5d63c66d885a5788c5e51bdc2c05d8e4"
+  integrity sha512-RxwCaYsYmYG/ZZ42pNQJScXMth9Wnzl1j4D/uMd3Nss4eMgLdxSHKrsLEY5t+ZQQEO4kAF+1i28EuN8yiG+KSQ==
+  dependencies:
+    fs-jetpack "^5.1.0"
+    undici "^5.20.0"
+
 "@eslint/eslintrc@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.4.1.tgz#af58772019a2d271b7e2d4c23ff4ddcba3ccfb3e"
@@ -579,14 +587,14 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.1.tgz#997d5f7521ea3f05ea5f72e6d01e53d0a80c207c"
-  integrity sha512-StDamzFpeNmqCzR8U6vwIJfXnEkBI4cbQ2eCuT7PFn+oy5/HJEAB/nkrzhVlrPPUUOkeBqjtpxih0+N12NutSA==
+discloud.app@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.2.tgz#f07ab71ede99d3e46be9eb3505484053bdae627c"
+  integrity sha512-NEf7Ivzvc82Dn1lXvE0CA2pPWIzGPA23Ky3woKGFPHaa67UdqdGbrwy4AOu2fwPwvNFAc/0OVzbiT9xmrLIRzA==
   dependencies:
     "@discloudapp/api-types" "^0.2.7"
     "@discloudapp/rest" "^0.6.0"
-    "@discloudapp/util" "^0.3.10"
+    "@discloudapp/util" "^0.3.11"
     undici "^5.20.0"
 
 doctrine@^3.0.0:
