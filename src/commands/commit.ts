@@ -28,7 +28,7 @@ export default class extends Command {
 
     if (!await this.confirmAction()) return;
 
-    extension.statusBar.setCommiting();
+    extension.statusBar.setCommitting();
 
     const appId = await this.pickApp(task, true);
     if (!appId) return;
@@ -87,7 +87,7 @@ export default class extends Command {
     }
 
     task.progress.report({
-      message: t("commiting"),
+      message: t("committing"),
       increment: 30,
     });
 

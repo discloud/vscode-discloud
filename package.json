@@ -262,16 +262,6 @@
           "dark": "resources/icons/discloud_icon.svg",
           "light": "resources/icons/discloud_icon.svg"
         }
-      },
-      {
-        "id": "Discloud",
-        "filenames": [
-          "discloud"
-        ],
-        "icon": {
-          "dark": "resources/icons/discloud_icon.svg",
-          "light": "resources/icons/discloud_icon.svg"
-        }
       }
     ],
     "menus": {

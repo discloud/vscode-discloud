@@ -1,0 +1,121 @@
+{
+  "rules": {
+    "ignore": "^\\s*(#.*)$",
+    "languageId": "discloud.config",
+    "messages": {
+      "missingequal": "diagnostic.equal.missing",
+      "missingscopes": "diagnostic.scopes.missing",
+      "missingseparator": "diagnostic.separator.missing",
+      "nospaces": "diagnostic.no.spaces",
+      "wrong": "diagnostic.wrong"
+    },
+    "noSpaces": {
+      "message": "diagnostic.no.spaces",
+      "severity": "Error"
+    },
+    "noEndSpaces": {
+      "message": "diagnostic.no.end.spaces"
+    },
+    "scopes": [
+      "APT",
+      "AUTORESTART",
+      "AVATAR",
+      "ID",
+      "MAIN",
+      "NAME",
+      "RAM",
+      "TYPE",
+      "VERSION"
+    ],
+    "separator": "="
+  },
+  "APT": {
+    "message": "diagnostic.apt.invalid",
+    "pattern": "(canvas|ffmpeg|java|libgl|openssl|puppeteer|tools)",
+    "allowSpaces": true,
+    "properties": [
+      "canvas",
+      "ffmpeg",
+      "java",
+      "libgl",
+      "openssl",
+      "puppeteer",
+      "tools"
+    ],
+    "separatorPattern": ",\\s?",
+    "type": "string",
+    "completionItemKind": "Value"
+  },
+  "AUTORESTART": {
+    "message": "diagnostic.must.be.boolean",
+    "pattern": "^(false|true)$",
+    "properties": ["false", "true"],
+    "completionItemKind": "Keyword"
+  },
+  "AVATAR": {
+    "message": "diagnostic.avatar.must.be.url",
+    "pattern": "^(https?:\\/\\/).+\\.(png)(?:[?].*)?$",
+    "type": "string"
+  },
+  "ID": {
+    "required": {
+      "when": {
+        "TYPE": "site"
+      }
+    }
+  },
+  "MAIN": {
+    "message": "diagnostic.main.not.exist",
+    "required": true,
+    "fs": {
+      "message": "diagnostic.main.not.exist"
+    },
+    "type": "string"
+  },
+  "NAME": {
+    "required": {
+      "when": {
+        "TYPE": "bot"
+      }
+    }
+  },
+  "RAM": {
+    "message": "diagnostic.ram.must.be.number",
+    "minValue": {
+      "compare": "TYPE",
+      "message": "diagnostic.ram.must.be.higher",
+      "when": {
+        "all": {
+          "values": [100, 512]
+        },
+        "common": {
+          "value": 100
+        },
+        "bot": {
+          "value": 100
+        },
+        "site": {
+          "value": 512
+        }
+      }
+    },
+    "required": true,
+    "type": "number",
+    "completionItemKind": "Unit"
+  },
+  "TYPE": {
+    "message": "diagnostic.type.must.be",
+    "pattern": "^(bot|site)$",
+    "properties": ["bot", "site"],
+    "required": true,
+    "type": "string",
+    "completionItemKind": "Constant"
+  },
+  "VERSION": {
+    "message": "diagnostic.version.invalid",
+    "pattern": "^(current|latest|suja|(?:\\d+\\.[\\dx]+\\.[\\dx]+))$",
+    "properties": ["current", "latest", "suja"],
+    "required": true,
+    "completionItemKind": "Constant"
+  }
+}
