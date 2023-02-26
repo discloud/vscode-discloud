@@ -183,9 +183,9 @@ export default class LanguageConfigurationProvider {
               for (const data of splitted) {
                 if (!data) continue;
 
-                if (!RegExp(scopeData.pattern!).test(data)) {
+                if (!RegExp(scopeData.pattern).test(data)) {
                   diagnostics.push({
-                    message: t(scopeData.message!),
+                    message: t(scopeData.message),
                     range: new Range(
                       new Position(i, key.length + 1),
                       new Position(i, textLine.text.length)
