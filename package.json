@@ -27,6 +27,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onCommand:discloud.apps.backup",
     "onCommand:discloud.apps.commit",
     "onCommand:discloud.apps.copy.id",
     "onCommand:discloud.apps.delete",
@@ -43,6 +44,7 @@
     "onCommand:discloud.apps.stop",
     "onCommand:discloud.domain.refresh",
     "onCommand:discloud.subdomain.refresh",
+    "onCommand:discloud.team.backup",
     "onCommand:discloud.team.commit",
     "onCommand:discloud.team.copy.id",
     "onCommand:discloud.team.import",
