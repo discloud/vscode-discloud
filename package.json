@@ -82,6 +82,11 @@
         "icon": "$(cloud-upload)"
       },
       {
+        "command": "discloud.apps.backup",
+        "title": "%command.apps.backup%",
+        "icon": "$(cloud-download)"
+      },
+      {
         "command": "discloud.apps.commit",
         "title": "%command.apps.commit%",
         "icon": "$(git-commit)"
@@ -162,6 +167,11 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "discloud.team.backup",
+        "title": "%command.team.backup%",
+        "icon": "$(cloud-download)"
+      },
+      {
         "command": "discloud.team.commit",
         "title": "%command.team.commit%",
         "icon": "$(git-commit)"
@@ -218,8 +228,19 @@
         "properties": {
           "discloud.token": {
             "type": "string",
-            "default": "",
             "markdownDescription": "%config.token.description%"
+          },
+          "discloud.app.backup.dir": {
+            "type": "string",
+            "default": "discloud/backup",
+            "title": "%config.app.backup.dir.title%",
+            "markdownDescription": "%config.app.backup.dir.description%"
+          },
+          "discloud.team.backup.dir": {
+            "type": "string",
+            "default": "discloud/backup",
+            "title": "%config.team.backup.dir.title%",
+            "markdownDescription": "%config.team.backup.dir.description%"
           },
           "discloud.auto.refresh": {
             "type": "number",
@@ -267,6 +288,10 @@
     "menus": {
       "view/item/context": [
         {
+          "command": "discloud.apps.backup",
+          "when": "view == discloud-apps"
+        },
+        {
           "command": "discloud.apps.commit",
           "when": "view == discloud-apps"
         },
@@ -282,6 +307,10 @@
           "command": "discloud.apps.import",
           "group": "inline",
           "when": "view == discloud-apps && viewItem == TreeItem"
+        },
+        {
+          "command": "discloud.apps.logs",
+          "when": "view == discloud-apps"
         },
         {
           "command": "discloud.apps.logs",
@@ -310,6 +339,10 @@
           "when": "view == discloud-apps"
         },
         {
+          "command": "discloud.team.backup",
+          "when": "view == discloud-teams"
+        },
+        {
           "command": "discloud.team.commit",
           "when": "view == discloud-teams"
         },
@@ -325,6 +358,10 @@
         {
           "command": "discloud.team.logs",
           "group": "inline",
+          "when": "view == discloud-teams"
+        },
+        {
+          "command": "discloud.team.logs",
           "when": "view == discloud-teams"
         },
         {
