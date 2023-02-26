@@ -75,7 +75,11 @@ export default class CompletionItemProvider {
         }
 
         if ("properties" in this.data[key]) {
-          return scopeData.properties.map(value => new CompletionItem(value, CompletionItemKind[scopeData.completionItemKind]));
+          const values = value.split(RegExp(scopeData.separatorPattern));
+
+          return scopeData.properties
+            .filter(p => !values.includes(p))
+            .map(value => new CompletionItem(value, CompletionItemKind[scopeData.completionItemKind]));
         }
 
         return [];
