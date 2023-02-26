@@ -73,6 +73,7 @@
     "type": "string"
   },
   "NAME": {
+    "allowSpaces": true,
     "required": {
       "when": {
         "TYPE": "bot"
