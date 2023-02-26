@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.2.0
+
+### Features
+
+- Refatorar o provedor de configuração de linguagem
+
 ## 2.1.4
 
 ### Features
