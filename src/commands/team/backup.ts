@@ -37,7 +37,8 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) return;
 
-    const backupDir = join(workspaceFolder, "discloud", "backup");
+    const configBackupDir = extension.config.get<string>("discloud.team.backup.dir");
+    const backupDir = join(workspaceFolder, configBackupDir!);
     const backupFolderPath = join(backupDir, res.backups.id).replace(/\\/g, "/");
     const backupFilePath = `${backupFolderPath}.zip`;
 
@@ -47,7 +48,7 @@ export default class extends Command {
     await writeFile(backupFilePath, backup.body, "utf8");
 
     window.showInformationMessage(t("backup.success", {
-      dir: `discloud/backup/${res.backups.id}.zip`,
+      dir: `${configBackupDir}/${res.backups.id}.zip`,
     }));
   }
 }

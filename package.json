@@ -231,6 +231,18 @@
             "default": "",
             "markdownDescription": "%config.token.description%"
           },
+          "discloud.app.backup.dir": {
+            "type": "string",
+            "default": "discloud/backup",
+            "title": "%config.app.backup.dir.title%",
+            "markdownDescription": "%config.app.backup.dir.description%"
+          },
+          "discloud.team.backup.dir": {
+            "type": "string",
+            "default": "discloud/backup",
+            "title": "%config.team.backup.dir.title%",
+            "markdownDescription": "%config.team.backup.dir.description%"
+          },
           "discloud.auto.refresh": {
             "type": "number",
             "default": 0,
