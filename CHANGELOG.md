@@ -6,6 +6,17 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.3.0
+
+### Bug fixes
+
+- Corrigido ignorar arquivos e pastas de .discloudignore
+
+### Features
+
+- Adicionado comando backup.
+- Adicionado configuração de diretório de comando backup.
+
 ## 2.2.0
 
 ### Features
