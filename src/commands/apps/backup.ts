@@ -37,7 +37,7 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) return;
 
-    const configBackupDir = extension.config.get<string>("discloud.app.backup.dir");
+    const configBackupDir = extension.config.get<string>("app.backup.dir");
     const backupDir = join(workspaceFolder, configBackupDir!);
     const backupFolderPath = join(backupDir, res.backups.id).replace(/\\/g, "/");
     const backupFilePath = `${backupFolderPath}.zip`;

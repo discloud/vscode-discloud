@@ -228,7 +228,6 @@
         "properties": {
           "discloud.token": {
             "type": "string",
-            "default": "",
             "markdownDescription": "%config.token.description%"
           },
           "discloud.app.backup.dir": {

@@ -38,8 +38,8 @@ export default class extends Command {
       increment: 10,
     });
 
-    const configAppBackupDir = extension.config.get<string>("discloud.app.backup.dir");
-    const configTeamBackupDir = extension.config.get<string>("discloud.team.backup.dir");
+    const configAppBackupDir = extension.config.get<string>("app.backup.dir");
+    const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
 
     const { list } = new IgnoreFiles({
       fileName: ".discloudignore",

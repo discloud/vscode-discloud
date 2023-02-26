@@ -50,8 +50,8 @@ export default class extends Command {
       return;
     };
 
-    const configAppBackupDir = extension.config.get<string>("discloud.app.backup.dir");
-    const configTeamBackupDir = extension.config.get<string>("discloud.team.backup.dir");
+    const configAppBackupDir = extension.config.get<string>("app.backup.dir");
+    const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
 
     const { found } = new GS(workspaceFolder, "\\.discloudignore", [
       `${workspaceFolder}/discloud/**`,
