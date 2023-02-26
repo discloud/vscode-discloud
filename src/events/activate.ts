@@ -3,7 +3,7 @@ import extension from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
-import DiagnosticProvider from "../providers/DiagnosticProvider";
+import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
@@ -16,8 +16,12 @@ extension.once("activate", (context) => {
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
-  new CompletionItemProvider();
-  new DiagnosticProvider();
+  new CompletionItemProvider({
+    path: "discloudconfig.json",
+  });
+  new LanguageConfigurationProvider({
+    path: "discloudconfig.json",
+  });
 
   extension.autoRefresher = new AutoRefresh();
   extension.appTree = new AppTreeDataProvider("discloud-apps");

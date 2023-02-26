@@ -1,105 +1,98 @@
-import { APT, APTPackages } from "discloud.app";
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { CompletionItem, CompletionItemKind, languages, TextDocument, TextLine } from "vscode";
+import { CompletionItem, CompletionItemKind, languages, TextDocument } from "vscode";
+import { LanguageConfig, ProviderOptions } from "../@types";
 import extension from "../extension";
-import { DiscloudConfigScopes } from "../util";
 
 export default class CompletionItemProvider {
-  constructor() {
-    const disposable = languages.registerCompletionItemProvider("discloud.config", {
-      provideCompletionItems(document, position, _token, _context) {
+  data = <LanguageConfig>{};
+
+  constructor(options: ProviderOptions) {
+    if ("path" in options) {
+      try {
+        this.data = JSON.parse(readFileSync(extension.context.asAbsolutePath(`${options.path}`), "utf8"));
+      } catch (error: any) {
+        extension.logger.error(error);
+        return;
+      }
+    } else {
+      extension.logger.error("Missing options.path");
+      return;
+    }
+
+    const disposable = languages.registerCompletionItemProvider(this.data.rules.languageId, {
+      provideCompletionItems: (document, position, _token, _context) => {
         if (!position.character)
-          return DiscloudConfigScopes.map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
+          return this.data.rules.scopes.map(scope => new CompletionItem(`${scope}${this.data.rules.separator}`, CompletionItemKind.Value))
             .concat(new CompletionItem("# https://docs.discloudbot.com/discloud.config", CompletionItemKind.Reference));
 
-        const textLine: TextLine = document.lineAt(position);
+        const textLine = document.lineAt(position);
         const text = textLine.text.substring(0, position.character);
-        const splitted = text.split("=");
+        const [key, value] = text.split(this.data.rules.separator);
 
-        if (splitted.length === 1) {
-          if (DiscloudConfigScopes.includes(splitted[0]))
-            return [new CompletionItem(`${splitted[0]}=`, CompletionItemKind.Value)];
+        if (typeof value !== "string") {
+          if (this.data.rules.scopes.includes(key))
+            return [new CompletionItem(`${key}${this.data.rules.separator}`, CompletionItemKind.Value)];
 
-          return DiscloudConfigScopes
-            .filter(scope => scope.includes(splitted[0]))
-            .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value));
+          return this.data.rules.scopes
+            .filter(scope => scope.includes(key))
+            .map(scope => new CompletionItem(`${scope}${this.data.rules.separator}`, CompletionItemKind.Value));
         }
 
-        return CompletionItemProvider[<"MAIN">splitted[0]]?.(splitted[1], document);
+        const scopeData = this.data[key];
+
+        if (!scopeData) return [];
+
+        if ("minValue" in this.data[key]) {
+          const TYPE = this.getText(document, `^${scopeData.minValue.compare}${this.data.rules.separator}`);
+
+          const keys = Object.keys(scopeData.minValue.when);
+
+          const type = keys.find(key => key === TYPE) ?? "all";
+
+          const min = scopeData.minValue.when[type];
+
+          const values = min.values ?? [min.value];
+
+          return values.map(v => new CompletionItem(`${v}`, CompletionItemKind[scopeData.completionItemKind]));
+        }
+
+        if ("fs" in this.data[key]) {
+          let targetPath = join(dirname(document.uri.fsPath), value);
+
+          while (targetPath && !existsSync(targetPath)) {
+            targetPath = dirname(targetPath);
+          }
+          if (!targetPath) return [];
+
+          const files = readdirSync(targetPath, { withFileTypes: true });
+
+          return files.map(file => new CompletionItem(file.name,
+            file.isFile() ?
+              CompletionItemKind.File :
+              CompletionItemKind.Folder
+          ));
+        }
+
+        if ("properties" in this.data[key]) {
+          return scopeData.properties.map(value => new CompletionItem(value, CompletionItemKind[scopeData.completionItemKind]));
+        }
+
+        return [];
       },
     });
 
     extension.context.subscriptions.push(disposable);
   }
 
-  static APT(text: string) {
-    const pkgs = text.split(",");
-
-    return APTPackages
-      .filter(pkg => !pkgs.includes(pkg))
-      .map(pkg => new CompletionItem({
-        label: pkg,
-        description: APT[pkg].join(", "),
-      }, CompletionItemKind.Value));
-  }
-
-  static AUTORESTART() {
-    return [
-      new CompletionItem("false", CompletionItemKind.Keyword),
-      new CompletionItem("true", CompletionItemKind.Keyword),
-    ];
-  }
-
-  static MAIN(text: string, document: TextDocument) {
-    let targetPath = join(dirname(document.uri.fsPath), text);
-
-    while (targetPath && !existsSync(targetPath)) {
-      targetPath = dirname(targetPath);
-    }
-    if (!targetPath) return;
-
-    const files = readdirSync(targetPath, { withFileTypes: true });
-
-    return files.map(file => new CompletionItem(file.name, file.isFile() ? CompletionItemKind.File : CompletionItemKind.Folder));
-  }
-
-  static RAM(text: string, document: TextDocument) {
-    const value = this.getText(document, /^TYPE=/);
-
-    switch (value) {
-      case "bot":
-        return [new CompletionItem("100", CompletionItemKind.Unit)];
-      case "site":
-        return [new CompletionItem("512", CompletionItemKind.Unit)];
-      default:
-        return [
-          new CompletionItem("100", CompletionItemKind.Unit),
-          new CompletionItem("512", CompletionItemKind.Unit),
-        ];
-    }
-  }
-
-  static TYPE() {
-    return [
-      new CompletionItem("bot", CompletionItemKind.Constant),
-      new CompletionItem("site", CompletionItemKind.Constant),
-    ];
-  }
-
-  static VERSION() {
-    return [
-      new CompletionItem("latest", CompletionItemKind.Constant),
-      new CompletionItem("current", CompletionItemKind.Constant),
-      new CompletionItem("suja", CompletionItemKind.Constant),
-    ];
-  }
-
-  static getText(document: TextDocument, pattern: string | RegExp) {
+  getText(document: TextDocument, pattern: string | RegExp) {
     pattern = RegExp(pattern);
+
     for (let i = 0; i < document.lineCount; i++) {
       const lineText = document.lineAt(i);
-      if (pattern.test(lineText.text)) return lineText.text.split("=")[1];
+
+      if (pattern.test(lineText.text))
+        return lineText.text.split(this.data.rules.separator)[1];
     }
   }
 }

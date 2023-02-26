@@ -68,11 +68,11 @@ export default class StatusBarItem implements IStatusBarItem {
     this.tooltip = t("status.tooltip.login");
   }
 
-  setCommiting() {
+  setCommitting() {
     if (this.limited) return;
 
     this.command = undefined;
-    this.text = t("status.text.commiting");
+    this.text = t("status.text.committing");
     this.tooltip = undefined;
   }
 
