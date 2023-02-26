@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.3.1
+
+### Bug fixes
+
+- Permitir espaços no escopo MAIN
+
 ## 2.3.0
 
 ### Bug fixes
