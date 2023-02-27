@@ -1,3 +1,4 @@
+import { TreeItemCollapsibleState } from "vscode";
 import { CustomDomainTreeItemData } from "../@types";
 import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
@@ -15,13 +16,19 @@ export default class CustomDomainTreeItem extends BaseTreeItem<any> {
   }
 
   protected _patch(data: CustomDomainTreeItemData): this {
+    super._patch(data);
+
     this.domain = data.domain ?? this.domain;
     this.label = data.domain ?? this.label;
-    this.collapsibleState = data.collapsibleState ?? this.collapsibleState;
 
     this.iconName = getIconName(data) ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
-    return super._patch(data);
+    this.collapsibleState =
+      this.children.size ?
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        TreeItemCollapsibleState.None;
+
+    return this;
   }
 }

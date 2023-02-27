@@ -1,4 +1,5 @@
 import { t } from "@vscode/l10n";
+import { TreeItemCollapsibleState } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
 import { getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";
@@ -21,6 +22,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   }
 
   protected _patch(data: Partial<AppTreeItemData & ApiVscodeApp>): this {
+    super._patch(data);
+
     this.appId ??= data.appId ?? data.id;
 
     this.label ??= "name" in data ?
@@ -84,6 +87,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         appId: this.appId,
       }));
 
-    return super._patch(data);
+    this.collapsibleState =
+      this.children.size ?
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        TreeItemCollapsibleState.None;
+
+    return this;
   }
 }

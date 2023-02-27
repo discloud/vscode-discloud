@@ -23,7 +23,7 @@ export default abstract class BaseTreeDataProvider<T> implements TreeDataProvide
     return element ?? item;
   }
 
-  refresh() {
-    this._onDidChangeTreeData.fire();
+  refresh(data: T | null | undefined | void) {
+    this._onDidChangeTreeData.fire(data);
   }
 }
