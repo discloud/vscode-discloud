@@ -6,6 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.3.2
+
+### Bug fixes
+
+- Corrigido escrever discloud.config errado
+- Corrigido configurações de linguagem
+
 ## 2.3.1
 
 ### Bug fixes
