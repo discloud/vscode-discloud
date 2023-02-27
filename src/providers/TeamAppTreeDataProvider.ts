@@ -11,30 +11,38 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     super(viewId);
   }
 
-  async getApps() {
-    const response = await requester<RESTGetApiTeamResult>("/team", {}, true);
+  private clean(data: BaseApiApp[]) {
+    let refresh;
 
-    if (response?.status !== "ok") return;
-
-    this.clean(response.apps);
-
-    for (const app of response.apps) {
-      const oldApp = this.children.get(app.id) as TeamAppTreeItem;
-
-      if (oldApp) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        oldApp._patch(app);
-      } else {
-        this.children.set(app.id, new TeamAppTreeItem({
-          collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
-          ...app,
-        }));
+    for (const child of this.children.keys()) {
+      if (data.every(app => app.id !== child)) {
+        refresh = this.children.delete(child);
       }
     }
 
-    if (this.children.size) {
+    if (refresh)
       this.refresh();
+  }
+
+  async getApps() {
+    const res = await requester<RESTGetApiTeamResult>("/team", {}, true);
+
+    if (!res.apps) {
+      if ("statusCode" in res) {
+        switch (res.statusCode) {
+          case 404:
+            this.children.clear();
+            this.init();
+            break;
+        }
+      }
+
+      return;
+    }
+
+    this.setRawApps(res.apps);
+
+    if (this.children.size) {
       await window.withProgress({
         location: { viewId: this.viewId },
         title: t("refreshing"),
@@ -52,80 +60,78 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       RESTGetApiAppAllStatusResult
     >(Routes.teamStatus(appId), {}, true);
 
-    if (res?.status !== "ok") return;
-
-    if (Array.isArray(res.apps)) {
-      for (const app of res.apps) {
-        const oldApp = this.children.get(app.id) as TeamAppTreeItem;
-
-        if (oldApp) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          oldApp._patch(app);
-        } else {
-          this.children.set(app.id, new TeamAppTreeItem({
-            collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
-            ...app,
-          }));
+    if (!res.apps) {
+      if ("statusCode" in res) {
+        switch (res.statusCode) {
+          case 404:
+            this.delete(appId);
+            break;
         }
       }
 
-      if (this.children.size) {
-        this.clean(res.apps);
-        this.refresh();
-      } else {
-        this.init();
-      }
-    } else {
-      const app = this.children.get(appId) as TeamAppTreeItem;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      app?._patch(res.apps);
-      this.refresh();
+      return;
     }
-  }
 
-  private clean(data: (ApiUploadApp | ApiVscodeApp | BaseApiApp)[]) {
-    for (const child of this.children.keys()) {
-      if (!data.some(app => app.id === child)) {
-        this.children.delete(child);
-      }
+    if (Array.isArray(res.apps)) {
+      this.setRawApps(res.apps);
+    } else {
+      if (this.addRawApp(res.apps))
+        this.refresh();
     }
   }
 
   delete(id: string) {
-    this.children.delete(id);
-    this.refresh();
-  }
+    if (this.children.delete(id)) {
+      if (!this.children.size)
+        this.init();
 
-  addRawApps(data: (ApiUploadApp | ApiVscodeApp | BaseApiApp)[]) {
-    for (const app of data) {
-      this.addRawApp(app);
+      this.refresh();
     }
-    this.clean(data);
-    this.refresh();
   }
 
-  addRawApp(data: ApiUploadApp | ApiVscodeApp | BaseApiApp) {
-    const app = this.children.get(data.id) as TeamAppTreeItem;
+  setRawApps(data: BaseApiApp[]) {
+    this.clean(data);
+
+    let refresh;
+
+    for (const app of data) {
+      if (this.addRawApp(app))
+        refresh = true;
+    }
+
+    if (refresh)
+      this.refresh();
+  }
+
+  addRawApp(data: BaseApiApp, returnBoolean?: boolean) {
+    const app = this.children.get(data.id);
+
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      app._patch(data);
+      this.refresh(app._patch(data));
     } else {
       this.children.set(data.id, new TeamAppTreeItem({
         collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
         ...data,
       }));
+
+      if (returnBoolean) {
+        return true;
+      } else {
+        this.refresh();
+      }
     }
-    this.refresh();
   }
 
-  edit(appId: string, data: (ApiUploadApp | ApiVscodeApp)) {
-    const app = this.children.get(appId) as TeamAppTreeItem;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    app?._patch(data);
+  edit(appId: string, data: ApiUploadApp | ApiVscodeApp) {
+    const app = this.children.get(appId);
+
+    if (app) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.refresh(app._patch(data));
+    }
   }
 
   async fetch() {
@@ -139,9 +145,12 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
   init() {
     this.children.clear();
+
     this.children.set("x", new TeamAppTreeItem({
       label: t("notappfound"),
       iconName: "x",
     }));
+
+    this.refresh();
   }
 }

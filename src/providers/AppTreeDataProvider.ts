@@ -12,55 +12,89 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     super(viewId);
   }
 
-  private clean(data: (ApiUploadApp | ApiVscodeApp | BaseApiApp)[]) {
+  private clean(data: BaseApiApp[]) {
+    let refresh;
+
     for (const child of this.children.keys()) {
-      if (!data.some(app => app.id === child)) {
-        this.children.delete(child);
+      if (data.every(app => app.id !== child)) {
+        refresh = this.children.delete(child);
       }
     }
+
+    if (refresh)
+      this.refresh();
   }
 
   delete(id: string) {
-    this.children.delete(id);
-    this.refresh();
-  }
+    if (this.children.delete(id)) {
+      if (!this.children.size)
+        this.init();
 
-  addRawApps(data: (ApiUploadApp | ApiVscodeApp)[]) {
-    for (const app of data) {
-      this.addRawApp(app);
+      this.refresh();
     }
-    this.clean(data);
-    this.refresh();
   }
 
-  addRawApp(data: (ApiUploadApp | ApiVscodeApp)) {
-    const app = this.children.get(data.id) as AppTreeItem;
+  setRawApps(data: (ApiUploadApp | ApiVscodeApp)[]) {
+    this.clean(data);
+
+    let refresh;
+
+    for (const app of data) {
+      if (this.addRawApp(app, true))
+        refresh = true;
+    }
+
+    if (refresh)
+      this.refresh();
+  }
+
+  addRawApp(data: BaseApiApp, returnBoolean?: boolean) {
+    const app = this.children.get(data.id);
+
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      app._patch(data);
+      this.refresh(app._patch(data));
     } else {
       this.children.set(data.id, new AppTreeItem({
         collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
         ...data,
       }));
+
+      if (returnBoolean) {
+        return true;
+      } else {
+        this.refresh();
+      }
     }
-    this.refresh();
   }
 
-  edit(appId: string, data: (ApiUploadApp | ApiVscodeApp | ApiStatusApp)) {
-    const app = this.children.get(appId) as AppTreeItem;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    app?._patch(data);
+  edit(appId: string, data: ApiUploadApp | ApiVscodeApp | ApiStatusApp) {
+    const app = this.children.get(appId);
+
+    if (app) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.refresh(app._patch(data));
+    }
   }
 
   async getStatus(appId: string) {
     const res = await requester<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
-    if (!res.apps) return;
+
+    if (!res.apps) {
+      if ("statusCode" in res) {
+        switch (res.statusCode) {
+          case 404:
+            this.delete(appId);
+            break;
+        }
+      }
+
+      return;
+    }
 
     this.edit(appId, res.apps);
-    this.refresh();
   }
 
   async fetch() {
@@ -76,9 +110,12 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
 
   init() {
     this.children.clear();
+
     this.children.set("x", new AppTreeItem({
       label: t("notappfound"),
       iconName: "x",
     }));
+
+    this.refresh();
   }
 }

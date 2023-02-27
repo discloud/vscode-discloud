@@ -17,6 +17,8 @@ export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<SubD
   update(data: string[]) {
     if (!data) return;
 
+    this.clean(data);
+
     for (const subdomain of data) {
       this.children.set(subdomain, new SubDomainTreeItem({
         label: subdomain,
@@ -24,7 +26,6 @@ export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<SubD
       }));
     }
 
-    this.clean(data);
     this.refresh();
   }
 }

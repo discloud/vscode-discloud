@@ -7,10 +7,10 @@ extension.on("vscode", (user) => {
     extension.userTree.update(Object.create(user));
 
   if ("appsStatus" in user)
-    extension.appTree.addRawApps(user.appsStatus);
+    extension.appTree.setRawApps(user.appsStatus);
 
   if ("appsTeam" in user)
-    extension.teamAppTree.addRawApps(user.appsTeam.map(id => ({ id })));
+    extension.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));
 
   if ("subdomains" in user)
     extension.subDomainTree.update(user.subdomains);

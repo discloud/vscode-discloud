@@ -17,14 +17,14 @@ export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<C
   update(data: string[]) {
     if (!data) return;
 
+    this.clean(data);
+
     for (const domain of data) {
       this.children.set(domain, new CustomDomainTreeItem({
         label: domain,
         domain,
       }));
     }
-
-    this.clean(data);
     this.refresh();
   }
 }
