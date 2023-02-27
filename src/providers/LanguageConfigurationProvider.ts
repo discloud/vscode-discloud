@@ -73,7 +73,7 @@ export default class LanguageConfigurationProvider {
     for (let i = 0; i < document.lineCount; i++) {
       const textLine = document.lineAt(i);
 
-      if (ignore.test(textLine.text)) continue;
+      if (ignore.test(textLine.text) || !textLine.text) continue;
 
       const keyAndValue = textLine.text.split(this.data.rules.separator);
       const key = keyAndValue[0];
@@ -91,7 +91,7 @@ export default class LanguageConfigurationProvider {
           ) {
             diagnostics.push({
               message: t(
-                keyOrValue.endsWith(" ") ?
+                (!isKey && keyOrValue.endsWith(" ")) ?
                   this.data.rules.noEndSpaces.message :
                   this.data.rules.noSpaces.message
               ),
