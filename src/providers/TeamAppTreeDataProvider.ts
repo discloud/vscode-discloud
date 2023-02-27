@@ -1,7 +1,6 @@
 import { t } from "@vscode/l10n";
-import { ApiUploadApp, BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { TreeItemCollapsibleState, window } from "vscode";
-import { ApiVscodeApp } from "../@types";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -99,6 +98,9 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
         refresh = true;
     }
 
+    if (!this.children.size)
+      this.init();
+
     if (refresh)
       this.refresh();
   }
@@ -112,7 +114,9 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       this.refresh(app._patch(data));
     } else {
       this.children.set(data.id, new TeamAppTreeItem({
-        collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
+        collapsibleState: this.children.size ?
+          TreeItemCollapsibleState.Collapsed :
+          TreeItemCollapsibleState.Expanded,
         ...data,
       }));
 
@@ -124,7 +128,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
   }
 
-  edit(appId: string, data: ApiUploadApp | ApiVscodeApp) {
+  edit(appId: string, data: BaseApiApp) {
     const app = this.children.get(appId);
 
     if (app) {
@@ -147,7 +151,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     this.children.clear();
 
     this.children.set("x", new TeamAppTreeItem({
-      label: t("notappfound"),
+      label: t("noappfound"),
       iconName: "x",
     }));
 

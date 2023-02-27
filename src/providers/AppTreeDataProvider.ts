@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiUploadApp, RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { RESTGetApiAppStatusResult, Routes } from "discloud.app";
 import { TreeItemCollapsibleState, window } from "vscode";
-import { ApiVscodeApp, BaseApiApp } from "../@types";
+import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
 import { requester } from "../util";
@@ -34,7 +34,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     }
   }
 
-  setRawApps(data: (ApiUploadApp | ApiVscodeApp)[]) {
+  setRawApps(data: BaseApiApp[]) {
     this.clean(data);
 
     let refresh;
@@ -43,6 +43,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       if (this.addRawApp(app, true))
         refresh = true;
     }
+
+    if (!this.children.size)
+      this.init();
 
     if (refresh)
       this.refresh();
@@ -56,8 +59,12 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       // @ts-ignore
       this.refresh(app._patch(data));
     } else {
+      this.children.delete("x");
+
       this.children.set(data.id, new AppTreeItem({
-        collapsibleState: this.children.size ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.Expanded,
+        collapsibleState: this.children.size ?
+          TreeItemCollapsibleState.Collapsed :
+          TreeItemCollapsibleState.Expanded,
         ...data,
       }));
 
@@ -69,7 +76,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     }
   }
 
-  edit(appId: string, data: ApiUploadApp | ApiVscodeApp | ApiStatusApp) {
+  edit(appId: string, data: BaseApiApp) {
     const app = this.children.get(appId);
 
     if (app) {
@@ -112,7 +119,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     this.children.clear();
 
     this.children.set("x", new AppTreeItem({
-      label: t("notappfound"),
+      label: t("noappfound"),
       iconName: "x",
     }));
 
