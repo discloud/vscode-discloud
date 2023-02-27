@@ -20,6 +20,8 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   }
 
   protected _patch(data: Partial<UserTreeItemData & VSUser>): this {
+    super._patch(data);
+
     this.userID ??= data.userID;
 
     this.label ??= "userID" in data ?
@@ -71,6 +73,16 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         description: `${data.subdomains?.length}`,
       }));
 
-    return super._patch(data);
+    this.collapsibleState =
+      this.children.size ?
+        data.collapsibleState ?? TreeItemCollapsibleState.Expanded :
+        TreeItemCollapsibleState.None;
+
+    this.collapsibleState =
+      this.children.size ?
+        data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        TreeItemCollapsibleState.None;
+
+    return this;
   }
 }

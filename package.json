@@ -355,16 +355,16 @@
         {
           "command": "discloud.team.import",
           "group": "inline",
+          "when": "view == discloud-teams && viewItem == TreeItem"
+        },
+        {
+          "command": "discloud.team.logs",
           "when": "view == discloud-teams"
         },
         {
           "command": "discloud.team.logs",
           "group": "inline",
-          "when": "view == discloud-teams"
-        },
-        {
-          "command": "discloud.team.logs",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem == TreeItem"
         },
         {
           "command": "discloud.team.ram",
@@ -381,7 +381,7 @@
         {
           "command": "discloud.team.status",
           "group": "inline",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem == TreeItem"
         },
         {
           "command": "discloud.team.stop",

@@ -1,10 +1,12 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps } from "discloud.app";
+import { ApiStatusApp, ApiTeamApps, ModPermissionsBF } from "discloud.app";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
+
+const totalModPerms = ModPermissionsBF.All.toArray().length;
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
   iconName?: string;
@@ -23,6 +25,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
+    super._patch(data);
+
     this.appId ??= data.appId ?? data.id;
 
     data.label ??= "name" in data ?
@@ -88,12 +92,12 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("perms" in data)
       this.children.set("perms", new TeamAppChildTreeItem({
-        label: t("permissions"),
+        label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
         children: data.perms?.map(perm => new TreeItem(t(`permission.${perm}`))) ?? [],
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
       }));
 
-    return super._patch(data);
+    return this;
   }
 }

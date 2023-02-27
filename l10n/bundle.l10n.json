@@ -68,6 +68,7 @@
   "permission.stop_app": "Stop",
   "permission.status_app": "See status",
   "permissions": "Permissions",
+  "permissions{s}": "Permissions {s}",
   "plan": "plan",
   "process.already.running": "You already have a process running.",
   "progress.backup.title": "Backup",
