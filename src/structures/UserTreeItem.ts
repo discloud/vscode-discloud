@@ -14,7 +14,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       `${data.username} - ID ${data.userID}` :
       `${data.userID}`;
 
-    super(data.label, data.collapsibleState ??= TreeItemCollapsibleState.Expanded);
+    super(data.label, data.collapsibleState);
 
     this._patch(data);
   }
@@ -75,12 +75,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     this.collapsibleState =
       this.children.size ?
-        data.collapsibleState ?? TreeItemCollapsibleState.Expanded :
-        TreeItemCollapsibleState.None;
-
-    this.collapsibleState =
-      this.children.size ?
-        data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Expanded :
         TreeItemCollapsibleState.None;
 
     return this;

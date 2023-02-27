@@ -89,7 +89,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.collapsibleState =
       this.children.size ?
-        data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
         TreeItemCollapsibleState.None;
 
     return this;

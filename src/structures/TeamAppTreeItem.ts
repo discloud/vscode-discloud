@@ -98,6 +98,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         collapsibleState: TreeItemCollapsibleState.Collapsed,
       }));
 
+    this.collapsibleState =
+      this.children.size ?
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        TreeItemCollapsibleState.None;
+
     return this;
   }
 }

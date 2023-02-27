@@ -20,14 +20,13 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
 
     this.subdomain = data.subdomain ?? this.subdomain;
     this.label = data.subdomain ?? this.label;
-    this.collapsibleState = data.collapsibleState ?? this.collapsibleState;
 
     this.iconName = getIconName(data) ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
     this.collapsibleState =
       this.children.size ?
-        data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
         TreeItemCollapsibleState.None;
 
     return this;
