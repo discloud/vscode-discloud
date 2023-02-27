@@ -54,6 +54,7 @@
   "missing.team.appid": "Team application ID not found.",
   "missing.token": "The Discloud token is missing.",
   "network": "Network",
+  "noappfound": "No application found.",
   "offline": "Offline",
   "ok": "Ok",
   "online": "Online",

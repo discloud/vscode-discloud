@@ -77,7 +77,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   init() {
     this.children.clear();
     this.children.set("x", new AppTreeItem({
-      label: "Nenhuma aplicação foi encontrada.",
+      label: t("notappfound"),
       iconName: "x",
     }));
   }

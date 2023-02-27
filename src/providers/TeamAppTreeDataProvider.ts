@@ -140,7 +140,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   init() {
     this.children.clear();
     this.children.set("x", new TeamAppTreeItem({
-      label: "Nenhuma aplicação foi encontrada.",
+      label: t("notappfound"),
       iconName: "x",
     }));
   }
