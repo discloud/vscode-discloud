@@ -6,6 +6,17 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.3.3
+
+### Bug fixes
+
+- Corrigido título de nenhuma aplicação encontrada na visualização de apps
+
+### Features
+
+- Melhorias de performance na visualização de árvore de aplicativos
+- Melhorias de performance nos provedores de visualização de aplicativos
+
 ## 2.3.2
 
 ### Bug fixes
