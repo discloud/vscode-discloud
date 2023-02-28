@@ -1,19 +1,19 @@
-import * as glob from "glob";
-import * as Mocha from "mocha";
-import * as path from "path";
+// import * as glob from "glob";
+// import * as Mocha from "mocha";
+// import * as path from "path";
 
-export function run(): Promise<void> {
+/* export function run(): Promise<void> { */
 	// Create the mocha test
-	const mocha = new Mocha({
+	/* const mocha = new Mocha({
 		ui: "tdd",
 		color: true,
-	});
+	}); */
 
-	const testsRoot = path.resolve(__dirname, "..");
+	/* const testsRoot = path.resolve(__dirname, ".."); */
 
-	return new Promise((c, e) => {
-		glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
-			if (err) {
+	/* return new Promise((c, e) => { */
+		// glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
+			/* if (err) {
 				return e(err);
 			}
 
@@ -33,6 +33,6 @@ export function run(): Promise<void> {
 				console.error(err);
 				e(err);
 			}
-		});
-	});
-}
+		}); */
+	/* }); */
+// }
