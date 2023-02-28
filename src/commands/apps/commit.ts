@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
+import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "path";
 import { FormData } from "undici";
 import { ProgressLocation, window, workspace } from "vscode";
@@ -7,7 +7,7 @@ import { TaskData } from "../../@types";
 import extension from "../../extension";
 import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
-import { GS, requester, Zip } from "../../util";
+import { requester, Zip } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -35,16 +35,17 @@ export default class extends Command {
 
     const configAppBackupDir = extension.config.get<string>("app.backup.dir");
     const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
+    const zipName = `${workspace.name}.zip`;
 
-    const { found } = new GS(workspaceFolder, "\\.discloudignore", [
+    const { found } = new GS(workspaceFolder, ".discloudignore", [
       `${workspaceFolder}/discloud/**`,
       `${workspaceFolder}/${configAppBackupDir}/**`,
       `${workspaceFolder}/${configTeamBackupDir}/**`,
+      `${workspaceFolder}/${zipName}`,
     ]);
 
     task.progress.report({ message: t("files.zipping") });
 
-    const zipName = `${workspace.name}.zip`;
     const savePath = join(workspaceFolder, zipName);
 
     let zipper;
