@@ -23,7 +23,9 @@ export class Zip {
     targetPath = RegExp(`^${targetPath}\\/?`, "i");
 
     for (const file of fileList) {
-      const name = file.replace(targetPath, "");
+      const name = file.replace(/\\/g, "/").replace(targetPath, "");
+
+      if (!name) continue;
 
       if (existsSync(file))
         if (statSync(file).isFile()) {
