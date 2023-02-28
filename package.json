@@ -523,15 +523,13 @@
     "@vscode/l10n": "^0.0.11",
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
-    "discloud.app": "^0.6.3",
-    "glob": "^8.1.0",
+    "discloud.app": "^0.6.5",
     "jsonwebtoken": "^9.0.0",
     "undici": "^5.20.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/archiver": "^5.3.1",
-    "@types/glob": "^8.1.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.2",
