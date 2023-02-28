@@ -238,17 +238,29 @@
             "title": "%config.app.backup.dir.title%",
             "markdownDescription": "%config.app.backup.dir.description%"
           },
-          "discloud.team.backup.dir": {
+          "discloud.app.import.dir": {
             "type": "string",
-            "default": "discloud/backup",
-            "title": "%config.team.backup.dir.title%",
-            "markdownDescription": "%config.team.backup.dir.description%"
+            "default": "discloud/import",
+            "title": "%config.app.import.dir.title%",
+            "markdownDescription": "%config.app.import.dir.description%"
           },
           "discloud.auto.refresh": {
             "type": "number",
             "default": 0,
             "title": "%config.auto.refresh.title%",
             "markdownDescription": "%config.auto.refresh.description%"
+          },
+          "discloud.team.backup.dir": {
+            "type": "string",
+            "default": "discloud/backup",
+            "title": "%config.team.backup.dir.title%",
+            "markdownDescription": "%config.team.backup.dir.description%"
+          },
+          "discloud.team.import.dir": {
+            "type": "string",
+            "default": "discloud/import",
+            "title": "%config.team.import.dir.title%",
+            "markdownDescription": "%config.team.import.dir.description%"
           }
         }
       }
