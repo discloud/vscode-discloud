@@ -1,13 +1,12 @@
 import { t } from "@vscode/l10n";
-import { IgnoreFiles, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
-import { existsSync, statSync } from "fs";
+import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "node:path";
 import { FormData } from "undici";
 import { ProgressLocation, window, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
-import { GS, requester, Zip } from "../util";
+import { requester, Zip } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -40,35 +39,20 @@ export default class extends Command {
 
     const configAppBackupDir = extension.config.get<string>("app.backup.dir");
     const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
+    const zipName = `${workspace.name}.zip`;
 
-    const { list } = new IgnoreFiles({
-      fileName: ".discloudignore",
-      path: workspaceFolder,
-      optionalIgnoreList: [
-        `${workspaceFolder}/discloud/**`,
-        `${workspaceFolder}/${configAppBackupDir}/**`,
-        `${workspaceFolder}/${configTeamBackupDir}/**`,
-      ],
-    });
-
-    let files = [];
-    for (const path of paths) {
-      if (existsSync(path))
-        if (statSync(path).isFile()) {
-          files.push(path);
-        } else {
-          const { found } = new GS(path, "", list);
-          files.push(found);
-        }
-    }
-    files = [...new Set(files.flat())];
+    const files = new GS(paths, ".discloudignore", [
+      `${workspaceFolder}/discloud/**`,
+      `${workspaceFolder}/${configAppBackupDir}/**`,
+      `${workspaceFolder}/${configTeamBackupDir}/**`,
+      `${workspaceFolder}/${zipName}`,
+    ]).found;
 
     task.progress.report({
       message: t("file.zipping"),
       increment: 20,
     });
 
-    const zipName = `${workspace.name}.zip`;
     const savePath = join(workspaceFolder, zipName);
 
     let zipper;
