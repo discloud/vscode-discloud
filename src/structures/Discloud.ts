@@ -76,10 +76,15 @@ class Discloud extends EventEmitter {
   async copyFilePath() {
     await commands.executeCommand("copyFilePath");
     const copied = await env.clipboard.readText().then(a => a.replace(/\\/g, "/"));
-    const paths = copied.split(/\r?\n/g).filter(path => !allBlockedFilesRegex.test(path));
 
-    if (!paths.length && this.workspaceFolder) return [this.workspaceFolder];
-    if (paths.length === 1 && paths[0] === "." && this.workspaceFolder) return [this.workspaceFolder];
+    const paths = copied.split(/[\r\n]+/g)
+      .filter(path => !allBlockedFilesRegex.test(path))
+      .filter(path => existsSync(path));
+
+    if (this.workspaceFolder) {
+      if (!paths.length) return [this.workspaceFolder];
+      if (paths.length === 1 && paths[0] === ".") return [this.workspaceFolder];
+    }
 
     return paths;
   }
