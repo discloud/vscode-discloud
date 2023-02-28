@@ -524,7 +524,7 @@
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
     "discloud.app": "^0.6.3",
-    "glob": "^8.1.0",
+    "glob": "^9.0.1",
     "jsonwebtoken": "^9.0.0",
     "undici": "^5.20.0"
   },
