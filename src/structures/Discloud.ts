@@ -51,18 +51,16 @@ class Discloud extends EventEmitter {
     if (!this.workspaceFolder) return [];
     const workspaceFolder = this.workspaceFolder;
 
-    const configAppBackupDir = this.config.get<string>("app.backup.dir");
-    const configAppImportDir = this.config.get<string>("app.import.dir");
-    const configTeamBackupDir = this.config.get<string>("team.backup.dir");
-    const configTeamImportDir = this.config.get<string>("team.import.dir");
-
     return [
-      `${workspaceFolder}/discloud/**`,
-      `${workspaceFolder}/${configAppBackupDir}/**`,
-      `${workspaceFolder}/${configAppImportDir}/**`,
-      `${workspaceFolder}/${configTeamBackupDir}/**`,
-      `${workspaceFolder}/${configTeamImportDir}/**`,
-    ];
+      "app.backup.dir",
+      "app.import.dir",
+      "team.backup.dir",
+      "team.import.dir",
+    ]
+      .map(config => this.config.get(config))
+      .filter(c => c)
+      .map(config => `${workspaceFolder}/${config}/**`)
+      .concat(`${workspaceFolder}/discloud/**`);
   }
 
   get config() {
