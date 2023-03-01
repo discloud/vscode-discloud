@@ -65,12 +65,28 @@ class Discloud extends EventEmitter {
     return this.config.get<string>("token");
   }
 
+  get workspaceAvailable() {
+    return Boolean(workspace.workspaceFolders?.length);
+  }
+
   get workspaceFolder() {
     return workspace.workspaceFolders?.[0].uri.fsPath.replace(/\\/g, "/");
   }
 
-  get workspaceAvailable() {
-    return Boolean(workspace.workspaceFolders?.length);
+  get workspaceIgnoreList() {
+    if (!this.workspaceFolder) return [];
+    const workspaceFolder = this.workspaceFolder;
+
+    return [
+      "app.backup.dir",
+      "app.import.dir",
+      "team.backup.dir",
+      "team.import.dir",
+    ]
+      .map(config => this.config.get(config))
+      .filter(c => c)
+      .map(config => `${workspaceFolder}/${config}/**`)
+      .concat(`${workspaceFolder}/discloud/**`);
   }
 
   async copyFilePath() {

@@ -50,16 +50,10 @@ export default class extends Command {
       return;
     };
 
-    const configAppBackupDir = extension.config.get<string>("app.backup.dir");
-    const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
     const zipName = `${workspace.name}.zip`;
 
-    const { found } = new GS(workspaceFolder, "\\.discloudignore", [
-      `${workspaceFolder}/discloud/**`,
-      `${workspaceFolder}/${configAppBackupDir}/**`,
-      `${workspaceFolder}/${configTeamBackupDir}/**`,
-      `${workspaceFolder}/${zipName}`,
-    ]);
+    const { found } = new GS(workspaceFolder, "\\.discloudignore",
+      extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
     if (!found.length) {
       extension.resetStatusBar();

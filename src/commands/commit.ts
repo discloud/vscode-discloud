@@ -37,16 +37,10 @@ export default class extends Command {
       increment: 10,
     });
 
-    const configAppBackupDir = extension.config.get<string>("app.backup.dir");
-    const configTeamBackupDir = extension.config.get<string>("team.backup.dir");
     const zipName = `${workspace.name}.zip`;
 
-    const files = new GS(paths, ".discloudignore", [
-      `${workspaceFolder}/discloud/**`,
-      `${workspaceFolder}/${configAppBackupDir}/**`,
-      `${workspaceFolder}/${configTeamBackupDir}/**`,
-      `${workspaceFolder}/${zipName}`,
-    ]).found;
+    const { found } = new GS(paths, ".discloudignore",
+      extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
     task.progress.report({
       message: t("file.zipping"),
@@ -58,7 +52,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(files, workspaceFolder, true);
+      zipper.appendFileList(found, workspaceFolder, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
