@@ -38,23 +38,24 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) return;
 
-    const backupDir = join(workspaceFolder, "discloud", "backup");
-    const backupFolderPath = join(backupDir, res.backups.id).replace(/\\/g, "/");
-    const backupFilePath = `${backupFolderPath}.zip`;
+    const configImportDir = extension.config.get<string>("app.import.dir");
+    const importDir = join(workspaceFolder, configImportDir!);
+    const importFolderPath = join(importDir, res.backups.id).replace(/\\/g, "/");
+    const importFilePath = `${importFolderPath}.zip`;
 
-    if (!existsSync(backupDir))
-      mkdirSync(backupDir, { recursive: true });
+    if (!existsSync(importDir))
+      mkdirSync(importDir, { recursive: true });
 
-    await writeFile(backupFilePath, backup.body, "utf8");
+    await writeFile(importFilePath, backup.body, "utf8");
 
-    new AdmZip(backupFilePath).extractAllTo(join(backupDir, res.backups.id));
-    unlinkSync(backupFilePath);
+    new AdmZip(importFilePath).extractAllTo(join(importDir, res.backups.id));
+    unlinkSync(importFilePath);
 
     (async () => {
       const actionOk = t("open.dir");
       const action = await window.showInformationMessage(t("import.success"), actionOk);
       if (action === actionOk)
-        commands.executeCommand("vscode.openFolder", Uri.file(backupFolderPath), {
+        commands.executeCommand("vscode.openFolder", Uri.file(importFolderPath), {
           forceNewWindow: true,
         });
     })();
