@@ -26,7 +26,8 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
 
     this.collapsibleState =
       this.children.size ?
-        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        this.data.collapsibleState ??
+        TreeItemCollapsibleState.Collapsed :
         TreeItemCollapsibleState.None;
 
     return this;
