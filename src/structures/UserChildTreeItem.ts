@@ -11,7 +11,7 @@ export default class UserChildTreeItem extends TreeItem {
     super(options.label!, options.collapsibleState);
     this.description = options.description;
     this.iconName = options.iconName;
-    this.tooltip = options.tooltip;
+    this.tooltip = options.tooltip ?? `${this.description}: ${this.label}`;
     this.userID = options.userID;
     if (this.iconName)
       this.iconPath = getIconPath(this.iconName);

@@ -33,49 +33,50 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if (("ramUsedMb" in data) && ("totalRamMb" in data))
       this.children.set("ram", new UserChildTreeItem({
-        label: t("label.available.ram"),
-        description: `${data.ramUsedMb}/${data.totalRamMb}`,
+        label: `${data.ramUsedMb}/${data.totalRamMb}`,
+        description: t("label.available.ram"),
       }));
 
     if ("plan" in data)
       this.children.set("plan", new UserChildTreeItem({
-        label: t("plan"),
-        description: data.plan,
+        label: data.plan,
+        description: t("plan"),
       }));
 
     if ("locale" in data)
       this.children.set("locale", new UserChildTreeItem({
-        label: t("locale"),
-        description: data.locale,
+        label: data.locale,
+        description: t("locale"),
       }));
 
     if ("apps" in data)
       this.children.set("apps", new UserChildTreeItem({
-        label: t("label.apps.amount"),
-        description: `${data.apps?.length}`,
+        label: `${data.apps?.length}`,
+        description: t("label.apps.amount"),
       }));
 
     if ("appsTeam" in data)
       this.children.set("team", new UserChildTreeItem({
-        label: t("label.team.apps.amount"),
-        description: `${data.appsTeam?.length}`,
+        label: `${data.appsTeam?.length}`,
+        description: t("label.team.apps.amount"),
       }));
 
     if ("customdomains" in data)
       this.children.set("domains", new UserChildTreeItem({
-        label: t("label.domains.amount"),
-        description: `${data.customdomains?.length}`,
+        label: `${data.customdomains?.length}`,
+        description: t("label.domains.amount"),
       }));
 
     if ("subdomains" in data)
       this.children.set("subdomains", new UserChildTreeItem({
-        label: t("label.subdomains.amount"),
-        description: `${data.subdomains?.length}`,
+        label: `${data.subdomains?.length}`,
+        description: t("label.subdomains.amount"),
       }));
 
     this.collapsibleState =
       this.children.size ?
-        this.data.collapsibleState ?? TreeItemCollapsibleState.Expanded :
+        this.data.collapsibleState ??
+        TreeItemCollapsibleState.Expanded :
         TreeItemCollapsibleState.None;
 
     return this;

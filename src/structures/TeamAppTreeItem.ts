@@ -44,48 +44,48 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("container" in data)
       this.children.set("container", new TeamAppChildTreeItem({
-        label: t("container"),
-        description: data.container,
+        label: data.container!,
+        description: t("container"),
         iconName: "container",
         appId: this.appId,
       }));
 
     if ("memory" in data)
       this.children.set("memory", new TeamAppChildTreeItem({
-        label: t("label.ram"),
-        description: data.memory,
+        label: data.memory!,
+        description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
       }));
 
     if ("cpu" in data)
       this.children.set("cpu", new TeamAppChildTreeItem({
-        label: t("label.cpu"),
-        description: data.cpu,
+        label: data.cpu!,
+        description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
       }));
 
     if ("ssd" in data)
       this.children.set("ssd", new TeamAppChildTreeItem({
-        label: t("label.ssd"),
-        description: data.ssd,
+        label: data.ssd!,
+        description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
       }));
 
     if ("netIO" in data)
       this.children.set("netIO", new TeamAppChildTreeItem({
-        label: t("network"),
-        description: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
+        label: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
+        description: t("network"),
         iconName: "network",
         appId: this.appId,
       }));
 
     if ("last_restart" in data)
       this.children.set("last_restart", new TeamAppChildTreeItem({
-        label: t("last.restart"),
-        description: data.last_restart,
+        label: data.last_restart!,
+        description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
       }));
