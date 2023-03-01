@@ -93,14 +93,15 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     if ("perms" in data)
       this.children.set("perms", new TeamAppChildTreeItem({
         label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
-        children: data.perms?.map(perm => new TreeItem(t(`permission.${perm}`))) ?? [],
+        children: data.perms?.map(perm => new TreeItem(t(`permission.${perm}`))),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
       }));
 
     this.collapsibleState =
       this.children.size ?
-        this.data.collapsibleState ?? TreeItemCollapsibleState.Collapsed :
+        this.data.collapsibleState ??
+        TreeItemCollapsibleState.Collapsed :
         TreeItemCollapsibleState.None;
 
     return this;

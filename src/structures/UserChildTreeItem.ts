@@ -15,7 +15,12 @@ export default class UserChildTreeItem extends TreeItem {
     this.userID = options.userID;
     if (this.iconName)
       this.iconPath = getIconPath(this.iconName);
-    if (options.children)
-      this.children = new Map(options.children.map((child: any) => [child.label, child]));
+    if (options.children) {
+      if (options.children instanceof Map) {
+        this.children = options.children;
+      } else {
+        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
+      }
+    }
   }
 }
