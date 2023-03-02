@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import Command from "../structures/Command";
-import { tokenValidator } from "../util";
+import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -14,6 +14,10 @@ export default class extends Command {
     const input = await window.showInputBox({
       password: true,
       prompt: t("input.login.prompt"),
+      validateInput(value: string) {
+        if (!tokenIsDiscloudJwt(value))
+          return t("input.login.prompt");
+      },
     });
 
     if (!input) return;

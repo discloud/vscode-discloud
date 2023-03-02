@@ -12,6 +12,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 - Mudança na visualização de apps
 - Melhor gerenciamento de configurações
+- Adicionado validação do prompt do token no comando login
 
 ## 2.4.0
 
