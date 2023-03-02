@@ -1,6 +1,5 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import extension from "../extension";
 import Command from "../structures/Command";
 import { tokenValidator } from "../util";
 
@@ -24,8 +23,6 @@ export default class extends Command {
 
       return false;
     }
-
-    extension.config.update("token", input, true);
 
     window.showInformationMessage(t("valid.token"));
   }

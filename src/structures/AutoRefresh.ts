@@ -1,12 +1,10 @@
+import { ConfigurationTarget } from "vscode";
 import extension from "../extension";
 
 class AutoRefresh {
   timer?: NodeJS.Timer;
 
   constructor() {
-    if (!extension.config.has("auto.refresh"))
-      extension.config.update("auto.refresh", 60, true);
-
     if (this.interval)
       this.setInterval();
   }
@@ -28,16 +26,30 @@ class AutoRefresh {
     try { clearInterval(this.timer); } catch { };
   }
 
-  setInterval(interval: number | undefined = this.interval) {
+  setInterval(interval?: number | null | undefined, isWorkspace?: boolean) {
     if (typeof interval !== "number") interval = this.interval;
+
+    const inspect = extension.config.inspect<number>("auto.refresh");
+
+    if (typeof isWorkspace === "undefined") {
+      isWorkspace = Boolean(inspect?.workspaceValue);
+    } else if (!isWorkspace) {
+      interval = inspect?.globalValue ?? interval;
+    }
 
     if (interval && interval < 30) {
       extension.logger.warn(
         `${interval} seconds interval is not allowed.`
         + " Intervals of less than 30 seconds are not allowed."
       );
+
       interval = 30;
-      extension.config.update("auto.refresh", 30, true);
+
+      extension.config.update("auto.refresh", 30,
+        isWorkspace ?
+          ConfigurationTarget.Workspace :
+          ConfigurationTarget.Global
+      );
     }
 
     this.stop();

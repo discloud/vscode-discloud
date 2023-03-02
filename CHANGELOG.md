@@ -11,6 +11,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 ### Features
 
 - Mudança na visualização de apps
+- Melhor gerenciamento de configurações
 
 ## 2.4.0
 

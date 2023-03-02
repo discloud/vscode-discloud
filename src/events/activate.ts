@@ -34,16 +34,20 @@ extension.once("activate", (context) => {
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
+      const isWorkspace = event.affectsConfiguration("discloud.token", workspace.workspaceFolders?.[0]);
+
       if (extension.token) {
-        tokenValidator(extension.token);
+        tokenValidator(extension.token, isWorkspace);
       } else {
         extension.statusBar.setLogin();
       }
     }
 
     if (event.affectsConfiguration("discloud.auto.refresh")) {
+      const isWorkspace = event.affectsConfiguration("discloud.auto.refresh", workspace.workspaceFolders?.[0]);
+
       if (extension.autoRefresher.interval) {
-        extension.autoRefresher.setInterval();
+        extension.autoRefresher.setInterval(null, isWorkspace);
       } else {
         extension.autoRefresher.stop();
       }

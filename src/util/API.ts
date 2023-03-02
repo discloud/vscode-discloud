@@ -129,12 +129,12 @@ export function tokenIsDiscloudJwt(token = extension.token): boolean {
   return payload && "id" in payload && "key" in payload || false;
 }
 
-export async function tokenValidator(token: string) {
+export async function tokenValidator(token: string, isWorkspace?: boolean) {
   try {
     if (tokenIsDiscloudJwt(token)) {
       await discloud.login(token);
       tokenIsValid = true;
-      extension.emit("authorized");
+      extension.emit("authorized", token, isWorkspace);
       return true;
     } else {
       tokenIsValid = false;
