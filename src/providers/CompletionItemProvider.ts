@@ -1,24 +1,15 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { CompletionItem, CompletionItemKind, languages, TextDocument } from "vscode";
-import { LanguageConfig, ProviderOptions } from "../@types";
+import { CompletionItem, CompletionItemKind, languages } from "vscode";
+import { ProviderOptions } from "../@types";
 import extension from "../extension";
+import BaseLanguageProvider from "./BaseLanguageProvider";
 
-export default class CompletionItemProvider {
-  data = <LanguageConfig>{};
-
+export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(options: ProviderOptions) {
-    if ("path" in options) {
-      try {
-        this.data = JSON.parse(readFileSync(extension.context.asAbsolutePath(`${options.path}`), "utf8"));
-      } catch (error: any) {
-        extension.logger.error(error);
-        return;
-      }
-    } else {
-      extension.logger.error("Missing options.path");
-      return;
-    }
+    super(options);
+
+    if (!this.data) return;
 
     const disposable = languages.registerCompletionItemProvider(this.data.rules.languageId, {
       provideCompletionItems: (document, position, _token, _context) => {
@@ -87,16 +78,5 @@ export default class CompletionItemProvider {
     });
 
     extension.context.subscriptions.push(disposable);
-  }
-
-  getText(document: TextDocument, pattern: string | RegExp) {
-    pattern = RegExp(pattern);
-
-    for (let i = 0; i < document.lineCount; i++) {
-      const lineText = document.lineAt(i);
-
-      if (pattern.test(lineText.text))
-        return lineText.text.split(this.data.rules.separator)[1];
-    }
   }
 }
