@@ -66,7 +66,7 @@ export interface UserTreeItemData extends Partial<BaseTreeItemData> {
 
 export interface Events {
   activate: [context: ExtensionContext]
-  authorized: []
+  authorized: [token: string, isWorkspace?: boolean]
   error: [error: any]
   rateLimited: [rateLimitData: RateLimitData]
   unauthorized: []
