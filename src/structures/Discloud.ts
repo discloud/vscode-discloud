@@ -146,7 +146,7 @@ class Discloud extends EventEmitter {
               await command.run(taskData, ...args);
             });
           } else {
-            command.run(taskData, ...args);
+            await command.run(taskData, ...args);
           }
         });
 

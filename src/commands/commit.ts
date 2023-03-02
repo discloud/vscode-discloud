@@ -13,7 +13,6 @@ export default class extends Command {
     super({
       progress: {
         location: ProgressLocation.Notification,
-        cancellable: true,
         title: t("progress.commit.title"),
       },
     });

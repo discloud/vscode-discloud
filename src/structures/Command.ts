@@ -121,7 +121,11 @@ export default abstract class Command {
 
     output.info(log);
 
-    if (show) setTimeout(() => output.show(), 100);
+    if (show) {
+      output.show(false);
+
+      setTimeout(() => output.show(false), 250);
+    };
   }
 
   showApiMessage(data: Data) {
