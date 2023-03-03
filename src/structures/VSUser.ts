@@ -40,6 +40,8 @@ export default class VSUser {
     if ("locale" in res)
       this.locale = res.locale;
 
-    return res;
+    return "body" in res ?
+      <RESTPutApiLocaleResult>res.body :
+      res;
   }
 }
