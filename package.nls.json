@@ -31,6 +31,7 @@
   "command.team.start": "Start team application",
   "command.team.status": "Refresh team application status",
   "command.team.stop": "Stop team application",
+  "command.user.set.locale": "Set language",
   "config.auto.refresh.description": "The auto refresh interval in seconds of your apps stats view. (Set 0 to deactivate).",
   "config.auto.refresh.title": "Auto refresh",
   "config.app.backup.dir.description": "Here you can change the place where backups will stay.\n\n`All files within this mass and subfolders will be ignored by Commit and Upload commands.`\n\n(Default: discloud/backup)",

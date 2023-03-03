@@ -15,6 +15,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 - Adicionado validação do prompt do token no comando login
 - Removido botão de cancelamento no progresso dos comandos
 - Melhor gerenciamento da status bar ao executar comandos
+- Adicionado comando para definir idioma do usuário na API
 
 ## 2.4.0
 
