@@ -1,3 +1,4 @@
+import { RESTPutApiLocaleResult, Routes } from "discloud.app";
 import { ApiVscodeApp, RESTGetApiVscode } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
@@ -29,5 +30,16 @@ export default class VSUser {
     extension.emit("vscode", this);
 
     return this;
+  }
+
+  async setLocale(locale: string) {
+    const res = await requester<RESTPutApiLocaleResult>(Routes.locale(locale), {
+      method: "PUT",
+    });
+
+    if ("locale" in res)
+      this.locale = res.locale;
+
+    return res;
   }
 }

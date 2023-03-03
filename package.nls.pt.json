@@ -31,6 +31,7 @@
   "command.team.start": "Iniciar aplicativo de equipe",
   "command.team.status": "Atualizar estado do aplicativo de equipe",
   "command.team.stop": "Parar aplicativo de equipe",
+  "command.user.set.locale": "Definir idioma",
   "config.auto.refresh.description": "O intervalo de atualização automática em segundos da visualização das estatísticas de seus aplicativos. (Defina 0 para desativar).",
   "config.auto.refresh.title": "Auto atualizar",
   "config.app.backup.dir.description": "Aqui você pode alterar o lugar onde os backups vão ficar.\n\n`Todos os arquivos dentro dessa pasta e das subpastas serão ignorados pelos comandos de commit e upload.`\n\n(Padrão: discloud/backup)",

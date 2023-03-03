@@ -222,6 +222,11 @@
         "command": "discloud.team.stop",
         "title": "%command.team.stop%",
         "icon": "$(debug-stop)"
+      },
+      {
+        "command": "discloud.user.set.locale",
+        "title": "%command.user.set.locale%",
+        "icon": "$(location)"
       }
     ],
     "configuration": [
@@ -398,6 +403,10 @@
         {
           "command": "discloud.team.stop",
           "when": "view == discloud-teams"
+        },
+        {
+          "command": "discloud.user.set.locale",
+          "when": "view == discloud-user"
         },
         {
           "submenu": "discloud.apps.mods",
