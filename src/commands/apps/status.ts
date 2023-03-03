@@ -18,11 +18,11 @@ export default class extends Command {
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
     if (!item.appId) {
       item.appId = await this.pickApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     item = extension.appTree.children.get(item.appId)!;
-    if (!item?.appId) return;
+    if (!item?.appId) throw Error(t("missing.appid"));
 
     if (!item.children.size)
       return extension.appTree.fetch();

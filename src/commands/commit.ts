@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "node:path";
 import { FormData } from "undici";
-import { ProgressLocation, window, workspace } from "vscode";
+import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
@@ -19,32 +19,27 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
     const paths = await extension.copyFilePath();
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
 
     extension.statusBar.setCommitting();
 
     const appId = await this.pickApp(task, true);
-    if (!appId) return;
+    if (!appId) throw Error(t("missing.appid"));
 
-    task.progress.report({
-      message: t("files.checking"),
-      increment: 10,
-    });
+    task.progress.report({ message: t("files.checking") });
 
     const zipName = `${workspace.name}.zip`;
 
     const { found } = new GS(paths, ".discloudignore",
       extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
-    task.progress.report({
-      message: t("file.zipping"),
-      increment: 20,
-    });
+    task.progress.report({ message: t("file.zipping") });
 
     const savePath = join(workspaceFolder, zipName);
 
@@ -55,9 +50,8 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
     const form = new FormData();
@@ -65,15 +59,11 @@ export default class extends Command {
       form.append("file", await resolveFile(savePath, zipName));
     } catch (error: any) {
       zipper.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
-    task.progress.report({
-      message: t("committing"),
-      increment: 30,
-    });
+    task.progress.report({ message: t("committing") });
 
     const data = await requester<RESTPutApiAppCommitResult>(Routes.appCommit(appId), {
       body: form,
@@ -81,7 +71,6 @@ export default class extends Command {
       method: "PUT",
     });
 
-    task.progress.report({ increment: 100 });
     zipper.destroy();
     extension.resetStatusBar();
 

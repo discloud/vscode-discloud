@@ -20,7 +20,7 @@ export default class extends Command {
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const res = await requester<RESTPutApiAppStartResult>(Routes.teamStart(item.appId), {

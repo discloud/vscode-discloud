@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "path";
 import { FormData } from "undici";
-import { ProgressLocation, window, workspace } from "vscode";
+import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
@@ -20,15 +20,18 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
+
+    extension.statusBar.setCommitting();
 
     task.progress.report({ message: `${item.appId} - ${t("choose.files")}` });
 
@@ -37,10 +40,7 @@ export default class extends Command {
     const { found } = new GS(workspaceFolder, ".discloudignore", 
     extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
-    task.progress.report({
-      message: t("files.zipping"),
-      increment: 20,
-    });
+    task.progress.report({ message: t("files.zipping") });
 
     const savePath = join(workspaceFolder, zipName);
 
@@ -51,8 +51,7 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
+      extension.emit("error", error);
       return;
     }
 
@@ -61,8 +60,7 @@ export default class extends Command {
       form.append("file", await resolveFile(savePath, zipName));
     } catch (error: any) {
       zipper.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
+      extension.emit("error", error);
       return;
     }
 
@@ -74,7 +72,6 @@ export default class extends Command {
       method: "PUT",
     });
 
-    task.progress.report({ increment: 100 });
     zipper.destroy();
     extension.resetStatusBar();
 

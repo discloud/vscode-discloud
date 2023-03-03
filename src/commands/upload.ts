@@ -20,33 +20,31 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
 
     extension.statusBar.setUploading();
 
-    task.progress.report({
-      message: t("files.checking"),
-      increment: 10,
-    });
+    task.progress.report({ message: t("files.checking") });
 
     const dConfig = new DiscloudConfig(workspaceFolder);
 
     if (!dConfig.exists || dConfig.missingProps.length) {
-      extension.resetStatusBar();
       window.showErrorMessage(t("invalid.discloud.config"));
-      return;
+      throw Error(t("invalid.discloud.config"));
     }
 
     if (!existsSync(join(workspaceFolder, dConfig.data.MAIN))) {
-      extension.resetStatusBar();
       window.showErrorMessage(t("invalid.discloud.config.main", {
         file: dConfig.data.MAIN,
       }) + "\n" + t("readdiscloudconfigdocs"));
 
-      return;
+      throw Error(t("invalid.discloud.config.main", {
+        file: dConfig.data.MAIN,
+      }));
     };
 
     const zipName = `${workspace.name}.zip`;
@@ -55,23 +53,21 @@ export default class extends Command {
       extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
     if (!found.length) {
-      extension.resetStatusBar();
       window.showErrorMessage(t("files.missing"));
-      return;
+      throw Error(t("files.missing"));
     }
 
     if (!matchOnArray(found, dConfig.data.MAIN)) {
-      extension.resetStatusBar();
       window.showErrorMessage(t("missing.discloud.config.main", {
         file: dConfig.data.MAIN,
       }) + "\n" + t("readdiscloudconfigdocs"));
-      return;
+
+      throw Error(t("missing.discloud.config.main", {
+        file: dConfig.data.MAIN,
+      }));
     }
 
-    task.progress.report({
-      message: t("file.zipping"),
-      increment: 20,
-    });
+    task.progress.report({ message: t("file.zipping") });
 
     const savePath = join(workspaceFolder, zipName);
 
@@ -82,9 +78,8 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
     const form = new FormData();
@@ -92,15 +87,11 @@ export default class extends Command {
       form.append("file", await resolveFile(savePath, zipName));
     } catch (error: any) {
       zipper.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
-    task.progress.report({
-      message: t("uploading"),
-      increment: 30,
-    });
+    task.progress.report({ message: t("uploading") });
 
     const res = await requester<RESTPostApiUploadResult>(Routes.upload(), {
       body: form,
@@ -108,7 +99,6 @@ export default class extends Command {
       method: "POST",
     });
 
-    task.progress.report({ increment: 100 });
     zipper.destroy();
     extension.resetStatusBar();
 

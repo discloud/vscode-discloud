@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "path";
 import { FormData } from "undici";
-import { ProgressLocation, window, workspace } from "vscode";
+import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import AppTreeItem from "../../structures/AppTreeItem";
@@ -20,15 +20,18 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
     if (!item.appId) {
       item.appId = await this.pickApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
+
+    extension.statusBar.setCommitting();
 
     task.progress.report({ message: `${item.appId} - ${t("choose.files")}` });
 
@@ -48,9 +51,8 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
     const form = new FormData();
@@ -58,9 +60,8 @@ export default class extends Command {
       form.append("file", await resolveFile(savePath, zipName));
     } catch (error: any) {
       zipper.destroy();
-      extension.resetStatusBar();
-      window.showErrorMessage(error);
-      return;
+      extension.emit("error", error);
+      throw Error(error);
     }
 
     task.progress.report({ message: item.appId });

@@ -140,13 +140,22 @@ class Discloud extends EventEmitter {
           if (command.data.progress) {
             await window.withProgress(command.data.progress, async (progress, token) => {
               token.onCancellationRequested(() => this.resetStatusBar());
+
               taskData.progress = progress;
               taskData.token = token;
 
-              await command.run(taskData, ...args);
+              try {
+                await command.run(taskData, ...args);
+              } catch {
+                this.resetStatusBar();
+              }
             });
           } else {
-            await command.run(taskData, ...args);
+            try {
+              await command.run(taskData, ...args);
+            } catch {
+              this.resetStatusBar();
+            }
           }
         });
 
