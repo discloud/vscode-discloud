@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState } from "vscode";
 import { SubDomainTreeItemData } from "../@types";
+import extension from "../extension";
 import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 
@@ -21,7 +22,9 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
     this.subdomain = data.subdomain ?? this.subdomain;
     this.label = data.subdomain ?? this.label;
 
-    this.iconName = getIconName(data) ?? this.iconName ?? "off";
+    const app = extension.appTree.children.get(this.subdomain);
+
+    this.iconName = app?.iconName ?? getIconName(data) ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
     this.collapsibleState =

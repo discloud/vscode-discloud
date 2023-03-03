@@ -17,6 +17,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 - Melhor gerenciamento da status bar ao executar comandos
 - Adicionado comando para definir idioma do usuário na API
 - Comando para definir idioma do usuário será re-executado com a lista de idiomas caso tenha inserido um idioma errado
+- Item da visualização de subdomínios terá o mesmo status de sua aplicação
 
 ## 2.4.0
 
