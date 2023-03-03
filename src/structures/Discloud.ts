@@ -74,8 +74,8 @@ class Discloud extends EventEmitter {
   }
 
   get workspaceIgnoreList() {
-    if (!this.workspaceFolder) return [];
     const workspaceFolder = this.workspaceFolder;
+    if (!workspaceFolder) return [];
 
     return [
       "app.backup.dir",
