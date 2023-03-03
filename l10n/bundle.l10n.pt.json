@@ -36,6 +36,7 @@
   "input.mod.add.prompt": "Digite o ID do MOD para adicionar ao seu app.",
   "input.mod.rem.prompt": "Digite o ID do MOD para remover do seu app.",
   "input.mod.edit.prompt": "Digite o ID do MOD para editar as permissões.",
+  "input.set.locale.available.title": "Estes são os idiomas disponíveis.",
   "input.set.locale.prompt": "Defina seu idioma.",
   "input.set.locale.validate": "Idioma deve ser como pt-BR.",
   "invalid.discloud.config": "O arquivo dicloud.config é inválido ou não existe.",

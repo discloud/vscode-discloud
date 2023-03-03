@@ -36,6 +36,7 @@
   "input.mod.edit.prompt": "Enter MOD ID to edit permissions.",
   "input.mod.rem.prompt": "Enter MOD ID to remove from your app.",
   "input.ram.prompt": "Set the RAM amount.",
+  "input.set.locale.available.title": "These are the available languages.",
   "input.set.locale.prompt": "Set your language.",
   "input.set.locale.validate": "Language must be like en-US.",
   "invalid.discloud.config": "The discloud.config file is invalid or does not exist.",
