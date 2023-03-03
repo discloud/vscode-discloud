@@ -63,7 +63,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
-            this.delete(appId);
+            if (appId === "all") {
+              this.children.clear();
+            } else {
+              this.delete(appId);
+            }
             break;
         }
       }
@@ -74,8 +78,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (Array.isArray(res.apps)) {
       this.setRawApps(res.apps);
     } else {
-      if (this.addRawApp(res.apps))
-        this.refresh();
+      this.edit(appId, res.apps);
     }
   }
 

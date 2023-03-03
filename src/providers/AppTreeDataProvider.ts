@@ -86,14 +86,18 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     }
   }
 
-  async getStatus(appId: string) {
+  async getStatus(appId: string = "all") {
     const res = await requester<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
 
     if (!res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
-            this.delete(appId);
+            if (appId === "all") {
+              this.children.clear();
+            } else {
+              this.delete(appId);
+            }
             break;
         }
       }
@@ -101,7 +105,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       return;
     }
 
-    this.edit(appId, res.apps);
+    if (Array.isArray(res.apps)) {
+      this.setRawApps(res.apps);
+    } else {
+      this.edit(appId, res.apps);
+    }
   }
 
   async fetch() {
