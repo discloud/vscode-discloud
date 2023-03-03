@@ -23,11 +23,17 @@ export default class BaseLanguageProvider {
   getText(document: TextDocument, pattern: string | RegExp) {
     pattern = RegExp(pattern);
 
+    let text;
+
     for (let i = 0; i < document.lineCount; i++) {
       const lineText = document.lineAt(i);
 
-      if (pattern.test(lineText.text))
-        return lineText.text.split(this.data.rules.separator)[1];
+      if (pattern.test(lineText.text)) {
+        text = lineText.text.split(this.data.rules.separator)[1];
+        break;
+      }
     }
+
+    return text;
   }
 }
