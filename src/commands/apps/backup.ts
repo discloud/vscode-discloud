@@ -22,19 +22,19 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
     if (!item.appId) {
       item.appId = await this.pickApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const res = await requester<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
-    if (!res.backups) return;
+    if (!res.backups) throw Error("No backup found");
 
     const backup = await fetch(res.backups.url);
-    if (!backup.body) return;
+    if (!backup.body) throw Error("Fail to request backup");
 
     const configBackupDir = extension.config.get<string>("app.backup.dir");
     const backupDir = join(workspaceFolder, configBackupDir!);

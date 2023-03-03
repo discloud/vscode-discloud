@@ -20,12 +20,12 @@ export default class extends Command {
       },
     });
 
-    if (!input) return;
+    if (!input) throw Error("Invalid input");
 
     if (!await tokenValidator(input)) {
       window.showErrorMessage(t("invalid.token"));
 
-      return false;
+      throw Error(t("invalid.token"));
     }
 
     window.showInformationMessage(t("valid.token"));

@@ -11,8 +11,8 @@ export default class extends Command {
   }
 
   async run() {
-    if (!extension.workspaceFolder) return;
     const workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) throw Error("No workspace folder found");
 
     const dConfig = new DiscloudConfig(workspaceFolder);
     if (dConfig.exists) return;

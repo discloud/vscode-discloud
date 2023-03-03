@@ -19,11 +19,11 @@ export default class extends Command {
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
     if (!item.appId) {
       item.appId = await this.pickApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const mod = await this.pickAppMod(item.appId, task);
-    if (!mod) return;
+    if (!mod) throw Error("Missing mod");
 
     const permissions = Object.keys(ModPermissions).map(perm => <QuickPickItem>{
       label: t(`permission.${perm}`),
@@ -34,9 +34,10 @@ export default class extends Command {
     const perms = await window.showQuickPick(permissions, {
       canPickMany: true,
     }).then(values => values?.map(value => value.description!));
-    if (!perms) return;
+    if (!perms) throw Error("Missing input");
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
 
     const res = await requester<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: JSON.stringify({

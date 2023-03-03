@@ -20,7 +20,7 @@ export default class extends Command {
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     let ram;
@@ -32,9 +32,10 @@ export default class extends Command {
         isNaN(Number(ram)) || Number(ram) < 100 :
         false);
 
-    if (!ram) return;
+    if (!ram) throw Error("Missing input");
 
-    if (!await this.confirmAction()) return;
+    if (!await this.confirmAction())
+      throw Error("Reject action");
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.teamLogs(item.appId), {
       body: JSON.stringify({

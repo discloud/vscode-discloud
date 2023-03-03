@@ -19,11 +19,11 @@ export default class extends Command {
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!item.appId) {
       item.appId = await this.pickTeamApp(task, true);
-      if (!item.appId) return;
+      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
-    if (!res.apps) return;
+    if (!res.apps) throw Error("No log found");
 
     this.logger(res.apps.id, res.apps.terminal.big);
   }
