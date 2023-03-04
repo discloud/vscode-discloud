@@ -27,6 +27,13 @@ export default class extends Command {
     do {
       ram = await window.showInputBox({
         value: "100",
+        prompt: t("input.ram.prompt"),
+        validateInput(value) {
+          const n = Number(value);
+
+          if (isNaN(n) || n < 100)
+            return t("input.ram.prompt");
+        },
       });
     } while (typeof ram === "string" ?
         isNaN(Number(ram)) || Number(ram) < 100 :
