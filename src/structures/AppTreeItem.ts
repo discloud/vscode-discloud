@@ -36,6 +36,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
+    this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
+
     if (data.children instanceof Map)
       this.children = data.children;
 

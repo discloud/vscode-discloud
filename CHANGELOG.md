@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## x.x.x
+
+### Features
+
+- Dicas nas visualizações de aplicativos mostrarão o status dos mesmos
+
 ## 2.5.0
 
 ### Features

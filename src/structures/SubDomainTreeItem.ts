@@ -1,3 +1,4 @@
+import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
 import { SubDomainTreeItemData } from "../@types";
 import extension from "../extension";
@@ -26,6 +27,8 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
 
     this.iconName = app?.iconName ?? getIconName(data) ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
+
+    this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
     this.collapsibleState =
       this.children.size ?
