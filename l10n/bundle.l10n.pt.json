@@ -1,4 +1,8 @@
 {
+  "app.status.on": "Ligado",
+  "app.status.ramKilled": "RAM insuficiente",
+  "app.status.errorCode": "Erro de código",
+  "app.status.off": "Desligado",
   "action.ok": "Ok",
   "action.cancel": "Cancelar",
   "action.title": "Tem certeza que quer fazer {action}?",
