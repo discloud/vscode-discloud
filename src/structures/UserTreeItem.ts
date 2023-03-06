@@ -10,8 +10,8 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   userID?: string;
 
   constructor(public data: Partial<UserTreeItemData & VSUser>) {
-    data.label ??= data.username ?
-      `${data.username} - ID ${data.userID}` :
+    data.label ??= "username" in data ?
+      `${data.username} (${data.userID})` :
       `${data.userID}`;
 
     super(data.label, data.collapsibleState);
@@ -24,9 +24,9 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     this.userID ??= data.userID;
 
-    this.label ??= "userID" in data ?
-      `${data.userID}` :
-      `${data.label}`;
+    this.label ??= "username" in data ?
+      `${data.username} (${data.userID})` :
+      `${data.userID}`;
 
     if (data.children instanceof Map)
       this.children = data.children;

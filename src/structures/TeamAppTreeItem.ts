@@ -15,8 +15,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
   constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
     data.label ??= "name" in data ?
-      `${data.name}${data.name?.includes(`${data.id}`) ? "" :
-        ` - ID ${data.id}`}` :
+      `${data.name}`
+      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     super(data.label, data.collapsibleState);
@@ -29,9 +29,9 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.appId ??= data.appId ?? data.id;
 
-    data.label ??= "name" in data ?
-      `${data.name}${data.name?.includes(`${data.id}`) ? "" :
-        ` - ID ${data.id}`}` :
+    this.label ??= "name" in data ?
+      `${data.name}`
+      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     this.appType = data.appType ?? "name" in data ? (data.name?.includes(`${data.id}`) ? "site" : "bot") : this.appType;

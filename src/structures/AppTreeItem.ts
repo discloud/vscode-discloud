@@ -12,8 +12,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
   constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
     data.label ??= "name" in data ?
-      `${data.name}${data.name?.includes(`${data.id}`) ? "" :
-        ` - ID ${data.id}`}` :
+      `${data.name}`
+      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     super(data.label, data.collapsibleState);
@@ -27,8 +27,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this.appId ??= data.appId ?? data.id;
 
     this.label ??= "name" in data ?
-      `${data.name}${data.name?.includes(`${this.appId}`) ? "" :
-        ` - ID ${data.id}`}` :
+      `${data.name}`
+      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     this.appType = data.appType ?? "name" in data ? (data.name?.includes(`${data.id}`) ? "site" : "bot") : this.appType;
