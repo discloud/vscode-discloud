@@ -16,6 +16,10 @@ let { maxUses, uses, time, remain, tokenIsValid } = {
   tokenIsValid: true,
 };
 
+export {
+  tokenIsValid,
+};
+
 async function initTimer() {
   await sleep(time);
   uses = 0;
@@ -109,14 +113,20 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       processes.shift();
     }
 
+    switch (error.code) {
+      case "DEPTH_ZERO_SELF_SIGNED_CERT":
+      case "ENOTFOUND":
+        uses--;
+        extension.emit("noConnection");
+        throw Error("No Connection");
+    }
+
     extension.emit("error", error);
 
     switch (error.statusCode ?? error.status) {
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
-        break;
-      default:
         break;
     }
 

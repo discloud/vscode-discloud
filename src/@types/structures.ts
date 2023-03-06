@@ -68,6 +68,7 @@ export interface Events {
   activate: [context: ExtensionContext]
   authorized: [token: string, isWorkspace?: boolean]
   error: [error: any]
+  noConnection: []
   rateLimited: [rateLimitData: RateLimitData]
   unauthorized: []
   vscode: [user: VSUser]
