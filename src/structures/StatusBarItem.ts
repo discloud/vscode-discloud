@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { StatusBarItem as IStatusBarItem, ThemeColor, window, workspace } from "vscode";
 import extension from "../extension";
-import { bindFunctions } from "../util";
+import { bindFunctions, tokenIsValid } from "../util";
 
 export default class StatusBarItem implements IStatusBarItem {
   protected readonly originalData: Omit<IStatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">;
@@ -43,7 +43,7 @@ export default class StatusBarItem implements IStatusBarItem {
     this.text = data.text ?? this.originalData.text;
     this.tooltip = data.tooltip ?? this.originalData.tooltip;
 
-    if (this.token) {
+    if (this.token && tokenIsValid) {
       this.setUpload();
     } else {
       this.setLogin();
