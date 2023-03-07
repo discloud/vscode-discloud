@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { ApiStatusApp, ApiTeamApps, ModPermissionsBF } from "discloud.app";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
-import { getIconName, getIconPath } from "../util";
+import { calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
@@ -14,7 +14,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   appType?: string;
 
   constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
-    data.label ??= "name" in data ?
+    data.label = typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
@@ -29,8 +29,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.appId ??= data.appId ?? data.id;
 
-    this.label ??= "name" in data ?
-      `${data.name}`
+    this.label = "name" in data || "name" in this.data ?
+      `${data.name ?? this.data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
@@ -40,6 +40,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this.iconPath = getIconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
+
+    if ("memory" in data) {
+      const matched = data.memory?.match(/[\d.]+/g) ?? [];
+      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
+    }
 
     if (data.children instanceof Map)
       this.children = data.children;

@@ -10,7 +10,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   userID?: string;
 
   constructor(public data: Partial<UserTreeItemData & VSUser>) {
-    data.label ??= "username" in data ?
+    data.label = typeof data.username === "string" ?
       `${data.username} (${data.userID})` :
       `${data.userID}`;
 
@@ -24,7 +24,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     this.userID ??= data.userID;
 
-    this.label ??= "username" in data ?
+    this.label = typeof data.username === "string" ?
       `${data.username} (${data.userID})` :
       `${data.userID}`;
 

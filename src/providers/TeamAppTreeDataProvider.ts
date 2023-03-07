@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
 import { BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { TreeItemCollapsibleState, window } from "vscode";
+import { ProviderResult, TreeItemCollapsibleState, window } from "vscode";
+import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -8,6 +9,49 @@ import BaseTreeDataProvider from "./BaseTreeDataProvider";
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {
   constructor(viewId: string) {
     super(viewId);
+  }
+
+  getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<any[]> {
+    if (element) {
+      return [...element.children.values()];
+    }
+
+    const children = [...this.children.values()];
+
+    const sort = extension.config.get<string>("team.sort.by");
+
+    if (sort?.includes(".")) {
+      switch (sort) {
+        case "id.asc":
+          children.sort((a, b) => `${a.appId}` < `${b.appId}` ? -1 : 1);
+          break;
+
+        case "id.desc":
+          children.sort((a, b) => `${a.appId}` > `${b.appId}` ? -1 : 1);
+          break;
+
+        case "memory.usage.asc":
+          children.sort((a, b) => Number(a.data.memoryUsage) < Number(b.data.memoryUsage) ? -1 : 1);
+          break;
+
+        case "memory.usage.desc":
+          children.sort((a, b) => Number(a.data.memoryUsage) > Number(b.data.memoryUsage) ? -1 : 1);
+          break;
+
+        case "name.asc":
+          children.sort((a, b) => `${a.data.name}` < `${b.data.name}` ? -1 : 1);
+          break;
+
+        case "name.desc":
+          children.sort((a, b) => `${a.data.name}` > `${b.data.name}` ? -1 : 1);
+          break;
+      }
+    }
+
+    if (extension.config.get<boolean>("team.sort.online"))
+      children.sort((a, b) => a.iconName === "on" ? b.iconName === "on" ? 0 : -1 : 0);
+
+    return children;
   }
 
   private clean(data: BaseApiApp[]) {
@@ -55,8 +99,8 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
   async getStatus(appId: string = "all") {
     const res = await requester<
-      RESTGetApiAppStatusResult |
-      RESTGetApiAppAllStatusResult
+      | RESTGetApiAppStatusResult
+      | RESTGetApiAppAllStatusResult
     >(Routes.teamStatus(appId), {}, true);
 
     if (!res.apps) {

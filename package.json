@@ -249,6 +249,36 @@
             "title": "%config.app.import.dir.title%",
             "markdownDescription": "%config.app.import.dir.description%"
           },
+          "discloud.app.sort.by": {
+            "type": "string",
+            "default": "none",
+            "enum": [
+              "none",
+              "id.asc",
+              "id.desc",
+              "memory.usage.asc",
+              "memory.usage.desc",
+              "name.asc",
+              "name.desc"
+            ],
+            "enumItemLabels": [
+              "%sort.none.label%",
+              "%sort.id.asc.label%",
+              "%sort.id.desc.label%",
+              "%sort.memory.usage.asc.label%",
+              "%sort.memory.usage.desc.label%",
+              "%sort.name.asc.label%",
+              "%sort.name.desc.label%"
+            ],
+            "title": "%config.app.sort.by.title%",
+            "markdownDescription": "%config.app.sort.by.description%"
+          },
+          "discloud.app.sort.online": {
+            "type": "boolean",
+            "default": true,
+            "title": "%config.app.sort.online.title%",
+            "markdownDescription": "%config.app.sort.online.description%"
+          },
           "discloud.auto.refresh": {
             "type": "number",
             "default": 0,
@@ -266,6 +296,36 @@
             "default": "discloud/import",
             "title": "%config.team.import.dir.title%",
             "markdownDescription": "%config.team.import.dir.description%"
+          },
+          "discloud.team.sort.by": {
+            "type": "string",
+            "default": "none",
+            "enum": [
+              "none",
+              "id.asc",
+              "id.desc",
+              "memory.usage.asc",
+              "memory.usage.desc",
+              "name.asc",
+              "name.desc"
+            ],
+            "enumItemLabels": [
+              "%sort.none.label%",
+              "%sort.id.asc.label%",
+              "%sort.id.desc.label%",
+              "%sort.memory.usage.asc.label%",
+              "%sort.memory.usage.desc.label%",
+              "%sort.name.asc.label%",
+              "%sort.name.desc.label%"
+            ],
+            "title": "%config.team.sort.by.title%",
+            "markdownDescription": "%config.team.sort.by.description%"
+          },
+          "discloud.team.sort.online": {
+            "type": "boolean",
+            "default": true,
+            "title": "%config.team.sort.online.title%",
+            "markdownDescription": "%config.team.sort.online.description%"
           }
         }
       }

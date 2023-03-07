@@ -34,6 +34,7 @@
   "files.checking": "Checking files...",
   "files.missing": "No files found.",
   "files.zipping": "Adding files to the ZIP...",
+  "hours": "hours",
   "import.success": "Code successfully imported!",
   "input.login.prompt": "Enter your Discloud API Token here.",
   "input.mod.add.prompt": "Enter MOD ID to add to your app.",

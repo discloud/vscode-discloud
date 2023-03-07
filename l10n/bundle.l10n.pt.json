@@ -34,6 +34,7 @@
   "files.checking": "Verificando arquivos...",
   "files.missing": "Nenhum arquivo encontrado.",
   "files.zipping": "Adicionando arquivos no ZIP...",
+  "hours": "horas",
   "import.success": "Código importado com sucesso!",
   "input.login.prompt": "Insira seu Token da API do Discloud aqui.",
   "input.ram.prompt": "Defina a quantidade de RAM.",

@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
-import { getIconName, getIconPath } from "../util";
+import { calculatePercentage, getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
@@ -11,7 +11,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   appType?: string;
 
   constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
-    data.label ??= "name" in data ?
+    data.label = typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
@@ -26,8 +26,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.appId ??= data.appId ?? data.id;
 
-    this.label ??= "name" in data ?
-      `${data.name}`
+    this.label = "name" in data || "name" in this.data ?
+      `${data.name ?? this.data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
@@ -37,6 +37,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this.iconPath = getIconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
+
+    if ("memory" in data) {
+      const matched = data.memory?.match(/[\d.]+/g) ?? [];
+      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
+    }
 
     if (data.children instanceof Map)
       this.children = data.children;
