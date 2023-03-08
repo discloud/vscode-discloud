@@ -1,12 +1,12 @@
 import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import { Constructor } from "../@types";
 
-interface BaseTreeItem<T> {
+interface BaseTreeItem<T extends TreeItem> {
   constructor: Constructor<T>
 }
 
 abstract class BaseTreeItem<T> extends TreeItem {
-  children: Map<string, T> = new Map();
+  children = new Map<string, T>();
   data: unknown;
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { TreeItemCollapsibleState, window } from "vscode";
+import { RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { ProviderResult, TreeItemCollapsibleState, window } from "vscode";
 import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
@@ -10,6 +10,63 @@ import BaseTreeDataProvider from "./BaseTreeDataProvider";
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
   constructor(viewId: string) {
     super(viewId);
+  }
+
+  getChildren(element?: NonNullable<AppTreeItem>): ProviderResult<any[]> {
+    if (element) {
+      return [...element.children.values()];
+    }
+
+    const children = [...this.children.values()];
+
+    const sort = extension.config.get<string>("app.sort.by");
+
+    if (sort?.includes(".")) {
+      switch (sort) {
+        case "id.asc":
+          children.sort((a, b) => `${a.appId}` < `${b.appId}` ? -1 : 1);
+          break;
+
+        case "id.desc":
+          children.sort((a, b) => `${a.appId}` > `${b.appId}` ? -1 : 1);
+          break;
+
+        case "memory.usage.asc":
+          children.sort((a, b) => Number(a.data.memoryUsage) < Number(b.data.memoryUsage) ? -1 : 1);
+          break;
+
+        case "memory.usage.desc":
+          children.sort((a, b) => Number(a.data.memoryUsage) > Number(b.data.memoryUsage) ? -1 : 1);
+          break;
+
+        case "name.asc":
+          children.sort((a, b) => `${a.data.name}` < `${b.data.name}` ? -1 : 1);
+          break;
+
+        case "name.desc":
+          children.sort((a, b) => `${a.data.name}` > `${b.data.name}` ? -1 : 1);
+          break;
+
+        case "started.asc":
+          children.sort((a, b) => a.iconName === "on" &&
+            (Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp)) ? -1 : 1);
+          break;
+
+        case "started.desc":
+          children.sort((a, b) => a.iconName === "on" &&
+            (Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp)) ? -1 : 1);
+          break;
+      }
+    }
+
+    if (
+      extension.config.get<boolean>("app.sort.online") ||
+      (sort && ["started.asc", "started.desc"].includes(sort))
+    ) {
+      children.sort((a, b) => a.iconName === "on" ? b.iconName === "on" ? 0 : -1 : 0);
+    }
+
+    return children;
   }
 
   private clean(data: BaseApiApp[]) {
@@ -87,7 +144,10 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   async getStatus(appId: string = "all") {
-    const res = await requester<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
+    const res = await requester<
+      | RESTGetApiAppStatusResult
+      | RESTGetApiAppAllStatusResult
+    >(Routes.appStatus(appId));
 
     if (!res.apps) {
       if ("statusCode" in res) {

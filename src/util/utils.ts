@@ -10,6 +10,10 @@ export function bindFunctions(instance: any, bind?: any) {
       (bind ?? instance)[propertyName] = instance[propertyName].bind(bind ?? instance);
 }
 
+export function calculatePercentage(value: string | number, major: string | number) {
+  return Number(value) / Number(major) * 100;
+}
+
 export function extractData(instance: any): Record<any, any> {
   if (!instance) return {};
 

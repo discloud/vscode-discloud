@@ -28,6 +28,8 @@ export interface AppTreeItemData extends BaseTreeItemData {
   children?: AppTreeItem[]
   description?: string
   iconName?: string
+  memoryUsage?: number
+  startedAtTimestamp?: number
   tooltip?: string
 }
 
@@ -45,6 +47,8 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
   children?: TeamAppTreeItem[]
   description?: string
   iconName?: string
+  memoryUsage?: number
+  startedAtTimestamp?: number
   tooltip?: string
 }
 

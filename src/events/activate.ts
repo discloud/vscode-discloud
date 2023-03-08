@@ -52,6 +52,14 @@ extension.once("activate", (context) => {
         extension.autoRefresher.stop();
       }
     }
+
+    if (event.affectsConfiguration("discloud.app.sort")) {
+      extension.appTree.refresh();
+    }
+
+    if (event.affectsConfiguration("discloud.team.sort")) {
+      extension.teamAppTree.refresh();
+    }
   });
 
   const disposableWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
