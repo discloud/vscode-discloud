@@ -144,6 +144,41 @@
         "icon": "$(debug-restart)"
       },
       {
+        "command": "discloud.apps.sort.by.none",
+        "title": "%sort.none.label%",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.id.asc",
+        "title": "%sort.id.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.id.desc",
+        "title": "%sort.id.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.memory.usage.asc",
+        "title": "%sort.memory.usage.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.memory.usage.desc",
+        "title": "%sort.memory.usage.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.name.asc",
+        "title": "%sort.name.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.apps.sort.by.name.desc",
+        "title": "%sort.name.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
         "command": "discloud.apps.start",
         "title": "%command.apps.start%",
         "icon": "$(debug-start)"
@@ -207,6 +242,41 @@
         "command": "discloud.team.restart",
         "title": "%command.team.restart%",
         "icon": "$(debug-restart)"
+      },
+      {
+        "command": "discloud.team.sort.by.none",
+        "title": "%sort.none.label%",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.id.asc",
+        "title": "%sort.id.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.id.desc",
+        "title": "%sort.id.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.memory.usage.asc",
+        "title": "%sort.memory.usage.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.memory.usage.desc",
+        "title": "%sort.memory.usage.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.name.asc",
+        "title": "%sort.name.asc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.by.name.desc",
+        "title": "%sort.name.desc.label%",
+        "icon": "$(list-ordered)"
       },
       {
         "command": "discloud.team.start",
@@ -493,6 +563,10 @@
           "command": "discloud.subdomain.refresh",
           "when": "view == discloud-subdomains",
           "group": "navigation"
+        },
+        {
+          "submenu": "discloud.apps.sort.by",
+          "when": "view == discloud-apps"
         }
       ],
       "explorer/context": [
@@ -520,6 +594,66 @@
         {
           "command": "discloud.apps.mods.rem"
         }
+      ],
+      "discloud.apps.sort.by": [
+        {
+          "command": "discloud.apps.sort.by.none",
+          "when": "config.discloud.app.sort.by != none"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.asc",
+          "when": "config.discloud.app.sort.by != id.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.desc",
+          "when": "config.discloud.app.sort.by != id.desc"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.asc",
+          "when": "config.discloud.app.sort.by != memory.usage.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.desc",
+          "when": "config.discloud.app.sort.by != memory.usage.desc"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.asc",
+          "when": "config.discloud.app.sort.by != name.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.desc",
+          "when": "config.discloud.app.sort.by != name.desc"
+        }
+      ],
+      "discloud.team.sort.by": [
+        {
+          "command": "discloud.team.sort.by.none",
+          "when": "config.discloud.team.sort.by != none"
+        },
+        {
+          "command": "discloud.team.sort.by.id.asc",
+          "when": "config.discloud.team.sort.by != id.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.id.desc",
+          "when": "config.discloud.team.sort.by != id.desc"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.asc",
+          "when": "config.discloud.team.sort.by != memory.usage.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.desc",
+          "when": "config.discloud.team.sort.by != memory.usage.desc"
+        },
+        {
+          "command": "discloud.team.sort.by.name.asc",
+          "when": "config.discloud.team.sort.by != name.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.name.desc",
+          "when": "config.discloud.team.sort.by != name.desc"
+        }
       ]
     },
     "submenus": [
@@ -530,6 +664,10 @@
       {
         "label": "%submenu.manage.mods%",
         "id": "discloud.apps.mods"
+      },
+      {
+        "label": "%submenu.apps.sort.by%",
+        "id": "discloud.apps.sort.by"
       }
     ],
     "views": {

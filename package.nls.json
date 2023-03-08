@@ -60,6 +60,8 @@
   "sort.name.asc.label": "Name ascending",
   "sort.name.desc.label": "Name descending",
   "submenu.manage.mods": "Manage team",
+  "submenu.apps.sort.by": "Sort apps by",
+  "submenu.team.sort.by": "Sort team apps by",
   "view.apps.title": "Apps",
   "view.domain.title": "Custom domains",
   "view.subdomain.title": "Subdomains",
