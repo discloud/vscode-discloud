@@ -567,6 +567,10 @@
         {
           "submenu": "discloud.apps.sort.by",
           "when": "view == discloud-apps"
+        },
+        {
+          "submenu": "discloud.team.sort.by",
+          "when": "view == discloud-apps"
         }
       ],
       "explorer/context": [
