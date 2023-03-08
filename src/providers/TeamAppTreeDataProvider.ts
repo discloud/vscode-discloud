@@ -47,17 +47,23 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
           break;
 
         case "started.asc":
-          children.sort((a, b) => Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp) ? -1 : 1);
+          children.sort((a, b) => a.iconName === "on" &&
+            Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp) ? -1 : 1);
           break;
 
         case "started.desc":
-          children.sort((a, b) => Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp) ? -1 : 1);
+          children.sort((a, b) => a.iconName === "on" &&
+            Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp) ? -1 : 1);
           break;
       }
     }
 
-    if (extension.config.get<boolean>("team.sort.online"))
+    if (
+      extension.config.get<boolean>("team.sort.online") ||
+      (sort && ["started.asc", "started.desc"].includes(sort))
+    ) {
       children.sort((a, b) => a.iconName === "on" ? b.iconName === "on" ? 0 : -1 : 0);
+    }
 
     return children;
   }
