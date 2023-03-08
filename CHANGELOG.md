@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## x.x.x
+
+### Features
+
+- Add ordering on app views
+
 ## 2.5.1
 
 ### Features
