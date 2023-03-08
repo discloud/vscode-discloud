@@ -570,7 +570,7 @@
         },
         {
           "submenu": "discloud.team.sort.by",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-teams"
         }
       ],
       "explorer/context": [
