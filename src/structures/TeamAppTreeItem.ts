@@ -46,6 +46,10 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
+    if ("startedAt" in data) {
+      this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
+    }
+
     if (data.children instanceof Map)
       this.children = data.children;
 

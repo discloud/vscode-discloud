@@ -46,6 +46,14 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
         case "name.desc":
           children.sort((a, b) => `${a.data.name}` > `${b.data.name}` ? -1 : 1);
           break;
+
+        case "started.asc":
+          children.sort((a, b) => Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp) ? -1 : 1);
+          break;
+
+        case "started.desc":
+          children.sort((a, b) => Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp) ? -1 : 1);
+          break;
       }
     }
 

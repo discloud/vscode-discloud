@@ -29,6 +29,7 @@ export interface AppTreeItemData extends BaseTreeItemData {
   description?: string
   iconName?: string
   memoryUsage?: number
+  startedAtTimestamp?: number
   tooltip?: string
 }
 
@@ -47,6 +48,7 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
   description?: string
   iconName?: string
   memoryUsage?: number
+  startedAtTimestamp?: number
   tooltip?: string
 }
 

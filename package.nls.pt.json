@@ -63,6 +63,8 @@
   "sort.memory.usage.desc.label": "Uso de memória decrescente",
   "sort.name.asc.label": "Nome crescente",
   "sort.name.desc.label": "Nome decrescente",
+  "sort.started.asc.label": "Data de início ascending",
+  "sort.started.desc.label": "Data de início descending",
   "submenu.manage.mods": "Gerenciar equipe",
   "submenu.apps.sort.by": "Ordenar apps por",
   "submenu.team.sort.by": "Ordenar apps de equipe por",
