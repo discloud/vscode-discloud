@@ -6,7 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## x.x.x
+## 2.6.0
+
+### Bug fixes
+
+- Corrigido erro ao tentar acessar a propriedade `uri`
 
 ### Features
 
