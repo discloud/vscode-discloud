@@ -179,6 +179,16 @@
         "icon": "$(list-ordered)"
       },
       {
+        "command": "discloud.apps.sort.online.activate",
+        "title": "%command.apps.sort.online.activate%",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "discloud.apps.sort.online.deactivate",
+        "title": "%command.apps.sort.online.deactivate%",
+        "icon": "$(list-ordered)"
+      },
+      {
         "command": "discloud.apps.start",
         "title": "%command.apps.start%",
         "icon": "$(debug-start)"
@@ -276,6 +286,16 @@
       {
         "command": "discloud.team.sort.by.name.desc",
         "title": "%sort.name.desc.label%",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "discloud.team.sort.online.activate",
+        "title": "%command.team.sort.online.activate%",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "discloud.team.sort.online.deactivate",
+        "title": "%command.team.sort.online.deactivate%",
         "icon": "$(list-ordered)"
       },
       {
@@ -550,9 +570,25 @@
           "group": "navigation"
         },
         {
+          "command": "discloud.apps.sort.online.activate",
+          "when": "!config.discloud.app.sort.online && view == discloud-apps"
+        },
+        {
+          "command": "discloud.apps.sort.online.deactivate",
+          "when": "config.discloud.app.sort.online && view == discloud-apps"
+        },
+        {
           "command": "discloud.team.refresh",
           "when": "view == discloud-teams",
           "group": "navigation"
+        },
+        {
+          "command": "discloud.team.sort.online.activate",
+          "when": "!config.discloud.team.sort.online && view == discloud-teams"
+        },
+        {
+          "command": "discloud.team.sort.online.deactivate",
+          "when": "config.discloud.team.sort.online && view == discloud-teams"
         },
         {
           "command": "discloud.domain.refresh",
