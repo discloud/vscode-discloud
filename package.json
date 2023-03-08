@@ -668,6 +668,10 @@
       {
         "label": "%submenu.apps.sort.by%",
         "id": "discloud.apps.sort.by"
+      },
+      {
+        "label": "%submenu.team.sort.by%",
+        "id": "discloud.team.sort.by"
       }
     ],
     "views": {
