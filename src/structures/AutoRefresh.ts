@@ -3,6 +3,7 @@ import extension from "../extension";
 
 class AutoRefresh {
   timer?: NodeJS.Timer;
+  teamTimer?: NodeJS.Timer;
 
   constructor() {
     if (this.interval)
@@ -11,6 +12,10 @@ class AutoRefresh {
 
   get interval() {
     return extension.config.get<number>("auto.refresh");
+  }
+
+  get updateTeam() {
+    return extension.config.get<boolean>("auto.refresh.team");
   }
 
   private async refresh() {
@@ -22,8 +27,20 @@ class AutoRefresh {
     }
   }
 
+  private async refreshTeam() {
+    if (extension.token) {
+      extension.logger.info("Auto refresh run team");
+      extension.statusBar.setLoading();
+      await extension.teamAppTree.getStatus();
+      extension.statusBar.reset();
+    }
+  }
+
   stop() {
-    try { clearInterval(this.timer); } catch { };
+    try {
+      clearInterval(this.timer);
+      clearTimeout(this.teamTimer);
+    } catch { };
   }
 
   setInterval(interval?: number | null | undefined, isWorkspace?: boolean) {
@@ -54,8 +71,21 @@ class AutoRefresh {
 
     this.stop();
 
-    if (interval)
-      this.timer = setInterval(() => this.refresh(), interval * 1000);
+    if (interval) {
+      this.timer = setInterval(() => {
+        this.refresh();
+
+        if (this.updateTeam && interval)
+          this.teamTimer = setTimeout(() => {
+            this.refreshTeam();
+          }, interval / 2 * 1000);
+      }, interval * 1000);
+
+      if (this.updateTeam)
+        this.teamTimer = setTimeout(() => {
+          this.refreshTeam();
+        }, interval / 2 * 1000);
+    }
   }
 }
 
