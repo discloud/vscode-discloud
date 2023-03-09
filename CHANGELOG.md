@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## x.x.x
+
+### Features
+
+- Adicionado: atualizações automáticas dos aplicativos de equipe
+
 ## 2.6.0
 
 ### Bug fixes
