@@ -22,7 +22,7 @@
   "command.apps.stop": "Parar aplicativo",
   "command.domain.refresh": "Atualizar lista de domínios",
   "command.subdomain.refresh": "Atualizar lista de subdomínios",
-  "command.team.backup": "Backup application de equipe",
+  "command.team.backup": "Backup aplicativo de equipe",
   "command.team.commit": "Commitar aplicativo de equipe",
   "command.team.copy.id": "Copiar ID do aplicativo de equipe",
   "command.team.import": "Importar código do aplicativo de equipe",
