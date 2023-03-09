@@ -482,11 +482,11 @@
       "view/item/context": [
         {
           "command": "discloud.apps.backup",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-apps && workspaceFolderCount"
         },
         {
           "command": "discloud.apps.commit",
-          "when": "view == discloud-apps"
+          "when": "view == discloud-apps && workspaceFolderCount"
         },
         {
           "command": "discloud.apps.copy.id",
@@ -499,7 +499,7 @@
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloud-apps && viewItem == TreeItem"
+          "when": "view == discloud-apps && viewItem == TreeItem && workspaceFolderCount"
         },
         {
           "command": "discloud.apps.logs",
@@ -533,11 +533,11 @@
         },
         {
           "command": "discloud.team.backup",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && workspaceFolderCount"
         },
         {
           "command": "discloud.team.commit",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && workspaceFolderCount"
         },
         {
           "command": "discloud.team.copy.id",
@@ -546,7 +546,7 @@
         {
           "command": "discloud.team.import",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem == TreeItem"
+          "when": "view == discloud-teams && viewItem == TreeItem && workspaceFolderCount"
         },
         {
           "command": "discloud.team.logs",
@@ -595,11 +595,11 @@
         },
         {
           "command": "discloud.apps.sort.online.activate",
-          "when": "!config.discloud.app.sort.online && view == discloud-apps"
+          "when": "view == discloud-apps && !config.discloud.app.sort.online"
         },
         {
           "command": "discloud.apps.sort.online.deactivate",
-          "when": "config.discloud.app.sort.online && view == discloud-apps"
+          "when": "view == discloud-apps && config.discloud.app.sort.online"
         },
         {
           "command": "discloud.team.refresh",
@@ -608,11 +608,11 @@
         },
         {
           "command": "discloud.team.sort.online.activate",
-          "when": "!config.discloud.team.sort.online && view == discloud-teams"
+          "when": "view == discloud-teams && !config.discloud.team.sort.online"
         },
         {
           "command": "discloud.team.sort.online.deactivate",
-          "when": "config.discloud.team.sort.online && view == discloud-teams"
+          "when": "view == discloud-teams && config.discloud.team.sort.online"
         },
         {
           "command": "discloud.domain.refresh",
@@ -636,13 +636,13 @@
       "explorer/context": [
         {
           "submenu": "discloudsub",
-          "group": "1_modification",
-          "when": "workspaceFolderCount > 0"
+          "group": "1_modification"
         }
       ],
       "discloudsub": [
         {
-          "command": "discloud.commit"
+          "command": "discloud.commit",
+          "when": "workspaceFolderCount && config.discloud.token"
         },
         {
           "command": "discloud.create.config"
