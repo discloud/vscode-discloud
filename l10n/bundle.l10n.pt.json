@@ -44,7 +44,7 @@
   "input.set.locale.available.title": "Estes são os idiomas disponíveis.",
   "input.set.locale.prompt": "Defina seu idioma.",
   "input.set.locale.validate": "Idioma deve ser como pt-BR.",
-  "invalid.discloud.config": "O arquivo dicloud.config é inválido ou não existe.",
+  "invalid.discloud.config": "O arquivo discloud.config é inválido ou não existe.",
   "invalid.discloud.config.main": "O arquivo {file} especificado no escopo principal não existe.",
   "invalid.token": "Token inválido.",
   "label.apps.amount": "Quant. de apps",
