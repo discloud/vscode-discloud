@@ -485,6 +485,228 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "discloud.create.config",
+          "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.commit",
+          "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.login",
+          "when": "true"
+        },
+        {
+          "command": "discloud.upload",
+          "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.apps.backup",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.commit",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.copy.id",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.delete",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.import",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.logs",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.mods.add",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.mods.edit",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.mods.rem",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.ram",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.refresh",
+          "when": "config.discloud.token"
+        },
+        {
+          "command": "discloud.apps.restart",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.none",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.started.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.by.started.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.online.activate",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.sort.online.deactivate",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.start",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.status",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.stop",
+          "when": "never"
+        },
+        {
+          "command": "discloud.domain.refresh",
+          "when": "config.discloud.token"
+        },
+        {
+          "command": "discloud.subdomain.refresh",
+          "when": "config.discloud.token"
+        },
+        {
+          "command": "discloud.team.backup",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.commit",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.copy.id",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.import",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.logs",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.ram",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.refresh",
+          "when": "config.discloud.token"
+        },
+        {
+          "command": "discloud.team.restart",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.none",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.id.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.id.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.name.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.name.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.started.asc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.by.started.desc",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.online.activate",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.sort.online.deactivate",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.start",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.status",
+          "when": "never"
+        },
+        {
+          "command": "discloud.team.stop",
+          "when": "never"
+        },
+        {
+          "command": "discloud.user.set.locale",
+          "when": "config.discloud.token"
+        }
+      ],
       "view/item/context": [
         {
           "command": "discloud.apps.backup",
@@ -651,7 +873,8 @@
           "when": "workspaceFolderCount && config.discloud.token"
         },
         {
-          "command": "discloud.create.config"
+          "command": "discloud.create.config",
+          "when": "workspaceFolderCount"
         }
       ],
       "discloud.apps.mods": [
