@@ -72,9 +72,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       const value = keyAndValue[1];
 
       for (const keyOrValue of keyAndValue) {
-        const isKey = keyOrValue === keyAndValue[0];
+        const isKey = keyOrValue === key;
 
-        const scopeData = this.data[keyAndValue[0]] ?? {};
+        const scopeData = this.data[key] ?? {};
 
         if (this.data.rules.noSpaces) {
           if (
@@ -88,7 +88,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
                   this.data.rules.noSpaces.message
               ),
               range: new Range(
-                new Position(i, isKey ? 0 : (keyAndValue[0].length + 1)),
+                new Position(i, isKey ? 0 : (key.length + 1)),
                 new Position(i, isKey ? keyOrValue.length : textLine.text.length)
               ),
               severity: DiagnosticSeverity[this.data.rules.noSpaces.severity],
