@@ -31,7 +31,9 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
-    this.appType = data.appType ?? "name" in data ? (data.name?.includes(`${data.id}`) ? "site" : "bot") : this.appType;
+    this.appType = data.appType ?? "name" in data ?
+      (data.name?.includes(`${data.id}`) ? "site" : "bot") :
+      this.appType;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);

@@ -34,7 +34,9 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
-    this.appType = data.appType ?? "name" in data ? (data.name?.includes(`${data.id}`) ? "site" : "bot") : this.appType;
+    this.appType = data.appType ?? "name" in data ?
+      (data.name?.includes(`${data.id}`) ? "site" : "bot") :
+      this.appType;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
@@ -101,13 +103,17 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       }));
 
-    if ("perms" in data)
+    if ("perms" in data) {
+      const contextValue = this.contextValue.split(".")[0];
+      this.contextValue = `${contextValue}.${data.perms?.join(".")}`;
+
       this.children.set("perms", new TeamAppChildTreeItem({
         label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
         children: data.perms?.map(perm => new TreeItem(t(`permission.${perm}`))),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
       }));
+    }
 
     this.collapsibleState =
       this.children.size ?
