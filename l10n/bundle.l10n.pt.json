@@ -77,7 +77,7 @@
   "permission.stop_app": "Parar",
   "permission.status_app": "Ver estado",
   "permissions": "Permissões",
-  "permissions{s}": "Permissions {s}",
+  "permissions{s}": "Permissões {s}",
   "plan": "Plano",
   "process.already.running": "Você já tem um processo em execução.",
   "progress.backup.title": "Backup",
