@@ -10,7 +10,7 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
   constructor(public viewId: string) {
     const disposable = window.registerTreeDataProvider(viewId, this);
 
-    extension.context.subscriptions.push(disposable, this._onDidChangeTreeData);
+    extension.subscriptions.push(disposable, this._onDidChangeTreeData);
 
     this.onDidChangeTreeData((e) => {
       if (e) this.refresh();

@@ -77,6 +77,6 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       },
     });
 
-    extension.context.subscriptions.push(disposable);
+    extension.subscriptions.push(disposable);
   }
 }

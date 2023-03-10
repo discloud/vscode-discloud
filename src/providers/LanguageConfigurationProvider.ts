@@ -32,7 +32,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       this.activate();
     }
 
-    extension.context.subscriptions.push(this.collection, disposableEditor);
+    extension.subscriptions.push(this.collection, disposableEditor);
   }
 
   activate() {
@@ -43,7 +43,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         }
     });
 
-    extension.context.subscriptions.push(disposable);
+    extension.subscriptions.push(disposable);
     this.disposableDocuments.push(disposable);
   }
 

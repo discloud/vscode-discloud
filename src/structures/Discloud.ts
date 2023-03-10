@@ -61,6 +61,14 @@ class Discloud extends EventEmitter {
     return logger;
   }
 
+  get secrets() {
+    return this.context?.secrets;
+  }
+
+  get subscriptions() {
+    return this.context?.subscriptions;
+  }
+
   get token() {
     return this.config.get<string>("token");
   }
