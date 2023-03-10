@@ -10,7 +10,7 @@ import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import AutoRefresh from "../structures/AutoRefresh";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
-extension.once("activate", (context) => {
+extension.on("activate", (context) => {
   extension.logger.append("Activate: begin");
 
   extension.loadStatusBar();
