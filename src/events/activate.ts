@@ -23,12 +23,12 @@ extension.once("activate", (context) => {
     path: "discloudconfig.json",
   });
 
-  extension.autoRefresher = new AutoRefresh();
   extension.appTree = new AppTreeDataProvider("discloud-apps");
   extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
   extension.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
   extension.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
   extension.userTree = new UserTreeDataProvider("discloud-user");
+  extension.autoRefresher = new AutoRefresh();
 
   extension.loadCommands();
 
