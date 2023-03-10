@@ -15,8 +15,7 @@ class AutoRefresh {
   }
 
   get updateTeam() {
-    return extension.teamAppTree.children.size
-      && extension.config.get<boolean>("auto.refresh.team");
+    return extension.config.get<boolean>("auto.refresh.team");
   }
 
   private async refresh() {
@@ -76,13 +75,13 @@ class AutoRefresh {
       this.timer = setInterval(() => {
         this.refresh();
 
-        if (this.updateTeam && interval)
+        if (extension.teamAppTree.children.size && this.updateTeam && interval)
           this.teamTimer = setTimeout(() => {
             this.refreshTeam();
           }, interval / 2 * 1000);
       }, interval * 1000);
 
-      if (this.updateTeam)
+      if (extension.teamAppTree.children.size && this.updateTeam)
         this.teamTimer = setTimeout(() => {
           this.refreshTeam();
         }, interval / 2 * 1000);
