@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.7.1
+
+### Bug fixes
+
+- Corrigido gerenciamento de valor de contexto na árvore de visualização de apps de equipe
+
 ## 2.7.0
 
 ### Features
