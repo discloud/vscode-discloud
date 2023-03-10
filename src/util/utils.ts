@@ -50,6 +50,14 @@ export function getIconName(data: any) {
           "off";
 }
 
+export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
+  try {
+    return JSON.parse(s) as T;
+  } catch {
+    return null;
+  }
+}
+
 export function matchOnArray(array: string[], pattern: string) {
   const regex = new RegExp(`${pattern}$`, "i");
 
