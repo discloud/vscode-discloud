@@ -104,7 +104,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       }));
 
     if ("perms" in data) {
-      const values = this.contextValue.match(/([^\W]+)\W(.*)/) ?? [];
+      const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
       const json = values[2] ? JSONparse(values[2]) : null;
 
       this.contextValue = `${values[1]}.${JSON.stringify({
