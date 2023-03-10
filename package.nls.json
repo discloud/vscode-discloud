@@ -76,5 +76,6 @@
   "view.team.title": "Team apps",
   "view.user.title": "User",
   "welcome": "Welcome!",
-  "welcome.token.missing": "You have not yet provided a token to access Discloud resources.\n[Submit your Discloud token](command:discloud.login)"
+  "welcome.token.missing": "You have not yet provided a token to access Discloud resources.\n[Submit your Discloud token](command:discloud.login)",
+  "welcome.token.unauthorized": "You provided an invalid token to access Discloud resources.\n[Submit your Discloud token](command:discloud.login)"
 }

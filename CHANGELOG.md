@@ -12,6 +12,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 - Adicionado atualizações automáticas dos aplicativos de equipe
 - Esconder itens do menu de contexto de equipe por permissões
+- Melhorado o gerenciamento de validação de token para visualização de usuário mostrar token faltando ou inválido
 
 ## 2.6.0
 

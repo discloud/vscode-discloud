@@ -11,7 +11,7 @@ import AutoRefresh from "../structures/AutoRefresh";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 extension.on("activate", (context) => {
-  extension.logger.append("Activate: begin");
+  extension.logger.info("Activate: begin");
 
   extension.loadStatusBar();
   extension.statusBar.setLoading();
@@ -39,7 +39,7 @@ extension.on("activate", (context) => {
       if (extension.token) {
         tokenValidator(extension.token, isWorkspace);
       } else {
-        extension.statusBar.setLogin();
+        extension.emit("missingToken");
       }
     }
 

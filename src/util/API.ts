@@ -117,8 +117,8 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       case "DEPTH_ZERO_SELF_SIGNED_CERT":
       case "ENOTFOUND":
         uses--;
-        extension.emit("noConnection");
-        throw Error("No Connection");
+        extension.emit("missingConnection");
+        throw Error("Missing Connection");
     }
 
     extension.emit("error", error);
