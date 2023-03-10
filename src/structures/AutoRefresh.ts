@@ -15,7 +15,8 @@ class AutoRefresh {
   }
 
   get updateTeam() {
-    return extension.config.get<boolean>("auto.refresh.team");
+    return extension.teamAppTree.children.size
+      && extension.config.get<boolean>("auto.refresh.team");
   }
 
   private async refresh() {
