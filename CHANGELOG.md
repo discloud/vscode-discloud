@@ -10,7 +10,8 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ### Features
 
-- Adicionado: atualizações automáticas dos aplicativos de equipe
+- Adicionado atualizações automáticas dos aplicativos de equipe
+- Esconder itens do menu de contexto de equipe por permissões
 
 ## 2.6.0
 

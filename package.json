@@ -753,7 +753,7 @@
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloud-apps && viewItem == TreeItem && workspaceFolderCount"
+          "when": "view == discloud-apps && workspaceFolderCount && viewItem == TreeItem"
         },
         {
           "command": "discloud.apps.logs",
@@ -787,11 +787,11 @@
         },
         {
           "command": "discloud.team.backup",
-          "when": "view == discloud-teams && workspaceFolderCount"
+          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.commit",
-          "when": "view == discloud-teams && workspaceFolderCount"
+          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /commit_app/"
         },
         {
           "command": "discloud.team.copy.id",
@@ -800,37 +800,37 @@
         {
           "command": "discloud.team.import",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem == TreeItem && workspaceFolderCount"
+          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.logs",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.logs",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem == TreeItem"
+          "when": "view == discloud-teams && viewItem =~ /^TreeItem/ && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.ram",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem =~ /edit_ram/"
         },
         {
           "command": "discloud.team.restart",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem =~ /restart_app/"
         },
         {
           "command": "discloud.team.start",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem =~ /start_app/"
         },
         {
           "command": "discloud.team.status",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem == TreeItem"
+          "when": "view == discloud-teams && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.team.stop",
-          "when": "view == discloud-teams"
+          "when": "view == discloud-teams && viewItem =~ /stop_app/"
         },
         {
           "command": "discloud.user.set.locale",
