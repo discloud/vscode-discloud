@@ -9,6 +9,7 @@ export default class StatusBarItem implements IStatusBarItem {
 
   constructor(data: Partial<Omit<IStatusBarItem, "dispose" | "hide" | "show">>) {
     this.data = window.createStatusBarItem(data.alignment, data.priority);
+    extension.subscriptions.push(this.data);
     bindFunctions(this.data);
     this.set(data);
     this.originalData = this.extractData(this.data);

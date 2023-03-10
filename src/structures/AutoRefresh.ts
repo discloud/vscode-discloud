@@ -8,6 +8,12 @@ class AutoRefresh {
   constructor() {
     if (this.interval)
       this.setInterval();
+
+    extension.subscriptions.push(this);
+  }
+
+  dispose() {
+    this.stop();
   }
 
   get interval() {
