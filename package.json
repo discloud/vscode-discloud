@@ -453,7 +453,9 @@
               "memory.usage.asc",
               "memory.usage.desc",
               "name.asc",
-              "name.desc"
+              "name.desc",
+              "started.asc",
+              "started.desc"
             ],
             "enumItemLabels": [
               "%sort.none.label%",
@@ -462,7 +464,9 @@
               "%sort.memory.usage.asc.label%",
               "%sort.memory.usage.desc.label%",
               "%sort.name.asc.label%",
-              "%sort.name.desc.label%"
+              "%sort.name.desc.label%",
+              "%sort.started.asc.label%",
+              "%sort.started.desc.label%"
             ],
             "title": "%config.team.sort.by.title%",
             "markdownDescription": "%config.team.sort.by.description%"
