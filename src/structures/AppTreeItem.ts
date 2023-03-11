@@ -11,7 +11,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   appType?: string;
 
   constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
-    data.label = typeof data.name === "string" ?
+    data.label ??= typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
@@ -26,7 +26,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.appId ??= data.appId ?? data.id;
 
-    this.label = "name" in data || "name" in this.data ?
+    this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
