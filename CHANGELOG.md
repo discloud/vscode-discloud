@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.7.2
+
+### Bug fixes
+
+- Corrigido o erro que mostrava `undefined` em vez do nome predefinido
+
 ## 2.7.1
 
 ### Bug fixes
