@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.7.3
+
+### Bug fixes
+
+- Corrigido opções faltando nas configurações de ordenação de apps de equipe
+
 ## 2.7.2
 
 ### Bug fixes
