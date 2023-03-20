@@ -564,15 +564,15 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.7.tgz#feedbeec467e1a08a209bea009233c350a0bcaa9"
-  integrity sha512-q981bUc98ctwsugMcGyUKMtAahLcMjLL5KFOcw28b9Z3+zt+3z7dB0ZuoWFuOst+79YusLWuQY+JYM3btKgIEQ==
+discloud.app@^0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.8.tgz#65e35ad0bd6dbcf504cfb856590e4fa6241c46c3"
+  integrity sha512-chd0M644FyE4eyRcz5Wm1ZrSjNMBy3wI/zRH2cobA3NvQG9eA8mW3M+Cvjz5paqKodyYKAQqMqnsPD4RLu/9ng==
   dependencies:
     "@discloudapp/api-types" "^0.2.7"
     "@discloudapp/rest" "^0.6.0"
     "@discloudapp/util" "^0.4.2"
-    undici "^5.20.0"
+    undici "^5.21.0"
 
 doctrine@^3.0.0:
   version "3.0.0"
