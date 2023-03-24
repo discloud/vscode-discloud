@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
-import { join } from "path";
+import { join } from "node:path";
 import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
