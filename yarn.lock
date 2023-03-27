@@ -7,31 +7,23 @@
   resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.2.7.tgz#9a31ff35bf5790c000d589dac6b64e6b34662d0c"
   integrity sha512-i1tkPF6M6BBxICU2Z0W6GRtYGgzvcVTAHt1sQZYeE9V1TPM+clq4iOgWvuN9/r2Uq9j6oLynB2r0TeMnRd5VQg==
 
-"@discloudapp/rest@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.6.0.tgz#ab5d12870a291cdf65446a83d763c4523c9bd342"
-  integrity sha512-yKGU/J4/GxiiRRcRr4Y21P3SoOPBM1dtqJnv6otblufGiUqW01zh733Nj/nGFaRLAVPtsRTFOzbCuDrEeiozoA==
+"@discloudapp/rest@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.6.1.tgz#96f2b2a3f8972cd780c5944a1efa9d2740a0d281"
+  integrity sha512-8/ZQaQK3Bg7Vn51EvtITzzTHMe7fmCh4sZJxJ6WUt3SGWJmVnlzDtZbIOD8KoahNSdKVfZV1A0pfxUcDM5gEgA==
   dependencies:
     "@discloudapp/api-types" "^0.2.7"
-    "@discloudapp/util" "^0.3.10"
-    undici "^5.20.0"
+    "@discloudapp/util" "^0.4.3"
+    undici "^5.21.0"
 
-"@discloudapp/util@^0.3.10":
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.3.12.tgz#83a69c87b47b6e5b79b768bcc6e295635f2c2976"
-  integrity sha512-IA/lnCOzptkpZzuy36YC6CERxzK8ukBjqccjcYlYRKOiQOc8lduVOTf8QRw9CVqbngi/l57hJZ8zkP96m/tg3Q==
+"@discloudapp/util@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.4.3.tgz#360743bf17313ad64b324e0c10d695946cc8cab5"
+  integrity sha512-VcZkVF2pBg/8ygyf2H8pwTaxK3iW5FtfHpNjdlYlBonTBt1U/27XUUG8YFa6z8T+yb9I8adsADmFJT49uKoABQ==
   dependencies:
     fs-jetpack "^5.1.0"
-    undici "^5.20.0"
-
-"@discloudapp/util@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.4.2.tgz#384f272e220dd70f3bfb03386b0e2846c1c9de18"
-  integrity sha512-F5InIOngnL1dvnVSTLoIgfiFCXfJyq2lPwCp/4ogoNYetLmTixx42g0AzW+e3WCH8dvSLUDTahn/rqt5xkca1Q==
-  dependencies:
-    fs-jetpack "^5.1.0"
-    glob "^9.0.1"
-    undici "^5.20.0"
+    glob "^9.3.2"
+    undici "^5.21.0"
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.2.0"
@@ -564,14 +556,14 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.8.tgz#65e35ad0bd6dbcf504cfb856590e4fa6241c46c3"
-  integrity sha512-chd0M644FyE4eyRcz5Wm1ZrSjNMBy3wI/zRH2cobA3NvQG9eA8mW3M+Cvjz5paqKodyYKAQqMqnsPD4RLu/9ng==
+discloud.app@^0.6.9:
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.6.9.tgz#5e37db3dc12f29eba61876a396e9b4005b7424ec"
+  integrity sha512-u/ebB+s58Sj0htS8KDqgXYzimL4qQ7XlO6R9cJWSP8FYrstK5Wgtd9udDE0urmXqFtAMoAJlxI9CSmYv6Iu4ZQ==
   dependencies:
     "@discloudapp/api-types" "^0.2.7"
-    "@discloudapp/rest" "^0.6.0"
-    "@discloudapp/util" "^0.4.2"
+    "@discloudapp/rest" "^0.6.1"
+    "@discloudapp/util" "^0.4.3"
     undici "^5.21.0"
 
 doctrine@^3.0.0:
@@ -853,15 +845,15 @@ glob@^7.1.3, glob@^7.1.4:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-9.0.1.tgz#4f2c8a645659d81177bcf792761b52862696ca4e"
-  integrity sha512-psRdn8MI0gRcH0xow0VOhYxXD/6ZaRGmgtfN0oWN/hCgjxpRQBMCl7wE4JRJSAUTdJsW+FmD0EtE0CgJhKqSVw==
+glob@^9.3.2:
+  version "9.3.2"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-9.3.2.tgz#8528522e003819e63d11c979b30896e0eaf52eda"
+  integrity sha512-BTv/JhKXFEHsErMte/AnfiSv8yYOLLiyH2lTg8vn02O21zWFgHPTfxtgn1QRe7NRgggUhC8hacR2Re94svHqeA==
   dependencies:
     fs.realpath "^1.0.0"
-    minimatch "^7.3.0"
+    minimatch "^7.4.1"
     minipass "^4.2.4"
-    path-scurry "^1.5.0"
+    path-scurry "^1.6.1"
 
 globals@^13.19.0:
   version "13.20.0"
@@ -1191,10 +1183,10 @@ minimatch@^5.1.0:
   dependencies:
     brace-expansion "^2.0.1"
 
-minimatch@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-7.3.0.tgz#cfb7337e7460308e7147c58250fa0dee3da7929c"
-  integrity sha512-WaMDuhKa7a6zKiwplR1AOz+zGvJba24k5VU1Cy6NhEguavT2YRlHxuINUgTas4wiS6fwBpYq4TcA1XIECSntyw==
+minimatch@^7.4.1:
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-7.4.3.tgz#012cbf110a65134bb354ae9773b55256cdb045a2"
+  integrity sha512-5UB4yYusDtkRPbRiy1cqZ1IpGNcJCGlEMG17RKzPddpyiPKoCdwohbED8g4QXT0ewCt8LTkQXuljsUfQ3FKM4A==
   dependencies:
     brace-expansion "^2.0.1"
 
@@ -1320,10 +1312,10 @@ path-key@^3.1.0:
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-3.1.1.tgz#581f6ade658cbba65a0d3380de7753295054f375"
   integrity sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==
 
-path-scurry@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/path-scurry/-/path-scurry-1.5.0.tgz#ffc479e688064d16fc80fa8890389c56182c6463"
-  integrity sha512-hJ8rODLI9B2qwsYAd32rrI76gwVUPeu5kq/do6URDj2bJCVH3ilyT978Mv/NLuFMaqzHrn3XtiDLMZHaTTh4vA==
+path-scurry@^1.6.1:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/path-scurry/-/path-scurry-1.6.3.tgz#4eba7183d64ef88b63c7d330bddc3ba279dc6c40"
+  integrity sha512-RAmB+n30SlN+HnNx6EbcpoDy9nwdpcGPnEKrJnu6GZoDWBdIjo1UQMVtW2ybtC7LC2oKLcMq8y5g8WnKLiod9g==
   dependencies:
     lru-cache "^7.14.1"
     minipass "^4.0.2"
@@ -1582,7 +1574,7 @@ typescript@^4.9.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
-undici@^5.20.0, undici@^5.21.0:
+undici@^5.21.0:
   version "5.21.0"
   resolved "https://registry.yarnpkg.com/undici/-/undici-5.21.0.tgz#b00dfc381f202565ab7f52023222ab862bb2494f"
   integrity sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==

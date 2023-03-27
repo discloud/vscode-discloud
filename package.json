@@ -1090,7 +1090,7 @@
     "@vscode/l10n": "^0.0.11",
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
-    "discloud.app": "^0.6.8",
+    "discloud.app": "^0.6.9",
     "jsonwebtoken": "^9.0.0",
     "undici": "^5.21.0"
   },
