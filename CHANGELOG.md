@@ -6,6 +6,22 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.7.5
+
+### Bug fixes
+
+- Corrigido mensagem `file.zipping`
+
+## 2.7.4
+
+### Bug fixes
+
+- Corrigido alternância de rate limit
+
+### Features
+
+- Substituído `application` por `app` nas traduções
+
 ## 2.7.3
 
 ### Bug fixes
