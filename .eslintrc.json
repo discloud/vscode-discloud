@@ -20,6 +20,7 @@
     "@typescript-eslint/semi": "warn",
     "comma-dangle": ["warn", "always-multiline"],
     "curly": "off",
+    "eol-last": "warn",
     "eqeqeq": "warn",
     "no-throw-literal": "warn",
     "prefer-const": "warn",
