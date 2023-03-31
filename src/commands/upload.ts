@@ -67,7 +67,7 @@ export default class extends Command {
       }));
     }
 
-    task.progress.report({ message: t("file.zipping") });
+    task.progress.report({ message: t("files.zipping") });
 
     const savePath = join(workspaceFolder, zipName);
 

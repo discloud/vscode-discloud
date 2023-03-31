@@ -39,7 +39,7 @@ export default class extends Command {
     const { found } = new GS(paths, ".discloudignore",
       extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
 
-    task.progress.report({ message: t("file.zipping") });
+    task.progress.report({ message: t("files.zipping") });
 
     const savePath = join(workspaceFolder, zipName);
 
