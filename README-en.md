@@ -4,7 +4,7 @@ This extension makes it easy to host and manage applications on [Discloud](https
 
 ## 🌐 Other languages
 
-- [🇧🇷Versão portuguesa](./README.md)
+- [🇧🇷 Versão portuguesa](./README.md)
 
 ## Requirements
 
