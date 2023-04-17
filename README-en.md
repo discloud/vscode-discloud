@@ -1,9 +1,10 @@
-### 🌐 Other languages
-* [🇧🇷Versão portuguesa](./README.md)
-
 # Discloud for VSCode
 
 This extension makes it easy to host and manage applications on [Discloud](https://discloudbot.com) through Visual Studio Code.
+
+## 🌐 Other languages
+
+- [🇧🇷Versão portuguesa](./README.md)
 
 ## Requirements
 
@@ -50,7 +51,7 @@ Here is a list of features that the extension currently supports.
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016803343995244667/up.gif)
 
-### Application Status
+### Applications status
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016803254350389259/status.gif)
 

@@ -1,9 +1,10 @@
-### 🌐 Outros idiomas
-* [🇱🇷 English version](./README-en.md)
-
 # Discloud para VSCode
 
 Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloudbot.com) pelo Visual Studio Code.
+
+## 🌐 Outros idiomas
+
+- [🇱🇷 English version](./README-en.md)
 
 ## Requisitos
 
@@ -11,7 +12,7 @@ Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discl
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016822188839551026/token.gif)
 
-## State das Aplicações
+## Status da Aplicação
 
 - 🟢 Verde indica App online
 - 🟡 Amarelo caiu por falta de RAM
