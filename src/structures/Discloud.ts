@@ -30,18 +30,18 @@ interface Discloud extends EventEmitter {
 }
 
 class Discloud extends EventEmitter {
+  declare appTree: AppTreeDataProvider;
   declare autoRefresher: AutoRefresh;
   declare context: ExtensionContext;
-  declare appTree: AppTreeDataProvider;
   declare customDomainTree: CustomDomainTreeDataProvider;
+  declare statusBar: StatusBarItem;
   declare subDomainTree: SubDomainTreeDataProvider;
   declare teamAppTree: TeamAppTreeDataProvider;
   declare userTree: UserTreeDataProvider;
-  declare statusBar: StatusBarItem;
-  cache = new Map();
-  commands = new Map<string, Command>();
-  bars = new Map<string, StatusBarItem>();
-  user = new VSUser();
+  readonly bars = new Map<string, StatusBarItem>();
+  readonly cache = new Map();
+  readonly commands = new Map<string, Command>();
+  readonly user = new VSUser();
 
   constructor() {
     super();
