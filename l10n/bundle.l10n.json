@@ -111,5 +111,7 @@
   "status.tooltip.ratelimited": "You have reached the request limit.\nWait a moment...",
   "status.tooltip.upload": "Upload to Discloud",
   "uploading": "Uploading...",
-  "valid.token": "Token set up successfully!"
+  "valid.token": "Token set up successfully!",
+  "your.app.is.now": "Your app {app} is now",
+  "your.team.app.is.now": "Your team app {app} is now"
 }

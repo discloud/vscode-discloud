@@ -70,11 +70,13 @@ export interface UserTreeItemData extends Partial<BaseTreeItemData> {
 
 export interface Events {
   activate: [context: ExtensionContext]
+  appUpdate: [oldApp: AppTreeItem, newApp: AppTreeItem]
   authorized: [token: string, isWorkspace?: boolean]
   error: [error: any]
   missingConnection: []
   missingToken: []
   rateLimited: [rateLimitData: RateLimitData]
+  teamAppUpdate: [oldTeamApp: TeamAppTreeItem, newTeamApp: TeamAppTreeItem]
   unauthorized: []
   vscode: [user: VSUser]
 }
