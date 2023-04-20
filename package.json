@@ -385,6 +385,12 @@
             "title": "%config.app.import.dir.title%",
             "markdownDescription": "%config.app.import.dir.description%"
           },
+          "discloud.app.notification.status": {
+            "type": "boolean",
+            "default": true,
+            "title": "%config.app.notification.status.title%",
+            "markdownDescription": "%config.app.notification.status.description%"
+          },
           "discloud.app.sort.by": {
             "type": "string",
             "default": "none",
@@ -442,6 +448,12 @@
             "default": "discloud/import",
             "title": "%config.team.import.dir.title%",
             "markdownDescription": "%config.team.import.dir.description%"
+          },
+          "discloud.team.app.notification.status": {
+            "type": "boolean",
+            "default": true,
+            "title": "%config.team.app.notification.status.title%",
+            "markdownDescription": "%config.team.app.notification.status.description%"
           },
           "discloud.team.sort.by": {
             "type": "string",

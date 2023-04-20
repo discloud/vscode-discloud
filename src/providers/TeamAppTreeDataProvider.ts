@@ -13,10 +13,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
   getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<any[]> {
     if (element) {
-      return [...element.children.values()];
+      return Array.from(element.children.values());
     }
 
-    const children = [...this.children.values()];
+    const children = Array.from(this.children.values());
 
     const sort = extension.config.get<string>("team.sort.by");
 
@@ -172,7 +172,12 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
+      const oldApp = app._clone();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       this.refresh(app._patch(data));
+
+      extension.emit("teamAppUpdate", oldApp, app);
     } else {
       this.children.set(data.id, new TeamAppTreeItem({
         collapsibleState: this.children.size ?
@@ -195,7 +200,12 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
+      const oldApp = app._clone();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       this.refresh(app._patch(data));
+
+      extension.emit("teamAppUpdate", oldApp, app);
     }
   }
 
