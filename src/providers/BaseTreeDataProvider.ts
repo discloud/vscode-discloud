@@ -20,7 +20,7 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
     return element;
   }
   getChildren(element?: NonNullable<T>): ProviderResult<T[]> {
-    return [...element?.children?.values() ?? this.children.values()];
+    return Array.from(element?.children?.values() ?? this.children.values());
   }
   getParent?(element: T): ProviderResult<T> {
     return element;
