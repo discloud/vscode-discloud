@@ -1107,7 +1107,7 @@
     "archiver": "^5.3.1",
     "discloud.app": "^0.6.10",
     "jsonwebtoken": "^9.0.0",
-    "undici": "^5.21.2"
+    "undici": "^5.22.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
