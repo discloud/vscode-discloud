@@ -1112,7 +1112,7 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/archiver": "^5.3.2",
-    "@types/jsonwebtoken": "^9.0.1",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.16.1",
     "@types/vscode": "^1.77.0",
