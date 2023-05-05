@@ -239,10 +239,10 @@
     "@typescript-eslint/types" "5.59.2"
     eslint-visitor-keys "^3.3.0"
 
-"@vscode/l10n@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@vscode/l10n/-/l10n-0.0.13.tgz#f51ff130b8c98f189476c5f812d214b8efb09590"
-  integrity sha512-A3uY356uOU9nGa+TQIT/i3ziWUgJjVMUrGGXSrtRiTwklyCFjGVWIOHoEIHbJpiyhDkJd9kvIWUOfXK1IkK8XQ==
+"@vscode/l10n@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@vscode/l10n/-/l10n-0.0.14.tgz#431e5814c35c3cb11ee21873bc70a4b0fbf90fcf"
+  integrity sha512-/yrv59IEnmh655z1oeDnGcvMYwnEzNzHLgeYcQCkhYX0xBvYWrAuefoiLcPBUkMpJsb46bqQ6Yv4pwTTQ4d3Qg==
 
 "@vscode/test-electron@^2.3.0":
   version "2.3.0"
