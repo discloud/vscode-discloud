@@ -428,18 +428,6 @@
             "title": "%config.app.sort.online.title%",
             "markdownDescription": "%config.app.sort.online.description%"
           },
-          // "discloud.auto.refresh": {
-          //   "type": "number",
-          //   "default": 0,
-          //   "title": "%config.auto.refresh.title%",
-          //   "markdownDescription": "%config.auto.refresh.description%"
-          // },
-          // "discloud.auto.refresh.team": {
-          //   "type": "boolean",
-          //   "default": false,
-          //   "title": "%config.auto.refresh.team.title%",
-          //   "markdownDescription": "%config.auto.refresh.team.description%"
-          // },
           "discloud.team.backup.dir": {
             "type": "string",
             "default": "discloud/backup",
