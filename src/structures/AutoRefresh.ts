@@ -25,21 +25,21 @@ class AutoRefresh {
   }
 
   private async refresh() {
-    if (extension.token) {
+    /* if (extension.token) {
       extension.logger.info("Auto refresh run");
       extension.statusBar.setLoading();
       await extension.user.fetch(true);
       extension.statusBar.reset();
-    }
+    } */
   }
 
   private async refreshTeam() {
-    if (extension.token) {
+    /* if (extension.token) {
       extension.logger.info("Auto refresh run team");
       extension.statusBar.setLoading();
       await extension.teamAppTree.getStatus();
       extension.statusBar.reset();
-    }
+    } */
   }
 
   stop() {
