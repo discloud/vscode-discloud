@@ -110,7 +110,7 @@ export default abstract class Command {
         title: t(data.title),
       });
     } else {
-      quickPick = await window[data.type!](t(data.title, { action: data.action }), actionOk, actionCancel);
+      quickPick = await window[data.type!](t(data.title, { action: data.action! }), actionOk, actionCancel);
     }
 
     return quickPick === actionOk;
