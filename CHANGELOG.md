@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.9.0
+
+### Features
+
+- Auto Refresh Desativado
+
 ## 2.8.0
 
 ### Features
