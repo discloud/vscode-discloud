@@ -65,15 +65,15 @@ class AutoRefresh {
         `${interval} seconds interval is not allowed.`
         + " Intervals of less than 30 seconds are not allowed."
       );
-
-      interval = 30;
-
-      extension.config.update("auto.refresh", 30,
-        isWorkspace ?
-          ConfigurationTarget.Workspace :
-          ConfigurationTarget.Global
-      );
     }
+
+    interval = 0;
+
+    extension.config.update("auto.refresh", interval,
+      isWorkspace ?
+        ConfigurationTarget.Workspace :
+        ConfigurationTarget.Global
+    );
 
     this.stop();
 
