@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { ProviderResult, TreeItemCollapsibleState, window } from "vscode";
+import { ProviderResult, TreeItemCollapsibleState, commands, window } from "vscode";
 import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
@@ -89,6 +89,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
 
       this.refresh();
     }
+  }
+
+  refresh(data: void | AppTreeItem | AppTreeItem[] | null | undefined) {
+    commands.executeCommand("setContext", "discloudAppLength", this.children.has("x") ? 0 : this.children.size);
+    super.refresh(data);
   }
 
   setRawApps(data: BaseApiApp[]) {

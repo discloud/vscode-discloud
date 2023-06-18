@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { ProviderResult, TreeItemCollapsibleState, window } from "vscode";
+import { ProviderResult, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { requester } from "../util";
@@ -147,6 +147,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
       this.refresh();
     }
+  }
+
+  refresh(data: void | TeamAppTreeItem | TeamAppTreeItem[] | null | undefined) {
+    commands.executeCommand("setContext", "discloudTeamAppLength", this.children.has("x") ? 0 : this.children.size);
+    super.refresh(data);
   }
 
   setRawApps(data: BaseApiApp[]) {
