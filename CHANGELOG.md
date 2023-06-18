@@ -6,6 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.9.5
+
+### Bug fixes
+
+- Corrigido zip errôneo do caminho completo da raiz do sistema até o arquivo alvo quando, no caminho, existissem caracteres coringa de RegExp
+- Corrigido menus de contexto quando não existiam apps disponíveis na visualização de aplicações
+
 ## 2.9.1 - 2.9.4
 
 ### Bug fixes
