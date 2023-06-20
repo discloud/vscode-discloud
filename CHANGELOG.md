@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.9.6
+
+### Bug fixes
+
+- Corrigido possível bug de zip
+
 ## 2.9.5
 
 ### Bug fixes
