@@ -1,5 +1,6 @@
 import { Archiver, ArchiverOptions, create } from "archiver";
 import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { isAbsolute } from "node:path";
 
 export class Zip {
   declare stream: WriteStream;
@@ -20,24 +21,33 @@ export class Zip {
   appendFileList(fileList: string[], targetPath: string, zipEmptyDirs?: boolean) {
     if (!fileList?.length) return;
 
+    const targetPathIsAbsolute = isAbsolute(targetPath);
+
     for (const file of fileList) {
-      if (file.length === targetPath.length) continue;
+      if (!existsSync(file)) continue;
 
       let fileName = file;
+      
+      const fileIsAbsolute = isAbsolute(file);
 
-      if (file.length > targetPath.length)
-        fileName = file.slice(targetPath.length, fileName.length);
+      if (fileIsAbsolute && targetPathIsAbsolute) {
+        if (file.length === targetPath.length) continue;
+
+        if (file.length > targetPath.length)
+          fileName = file.slice(targetPath.length, file.length);
+      }
 
       const name = fileName.replace(/\\/g, "/").replace(/^\//, "");
-
+      
       if (!name) continue;
+      
+      const fileStats = statSync(file);
 
-      if (existsSync(file))
-        if (statSync(file).isFile()) {
-          this.zip.file(file, { name });
-        } else if (statSync(file).isDirectory() && zipEmptyDirs) {
-          this.zip.file(file, { name });
-        }
+      if (fileStats.isFile()) {
+        this.zip.file(file, { name });
+      } else if (fileStats.isDirectory() && zipEmptyDirs) {
+        this.zip.file(file, { name });
+      }
     }
   }
 
