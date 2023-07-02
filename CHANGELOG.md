@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.10.0
+
+### Features
+
+- Adicionado verificação e notificação do local do discloud.config
+
 ## 2.9.6
 
 ### Bug fixes
