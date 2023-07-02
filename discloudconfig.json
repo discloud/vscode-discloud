@@ -2,12 +2,14 @@
   "rules": {
     "ignore": "^\\s*(#.*)$",
     "languageId": "discloud.config",
+    "location": "",
     "messages": {
       "missingequal": "diagnostic.equal.missing",
       "missingscopes": "diagnostic.scopes.missing",
       "missingseparator": "diagnostic.separator.missing",
       "nospaces": "diagnostic.no.spaces",
-      "wrong": "diagnostic.wrong"
+      "wrong": "diagnostic.wrong",
+      "wronglocation": "diagnostic.wrong.file.location"
     },
     "noSpaces": {
       "message": "diagnostic.no.spaces",

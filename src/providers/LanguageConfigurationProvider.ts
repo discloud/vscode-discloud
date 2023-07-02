@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { Diagnostic, DiagnosticCollection, DiagnosticSeverity, Disposable, languages, Position, Range, TextDocument, window, workspace } from "vscode";
+import { dirname, join } from "node:path";
+import { Diagnostic, DiagnosticCollection, DiagnosticSeverity, Disposable, Position, Range, TextDocument, languages, window, workspace } from "vscode";
 import { ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
@@ -27,12 +27,19 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
+    const disposableOpen = workspace.onDidOpenTextDocument(document => {
+      if (document.languageId === this.data.rules.languageId) {
+        this.checkOnOpenDocument(document);
+      }
+    });
+
     if (window.activeTextEditor?.document.languageId === this.data.rules.languageId) {
       this.checkDocument(window.activeTextEditor.document);
+      this.checkOnOpenDocument(window.activeTextEditor.document);
       this.activate();
     }
 
-    extension.subscriptions.push(this.collection, disposableEditor);
+    extension.subscriptions.push(this.collection, disposableEditor, disposableOpen);
   }
 
   activate() {
@@ -53,6 +60,18 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     }
   }
 
+  checkOnOpenDocument(document: TextDocument) {
+    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+    const location = this.data.rules.location;
+
+    if (workspaceFolder && typeof location === "string") {
+      if (join(workspaceFolder, location) !== join(dirname(document.uri.fsPath), location)) {
+        window.showErrorMessage(t(this.data.rules.messages.wronglocation));
+      }
+    }
+  }
+
   checkDocument(document: TextDocument) {
     if (document.languageId !== this.data.rules.languageId) return;
 
@@ -61,6 +80,23 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     const scopes: Record<string, any> = {};
 
     const ignore = RegExp(this.data.rules.ignore);
+
+    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+    const location = this.data.rules.location;
+
+    if (workspaceFolder && typeof location === "string") {
+      if (join(workspaceFolder, location) !== join(dirname(document.uri.fsPath), location)) {
+        diagnostics.push({
+          message: t(this.data.rules.messages.wronglocation),
+          range: new Range(
+            new Position(0, 0),
+            new Position(0, 0)
+          ),
+          severity: DiagnosticSeverity.Error,
+        });
+      }
+    }
 
     for (let i = 0; i < document.lineCount; i++) {
       const textLine = document.lineAt(i);
@@ -107,8 +143,8 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
           const scopeData = this.data[scope];
 
           if ("fs" in scopeData) {
-            if (extension.workspaceFolder) {
-              if (!existsSync(join(extension.workspaceFolder, value))) {
+            if (workspaceFolder) {
+              if (!existsSync(join(workspaceFolder, value))) {
                 diagnostics.push({
                   message: t(scopeData.fs.message),
                   range: new Range(

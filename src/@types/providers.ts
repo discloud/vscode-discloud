@@ -8,6 +8,7 @@ export interface ProviderOptions {
 export interface Rules {
   ignore: string
   languageId: string
+  location?: string
   messages: { [key: string]: string }
   noSpaces: Base
   noEndSpaces: Base
