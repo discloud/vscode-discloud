@@ -30,6 +30,7 @@
   "diagnostic.type.must.be": "The type scope must be `bot` or `site`.",
   "diagnostic.version.invalid": "Invalid version value.",
   "diagnostic.wrong": "It's wrong!",
+  "diagnostic.wrong.file.location": "This file needs to be in the project root. Move the file or open VSCode to the correct location.",
   "error": "Error",
   "files.checking": "Checking files...",
   "files.missing": "No files found.",

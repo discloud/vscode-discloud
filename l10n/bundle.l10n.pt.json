@@ -30,6 +30,7 @@
   "diagnostic.type.must.be": "O escopo type deve ser `bot` ou `site`.",
   "diagnostic.version.invalid": "Valor de versão inválido.",
   "diagnostic.wrong": "Isso está errado!",
+  "diagnostic.wrong.file.location": "Este arquivo precisa estar na raiz do projeto. Mova o arquivo ou abra o VSCode no local correto.",
   "error": "Erro",
   "files.checking": "Verificando arquivos...",
   "files.missing": "Nenhum arquivo encontrado.",
