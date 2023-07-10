@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { DiscloudConfig, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { QuickPickItem, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
@@ -13,27 +13,65 @@ export default abstract class Command {
   async pickApp(task?: TaskData | null, ofTree: boolean = true) {
     task?.progress.report({ message: t("choose.app") });
 
-    const apps = [];
+    const apps = <QuickPickItem[]>[];
     if (ofTree && extension.appTree.children.size) {
       for (const app of extension.appTree.children.values()) {
-        apps.push(
-          `${app.appId}`
-          + ("name" in app.data ? ` - ${app.data.name}` : "")
-          + ("online" in app.data ? ` - ${app.data.online ? t("online") : t("offline")}` : "")
-        );
+        apps.push({
+          description: app.appId,
+          label: [
+            app.data.name,
+            app.data.online ? t("online") : t("offline"),
+          ].join(" - "),
+        });
       }
     } else {
       const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
       if (!res.apps?.length) return;
-      apps.push(...res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? t("online") : t("offline")}`));
+      apps.push(...res.apps.map(app => ({
+        description: app.id,
+        label: [
+          app.name,
+          app.online ? t("online") : t("offline"),
+        ].join(" - "),
+      })));
     }
 
-    const picked = await window.showQuickPick(apps, {
+    const dConfig = new DiscloudConfig(extension.workspaceFolder!);
+
+    let hasApp = false;
+
+    if (dConfig.exists && dConfig.data.ID) {
+      hasApp = apps.some(app => app.description === dConfig.data.ID!);
+
+      if (hasApp) {
+        apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+
+        apps[0].picked = true;
+      }
+    }
+
+    const items = Array.from(apps);
+
+    if (hasApp && apps.length > 1) {
+      items.splice(1, items.length);
+      items.push({
+        label: t("n.more", { n: apps.length - 1 }),
+      });
+    }
+
+    let picked = await window.showQuickPick(items, {
       canPickMany: false,
     });
+
+    if (picked?.label === t("n.more", { n: apps.length - 1 })) {
+      picked = await window.showQuickPick(apps, {
+        canPickMany: false,
+      });
+    }
+
     if (!picked) return;
 
-    const id = picked.split(" - ")[0];
+    const id = picked.description;
 
     task?.progress.report({ message: id });
 
@@ -69,26 +107,65 @@ export default abstract class Command {
   async pickTeamApp(task?: TaskData | null, ofTree: boolean = true) {
     task?.progress.report({ message: t("choose.app") });
 
-    const apps = [];
+    const apps = <QuickPickItem[]>[];
     if (ofTree && extension.teamAppTree.children.size) {
       for (const app of extension.teamAppTree.children.values()) {
-        apps.push(
-          `${app.appId}`
-          + ("online" in app.data ? ` - ${app.data.online ? t("online") : t("offline")}` : "")
-        );
+        apps.push({
+          description: app.appId,
+          label: [
+            app.data.name,
+            app.data.online ? t("online") : t("offline"),
+          ].join(" - "),
+        });
       }
     } else {
       const res = await requester<RESTGetApiTeamResult>(Routes.team());
       if (!res.apps?.length) return;
-      apps.push(...res.apps.map(app => `${app.id} - ${app.name} - ${app.online ? t("online") : t("offline")}`));
+      apps.push(...res.apps.map(app => ({
+        description: app.id,
+        label: [
+          app.name,
+          app.online ? t("online") : t("offline"),
+        ].join(" - "),
+      })));
     }
 
-    const picked = await window.showQuickPick(apps, {
+    const dConfig = new DiscloudConfig(extension.workspaceFolder!);
+
+    let hasApp = false;
+
+    if (dConfig.exists && dConfig.data.ID) {
+      hasApp = apps.some(app => app.description === dConfig.data.ID!);
+
+      if (hasApp) {
+        apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+
+        apps[0].picked = true;
+      }
+    }
+
+    const items = Array.from(apps);
+
+    if (hasApp && apps.length > 1) {
+      items.splice(1, items.length);
+      items.push({
+        label: t("n.more", { n: apps.length - 1 }),
+      });
+    }
+
+    let picked = await window.showQuickPick(items, {
       canPickMany: false,
     });
+
+    if (picked?.label === t("n.more", { n: apps.length - 1 })) {
+      picked = await window.showQuickPick(apps, {
+        canPickMany: false,
+      });
+    }
+
     if (!picked) return;
 
-    const id = picked.split(" - ")[0];
+    const id = picked.description;
 
     task?.progress.report({ message: id });
 
