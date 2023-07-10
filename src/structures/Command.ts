@@ -44,11 +44,9 @@ export default abstract class Command {
       hasApp = apps.some(app => app.description === dConfig.data.ID!);
 
       if (hasApp) {
-        apps.map(app => {
-          app.picked = (app.description === dConfig.data.ID);
-          return app;
-        });
         apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+
+        apps[0].picked = true;
       }
     }
 
@@ -140,11 +138,9 @@ export default abstract class Command {
       hasApp = apps.some(app => app.description === dConfig.data.ID!);
 
       if (hasApp) {
-        apps.map(app => {
-          app.picked = (app.description === dConfig.data.ID);
-          return app;
-        });
         apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+
+        apps[0].picked = true;
       }
     }
 
