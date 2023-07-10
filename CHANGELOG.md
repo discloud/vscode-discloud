@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.11.0
+
+### Features
+
+- Agora o app que corresponde com o ID do discloud.config é mostrado em primeiro lugar no comando `commit`
+
 ## 2.10.0
 
 ### Features
