@@ -1097,7 +1097,7 @@
     "@vscode/l10n": "^0.0.16",
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
-    "discloud.app": "^0.6.11",
+    "discloud.app": "^0.6.13",
     "jsonwebtoken": "^9.0.1",
     "undici": "^5.22.1"
   },
@@ -1108,10 +1108,10 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.5",
     "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
     "@vscode/test-electron": "^2.3.3",
-    "eslint": "^8.45.0",
+    "eslint": "^8.46.0",
     "mocha": "^10.2.0",
     "typescript": "^5.1.6"
   }
