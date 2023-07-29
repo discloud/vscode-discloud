@@ -8,6 +8,7 @@ import { RequestOptions } from "../@types";
 import extension from "../extension";
 import { cpu_arch, os_name, os_platform, os_release, version } from "./constants";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let { maxUses, uses, time, remain, tokenIsValid } = {
   maxUses: 60,
   uses: 0,
@@ -16,12 +17,10 @@ let { maxUses, uses, time, remain, tokenIsValid } = {
   tokenIsValid: true,
 };
 
-export {
-  tokenIsValid,
-};
+export { tokenIsValid };
 
 async function initTimer() {
-  await sleep(time);
+  await sleep(time * 1000);
   uses = 0;
 }
 
@@ -38,7 +37,7 @@ const vsProcesses = new Map<string, ProcessData>();
 export async function requester<T = any>(url: string | URL, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
   if (!tokenIsValid) return <T>false;
 
-  if (!remain || maxUses < uses) {
+  if (!remain) {
     extension.emit("rateLimited", {
       time,
     });
@@ -95,12 +94,12 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       processes.shift();
     }
 
-    maxUses = Number(response.headers["ratelimit-limit"]);
     time = Number(response.headers["ratelimit-reset"]);
-    remain = Number(response.headers["ratelimit-remaining"]);
     initTimer();
+    maxUses = Number(response.headers["ratelimit-limit"]);
+    remain = Number(response.headers["ratelimit-remaining"]);
 
-    if (!remain || maxUses < uses)
+    if (!remain)
       extension.emit("rateLimited", {
         time,
       });
