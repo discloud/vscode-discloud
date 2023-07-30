@@ -23,7 +23,7 @@ export default class extends Command {
     }
 
     const res = await requester<RESTGetApiAppLogResult>(Routes.appLogs(item.appId));
-    if (!res.apps) throw Error("No log found");
+    if (!res.apps || !res.apps.terminal.big) throw Error(t("log404"));
 
     this.logger(res.apps.id, res.apps.terminal.big);
   }

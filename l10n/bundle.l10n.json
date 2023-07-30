@@ -58,6 +58,7 @@
   "label.team.apps.amount": "Amount of team apps",
   "last.restart": "Last restart",
   "locale": "locale",
+  "log404": "No log found",
   "missing.appid": "App ID not found.",
   "missing.discloud.config.main": "The {file} file was not found in the list to ZIP.",
   "missing.team.appid": "Team app ID not found.",
