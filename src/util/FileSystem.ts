@@ -43,9 +43,9 @@ export class FileSystem {
   }
 
   async findFiles(readSelectedPath = false) {
-    await this.findIgnoreFile();
+    await this.#findIgnoreFile();
     if (readSelectedPath)
-      await this.readSelectedPath();
+      await this.#readSelectedPath();
 
     const promises = this.patterns.flatMap((pattern) => [
       workspace.findFiles(join("**", pattern), this.ignorePattern),
@@ -58,7 +58,7 @@ export class FileSystem {
     return this.found = uris;
   }
 
-  async findIgnoreFile() {
+  async #findIgnoreFile() {
     if (!this.ignoreFile) return [];
 
     const patterns = await FileSystem.findIgnoreFile(this.ignoreFile, this.ignorePattern);
@@ -68,8 +68,8 @@ export class FileSystem {
     this.ignorePattern = `{${this.ignoreList.join(",")}}`;
   }
 
-  async readSelectedPath() {
-    const files = FileSystem.transformFileListToGlobPatterns(await FileSystem.readSelectedPath());
+  async #readSelectedPath() {
+    const files = FileSystem.transformFileListToGlobPatterns(await FileSystem.readSelectedPath(true));
 
     if (this.options.fileNames?.length) {
       this.patterns = Array.from(new Set(this.patterns.concat(files)));
