@@ -1,12 +1,12 @@
 import { t } from "@vscode/l10n";
-import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
+import { resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "node:path";
 import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
-import { requester, Zip } from "../util";
+import { FileSystem, requester, Zip } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -22,7 +22,9 @@ export default class extends Command {
     const workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) throw Error("No workspace folder found");
 
-    const paths = await extension.copyFilePath();
+    const files = await FileSystem.readSelectedPath(true);
+
+    console.log(files);
 
     if (!await this.confirmAction())
       throw Error("Reject action");
@@ -36,17 +38,22 @@ export default class extends Command {
 
     const zipName = `${workspace.name}.zip`;
 
-    const { found } = new GS(paths, ".discloudignore",
-      extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
+    const fs = new FileSystem({
+      fileNames: files,
+      ignoreFile: ".discloudignore",
+      ignoreList: [zipName],
+    });
 
-    task.progress.report({ message: t("files.zipping") });
+    const uris = await fs.findFiles();
 
     const savePath = join(workspaceFolder, zipName);
+
+    task.progress.report({ message: t("files.zipping") });
 
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(found, workspaceFolder, true);
+      zipper.appendUriList(uris, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
