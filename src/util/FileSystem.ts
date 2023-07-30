@@ -28,6 +28,7 @@ export class FileSystem {
   ignorePattern: string = allBlockedFilesIgnorePattern;
   patterns: string[] = ["**"];
   found: Uri[] = [];
+  foundPath: string[] = [];
 
   constructor(public options: FileSystemOptions = {}) {
     if (!options) options = {};
@@ -54,6 +55,8 @@ export class FileSystem {
 
     const uris = await Promise.all(promises)
       .then(values => values.flat());
+
+    this.foundPath = uris.map(uri => uri.fsPath);
 
     return this.found = uris;
   }
