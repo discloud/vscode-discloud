@@ -154,14 +154,16 @@ class Discloud extends EventEmitter {
 
               try {
                 await command.run(taskData, ...args);
-              } catch {
+              } catch (error: any) {
+                logger.error(error);
                 this.resetStatusBar();
               }
             });
           } else {
             try {
               await command.run(taskData, ...args);
-            } catch {
+            } catch (error: any) {
+              logger.error(error);
               this.resetStatusBar();
             }
           }
