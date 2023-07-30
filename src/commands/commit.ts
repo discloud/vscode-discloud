@@ -42,7 +42,7 @@ export default class extends Command {
       ignoreList: [zipName],
     });
 
-    const uris = await fs.findFiles();
+    const found = await fs.findFiles();
 
     const savePath = join(workspaceFolder, zipName);
 
@@ -51,7 +51,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendUriList(uris, true);
+      zipper.appendUriList(found, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
