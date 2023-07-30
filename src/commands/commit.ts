@@ -24,8 +24,6 @@ export default class extends Command {
 
     const files = await FileSystem.readSelectedPath(true);
 
-    console.log(files);
-
     if (!await this.confirmAction())
       throw Error("Reject action");
 
