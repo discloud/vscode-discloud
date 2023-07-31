@@ -57,10 +57,3 @@ export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
     return null;
   }
 }
-
-export function matchOnArray(array: string[], pattern: string) {
-  const regex = new RegExp(`${pattern}$`, "i");
-
-  for (const iterator of array)
-    if (regex.test(iterator)) return iterator;
-}

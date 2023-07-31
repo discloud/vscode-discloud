@@ -7,7 +7,7 @@ import { ProgressLocation, window, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
-import { FileSystem, matchOnArray, requester, Zip } from "../util";
+import { FileSystem, requester, Zip } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -61,7 +61,9 @@ export default class extends Command {
       throw Error(t("files.missing"));
     }
 
-    if (!matchOnArray(fs.foundPath, join(...dConfig.data.MAIN.split(/[\\/]/)))) {
+    const pattern = RegExp(`${join(...dConfig.data.MAIN.split(/[\\/]/)).replace(/([\.\\])/, "\\$1")}$`, "i");
+
+    if (!fs.found.some(uri => pattern.test(uri.fsPath))) {
       window.showErrorMessage(t("missing.discloud.config.main", {
         file: dConfig.data.MAIN,
       }) + "\n" + t("readdiscloudconfigdocs"));

@@ -1,6 +1,6 @@
 import { Archiver, ArchiverOptions, create } from "archiver";
 import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
-import { isAbsolute } from "node:path";
+import { isAbsolute, relative } from "node:path";
 import { Uri, workspace } from "vscode";
 
 export class Zip {
@@ -29,9 +29,7 @@ export class Zip {
 
       if (!workspaceFolder) continue;
 
-      const name = uri.fsPath
-        .replace(workspaceFolder.uri.fsPath, "")
-        .replace(/^[\\/]/, "");
+      const name = relative(workspaceFolder.uri.fsPath, uri.fsPath);
 
       if (!name) continue;
 
