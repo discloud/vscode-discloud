@@ -2,13 +2,13 @@ import { readFileSync } from "node:fs";
 import { arch, platform, release, type } from "node:os";
 import { join } from "node:path";
 
-export const version: string = JSON.parse(readFileSync(join(__dirname, "..", "..", "package.json"), "utf8")).version;
-export const os_name = type();
-export const os_release = release().split?.(".").slice(0, 2).join(".") ?? release();
-export const os_platform = platform();
-export const cpu_arch = arch();
+export const VERSION: string = JSON.parse(readFileSync(join(__dirname, "..", "..", "package.json"), "utf8")).version;
+export const OS_NAME = type();
+export const OS_RELEASE = release().split?.(".").slice(0, 2).join(".") ?? release();
+export const OS_PLATFORM = platform();
+export const CPU_ARCH = arch();
 
-export const DiscloudConfigScopes = [
+export const DISCLOUD_CONFIG_SCOPES = [
   "ID",
   "TYPE",
   "MAIN",
@@ -20,7 +20,7 @@ export const DiscloudConfigScopes = [
   "APT",
 ];
 
-export const requiredScopes = {
+export const REQUIRED_SCOPES = {
   common: [
     "TYPE",
     "MAIN",
@@ -43,19 +43,19 @@ export const requiredScopes = {
   ],
 };
 
-export const blocked_files = {
-  common: [".git", ".vscode"],
+export const BLOCKED_FILES = {
+  common: [".cache", ".git", ".vscode"],
   go: [],
-  js: ["node_modules", "package-lock.json", "yarn.lock"],
-  py: [],
+  js: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
+  py: ["venv"],
   rb: ["Gemfile.lock"],
   rs: ["Cargo.lock", "target"],
-  ts: ["node_modules", "package-lock.json", "yarn.lock"],
+  ts: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
 };
 
-export const blockFilesRegex = RegExp(`(${Object.values(blocked_files).flat().join("|")})`.replace(/\./g, "\\."), "i");
+export const ALL_BLOCKED_FILES = Array.from(new Set(Object.values(BLOCKED_FILES).flat()));
 
-export const required_files = {
+export const REQUIRED_FILES = {
   common: ["discloud.config"],
   go: ["go.mod", "go.sum"],
   js: ["package.json"],

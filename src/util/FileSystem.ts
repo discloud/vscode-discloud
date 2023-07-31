@@ -1,20 +1,9 @@
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { FileType, Uri, commands, env, workspace } from "vscode";
+import { ALL_BLOCKED_FILES } from "./constants";
 
-export const blockedFiles = {
-  common: [".cache", ".git", ".vscode"],
-  go: [],
-  js: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
-  py: ["venv"],
-  rb: ["Gemfile.lock"],
-  rs: ["Cargo.lock", "target"],
-  ts: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
-};
-
-export const allBlockedFiles = Array.from(new Set(Object.values(blockedFiles).flat()));
-
-export const allBlockedFilesIgnorePattern = `{${allBlockedFiles.join(",")}}`;
+export const ALL_BLOCKED_FILES_IGNORE_PATTERN = `{${ALL_BLOCKED_FILES.join(",")}}`;
 
 export interface FileSystemOptions {
   fileNames?: string[]
@@ -24,8 +13,8 @@ export interface FileSystemOptions {
 
 export class FileSystem {
   declare ignoreFile?: string;
-  ignoreList: string[] = allBlockedFiles;
-  ignorePattern: string = allBlockedFilesIgnorePattern;
+  ignoreList: string[] = ALL_BLOCKED_FILES;
+  ignorePattern: string = ALL_BLOCKED_FILES_IGNORE_PATTERN;
   patterns: string[] = ["**"];
   found: Uri[] = [];
   foundPath: string[] = [];
@@ -90,7 +79,7 @@ export class FileSystem {
   }
 
   static async findIgnoreFile(fileName: string, ignoreList: string | string[]) {
-    if (!ignoreList) ignoreList = allBlockedFilesIgnorePattern;
+    if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
 
     if (Array.isArray(ignoreList)) {
       ignoreList = `{${ignoreList.join(",")}}`;

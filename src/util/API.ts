@@ -6,7 +6,7 @@ import { request } from "undici";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
 import extension from "../extension";
-import { cpu_arch, os_name, os_platform, os_release, version } from "./constants";
+import { CPU_ARCH, OS_NAME, OS_PLATFORM, OS_RELEASE, VERSION } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let { maxUses, uses, time, remain, tokenIsValid } = {
@@ -81,7 +81,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     } : {}),
     "api-token": `${extension.token}`,
     ...(config.headers ?? {}),
-    "User-Agent": `vscode/${version} (${os_name} ${os_release}; ${os_platform}; ${cpu_arch})`,
+    "User-Agent": `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`,
   };
 
   uses++;
