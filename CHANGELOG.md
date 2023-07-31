@@ -6,9 +6,15 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.12.1
+
+### Bug fixes
+
+- Corrigido comando upload
+
 ## 2.12.0
 
-## Features
+### Features
 
 - Using VSCode FS instead Glob.
 
