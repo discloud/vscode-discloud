@@ -10,7 +10,6 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import AutoRefresh from "./AutoRefresh";
 import Command from "./Command";
 import StatusBarItem from "./StatusBarItem";
 import VSUser from "./VSUser";
@@ -30,7 +29,6 @@ interface Discloud extends EventEmitter {
 
 class Discloud extends EventEmitter {
   declare appTree: AppTreeDataProvider;
-  declare autoRefresher: AutoRefresh;
   declare context: ExtensionContext;
   declare customDomainTree: CustomDomainTreeDataProvider;
   declare statusBar: StatusBarItem;

@@ -7,7 +7,6 @@ import LanguageConfigurationProvider from "../providers/LanguageConfigurationPro
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import AutoRefresh from "../structures/AutoRefresh";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 extension.on("activate", (context) => {
@@ -16,19 +15,14 @@ extension.on("activate", (context) => {
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
-  new CompletionItemProvider({
-    path: "discloudconfig.json",
-  });
-  new LanguageConfigurationProvider({
-    path: "discloudconfig.json",
-  });
+  new CompletionItemProvider({ path: "discloudconfig.json" });
+  new LanguageConfigurationProvider({ path: "discloudconfig.json" });
 
   extension.appTree = new AppTreeDataProvider("discloud-apps");
   extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
   extension.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
   extension.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
   extension.userTree = new UserTreeDataProvider("discloud-user");
-  extension.autoRefresher = new AutoRefresh();
 
   extension.loadCommands();
 
@@ -40,16 +34,6 @@ extension.on("activate", (context) => {
         tokenValidator(extension.token, isWorkspace);
       } else {
         extension.emit("missingToken");
-      }
-    }
-
-    if (event.affectsConfiguration("discloud.auto.refresh")) {
-      const isWorkspace = event.affectsConfiguration("discloud.auto.refresh", workspace.workspaceFolders?.[0]);
-
-      if (extension.autoRefresher.interval) {
-        extension.autoRefresher.setInterval(null, isWorkspace);
-      } else {
-        extension.autoRefresher.stop();
       }
     }
 
