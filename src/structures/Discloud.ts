@@ -1,9 +1,8 @@
 import { t } from "@vscode/l10n";
-import { allBlockedFilesRegex } from "discloud.app";
 import { EventEmitter } from "node:events";
 import { existsSync, readdirSync } from "node:fs";
 import { extname, join } from "node:path";
-import { ExtensionContext, StatusBarAlignment, commands, env, window, workspace } from "vscode";
+import { ExtensionContext, StatusBarAlignment, commands, window, workspace } from "vscode";
 import { Events, TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -88,25 +87,9 @@ class Discloud extends EventEmitter {
       "team.backup.dir",
       "team.import.dir",
     ]
-      .map(config => this.config.get<string>(config)!)
+      .map(config => join(...this.config.get<string>(config)?.split(/[\\/]/) ?? ""))
       .filter(c => c)
       .concat("discloud", `${workspace.name}.zip`);
-  }
-
-  async copyFilePath() {
-    await commands.executeCommand("copyFilePath");
-    const copied = await env.clipboard.readText().then(a => a.replace(/\\/g, "/"));
-
-    const paths = copied.split(/[\r\n]+/g)
-      .filter(path => !allBlockedFilesRegex.test(path))
-      .filter(path => existsSync(path));
-
-    if (this.workspaceFolder) {
-      if (!paths.length) return [this.workspaceFolder];
-      if (paths.length === 1 && paths[0] === ".") return [this.workspaceFolder];
-    }
-
-    return paths;
   }
 
   async loadCommands(dir = join(__dirname, "..", "commands"), category = "discloud") {
