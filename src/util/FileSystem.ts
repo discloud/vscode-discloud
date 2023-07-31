@@ -48,10 +48,16 @@ export class FileSystem {
     if (readSelectedPath)
       await this.#readSelectedPath();
 
-    const promises = this.patterns.flatMap((pattern) => [
-      workspace.findFiles(join("**", pattern), this.ignorePattern),
-      workspace.findFiles(join(pattern, "**"), this.ignorePattern),
-    ]);
+    const promises = this.patterns.flatMap((pattern) => {
+      if (pattern === "**") {
+        return workspace.findFiles(pattern, this.ignorePattern);
+      }
+
+      return [
+        workspace.findFiles(join("**", pattern), this.ignorePattern),
+        workspace.findFiles(join(pattern, "**"), this.ignorePattern),
+      ];
+    });
 
     const uris = await Promise.all(promises)
       .then(values => values.flat());
