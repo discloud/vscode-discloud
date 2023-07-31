@@ -1,6 +1,7 @@
 import { Archiver, ArchiverOptions, create } from "archiver";
 import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
+import { Uri, workspace } from "vscode";
 
 export class Zip {
   declare stream: WriteStream;
@@ -18,6 +19,32 @@ export class Zip {
     this.zip.pipe(this.stream);
   }
 
+  appendUriList(uriList: Uri[], zipEmptyDirs = true) {
+    if (!uriList?.length) return;
+
+    for (const uri of uriList) {
+      if (!existsSync(uri.fsPath)) continue;
+
+      const workspaceFolder = workspace.getWorkspaceFolder(uri);
+
+      if (!workspaceFolder) continue;
+
+      const name = uri.fsPath
+        .replace(workspaceFolder.uri.fsPath, "")
+        .replace(/^[\\/]/, "");
+
+      if (!name) continue;
+
+      const stats = statSync(uri.fsPath);
+
+      if (stats.isFile()) {
+        this.zip.file(uri.fsPath, { name, stats });
+      } else if (stats.isDirectory() && zipEmptyDirs) {
+        this.zip.file(uri.fsPath, { name, stats });
+      }
+    }
+  }
+
   appendFileList(fileList: string[], targetPath: string, zipEmptyDirs?: boolean) {
     if (!fileList?.length) return;
 
@@ -27,7 +54,7 @@ export class Zip {
       if (!existsSync(file)) continue;
 
       let fileName = file;
-      
+
       const fileIsAbsolute = isAbsolute(file);
 
       if (fileIsAbsolute && targetPathIsAbsolute) {
@@ -38,9 +65,9 @@ export class Zip {
       }
 
       const name = fileName.replace(/\\/g, "/").replace(/^\//, "");
-      
+
       if (!name) continue;
-      
+
       const fileStats = statSync(file);
 
       if (fileStats.isFile()) {

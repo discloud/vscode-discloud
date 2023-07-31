@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { GS, resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
+import { resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "node:path";
 import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
@@ -7,7 +7,7 @@ import { TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
 import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { requester, Zip } from "../../util";
+import { FileSystem, requester, Zip } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -37,8 +37,12 @@ export default class extends Command {
 
     const zipName = `${workspace.name}.zip`;
 
-    const { found } = new GS(workspaceFolder, ".discloudignore", 
-    extension.workspaceIgnoreList.concat(`${workspaceFolder}/${zipName}`));
+    const fs = new FileSystem({
+      ignoreFile: ".discloudignore",
+      ignoreList: extension.workspaceIgnoreList,
+    });
+
+    const found = await fs.findFiles(false);
 
     task.progress.report({ message: t("files.zipping") });
 
@@ -47,7 +51,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendFileList(found, workspaceFolder, true);
+      zipper.appendUriList(found, true);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();

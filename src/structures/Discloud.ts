@@ -3,7 +3,7 @@ import { allBlockedFilesRegex } from "discloud.app";
 import { EventEmitter } from "node:events";
 import { existsSync, readdirSync } from "node:fs";
 import { extname, join } from "node:path";
-import { commands, env, ExtensionContext, StatusBarAlignment, window, workspace } from "vscode";
+import { ExtensionContext, StatusBarAlignment, commands, env, window, workspace } from "vscode";
 import { Events, TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -82,19 +82,15 @@ class Discloud extends EventEmitter {
   }
 
   get workspaceIgnoreList() {
-    const workspaceFolder = this.workspaceFolder;
-    if (!workspaceFolder) return [];
-
     return [
       "app.backup.dir",
       "app.import.dir",
       "team.backup.dir",
       "team.import.dir",
     ]
-      .map(config => this.config.get(config))
+      .map(config => this.config.get<string>(config)!)
       .filter(c => c)
-      .map(config => `${workspaceFolder}/${config}/**`)
-      .concat(`${workspaceFolder}/discloud/**`);
+      .concat("discloud", `${workspace.name}.zip`);
   }
 
   async copyFilePath() {
