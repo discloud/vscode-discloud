@@ -39,7 +39,7 @@ export default class extends Command {
 
     const configImportDir = extension.config.get<string>("team.import.dir");
     const importDir = join(workspaceFolder, configImportDir!);
-    const importFolderPath = join(importDir, res.backups.id).replace(/\\/g, "/");
+    const importFolderPath = join(importDir, res.backups.id);
     const importFilePath = `${importFolderPath}.zip`;
 
     if (!existsSync(importDir))

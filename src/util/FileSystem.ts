@@ -70,7 +70,7 @@ export class FileSystem {
   }
 
   async #findIgnoreFile() {
-    if (!this.ignoreFile) return [];
+    if (!this.ignoreFile) return;
 
     const patterns = await FileSystem.findIgnoreFile(this.ignoreFile, this.ignorePattern);
 

@@ -61,7 +61,7 @@ export default class extends Command {
       throw Error(t("files.missing"));
     }
 
-    if (!matchOnArray(fs.foundPath, dConfig.data.MAIN)) {
+    if (!matchOnArray(fs.foundPath, join(...dConfig.data.MAIN.split(/[\\/]/)))) {
       window.showErrorMessage(t("missing.discloud.config.main", {
         file: dConfig.data.MAIN,
       }) + "\n" + t("readdiscloudconfigdocs"));

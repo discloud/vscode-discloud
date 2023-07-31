@@ -38,7 +38,7 @@ export default class extends Command {
 
     const configBackupDir = extension.config.get<string>("app.backup.dir");
     const backupDir = join(workspaceFolder, configBackupDir!);
-    const backupFolderPath = join(backupDir, res.backups.id).replace(/\\/g, "/");
+    const backupFolderPath = join(backupDir, res.backups.id);
     const backupFilePath = `${backupFolderPath}.zip`;
 
     if (!existsSync(backupDir))
@@ -47,7 +47,7 @@ export default class extends Command {
     await writeFile(backupFilePath, backup.body, "utf8");
 
     window.showInformationMessage(t("backup.success", {
-      dir: `${configBackupDir}/${res.backups.id}.zip`,
+      dir: join(`${configBackupDir}`, `${res.backups.id}.zip`),
     }));
   }
 }

@@ -77,7 +77,7 @@ class Discloud extends EventEmitter {
   }
 
   get workspaceFolder() {
-    return workspace.workspaceFolders?.[0]?.uri.fsPath.replace(/\\/g, "/");
+    return workspace.workspaceFolders?.[0]?.uri.fsPath;
   }
 
   get workspaceIgnoreList() {

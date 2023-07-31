@@ -64,16 +64,16 @@ export class Zip {
           fileName = file.slice(targetPath.length, file.length);
       }
 
-      const name = fileName.replace(/\\/g, "/").replace(/^\//, "");
+      const name = fileName.replace(/^[\\/]/, "");
 
       if (!name) continue;
 
-      const fileStats = statSync(file);
+      const stats = statSync(file);
 
-      if (fileStats.isFile()) {
-        this.zip.file(file, { name });
-      } else if (fileStats.isDirectory() && zipEmptyDirs) {
-        this.zip.file(file, { name });
+      if (stats.isFile()) {
+        this.zip.file(file, { name, stats });
+      } else if (stats.isDirectory() && zipEmptyDirs) {
+        this.zip.file(file, { name, stats });
       }
     }
   }
