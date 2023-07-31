@@ -39,8 +39,10 @@ export class FileSystem {
 
     if (options.ignoreFile) this.ignoreFile = options.ignoreFile;
 
-    if (options.ignoreList?.length)
+    if (options.ignoreList?.length) {
       this.ignoreList = Array.from(new Set(this.ignoreList.concat(options.ignoreList)));
+      this.ignorePattern = `{${this.ignoreList.join(",")}}`;
+    }
   }
 
   async findFiles(readSelectedPath = false) {
@@ -119,7 +121,7 @@ export class FileSystem {
   static async readSelectedPath(relative = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
-    return copied.split(/[\r\n]+/g);
+    return copied.split(/[\r\n]+/);
   }
 
   static transformFileListToGlobPatterns(fileNames: string[]) {

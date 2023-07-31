@@ -39,7 +39,7 @@ export default class extends Command {
     const fs = new FileSystem({
       fileNames: files,
       ignoreFile: ".discloudignore",
-      ignoreList: [zipName],
+      ignoreList: extension.workspaceIgnoreList,
     });
 
     const found = await fs.findFiles();
