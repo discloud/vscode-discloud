@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.12.3
+
+### Bug fixes
+
+- Corrigido limpeza errônea de aplicativos da equipe quando não tem permissão para ver o status
+
 ## 2.12.2
 
 ### Bug fixes
