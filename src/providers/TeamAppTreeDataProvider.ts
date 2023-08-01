@@ -104,14 +104,14 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
         location: { viewId: this.viewId },
         title: t("refreshing"),
       }, async () => {
-        await this.getStatus();
+        await this.getStatus("all", true);
       });
     } else {
       this.init();
     }
   }
 
-  async getStatus(appId: string = "all") {
+  async getStatus(appId: string = "all", noClear?: boolean) {
     const res = await requester<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
@@ -121,6 +121,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
+            if (noClear) break;
             if (appId === "all") {
               this.children.clear();
             } else {
