@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.12.2
+
+### Bug fixes
+
+- Corrigido regex para substituir separador do arquivo main
+
 ## 2.12.1
 
 ### Bug fixes
