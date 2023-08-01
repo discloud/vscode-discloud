@@ -61,7 +61,7 @@ export default class extends Command {
       throw Error(t("files.missing"));
     }
 
-    const pattern = RegExp(`${join(...dConfig.data.MAIN.split(/[\\/]/)).replace(/([\.\\])/, "\\$1")}$`, "i");
+    const pattern = RegExp(`${join(...dConfig.data.MAIN.split(/[\\/]/)).replace(/([\.\\])/g, "\\$1")}$`, "i");
 
     if (!fs.found.some(uri => pattern.test(uri.fsPath))) {
       window.showErrorMessage(t("missing.discloud.config.main", {
