@@ -104,7 +104,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
         time,
       });
 
-    return response.body.json();
+    return response.body.json() as Promise<T>;
   } catch (error: any) {
     if (isVS) {
       vsProcesses.delete(processKey);
