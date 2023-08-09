@@ -1,4 +1,5 @@
 import { workspace } from "vscode";
+import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
@@ -43,6 +44,12 @@ extension.on("activate", (context) => {
 
     if (event.affectsConfiguration("discloud.team.sort")) {
       extension.teamAppTree.refresh();
+    }
+
+    if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
+      for (const id of extension.appTree.children.keys()) {
+        extension.appTree.edit(id, <BaseApiApp>{ id });
+      }
     }
   });
 

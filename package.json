@@ -173,6 +173,21 @@
         "icon": "$(debug-restart)"
       },
       {
+        "command": "discloud.apps.show.avatar.instead.status.always",
+        "title": "%show.avatar.instead.status.always.label%",
+        "icon": "$(account)"
+      },
+      {
+        "command": "discloud.apps.show.avatar.instead.status.never",
+        "title": "%show.avatar.instead.status.never.label%",
+        "icon": "$(close)"
+      },
+      {
+        "command": "discloud.apps.show.avatar.instead.status.when.online",
+        "title": "%show.avatar.instead.status.when.online.label%",
+        "icon": "$(cloud)"
+      },
+      {
         "command": "discloud.apps.sort.by.none",
         "title": "%sort.none.label%",
         "icon": "$(list-unordered)"
@@ -394,6 +409,22 @@
             "title": "%config.app.notification.status.title%",
             "markdownDescription": "%config.app.notification.status.description%"
           },
+          "discloud.app.show.avatar.instead.status":{
+            "type": "string",
+            "default": "when.online",
+            "enum": [
+              "never",
+              "when.online",
+              "always"
+            ],
+            "enumItemLabels": [
+              "%show.avatar.instead.status.never.label%",
+              "%show.avatar.instead.status.when.online.label%",
+              "%show.avatar.instead.status.always.label%"
+            ],
+            "title": "%config.app.show.avatar.instead.status.title%",
+            "markdownDescription": "%config.app.show.avatar.instead.status.description%"
+          },
           "discloud.app.sort.by": {
             "type": "string",
             "default": "none",
@@ -581,6 +612,18 @@
         },
         {
           "command": "discloud.apps.restart",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.always",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.never",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.when.online",
           "when": "never"
         },
         {
@@ -859,25 +902,20 @@
           "group": "navigation"
         },
         {
+          "submenu": "discloud.apps.show.avatar.instead.status",
+          "when": "view == discloud-apps"
+        },
+        {
+          "submenu": "discloud.apps.sort.by",
+          "when": "view == discloud-apps"
+        },
+        {
           "command": "discloud.apps.sort.online.activate",
           "when": "view == discloud-apps && !config.discloud.app.sort.online"
         },
         {
           "command": "discloud.apps.sort.online.deactivate",
           "when": "view == discloud-apps && config.discloud.app.sort.online"
-        },
-        {
-          "command": "discloud.team.refresh",
-          "when": "view == discloud-teams",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud.team.sort.online.activate",
-          "when": "view == discloud-teams && !config.discloud.team.sort.online"
-        },
-        {
-          "command": "discloud.team.sort.online.deactivate",
-          "when": "view == discloud-teams && config.discloud.team.sort.online"
         },
         {
           "command": "discloud.domain.refresh",
@@ -890,12 +928,21 @@
           "group": "navigation"
         },
         {
-          "submenu": "discloud.apps.sort.by",
-          "when": "view == discloud-apps"
+          "command": "discloud.team.refresh",
+          "when": "view == discloud-teams",
+          "group": "navigation"
         },
         {
           "submenu": "discloud.team.sort.by",
           "when": "view == discloud-teams"
+        },
+        {
+          "command": "discloud.team.sort.online.activate",
+          "when": "view == discloud-teams && !config.discloud.team.sort.online"
+        },
+        {
+          "command": "discloud.team.sort.online.deactivate",
+          "when": "view == discloud-teams && config.discloud.team.sort.online"
         }
       ],
       "explorer/context": [
@@ -923,6 +970,20 @@
         },
         {
           "command": "discloud.apps.mods.rem"
+        }
+      ],
+      "discloud.apps.show.avatar.instead.status":[
+        {
+          "command": "discloud.apps.show.avatar.instead.status.always",
+          "when": "config.discloud.app.show.avatar.instead.status != always"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.never",
+          "when": "config.discloud.app.show.avatar.instead.status != never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.when.online",
+          "when": "config.discloud.app.show.avatar.instead.status != when.online"
         }
       ],
       "discloud.apps.sort.by": [
@@ -1010,6 +1071,10 @@
       {
         "label": "%submenu.manage.mods%",
         "id": "discloud.apps.mods"
+      },
+      {
+        "label": "%submenu.app.show.avatar.instead.status%",
+        "id": "discloud.apps.show.avatar.instead.status"
       },
       {
         "label": "%submenu.apps.sort.by%",
