@@ -173,6 +173,21 @@
         "icon": "$(debug-restart)"
       },
       {
+        "command": "discloud.apps.show.avatar.instead.status.always",
+        "title": "%show.avatar.instead.status.always.label%",
+        "icon": "$(account)"
+      },
+      {
+        "command": "discloud.apps.show.avatar.instead.status.never",
+        "title": "%show.avatar.instead.status.never.label%",
+        "icon": "$(close)"
+      },
+      {
+        "command": "discloud.apps.show.avatar.instead.status.when.online",
+        "title": "%show.avatar.instead.status.when.online.label%",
+        "icon": "$(cloud)"
+      },
+      {
         "command": "discloud.apps.sort.by.none",
         "title": "%sort.none.label%",
         "icon": "$(list-unordered)"
@@ -600,6 +615,18 @@
           "when": "never"
         },
         {
+          "command": "discloud.apps.show.avatar.instead.status.always",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.never",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.when.online",
+          "when": "never"
+        },
+        {
           "command": "discloud.apps.sort.by.none",
           "when": "never"
         },
@@ -906,6 +933,10 @@
           "group": "navigation"
         },
         {
+          "submenu": "discloud.apps.show.avatar.instead.status",
+          "when": "view == discloud-apps"
+        },
+        {
           "submenu": "discloud.apps.sort.by",
           "when": "view == discloud-apps"
         },
@@ -939,6 +970,20 @@
         },
         {
           "command": "discloud.apps.mods.rem"
+        }
+      ],
+      "discloud.apps.show.avatar.instead.status":[
+        {
+          "command": "discloud.apps.show.avatar.instead.status.always",
+          "when": "config.discloud.app.show.avatar.instead.status != always"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.never",
+          "when": "config.discloud.app.show.avatar.instead.status != never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.when.online",
+          "when": "config.discloud.app.show.avatar.instead.status != when.online"
         }
       ],
       "discloud.apps.sort.by": [
@@ -1026,6 +1071,10 @@
       {
         "label": "%submenu.manage.mods%",
         "id": "discloud.apps.mods"
+      },
+      {
+        "label": "%submenu.app.show.avatar.instead.status%",
+        "id": "discloud.apps.show.avatar.instead.status"
       },
       {
         "label": "%submenu.apps.sort.by%",
