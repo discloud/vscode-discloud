@@ -394,6 +394,22 @@
             "title": "%config.app.notification.status.title%",
             "markdownDescription": "%config.app.notification.status.description%"
           },
+          "discloud.app.show.avatar.instead.status":{
+            "type": "string",
+            "default": "never",
+            "enum": [
+              "never",
+              "when.online",
+              "always"
+            ],
+            "enumItemLabels": [
+              "%show.avatar.instead.status.never.label%",
+              "%show.avatar.instead.status.when.online.label%",
+              "%show.avatar.instead.status.always.label%"
+            ],
+            "title": "%config.app.show.avatar.instead.status.title%",
+            "markdownDescription": "%config.app.show.avatar.instead.status.description%"
+          },
           "discloud.app.sort.by": {
             "type": "string",
             "default": "none",

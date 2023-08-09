@@ -4,6 +4,7 @@ import { QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
+import AppTreeItem from "./AppTreeItem";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }
@@ -18,7 +19,7 @@ export default abstract class Command {
       for (const app of extension.appTree.children.values()) {
         apps.push({
           description: app.appId,
-          iconPath: app.data.avatarURL ? Uri.parse(app.data.avatarURL) : undefined,
+          iconPath: <Uri>app.iconPath,
           label: [
             app.data.name,
             app.data.online ? t("online") : t("offline"),
@@ -30,7 +31,7 @@ export default abstract class Command {
       if (!res.apps?.length) return;
       apps.push(...res.apps.map<QuickPickItem>(app => ({
         description: app.id,
-        iconPath: app.avatarURL ? Uri.parse(app.avatarURL) : undefined,
+        iconPath: <Uri>new AppTreeItem(app).iconPath,
         label: [
           app.name,
           app.online ? t("online") : t("offline"),

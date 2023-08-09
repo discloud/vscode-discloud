@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState } from "vscode";
+import { TreeItemCollapsibleState, Uri } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
+import extension from "../extension";
 import { calculatePercentage, getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
@@ -24,7 +25,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   protected _patch(data: Partial<AppTreeItemData & ApiVscodeApp>): this {
     super._patch(data);
 
-    this.appId ??= data.appId ?? data.id;
+    this.appId ??= data.appId ?? data.id ?? this.appId;
 
     this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
@@ -37,6 +38,24 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
+
+    const showAvatar = extension.config.get<string>("app.show.avatar.instead.status");
+
+    switch (showAvatar) {
+      case "always": {
+        if (data.avatarURL ?? this.data.avatarURL)
+          this.iconPath = Uri.parse(data.avatarURL ?? this.data.avatarURL!);
+
+        break;
+      }
+
+      case "when.online": {
+        if (this.iconName === "on" && (data.avatarURL ?? this.data.avatarURL))
+          this.iconPath = Uri.parse(data.avatarURL ?? this.data.avatarURL!);
+
+        break;
+      }
+    }
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 

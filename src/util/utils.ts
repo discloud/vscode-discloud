@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { Uri } from "vscode";
 
 export function bindFunctions(instance: any, bind?: any) {
   if (!instance) return;
@@ -31,8 +32,8 @@ const resourcesDir = join(__dirname, "..", "..", "resources");
 
 export function getIconPath(iconName: string, iconExt = "svg") {
   return {
-    dark: join(resourcesDir, "dark", `${iconName}.${iconExt}`),
-    light: join(resourcesDir, "light", `${iconName}.${iconExt}`),
+    dark: Uri.file(join(resourcesDir, "dark", `${iconName}.${iconExt}`)),
+    light: Uri.file(join(resourcesDir, "light", `${iconName}.${iconExt}`)),
   };
 }
 

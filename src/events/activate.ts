@@ -44,6 +44,10 @@ extension.on("activate", (context) => {
     if (event.affectsConfiguration("discloud.team.sort")) {
       extension.teamAppTree.refresh();
     }
+
+    if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
+      extension.appTree.fetch();
+    }
   });
 
   const disposableWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
