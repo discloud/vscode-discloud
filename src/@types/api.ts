@@ -22,6 +22,7 @@ export interface ApiVscodeUser {
 }
 
 export interface ApiVscodeApp extends ApiStatusApp {
+  avatarURL: string
   exitCode: number
   name: string
   online: boolean

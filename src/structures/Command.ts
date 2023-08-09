@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { QuickPickItem, window } from "vscode";
+import { QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
@@ -18,6 +18,7 @@ export default abstract class Command {
       for (const app of extension.appTree.children.values()) {
         apps.push({
           description: app.appId,
+          iconPath: app.data.avatarURL ? Uri.parse(app.data.avatarURL) : undefined,
           label: [
             app.data.name,
             app.data.online ? t("online") : t("offline"),
@@ -27,8 +28,9 @@ export default abstract class Command {
     } else {
       const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
       if (!res.apps?.length) return;
-      apps.push(...res.apps.map(app => ({
+      apps.push(...res.apps.map<QuickPickItem>(app => ({
         description: app.id,
+        iconPath: app.avatarURL ? Uri.parse(app.avatarURL) : undefined,
         label: [
           app.name,
           app.online ? t("online") : t("offline"),
@@ -51,19 +53,18 @@ export default abstract class Command {
     }
 
     const items = Array.from(apps);
+    const label = t("n.more", { n: apps.length - 1 });
 
     if (hasApp && apps.length > 1) {
       items.splice(1, items.length);
-      items.push({
-        label: t("n.more", { n: apps.length - 1 }),
-      });
+      items.push({ label });
     }
 
     let picked = await window.showQuickPick(items, {
       canPickMany: false,
     });
 
-    if (picked?.label === t("n.more", { n: apps.length - 1 })) {
+    if (picked?.label === label) {
       picked = await window.showQuickPick(apps, {
         canPickMany: false,
       });
@@ -121,7 +122,7 @@ export default abstract class Command {
     } else {
       const res = await requester<RESTGetApiTeamResult>(Routes.team());
       if (!res.apps?.length) return;
-      apps.push(...res.apps.map(app => ({
+      apps.push(...res.apps.map<QuickPickItem>(app => ({
         description: app.id,
         label: [
           app.name,
@@ -145,19 +146,18 @@ export default abstract class Command {
     }
 
     const items = Array.from(apps);
+    const label = t("n.more", { n: apps.length - 1 });
 
     if (hasApp && apps.length > 1) {
       items.splice(1, items.length);
-      items.push({
-        label: t("n.more", { n: apps.length - 1 }),
-      });
+      items.push({ label });
     }
 
     let picked = await window.showQuickPick(items, {
       canPickMany: false,
     });
 
-    if (picked?.label === t("n.more", { n: apps.length - 1 })) {
+    if (picked?.label === label) {
       picked = await window.showQuickPick(apps, {
         canPickMany: false,
       });
