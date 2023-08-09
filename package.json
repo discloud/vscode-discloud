@@ -411,7 +411,7 @@
           },
           "discloud.app.show.avatar.instead.status":{
             "type": "string",
-            "default": "never",
+            "default": "when.online",
             "enum": [
               "never",
               "when.online",
@@ -902,25 +902,20 @@
           "group": "navigation"
         },
         {
+          "submenu": "discloud.apps.show.avatar.instead.status",
+          "when": "view == discloud-apps"
+        },
+        {
+          "submenu": "discloud.apps.sort.by",
+          "when": "view == discloud-apps"
+        },
+        {
           "command": "discloud.apps.sort.online.activate",
           "when": "view == discloud-apps && !config.discloud.app.sort.online"
         },
         {
           "command": "discloud.apps.sort.online.deactivate",
           "when": "view == discloud-apps && config.discloud.app.sort.online"
-        },
-        {
-          "command": "discloud.team.refresh",
-          "when": "view == discloud-teams",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud.team.sort.online.activate",
-          "when": "view == discloud-teams && !config.discloud.team.sort.online"
-        },
-        {
-          "command": "discloud.team.sort.online.deactivate",
-          "when": "view == discloud-teams && config.discloud.team.sort.online"
         },
         {
           "command": "discloud.domain.refresh",
@@ -933,16 +928,21 @@
           "group": "navigation"
         },
         {
-          "submenu": "discloud.apps.show.avatar.instead.status",
-          "when": "view == discloud-apps"
-        },
-        {
-          "submenu": "discloud.apps.sort.by",
-          "when": "view == discloud-apps"
+          "command": "discloud.team.refresh",
+          "when": "view == discloud-teams",
+          "group": "navigation"
         },
         {
           "submenu": "discloud.team.sort.by",
           "when": "view == discloud-teams"
+        },
+        {
+          "command": "discloud.team.sort.online.activate",
+          "when": "view == discloud-teams && !config.discloud.team.sort.online"
+        },
+        {
+          "command": "discloud.team.sort.online.deactivate",
+          "when": "view == discloud-teams && config.discloud.team.sort.online"
         }
       ],
       "explorer/context": [
