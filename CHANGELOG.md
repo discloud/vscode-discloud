@@ -6,6 +6,14 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.13.0
+
+### Features
+
+- Avatar adicionado aos apps, agora você pode vê-los
+- Também adicionado avatar na lista de escolha de aplicações para commitar
+- Também adicionado configuração para ver ou não avatares ao invés do status
+
 ## 2.12.3
 
 ### Bug fixes
