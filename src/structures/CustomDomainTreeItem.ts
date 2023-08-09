@@ -5,8 +5,8 @@ import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class CustomDomainTreeItem extends BaseTreeItem<any> {
-  domain!: string;
-  iconName!: string;
+  declare domain: string;
+  declare iconName: string;
 
   constructor(public data: CustomDomainTreeItemData) {
     data.label ??= data.domain;

@@ -8,13 +8,13 @@ export default class VSUser {
   appsStatus: ApiVscodeApp[] = [];
   appsTeam: string[] = [];
   customdomains: string[] = [];
-  locale?: string;
-  plan?: string;
-  ramUsedMb?: number;
   subdomains: string[] = [];
-  totalRamMb?: number;
-  userID?: string;
-  username?: string;
+  declare locale: string;
+  declare plan: string;
+  declare ramUsedMb: number;
+  declare totalRamMb: number;
+  declare userID: string;
+  declare username: string;
 
   constructor() { }
 
