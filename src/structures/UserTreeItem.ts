@@ -28,8 +28,11 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       `${data.username} (${data.userID})` :
       `${data.userID}`;
 
-    if (data.children instanceof Map)
-      this.children = data.children;
+    if (data.children instanceof Map) {
+      for (const [id, child] of data.children) {
+        this.children.set(id, child);
+      }
+    }
 
     if (("ramUsedMb" in data) && ("totalRamMb" in data))
       this.children.set("ram", new UserChildTreeItem({

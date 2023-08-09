@@ -6,8 +6,8 @@ interface BaseTreeItem<T extends TreeItem> {
 }
 
 abstract class BaseTreeItem<T> extends TreeItem {
-  children = new Map<string, T>();
-  data: unknown;
+  readonly children = new Map<string, T>();
+  declare data: unknown;
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
@@ -21,7 +21,7 @@ abstract class BaseTreeItem<T> extends TreeItem {
 
   protected _patch(data: unknown): this {
     if (typeof data === "object")
-      this.data = { ...(this.data ?? {}), ...data };
+      Object.assign(<any>this.data, data);
 
     return this;
   }

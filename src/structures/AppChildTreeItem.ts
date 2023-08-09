@@ -3,9 +3,9 @@ import { AppTreeItemData } from "../@types";
 import { getIconPath } from "../util";
 
 export default class AppChildTreeItem extends TreeItem {
-  iconName?: string;
-  appId?: string;
-  children?: Map<string, TreeItem>;
+  declare iconName?: string;
+  declare appId?: string;
+  declare children?: Map<string, TreeItem>;
 
   constructor(options: AppTreeItemData) {
     super(options.label, options.collapsibleState);

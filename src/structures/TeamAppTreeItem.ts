@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { ApiStatusApp, ApiTeamApps, ModPermissionsBF } from "discloud.app";
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
-import { calculatePercentage, getIconName, getIconPath, JSONparse } from "../util";
+import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
@@ -52,8 +52,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
     }
 
-    if (data.children instanceof Map)
-      this.children = data.children;
+    if (data.children instanceof Map) {
+      for (const [id, child] of data.children) {
+        this.children.set(id, child);
+      }
+    }
 
     if ("container" in data)
       this.children.set("container", new TeamAppChildTreeItem({

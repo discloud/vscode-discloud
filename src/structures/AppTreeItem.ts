@@ -7,9 +7,9 @@ import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
-  iconName?: string;
-  appId?: string;
-  appType?: string;
+  declare iconName?: string;
+  declare appId?: string;
+  declare appType?: string;
 
   constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
     data.label ??= typeof data.name === "string" ?
@@ -68,8 +68,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
     }
 
-    if (data.children instanceof Map)
-      this.children = data.children;
+    if (data.children instanceof Map) {
+      for (const [id, child] of data.children) {
+        this.children.set(id, child);
+      }
+    }
 
     if ("container" in data)
       this.children.set("container", new AppChildTreeItem({
