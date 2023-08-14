@@ -6,6 +6,14 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.13.1
+
+### Bug fixes
+
+- Corrigido ordenação de pastas e arquivos do `discloud.config#MAIN`
+- Desativado re-refresh das visualizações
+- Eventos desnecessários do `package.json#activationEvents` removidos
+
 ## 2.13.0
 
 ### Features
