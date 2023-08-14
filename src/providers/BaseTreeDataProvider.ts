@@ -12,9 +12,9 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
 
     extension.subscriptions.push(disposable, this._onDidChangeTreeData);
 
-    this.onDidChangeTreeData((e) => {
+    /* this.onDidChangeTreeData((e) => {
       if (e) this.refresh();
-    });
+    }); */
   }
   getTreeItem(element: T): TreeItem | Thenable<TreeItem> {
     return element;
