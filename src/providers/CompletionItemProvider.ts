@@ -58,11 +58,17 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
           const files = readdirSync(targetPath, { withFileTypes: true });
 
-          return files.map(file => new CompletionItem(file.name,
-            file.isFile() ?
-              CompletionItemKind.File :
-              CompletionItemKind.Folder
-          ));
+          return files.map(file => {
+            const item = new CompletionItem(file.name,
+              file.isFile() ?
+                CompletionItemKind.File :
+                CompletionItemKind.Folder
+            );
+
+            item.sortText = `${file.isFile()}`;
+
+            return item;
+          });
         }
 
         if ("properties" in this.data[key]) {
