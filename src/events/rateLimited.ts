@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import extension from "../extension";
 
-let timer: NodeJS.Timer;
+let timer: NodeJS.Timeout;
 
 extension.on("rateLimited", (rateLimitData) => {
   clearTimeout(timer);
