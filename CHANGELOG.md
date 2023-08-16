@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.13.2
+
+### Bug fixes
+
+- Correção de rate limiting
+
 ## 2.13.1
 
 ### Bug fixes
