@@ -9,10 +9,9 @@ import extension from "../extension";
 import { CPU_ARCH, OS_NAME, OS_PLATFORM, OS_RELEASE, VERSION } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-let { maxUses, uses, time, remain, tokenIsValid } = {
+let { maxUses, time, remain, tokenIsValid } = {
   maxUses: 60,
-  uses: 0,
-  time: 60000,
+  time: 60,
   remain: 60,
   tokenIsValid: true,
 };
@@ -21,7 +20,7 @@ export { tokenIsValid };
 
 async function initTimer() {
   await sleep(time * 1000);
-  uses = 0;
+  remain = maxUses;
 }
 
 interface ProcessData {
@@ -84,7 +83,6 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     "User-Agent": `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`,
   };
 
-  uses++;
   try {
     const response = await request(`https://api.discloud.app/v2${url}`, config);
 
@@ -115,7 +113,6 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     switch (error.code) {
       case "DEPTH_ZERO_SELF_SIGNED_CERT":
       case "ENOTFOUND":
-        uses--;
         extension.emit("missingConnection");
         throw Error("Missing Connection");
     }
