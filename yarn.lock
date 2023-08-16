@@ -12,22 +12,22 @@
   resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.3.0.tgz#1b64e6e8dab7c26437d708fdf730a194d087ddc7"
   integrity sha512-nK0ccUeiGT7FbJ9arzqn4eVi30tir9gp6ck/pHGyEAilBzbiPv0FVfHybWnSyTx+s9Etjs6lnlUJ8OLLUOVA7w==
 
-"@discloudapp/rest@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.6.5.tgz#b5ee39c915f4777e6e783b6f876d92fce202c5d4"
-  integrity sha512-HO78e7w6o3129xFI/eOCYk68UgIIMsi8MxwoHRX3On+/jtI98CIIzEH2DFJwAUIVCLdqCCTMPSiqnCfppQYyTQ==
+"@discloudapp/rest@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.7.1.tgz#ea299df891388428c270400bfaf595b8af5783aa"
+  integrity sha512-JX8HWg1Q7cUNt1FY7iLi/4AjaLJAyB/lS9BINRG0OhJZQzbBoMG4SfpdHvqMYy7jLigpopoRtEspiJjtZE77Ew==
   dependencies:
     "@discloudapp/api-types" "^0.3.0"
-    "@discloudapp/util" "^0.4.5"
+    "@discloudapp/util" "^0.4.6"
     undici "^5.23.0"
 
-"@discloudapp/util@^0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.4.5.tgz#588b92fb20a66c3541d5d09746a951593b121425"
-  integrity sha512-Gb4ADA29g2PiqUl6bhEZI8IsvAa5QvCazfTHMks0bPTQy6A2CIHIUizIUvduPe0hyOTVnDB/bHd693TaH2Whgw==
+"@discloudapp/util@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.4.6.tgz#8287ae6211a4bffee9f78d5121c25fc681db1c85"
+  integrity sha512-68XenwxxiKCrBDDEWkV6KALdxWr9i1J4HWbl9H5n86OsZiSwNSxoxJpwmEmswEXQfttoieRh53scOOk895NfGw==
   dependencies:
     glob "^9.3.5"
-    undici "^5.22.1"
+    undici "^5.23.0"
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
@@ -176,24 +176,16 @@
     semver "^7.5.4"
     ts-api-utils "^1.0.1"
 
-"@typescript-eslint/parser@^6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-6.3.0.tgz#359684c443f4f848db3c4f14674f544f169c8f46"
-  integrity sha512-ibP+y2Gr6p0qsUkhs7InMdXrwldjxZw66wpcQq9/PzAroM45wdwyu81T+7RibNCh8oc0AgrsyCwJByncY0Ongg==
+"@typescript-eslint/parser@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-6.4.0.tgz#47e7c6e22ff1248e8675d95f488890484de67600"
+  integrity sha512-I1Ah1irl033uxjxO9Xql7+biL3YD7w9IU8zF+xlzD/YxY6a4b7DYA08PXUUCbm2sEljwJF6ERFy2kTGAGcNilg==
   dependencies:
-    "@typescript-eslint/scope-manager" "6.3.0"
-    "@typescript-eslint/types" "6.3.0"
-    "@typescript-eslint/typescript-estree" "6.3.0"
-    "@typescript-eslint/visitor-keys" "6.3.0"
+    "@typescript-eslint/scope-manager" "6.4.0"
+    "@typescript-eslint/types" "6.4.0"
+    "@typescript-eslint/typescript-estree" "6.4.0"
+    "@typescript-eslint/visitor-keys" "6.4.0"
     debug "^4.3.4"
-
-"@typescript-eslint/scope-manager@6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/scope-manager/-/scope-manager-6.3.0.tgz#6b74e338c4b88d5e1dfc1a28c570dd5cf8c86b09"
-  integrity sha512-WlNFgBEuGu74ahrXzgefiz/QlVb+qg8KDTpknKwR7hMH+lQygWyx0CQFoUmMn1zDkQjTBBIn75IxtWss77iBIQ==
-  dependencies:
-    "@typescript-eslint/types" "6.3.0"
-    "@typescript-eslint/visitor-keys" "6.3.0"
 
 "@typescript-eslint/scope-manager@6.4.0":
   version "6.4.0"
@@ -213,28 +205,10 @@
     debug "^4.3.4"
     ts-api-utils "^1.0.1"
 
-"@typescript-eslint/types@6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-6.3.0.tgz#84517f1427923e714b8418981e493b6635ab4c9d"
-  integrity sha512-K6TZOvfVyc7MO9j60MkRNWyFSf86IbOatTKGrpTQnzarDZPYPVy0oe3myTMq7VjhfsUAbNUW8I5s+2lZvtx1gg==
-
 "@typescript-eslint/types@6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-6.4.0.tgz#5b109a59a805f0d8d375895e42d9e5f0037f66ee"
   integrity sha512-+FV9kVFrS7w78YtzkIsNSoYsnOtrYVnKWSTVXoL1761CsCRv5wpDOINgsXpxD67YCLZtVQekDDyaxfjVWUJmmg==
-
-"@typescript-eslint/typescript-estree@6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-6.3.0.tgz#20e1e10e2f51cdb9e19a2751215cac92c003643c"
-  integrity sha512-Xh4NVDaC4eYKY4O3QGPuQNp5NxBAlEvNQYOqJquR2MePNxO11E5K3t5x4M4Mx53IZvtpW+mBxIT0s274fLUocg==
-  dependencies:
-    "@typescript-eslint/types" "6.3.0"
-    "@typescript-eslint/visitor-keys" "6.3.0"
-    debug "^4.3.4"
-    globby "^11.1.0"
-    is-glob "^4.0.3"
-    semver "^7.5.4"
-    ts-api-utils "^1.0.1"
 
 "@typescript-eslint/typescript-estree@6.4.0":
   version "6.4.0"
@@ -261,14 +235,6 @@
     "@typescript-eslint/types" "6.4.0"
     "@typescript-eslint/typescript-estree" "6.4.0"
     semver "^7.5.4"
-
-"@typescript-eslint/visitor-keys@6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/visitor-keys/-/visitor-keys-6.3.0.tgz#8d09aa3e389ae0971426124c155ac289afbe450a"
-  integrity sha512-kEhRRj7HnvaSjux1J9+7dBen15CdWmDnwrpyiHsFX6Qx2iW5LOBUgNefOFeh2PjWPlNwN8TOn6+4eBU3J/gupw==
-  dependencies:
-    "@typescript-eslint/types" "6.3.0"
-    eslint-visitor-keys "^3.4.1"
 
 "@typescript-eslint/visitor-keys@6.4.0":
   version "6.4.0"
@@ -595,14 +561,14 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.7.0.tgz#20ea1f89d201f7de316cd65d49b53466074e55a7"
-  integrity sha512-UpFDQ2y1dIEST0kHgmI2DEv2Sh+I1W5S3RsIfg5aH+7MUWpLkyvSaGnYPZQE/tXxAd/tIfF9X2W4KYAXBmKLKg==
+discloud.app@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.7.1.tgz#03fea6ea8c6461ffbeade52b9e6f642fa3c0e2c6"
+  integrity sha512-d/FYqzG4pmU/IKZgMC9F1xjJ0QnTd/47faMKS9DHdMG+jXFFmPJTZ8zFcfAbl6PyGPiIB3GqDw2JpaEPHOSLsw==
   dependencies:
     "@discloudapp/api-types" "^0.3.0"
-    "@discloudapp/rest" "^0.6.5"
-    "@discloudapp/util" "^0.4.5"
+    "@discloudapp/rest" "^0.7.1"
+    "@discloudapp/util" "^0.4.6"
     undici "^5.23.0"
 
 doctrine@^3.0.0:
@@ -1580,7 +1546,7 @@ typescript@^5.1.6:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.1.6.tgz#02f8ac202b6dad2c0dd5e0913745b47a37998274"
   integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
 
-undici@^5.22.1, undici@^5.23.0:
+undici@^5.23.0:
   version "5.23.0"
   resolved "https://registry.yarnpkg.com/undici/-/undici-5.23.0.tgz#e7bdb0ed42cebe7b7aca87ced53e6eaafb8f8ca0"
   integrity sha512-1D7w+fvRsqlQ9GscLBwcAJinqcZGHUKjbOmXdlE/v8BvEGXjeWAax+341q44EuTcHXXnfyKNbKRq4Lg7OzhMmg==

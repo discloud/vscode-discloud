@@ -355,7 +355,7 @@
             "title": "%config.app.notification.status.title%",
             "markdownDescription": "%config.app.notification.status.description%"
           },
-          "discloud.app.show.avatar.instead.status":{
+          "discloud.app.show.avatar.instead.status": {
             "type": "string",
             "default": "when.online",
             "enum": [
@@ -918,7 +918,7 @@
           "command": "discloud.apps.mods.rem"
         }
       ],
-      "discloud.apps.show.avatar.instead.status":[
+      "discloud.apps.show.avatar.instead.status": [
         {
           "command": "discloud.apps.show.avatar.instead.status.always",
           "when": "config.discloud.app.show.avatar.instead.status != always"
@@ -1108,7 +1108,7 @@
     "@vscode/l10n": "^0.0.16",
     "adm-zip": "^0.5.10",
     "archiver": "^5.3.1",
-    "discloud.app": "^0.7.0",
+    "discloud.app": "^0.7.1",
     "jsonwebtoken": "^9.0.1",
     "undici": "^5.23.0"
   },
@@ -1120,7 +1120,7 @@
     "@types/node": "^20.5.0",
     "@types/vscode": "^1.81.0",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@typescript-eslint/parser": "^6.4.0",
     "@vscode/test-electron": "^2.3.4",
     "eslint": "^8.47.0",
     "mocha": "^10.2.0",
