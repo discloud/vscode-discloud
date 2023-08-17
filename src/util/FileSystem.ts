@@ -101,7 +101,7 @@ export class FileSystem {
         .split(/([\r\n]+)/);
     }))
       .then(values => Array.from(new Set(values.flat())))
-      .then(values => values.filter(a => a))
+      .then(values => values.filter(Boolean))
       .then(values => values.flatMap(value => [value, join("**", value)]));
 
     return patterns;

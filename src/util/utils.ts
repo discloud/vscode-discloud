@@ -18,7 +18,7 @@ export function calculatePercentage(value: string | number, major: string | numb
 export function extractData(instance: any): Record<any, any> {
   if (!instance) return {};
 
-  const propertyNames = [...Object.getOwnPropertyNames(Object.getPrototypeOf(instance)), ...Object.keys(instance)];
+  const propertyNames = Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).concat(Object.keys(instance));
 
   const data = <any>{};
 

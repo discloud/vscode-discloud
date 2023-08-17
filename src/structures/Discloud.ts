@@ -86,7 +86,7 @@ class Discloud extends EventEmitter {
       "team.import.dir",
     ]
       .map(config => join(...this.config.get<string>(config)?.split(/[\\/]/) ?? ""))
-      .filter(c => c)
+      .filter(Boolean)
       .concat("discloud", `${workspace.name}.zip`);
   }
 
