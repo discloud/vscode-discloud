@@ -2,11 +2,11 @@ import { t } from "@vscode/l10n";
 import { discloud } from "discloud.app";
 import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "node:timers/promises";
-import { request } from "undici";
+import { Dispatcher, request } from "undici";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
 import extension from "../extension";
-import { CPU_ARCH, OS_NAME, OS_PLATFORM, OS_RELEASE, VERSION } from "./constants";
+import { DEFAULT_USER_AGENT } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let { maxUses, time, remain, tokenIsValid } = {
@@ -46,7 +46,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
 
   url = url.toString();
 
-  const processPath = url.split("/").pop()!;
+  const processPath = `/${url.split("/").slice(4).join("/") ?? url.split("/").at(-1)}`;
   const processKey = `${config.method ??= "GET"}.${processPath}`;
 
   if (isVS) {
@@ -72,62 +72,55 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     }
   }
 
-  config.throwOnError = true;
-  config.headersTimeout = config.headersTimeout ?? 60000;
-  config.headers = {
-    ...(typeof config.body === "string" ? {
-      "Content-Type": "application/json",
-    } : {}),
-    "api-token": `${extension.token}`,
-    ...(config.headers ?? {}),
-    "User-Agent": `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`,
-  };
+  config.headersTimeout ??= 60000;
+  Object.assign(config.headers ??= {}, {
+    "api-token": extension.token,
+    "User-Agent": DEFAULT_USER_AGENT,
+  }, typeof config.body === "string" ? {
+    "Content-Type": "application/json",
+  } : {});
 
+  let response: Dispatcher.ResponseData;
   try {
-    const response = await request(`https://api.discloud.app/v2${url}`, config);
-
+    response = await request(`https://api.discloud.app/v2${url}`, config);
+  } catch {
     if (isVS) {
       vsProcesses.delete(processKey);
     } else {
       processes.shift();
     }
 
-    time = Number(response.headers["ratelimit-reset"]);
-    initTimer();
-    maxUses = Number(response.headers["ratelimit-limit"]);
-    remain = Number(response.headers["ratelimit-remaining"]);
+    throw Error("Missing Connection");
+  }
 
-    if (!remain)
-      extension.emit("rateLimited", {
-        time,
-      });
+  time = Number(response.headers["ratelimit-reset"]);
+  initTimer();
+  maxUses = Number(response.headers["ratelimit-limit"]);
+  remain = Number(response.headers["ratelimit-remaining"]);
 
-    return response.body.json() as Promise<T>;
-  } catch (error: any) {
-    if (isVS) {
-      vsProcesses.delete(processKey);
-    } else {
-      processes.shift();
-    }
+  if (!remain)
+    extension.emit("rateLimited", {
+      time,
+    });
 
-    switch (error.code) {
-      case "DEPTH_ZERO_SELF_SIGNED_CERT":
-      case "ENOTFOUND":
-        extension.emit("missingConnection");
-        throw Error("Missing Connection");
-    }
+  if (isVS) {
+    vsProcesses.delete(processKey);
+  } else {
+    processes.shift();
+  }
 
-    extension.emit("error", error);
-
-    switch (error.statusCode ?? error.status) {
+  if (response.statusCode > 399) {
+    switch (response.statusCode) {
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
         break;
     }
 
-    return error;
+    throw Object.assign(response, { body: await response.body.json() });
   }
+
+  return response.body.json() as T;
 }
 
 export function tokenIsDiscloudJwt(token = extension.token): boolean {
