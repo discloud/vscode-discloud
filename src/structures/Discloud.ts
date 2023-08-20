@@ -132,7 +132,7 @@ class Discloud extends EventEmitter {
               try {
                 await command.run(taskData, ...args);
               } catch (error: any) {
-                logger.error(error);
+                this.emit("error", error);
                 this.resetStatusBar();
               }
             });
@@ -140,7 +140,7 @@ class Discloud extends EventEmitter {
             try {
               await command.run(taskData, ...args);
             } catch (error: any) {
-              logger.error(error);
+              this.emit("error", error);
               this.resetStatusBar();
             }
           }
