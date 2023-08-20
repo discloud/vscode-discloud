@@ -8,6 +8,8 @@ export const OS_RELEASE = release().split?.(".").slice(0, 2).join(".") ?? releas
 export const OS_PLATFORM = platform();
 export const CPU_ARCH = arch();
 
+export const DEFAULT_USER_AGENT = `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`;
+
 export const DISCLOUD_CONFIG_SCOPES = [
   "ID",
   "TYPE",

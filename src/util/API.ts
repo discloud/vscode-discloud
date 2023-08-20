@@ -6,7 +6,7 @@ import { Dispatcher, request } from "undici";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
 import extension from "../extension";
-import { CPU_ARCH, OS_NAME, OS_PLATFORM, OS_RELEASE, VERSION } from "./constants";
+import { DEFAULT_USER_AGENT } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let { maxUses, time, remain, tokenIsValid } = {
@@ -75,7 +75,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
   config.headersTimeout ??= 60000;
   Object.assign(config.headers ??= {}, {
     "api-token": extension.token,
-    "User-Agent": `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`,
+    "User-Agent": DEFAULT_USER_AGENT,
   }, typeof config.body === "string" ? {
     "Content-Type": "application/json",
   } : {});
