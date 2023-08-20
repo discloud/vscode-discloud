@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { ApiStatusApp, ApiTeamApps, ModPermissionsBF } from "discloud.app";
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
@@ -110,14 +110,14 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
       const json = values[2] ? JSONparse(values[2]) : null;
 
-      this.contextValue = `${values[1]}.${JSON.stringify({
-        ...json,
-        perms: data.perms,
-      })}`;
+      this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, data.perms))}`;
 
       this.children.set("perms", new TeamAppChildTreeItem({
         label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
-        children: data.perms?.map(perm => new TreeItem(t(`permission.${perm}`))),
+        children: data.perms?.map(perm => new TeamAppChildTreeItem({
+          label: t(`permission.${perm}`),
+          appId: this.appId,
+        })),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
       }));
