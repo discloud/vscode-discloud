@@ -140,10 +140,12 @@ export default abstract class Command {
     }
 
     if (apps.length) {
+      teamApps.push({ label: appsLabel });
       teamItems.push({ label: appsLabel });
     }
 
     if (teamApps.length) {
+      apps.push({ label: teamAppsLabel });
       items.push({ label: teamAppsLabel });
     }
 
@@ -167,7 +169,7 @@ export default abstract class Command {
       if (!picked) break;
 
       if ([labelMore, teamLabelMore].includes(picked.label)) {
-        picked = await window.showQuickPick(picked.label === appsLabel ? apps : teamApps, {
+        picked = await window.showQuickPick([appsLabel, labelMore].includes(picked.label) ? apps : teamApps, {
           canPickMany: false,
         });
       }
