@@ -6,12 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.14.2
+## 2.14.3
 
 ### Bug fixes
 
 - Corrigido mostrando apps desligados quando estão ligados ao escolher apps
 - Arquivos zip são destruídos imediatamente
+- Corrigido erro `Você não está em nenhuma equipe de aplicativos` no comando `commit`
 
 ## 2.14.0
 
