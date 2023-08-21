@@ -153,9 +153,9 @@ export default abstract class Command {
       isTeamApp = picked?.label ? picked.label === teamAppsLabel : isTeamApp;
 
       picked = await window.showQuickPick(picked?.label ?
-        picked.label === appsLabel ?
-          items :
+        picked.label === teamAppsLabel ?
           teamItems :
+          items :
         hasTeamApp ?
           teamItems :
           options.startInTeamApps ?
@@ -164,16 +164,10 @@ export default abstract class Command {
         canPickMany: false,
       });
 
-      if (picked?.label === labelMore) {
-        picked = await window.showQuickPick(picked?.label ?
-          picked.label === appsLabel ?
-            apps :
-            teamApps :
-          hasTeamApp ?
-            teamApps :
-            options.startInTeamApps ?
-              teamItems :
-              apps, {
+      if (!picked) break;
+
+      if ([labelMore, teamLabelMore].includes(picked.label)) {
+        picked = await window.showQuickPick(picked.label === appsLabel ? apps : teamApps, {
           canPickMany: false,
         });
       }
