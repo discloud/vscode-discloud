@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.14.4
+
+### Bug fixes
+
+- Corrigido bug que não mostrava mais apps para escolher
+
 ## 2.14.3
 
 ### Bug fixes
