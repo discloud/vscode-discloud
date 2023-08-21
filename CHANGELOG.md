@@ -10,6 +10,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ### Bug fixes
 
+- Corrigido bug ao escolher apps de equipe
+
+## 2.14.0
+
+### Bug fixes
+
 - Copiar id dos apps da equipe nos detalhes do app
 - API requester corrigido e melhorado
 
