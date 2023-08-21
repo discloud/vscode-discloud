@@ -10,6 +10,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare iconName?: string;
   declare appId?: string;
   declare appType?: string;
+  declare isOnline: boolean;
 
   constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
     data.label ??= typeof data.name === "string" ?
@@ -38,6 +39,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
+    this.isOnline = this.iconName === "on";
 
     const showAvatar = extension.config.get<string>("app.show.avatar.instead.status");
 

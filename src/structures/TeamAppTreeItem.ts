@@ -9,9 +9,10 @@ import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 const totalModPerms = ModPermissionsBF.All.toArray().length;
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  iconName?: string;
-  appId?: string;
-  appType?: string;
+  declare iconName?: string;
+  declare appId?: string;
+  declare appType?: string;
+  declare isOnline: boolean;
   permissions = new ModPermissionsBF();
 
   constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
@@ -41,6 +42,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
+    this.isOnline = this.iconName === "on";
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 

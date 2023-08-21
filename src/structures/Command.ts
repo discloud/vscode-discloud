@@ -30,7 +30,7 @@ export default abstract class Command {
             iconPath: <Uri>app.iconPath,
             label: [
               app.data.name,
-              app.data.online ? t("online") : t("offline"),
+              app.isOnline ? t("online") : t("offline"),
             ].join(" - "),
           });
         }
@@ -44,7 +44,7 @@ export default abstract class Command {
               iconPath: <Uri>app.iconPath,
               label: [
                 app.data.name,
-                app.data.online ? t("online") : t("offline"),
+                app.isOnline ? t("online") : t("offline"),
               ].join(" - "),
             });
           }
