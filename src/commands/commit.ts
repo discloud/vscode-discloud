@@ -29,8 +29,8 @@ export default class extends Command {
 
     extension.statusBar.setCommitting();
 
-    const appId = await this.pickApp(task, true);
-    if (!appId) throw Error(t("missing.appid"));
+    const picked = await this.pickAppOrTeamApp(task, { showOther: true });
+    if (!picked.id) throw Error(t("missing.appid"));
 
     task.progress.report({ message: t("files.checking") });
 
@@ -70,7 +70,9 @@ export default class extends Command {
 
     task.progress.report({ message: t("committing") });
 
-    const data = await requester<RESTPutApiAppCommitResult>(Routes.appCommit(appId), {
+    const data = await requester<RESTPutApiAppCommitResult>(picked.isApp ?
+      Routes.appCommit(picked.id) :
+      Routes.teamCommit(picked.id), {
       body: form,
       headersTimeout: 420000,
       method: "PUT",
@@ -82,9 +84,9 @@ export default class extends Command {
     if ("status" in data) {
       this.showApiMessage(data);
 
-      await extension.appTree.getStatus(appId);
+      await extension.appTree.getStatus(picked.id);
 
-      if (data.logs) this.logger(appId, data.logs);
+      if (data.logs) this.logger(picked.id, data.logs);
     }
   }
 }

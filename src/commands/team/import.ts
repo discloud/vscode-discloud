@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fetch } from "undici";
-import { commands, ProgressLocation, Uri, window } from "vscode";
+import { ProgressLocation, Uri, commands, window } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
@@ -27,7 +27,8 @@ export default class extends Command {
     if (!workspaceFolder) throw Error("No workspace folder found");
 
     if (!item.appId) {
-      item.appId = await this.pickApp(task, true);
+      const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
+      item.appId = picked.id;
       if (!item.appId) throw Error(t("missing.appid"));
     }
 
