@@ -24,22 +24,9 @@ export default abstract class Command {
     const teamApps = <QuickPickItem[]>[];
     if (options.ofTree) {
       if (options.startInTeamApps ? options.showOther : true) {
-        for (const app of extension.appTree.children.values()) {
-          apps.push({
-            description: app.appId,
-            iconPath: <Uri>app.iconPath,
-            label: [
-              app.data.name,
-              app.isOnline ? t("online") : t("offline"),
-            ].join(" - "),
-          });
-        }
-      }
-
-      if (options.startInTeamApps ? true : options.showOther) {
-        for (const app of extension.teamAppTree.children.values()) {
-          if (app.permissions.has(ModPermissions.commit_app)) {
-            teamApps.push({
+        if (!extension.appTree.children.has("x")) {
+          for (const app of extension.appTree.children.values()) {
+            apps.push({
               description: app.appId,
               iconPath: <Uri>app.iconPath,
               label: [
@@ -47,6 +34,23 @@ export default abstract class Command {
                 app.isOnline ? t("online") : t("offline"),
               ].join(" - "),
             });
+          }
+        }
+      }
+
+      if (options.startInTeamApps ? true : options.showOther) {
+        if (!extension.teamAppTree.children.has("x")) {
+          for (const app of extension.teamAppTree.children.values()) {
+            if (app.permissions.has(ModPermissions.commit_app)) {
+              teamApps.push({
+                description: app.appId,
+                iconPath: <Uri>app.iconPath,
+                label: [
+                  app.data.name,
+                  app.isOnline ? t("online") : t("offline"),
+                ].join(" - "),
+              });
+            }
           }
         }
       }
@@ -99,6 +103,9 @@ export default abstract class Command {
       }
     }
 
+    const appsLength = apps.length;
+    const teamAppsLength = teamApps.length;
+
     const dConfig = new DiscloudConfig(extension.workspaceFolder!);
 
     let hasApp = false;
@@ -139,12 +146,12 @@ export default abstract class Command {
       teamItems.push({ label: teamLabelMore });
     }
 
-    if (apps.length) {
+    if (appsLength) {
       teamApps.push({ label: appsLabel });
       teamItems.push({ label: appsLabel });
     }
 
-    if (teamApps.length) {
+    if (teamAppsLength) {
       apps.push({ label: teamAppsLabel });
       items.push({ label: teamAppsLabel });
     }
