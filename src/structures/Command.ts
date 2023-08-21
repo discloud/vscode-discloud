@@ -56,11 +56,11 @@ export default abstract class Command {
       const promises = [];
 
       if (!apps.length && (options.startInTeamApps ? options.showOther : true)) {
-        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all"));
+        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all")).catch(() => null);
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
-        promises[1] = requester<RESTGetApiTeamResult>(Routes.team());
+        promises[1] = requester<RESTGetApiTeamResult>(Routes.team()).catch(() => null);
       }
 
       const [resApps, resTeamApps] = await Promise.all(promises) as [RESTGetApiAppAllResult, RESTGetApiTeamResult];
