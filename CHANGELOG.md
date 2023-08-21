@@ -6,6 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.14.2
+
+### Bug fixes
+
+- Corrigido mostrando apps desligados quando estão ligados ao escolher apps
+- Arquivos zip são destruídos imediatamente
+
 ## 2.14.0
 
 ### Bug fixes
