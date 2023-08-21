@@ -62,6 +62,7 @@ export default class extends Command {
     const form = new FormData();
     try {
       form.append("file", await resolveFile(savePath, zipName));
+      zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
       extension.emit("error", error);
@@ -78,7 +79,6 @@ export default class extends Command {
       method: "PUT",
     });
 
-    zipper.destroy();
     extension.resetStatusBar();
 
     if ("status" in data) {
