@@ -13,7 +13,8 @@ export default class extends Command {
 
   async run(_: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
     if (!item.appId) {
-      item.appId = await this.pickTeamApp(null, true);
+      const picked = await this.pickAppOrTeamApp(null, { startInTeamApps: true });
+      item.appId = picked.id;
 
       if (!item.appId)
         return window.showWarningMessage(t("missing.team.appid"));

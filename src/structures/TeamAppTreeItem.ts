@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps, ModPermissionsBF } from "discloud.app";
+import { ApiStatusApp, ApiTeamApps, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
 import { TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
@@ -12,6 +12,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   iconName?: string;
   appId?: string;
   appType?: string;
+  permissions = new ModPermissionsBF();
 
   constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
     data.label ??= typeof data.name === "string" ?
@@ -106,11 +107,13 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       }));
 
-    if ("perms" in data) {
+    if ("perms" in data && data.perms) {
+      this.permissions = new ModPermissionsBF(<ModPermissionsResolvable>data.perms);
+
       const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
       const json = values[2] ? JSONparse(values[2]) : null;
 
-      this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, data.perms))}`;
+      this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { perms: data.perms }))}`;
 
       this.children.set("perms", new TeamAppChildTreeItem({
         label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),

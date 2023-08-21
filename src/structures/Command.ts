@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { DiscloudConfig, ModPermissions, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
@@ -11,73 +11,185 @@ export default abstract class Command {
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
-  async pickApp(task?: TaskData | null, ofTree: boolean = true) {
+  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}) {
+    options = Object.assign({
+      ofTree: true,
+      showOther: true,
+      startInTeamApps: false,
+    }, options);
+
     task?.progress.report({ message: t("choose.app") });
 
     const apps = <QuickPickItem[]>[];
-    if (ofTree && extension.appTree.children.size) {
-      for (const app of extension.appTree.children.values()) {
-        apps.push({
-          description: app.appId,
-          iconPath: <Uri>app.iconPath,
-          label: [
-            app.data.name,
-            app.data.online ? t("online") : t("offline"),
-          ].join(" - "),
-        });
+    const teamApps = <QuickPickItem[]>[];
+    if (options.ofTree) {
+      if (options.startInTeamApps ? options.showOther : true) {
+        for (const app of extension.appTree.children.values()) {
+          apps.push({
+            description: app.appId,
+            iconPath: <Uri>app.iconPath,
+            label: [
+              app.data.name,
+              app.data.online ? t("online") : t("offline"),
+            ].join(" - "),
+          });
+        }
       }
-    } else {
-      const res = await requester<RESTGetApiAppAllResult>(Routes.app("all"));
-      if (!res.apps?.length) return;
-      apps.push(...res.apps.map<QuickPickItem>(app => ({
-        description: app.id,
-        iconPath: <Uri>new AppTreeItem(app).iconPath,
-        label: [
-          app.name,
-          app.online ? t("online") : t("offline"),
-        ].join(" - "),
-      })));
+
+      if (options.startInTeamApps ? true : options.showOther) {
+        for (const app of extension.teamAppTree.children.values()) {
+          if (app.permissions.has(ModPermissions.commit_app)) {
+            teamApps.push({
+              description: app.appId,
+              iconPath: <Uri>app.iconPath,
+              label: [
+                app.data.name,
+                app.data.online ? t("online") : t("offline"),
+              ].join(" - "),
+            });
+          }
+        }
+      }
+    }
+
+    if (!apps.length || !teamApps.length) {
+      const promises = [];
+
+      if (!apps.length && (options.startInTeamApps ? options.showOther : true)) {
+        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all"));
+      }
+
+      if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
+        promises[1] = requester<RESTGetApiTeamResult>(Routes.team());
+      }
+
+      const [resApps, resTeamApps] = await Promise.all(promises) as [RESTGetApiAppAllResult, RESTGetApiTeamResult];
+
+      if (resApps?.apps) {
+        apps.splice(0, apps.length);
+
+        for (const app of resApps.apps) {
+          apps.push(<QuickPickItem>{
+            description: app.id,
+            iconPath: <Uri>new AppTreeItem(app).iconPath,
+            label: [
+              app.name,
+              app.online ? t("online") : t("offline"),
+            ].join(" - "),
+          });
+        }
+      }
+
+      if (resTeamApps?.apps) {
+        teamApps.splice(0, teamApps.length);
+
+        for (const app of resTeamApps.apps) {
+          const perms = new ModPermissionsBF(<ModPermissionsResolvable>app.perms ?? []);
+
+          if (perms.has(ModPermissions.commit_app)) {
+            teamApps.push(<QuickPickItem>{
+              description: app.id,
+              label: [
+                app.name,
+                app.online ? t("online") : t("offline"),
+              ].join(" - "),
+            });
+          }
+        }
+      }
     }
 
     const dConfig = new DiscloudConfig(extension.workspaceFolder!);
 
     let hasApp = false;
+    let hasTeamApp = false;
 
     if (dConfig.exists && dConfig.data.ID) {
       hasApp = apps.some(app => app.description === dConfig.data.ID!);
+      hasTeamApp = teamApps.some(app => app.description === dConfig.data.ID);
 
       if (hasApp) {
         apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
 
         apps[0].picked = true;
       }
+
+      if (hasTeamApp) {
+        teamApps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+
+        teamApps[0].picked = true;
+      }
     }
 
     const items = Array.from(apps);
-    const label = t("n.more", { n: apps.length - 1 });
+    const teamItems = Array.from(teamApps);
+
+    const labelMore = t("n.more", { n: apps.length - 1 });
+    const teamLabelMore = t("n.more", { n: teamApps.length - 1 });
+    const appsLabel = t("see.also.your.n.apps", { n: apps.length });
+    const teamAppsLabel = t("see.also.your.n.team.apps", { n: teamApps.length });
 
     if (hasApp && apps.length > 1) {
       items.splice(1, items.length);
-      items.push({ label });
+      items.push({ label: labelMore });
     }
 
-    let picked = await window.showQuickPick(items, {
-      canPickMany: false,
-    });
+    if (hasTeamApp && teamApps.length > 1) {
+      teamItems.splice(1, teamItems.length);
+      teamItems.push({ label: teamLabelMore });
+    }
 
-    if (picked?.label === label) {
-      picked = await window.showQuickPick(apps, {
+    if (apps.length) {
+      teamItems.push({ label: appsLabel });
+    }
+
+    if (teamApps.length) {
+      items.push({ label: teamAppsLabel });
+    }
+
+    let isTeamApp = Boolean(hasTeamApp || options.startInTeamApps);
+    let picked: QuickPickItem | undefined;
+    do {
+      isTeamApp = picked?.label ? picked.label === teamAppsLabel : isTeamApp;
+
+      picked = await window.showQuickPick(picked?.label ?
+        picked.label === appsLabel ?
+          items :
+          teamItems :
+        hasTeamApp ?
+          teamItems :
+          options.startInTeamApps ?
+            teamItems :
+            items, {
         canPickMany: false,
       });
-    }
 
-    if (!picked) return;
+      if (picked?.label === labelMore) {
+        picked = await window.showQuickPick(picked?.label ?
+          picked.label === appsLabel ?
+            apps :
+            teamApps :
+          hasTeamApp ?
+            teamApps :
+            options.startInTeamApps ?
+              teamItems :
+              apps, {
+          canPickMany: false,
+        });
+      }
+    } while (picked?.label ? [appsLabel, teamAppsLabel].includes(picked.label) : false);
+
+    if (!picked) return {};
 
     const id = picked.description;
 
     task?.progress.report({ message: id });
 
-    return id;
+    return {
+      id,
+      isApp: !isTeamApp,
+      isTeamApp,
+    };
   }
 
   async pickAppMod(appId: string, task?: TaskData | null) {
@@ -104,73 +216,6 @@ export default abstract class Command {
     task?.progress.report({ message: picked.label });
 
     return mods.get(picked.label);
-  }
-
-  async pickTeamApp(task?: TaskData | null, ofTree: boolean = true) {
-    task?.progress.report({ message: t("choose.app") });
-
-    const apps = <QuickPickItem[]>[];
-    if (ofTree && extension.teamAppTree.children.size) {
-      for (const app of extension.teamAppTree.children.values()) {
-        apps.push({
-          description: app.appId,
-          label: [
-            app.data.name,
-            app.data.online ? t("online") : t("offline"),
-          ].join(" - "),
-        });
-      }
-    } else {
-      const res = await requester<RESTGetApiTeamResult>(Routes.team());
-      if (!res.apps?.length) return;
-      apps.push(...res.apps.map<QuickPickItem>(app => ({
-        description: app.id,
-        label: [
-          app.name,
-          app.online ? t("online") : t("offline"),
-        ].join(" - "),
-      })));
-    }
-
-    const dConfig = new DiscloudConfig(extension.workspaceFolder!);
-
-    let hasApp = false;
-
-    if (dConfig.exists && dConfig.data.ID) {
-      hasApp = apps.some(app => app.description === dConfig.data.ID!);
-
-      if (hasApp) {
-        apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
-
-        apps[0].picked = true;
-      }
-    }
-
-    const items = Array.from(apps);
-    const label = t("n.more", { n: apps.length - 1 });
-
-    if (hasApp && apps.length > 1) {
-      items.splice(1, items.length);
-      items.push({ label });
-    }
-
-    let picked = await window.showQuickPick(items, {
-      canPickMany: false,
-    });
-
-    if (picked?.label === label) {
-      picked = await window.showQuickPick(apps, {
-        canPickMany: false,
-      });
-    }
-
-    if (!picked) return;
-
-    const id = picked.description;
-
-    task?.progress.report({ message: id });
-
-    return id;
   }
 
   async confirmAction(data?: string | ActionOptions) {
@@ -239,4 +284,10 @@ interface Data {
   status?: string
   statusCode?: number
   message?: string
+}
+
+interface AppPickerOptions {
+  ofTree?: boolean
+  showOther?: boolean
+  startInTeamApps?: boolean
 }

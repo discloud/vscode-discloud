@@ -24,7 +24,8 @@ export default class extends Command {
     if (!workspaceFolder) throw Error("No workspace folder found");
 
     if (!item.appId) {
-      item.appId = await this.pickTeamApp(task, true);
+      const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
+      item.appId = picked.id;
       if (!item.appId) throw Error(t("missing.appid"));
     }
 
