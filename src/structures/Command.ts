@@ -161,15 +161,7 @@ export default abstract class Command {
     do {
       isTeamApp = picked?.label ? picked.label === teamAppsLabel : isTeamApp;
 
-      picked = await window.showQuickPick(picked?.label ?
-        picked.label === teamAppsLabel ?
-          teamItems :
-          items :
-        hasTeamApp ?
-          teamItems :
-          options.startInTeamApps ?
-            teamItems :
-            items, {
+      picked = await window.showQuickPick(isTeamApp ? teamItems : items, {
         canPickMany: false,
       });
 

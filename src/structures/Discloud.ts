@@ -191,6 +191,11 @@ class Discloud extends EventEmitter {
 
   activate(context: ExtensionContext) {
     this.context = context;
+    this.appTree = new AppTreeDataProvider("discloud-apps");
+    this.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
+    this.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
+    this.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
+    this.userTree = new UserTreeDataProvider("discloud-user");
     this.emit("activate", context);
   }
 }

@@ -1,13 +1,8 @@
 import { workspace } from "vscode";
 import { BaseApiApp } from "../@types";
 import extension from "../extension";
-import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
-import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
-import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
-import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
-import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
 extension.on("activate", (context) => {
@@ -18,12 +13,6 @@ extension.on("activate", (context) => {
 
   new CompletionItemProvider({ path: "discloudconfig.json" });
   new LanguageConfigurationProvider({ path: "discloudconfig.json" });
-
-  extension.appTree = new AppTreeDataProvider("discloud-apps");
-  extension.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
-  extension.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
-  extension.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
-  extension.userTree = new UserTreeDataProvider("discloud-user");
 
   extension.loadCommands();
 
