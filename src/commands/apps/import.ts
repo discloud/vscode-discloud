@@ -23,8 +23,11 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    let workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) {
+      workspaceFolder = await extension.getFolderDialog(task);
+      if (!workspaceFolder) throw Error("No workspace folder found");
+    }
 
     if (!item.appId) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
@@ -39,7 +42,7 @@ export default class extends Command {
     if (!backup.body) throw Error("Fail to request backup");
 
     const configImportDir = extension.config.get<string>("app.import.dir");
-    const importDir = join(workspaceFolder, configImportDir!);
+    const importDir = extension.workspaceAvailable ? join(workspaceFolder, configImportDir!) : workspaceFolder;
     const importFolderPath = join(importDir, res.backups.id);
     const importFilePath = `${importFolderPath}.zip`;
 
@@ -48,15 +51,16 @@ export default class extends Command {
 
     await writeFile(importFilePath, backup.body, "utf8");
 
-    new AdmZip(importFilePath).extractAllTo(join(importDir, res.backups.id));
+    new AdmZip(importFilePath)
+      .extractAllTo(extension.workspaceAvailable ? importFolderPath : importDir, true);
     unlinkSync(importFilePath);
 
     (async () => {
       const actionOk = t("open.dir");
       const action = await window.showInformationMessage(t("import.success"), actionOk);
       if (action === actionOk)
-        commands.executeCommand("vscode.openFolder", Uri.file(importFolderPath), {
-          forceNewWindow: true,
+        commands.executeCommand("vscode.openFolder", Uri.file(extension.workspaceAvailable ? importFolderPath : importDir), {
+          forceNewWindow: extension.workspaceAvailable,
         });
     })();
   }
