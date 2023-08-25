@@ -732,7 +732,7 @@
       "view/item/context": [
         {
           "command": "discloud.apps.backup",
-          "when": "view == discloud-apps && workspaceFolderCount && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength"
         },
         {
           "command": "discloud.apps.commit",
@@ -749,7 +749,7 @@
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloud-apps && workspaceFolderCount && viewItem == TreeItem && discloudAppLength"
+          "when": "view == discloud-apps && viewItem == TreeItem && discloudAppLength"
         },
         {
           "command": "discloud.apps.logs",
@@ -791,7 +791,7 @@
         },
         {
           "command": "discloud.team.backup",
-          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /backup_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && viewItem =~ /backup_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.commit",
@@ -804,7 +804,7 @@
         {
           "command": "discloud.team.import",
           "group": "inline",
-          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.logs",

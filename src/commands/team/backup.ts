@@ -22,8 +22,11 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
-    const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    let workspaceFolder = extension.workspaceFolder;
+    if (!workspaceFolder) {
+      workspaceFolder = await extension.getFolderDialog(task);
+      if (!workspaceFolder) throw Error("No workspace folder found");
+    }
 
     if (!item.appId) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
@@ -38,7 +41,7 @@ export default class extends Command {
     if (!backup.body) throw Error("Fail to request backup");
 
     const configBackupDir = extension.config.get<string>("team.backup.dir");
-    const backupDir = join(workspaceFolder, configBackupDir!);
+    const backupDir = extension.workspaceAvailable ? join(workspaceFolder, configBackupDir!) : workspaceFolder;
     const backupFolderPath = join(backupDir, res.backups.id);
     const backupFilePath = `${backupFolderPath}.zip`;
 

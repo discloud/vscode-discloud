@@ -90,6 +90,22 @@ class Discloud extends EventEmitter {
       .concat("discloud", `${workspace.name}.zip`);
   }
 
+  async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
+    task?.progress.report({ message: "Please select a folder." });
+
+    const uris = await window.showOpenDialog({
+      canSelectFolders: true,
+      title,
+      openLabel,
+    });
+
+    if (uris?.length) {
+      task?.progress.report({ message: "Folder selected." });
+    }
+
+    return uris?.[0].fsPath;
+  }
+
   async loadCommands(dir = join(__dirname, "..", "commands"), category = "discloud") {
     if (!existsSync(dir)) return;
 
