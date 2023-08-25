@@ -59,7 +59,7 @@ export default class extends Command {
       const actionOk = t("open.dir");
       const action = await window.showInformationMessage(t("import.success"), actionOk);
       if (action === actionOk)
-        commands.executeCommand("vscode.openFolder", Uri.file(importFolderPath), {
+        commands.executeCommand("vscode.openFolder", Uri.file(extension.workspaceAvailable ? importFolderPath : importDir), {
           forceNewWindow: extension.workspaceAvailable,
         });
     })();
