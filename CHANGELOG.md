@@ -6,6 +6,16 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.15.1
+
+### Bug fixes
+
+- Agora mostra quando não há registros
+
+### Features
+
+- Melhor organização do menu de contexto
+
 ## 2.15.0
 
 ### Features
