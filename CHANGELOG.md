@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.15.2
+
+### Bug fixes
+
+- Corrigido comando definir idioma
+
 ## 2.15.1
 
 ### Bug fixes
