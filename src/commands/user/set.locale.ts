@@ -31,7 +31,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error("Reject action");
 
-    const res = await extension.user.setLocale(locale);
+    const res = await extension.user.setLocale(locale).catch(r => r?.body);
 
     if (res.status === "ok")
       this.showApiMessage(res);
