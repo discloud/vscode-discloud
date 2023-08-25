@@ -732,10 +732,12 @@
       "view/item/context": [
         {
           "command": "discloud.apps.backup",
+          "group": "1",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
           "command": "discloud.apps.commit",
+          "group": "1",
           "when": "view == discloud-apps && workspaceFolderCount && discloudAppLength"
         },
         {
@@ -744,6 +746,12 @@
         },
         {
           "command": "discloud.apps.delete",
+          "group": "1",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.import",
+          "group": "1",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
@@ -770,10 +778,16 @@
         },
         {
           "command": "discloud.apps.restart",
+          "group": "0",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
           "command": "discloud.apps.start",
+          "group": "0",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.status",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
@@ -783,23 +797,32 @@
         },
         {
           "command": "discloud.apps.stop",
+          "group": "0",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
           "command": "discloud.upload",
+          "group": "inline",
           "when": "view == discloud-apps && workspaceFolderCount && !discloudAppLength"
         },
         {
           "command": "discloud.team.backup",
+          "group": "1",
           "when": "view == discloud-teams && viewItem =~ /backup_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.commit",
+          "group": "1",
           "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /commit_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.copy.id",
           "when": "view == discloud-teams && discloudTeamAppLength"
+        },
+        {
+          "command": "discloud.team.import",
+          "group": "1",
+          "when": "view == discloud-teams && viewItem =~ /backup_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.import",
@@ -821,10 +844,12 @@
         },
         {
           "command": "discloud.team.restart",
+          "group": "0",
           "when": "view == discloud-teams && viewItem =~ /restart_app/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.start",
+          "group": "0",
           "when": "view == discloud-teams && viewItem =~ /start_app/ && discloudTeamAppLength"
         },
         {
@@ -834,6 +859,7 @@
         },
         {
           "command": "discloud.team.stop",
+          "group": "0",
           "when": "view == discloud-teams && viewItem =~ /stop_app/ && discloudTeamAppLength"
         },
         {
