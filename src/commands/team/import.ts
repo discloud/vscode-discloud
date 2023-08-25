@@ -52,7 +52,7 @@ export default class extends Command {
     await writeFile(importFilePath, backup.body, "utf8");
 
     new AdmZip(importFilePath)
-      .extractAllTo(extension.workspaceAvailable ? importFolderPath : importDir);
+      .extractAllTo(extension.workspaceAvailable ? importFolderPath : importDir, true);
     unlinkSync(importFilePath);
 
     (async () => {
