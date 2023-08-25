@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RESTGetApiAppLogResult, Routes } from "discloud.app";
-import { ProgressLocation } from "vscode";
+import { ProgressLocation, window } from "vscode";
 import { TaskData } from "../../@types";
 import Command from "../../structures/Command";
 import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
@@ -24,7 +24,9 @@ export default class extends Command {
     }
 
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
-    if (!res.apps) throw Error("No log found");
+    if (!res.apps) {
+      return window.showErrorMessage(t("log404"));
+    };
 
     this.logger(res.apps.id, res.apps.terminal.big);
   }
