@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.15.0
+
+### Features
+
+- Agora você pode escolher aonde salvar o backup ou importar o código mesmo sem uma pasta aberta
+
 ## 2.14.5
 
 ### Bug fixes
