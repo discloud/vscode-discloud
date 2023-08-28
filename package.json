@@ -1143,7 +1143,7 @@
     "@types/archiver": "^5.3.2",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.5.6",
+    "@types/node": "^20.5.7",
     "@types/vscode": "^1.81.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
