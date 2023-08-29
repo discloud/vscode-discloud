@@ -8,7 +8,7 @@
   },
   "publisher": "discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
-  "version": "2.15.2",
+  "version": "2.16.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/discloud/vscode-discloud.git"
@@ -102,6 +102,14 @@
         "command": "discloud.apps.mods.rem",
         "title": "%command.apps.mods.rem%",
         "icon": "$(organization)"
+      },
+      {
+        "command": "discloud.apps.profile.avatar",
+        "title": "%command.apps.profile.avatar%"
+      },
+      {
+        "command": "discloud.apps.profile.name",
+        "title": "%command.apps.profile.name%"
       },
       {
         "command": "discloud.apps.ram",
@@ -549,6 +557,14 @@
           "when": "never"
         },
         {
+          "command": "discloud.apps.profile.avatar",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.profile.name",
+          "when": "never"
+        },
+        {
           "command": "discloud.apps.ram",
           "when": "never"
         },
@@ -770,6 +786,14 @@
         },
         {
           "submenu": "discloud.apps.mods",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.profile.avatar",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.profile.name",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {

@@ -12,6 +12,8 @@
   "command.apps.mods.add": "Adicionar MOD",
   "command.apps.mods.edit": "Editar MOD",
   "command.apps.mods.rem": "Remover MOD",
+  "command.apps.profile.avatar": "Definir avatar do app",
+  "command.apps.profile.name": "Definir nome do app",
   "command.apps.ram": "Definir quantidade de RAM do app",
   "command.apps.refresh": "Atualizar lista de app",
   "command.apps.restart": "Reiniciar app",
