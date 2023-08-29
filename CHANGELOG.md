@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.16.0
+
+### Features
+
+- Adicionado comandos para mudar avatar e nome dos apps
+
 ## 2.15.2
 
 ### Bug fixes
