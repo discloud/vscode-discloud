@@ -104,6 +104,14 @@
         "icon": "$(organization)"
       },
       {
+        "command": "discloud.apps.profile.avatar",
+        "title": "%command.apps.profile.avatar%"
+      },
+      {
+        "command": "discloud.apps.profile.name",
+        "title": "%command.apps.profile.name%"
+      },
+      {
         "command": "discloud.apps.ram",
         "title": "%command.apps.ram%",
         "icon": "$(circuit-board)"
@@ -549,6 +557,14 @@
           "when": "never"
         },
         {
+          "command": "discloud.apps.profile.avatar",
+          "when": "never"
+        },
+        {
+          "command": "discloud.apps.profile.name",
+          "when": "never"
+        },
+        {
           "command": "discloud.apps.ram",
           "when": "never"
         },
@@ -770,6 +786,14 @@
         },
         {
           "submenu": "discloud.apps.mods",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.profile.avatar",
+          "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.profile.name",
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
