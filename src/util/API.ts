@@ -8,7 +8,6 @@ import { RequestOptions } from "../@types";
 import extension from "../extension";
 import { DEFAULT_USER_AGENT } from "./constants";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let { maxUses, time, remain, tokenIsValid } = {
   maxUses: 60,
   time: 60,
@@ -93,10 +92,13 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     throw Error("Missing Connection");
   }
 
-  time = Number(response.headers["ratelimit-reset"]);
+  const reset = Number(response.headers["ratelimit-reset"]);
+  const limit = Number(response.headers["ratelimit-limit"]);
+  const remaining = Number(response.headers["ratelimit-remaining"]);
+  if (!isNaN(reset)) time = reset;
+  if (!isNaN(limit)) maxUses = limit;
+  if (!isNaN(remaining)) remain = remaining;
   initTimer();
-  maxUses = Number(response.headers["ratelimit-limit"]);
-  remain = Number(response.headers["ratelimit-remaining"]);
 
   if (!remain)
     extension.emit("rateLimited", {
