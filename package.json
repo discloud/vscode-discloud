@@ -950,7 +950,7 @@
       "discloudsub": [
         {
           "command": "discloud.commit",
-          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized && (discloudAppLength || discloudTeamAppLength)"
+          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized"
         },
         {
           "command": "discloud.create.config",
