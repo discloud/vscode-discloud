@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.16.1
+
+- Corrigido zip de arquivos duplicados
+
 ## 2.16.0
 
 ### Features
