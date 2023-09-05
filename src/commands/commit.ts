@@ -84,7 +84,9 @@ export default class extends Command {
     if ("status" in data) {
       this.showApiMessage(data);
 
-      await extension.appTree.getStatus(picked.id);
+      picked.isApp ?
+        await extension.appTree.getStatus(picked.id) :
+        await extension.teamAppTree.getStatus(picked.id);
 
       if (data.logs) this.logger(picked.id, data.logs);
     }

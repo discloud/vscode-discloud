@@ -5,7 +5,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { Dispatcher, request } from "undici";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
-import extension from "../extension";
+import extension, { logger } from "../extension";
 import { DEFAULT_USER_AGENT } from "./constants";
 
 let { maxUses, time, remain, tokenIsValid } = {
@@ -116,6 +116,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
+        logger.info(`${url} ${await response.body.json().catch(() => response.body.text()) }`);
         break;
     }
 
