@@ -119,10 +119,22 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
         break;
     }
 
-    throw Object.assign(response, { body: await response.body.json() });
+    if (response.headers["content-type"]?.includes("application/json"))
+      throw Object.assign(response, { body: await response.body.json() });
+
+    if (response.headers["content-type"]?.includes("text/"))
+      throw Object.assign(response, { body: await response.body.text() });
+
+    throw Object.assign(response, { body: await response.body.arrayBuffer() });
   }
 
-  return response.body.json() as T;
+  if (response.headers["content-type"]?.includes("application/json"))
+    return await response.body.json() as T;
+
+  if (response.headers["content-type"]?.includes("text/"))
+    return await response.body.text() as T;
+
+  return await response.body.arrayBuffer() as T;
 }
 
 export function tokenIsDiscloudJwt(token = extension.token): boolean {
