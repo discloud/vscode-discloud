@@ -22,6 +22,8 @@ export class Zip {
   appendUriList(uriList: Uri[], zipEmptyDirs = true) {
     if (!uriList?.length) return;
 
+    const zipped: string[] = [];
+
     for (const uri of uriList) {
       if (!existsSync(uri.fsPath)) continue;
 
@@ -31,7 +33,9 @@ export class Zip {
 
       const name = relative(workspaceFolder.uri.fsPath, uri.fsPath);
 
-      if (!name) continue;
+      if (!name || zipped.includes(uri.fsPath)) continue;
+
+      zipped.push(uri.fsPath);
 
       const stats = statSync(uri.fsPath);
 
