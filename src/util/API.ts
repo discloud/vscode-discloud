@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { discloud } from "discloud.app";
+import { RouteLike, discloud } from "discloud.app";
 import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "node:timers/promises";
 import { Dispatcher, request } from "undici";
@@ -8,45 +8,48 @@ import { RequestOptions } from "../@types";
 import extension, { logger } from "../extension";
 import { DEFAULT_USER_AGENT } from "./constants";
 
-let { maxUses, time, remain, tokenIsValid } = {
-  maxUses: 60,
-  time: 60,
+let { limit, remain, reset, time, timer, tokenIsValid } = {
+  limit: 60,
   remain: 60,
+  reset: 60,
+  time: 0,
+  timer: false,
   tokenIsValid: true,
 };
 
 export { tokenIsValid };
 
 async function initTimer() {
-  await sleep(time * 1000);
-  remain = maxUses;
+  if (timer) return;
+  timer = true;
+  await sleep(reset * 1000 + time - Date.now());
+  timer = false;
+  remain = limit;
+  if (extension.debug) logger.info("[ratelimit]: restored");
 }
 
 interface ProcessData {
   isVS: boolean
   method: RequestOptions["method"]
   path: string
-  url: string
 }
 
 const processes: string[] = [];
 const vsProcesses = new Map<string, ProcessData>();
 
-export async function requester<T = any>(url: string | URL, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
+export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
   if (!tokenIsValid) return <T>false;
 
   if (!remain) {
     extension.emit("rateLimited", {
+      reset,
       time,
     });
 
     return <T>false;
   }
 
-  url = url.toString();
-
-  const processPath = `/${url.split("/").slice(4).join("/") ?? url.split("/").at(-1)}`;
-  const processKey = `${config.method ??= "GET"}.${processPath}`;
+  const processKey = `${config.method ??= "GET"}.${path}`;
 
   if (isVS) {
     const existing = vsProcesses.get(processKey);
@@ -58,8 +61,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       vsProcesses.set(processKey, {
         isVS: true,
         method: config.method,
-        path: processPath,
-        url,
+        path: path,
       });
     }
   } else {
@@ -67,7 +69,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       window.showErrorMessage(t("process.already.running"));
       return <T>false;
     } else {
-      processes.push(processPath);
+      processes.push(path);
     }
   }
 
@@ -79,9 +81,12 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     "Content-Type": "application/json",
   } : {});
 
+  if (extension.debug)
+    logger.info("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
+
   let response: Dispatcher.ResponseData;
   try {
-    response = await request(`https://api.discloud.app/v2${url}`, config);
+    response = await request(`https://api.discloud.app/v2${path}`, config);
   } catch {
     if (isVS) {
       vsProcesses.delete(processKey);
@@ -92,16 +97,22 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
     throw Error("Missing Connection");
   }
 
-  const reset = Number(response.headers["ratelimit-reset"]);
-  const limit = Number(response.headers["ratelimit-limit"]);
-  const remaining = Number(response.headers["ratelimit-remaining"]);
-  if (!isNaN(reset)) time = reset;
-  if (!isNaN(limit)) maxUses = limit;
-  if (!isNaN(remaining)) remain = remaining;
+  time = Date.now();
+  const Limit = Number(response.headers["ratelimit-limit"]);
+  const Remaining = Number(response.headers["ratelimit-remaining"]);
+  const Reset = Number(response.headers["ratelimit-reset"]);
+  if (!isNaN(Limit)) limit = Limit;
+  if (!isNaN(Remaining)) remain = Remaining;
+  if (!isNaN(Reset)) reset = Reset;
   initTimer();
+
+  if (extension.debug) {
+    logger.info("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
+  }
 
   if (!remain)
     extension.emit("rateLimited", {
+      reset,
       time,
     });
 
@@ -116,7 +127,7 @@ export async function requester<T = any>(url: string | URL, config: RequestOptio
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
-        logger.info(`${url} ${await response.body.json().catch(() => response.body.text()) }`);
+        logger.info(`${path} ${await response.body.json().catch(() => response.body.text())}`);
         break;
     }
 

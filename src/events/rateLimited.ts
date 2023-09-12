@@ -5,17 +5,23 @@ import extension from "../extension";
 let timer: NodeJS.Timeout;
 
 extension.on("rateLimited", (rateLimitData) => {
+  if (isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
+
   clearTimeout(timer);
 
-  extension.logger.warn("Rate limited by " + rateLimitData.time + " seconds");
+  const reset = rateLimitData.reset * 1000 + rateLimitData.time - Date.now();
+
+  const time = Math.round(reset / 1000);
+
+  extension.logger.warn("Rate limited by " + time + " seconds");
 
   window.showInformationMessage(t("ratelimited", {
-    s: Math.floor(rateLimitData.time),
+    s: time,
   }));
 
   extension.statusBar.setRateLimited(true);
 
   timer = setTimeout(() => {
     extension.statusBar.setRateLimited(false);
-  }, rateLimitData.time * 1000);
+  }, reset);
 });
