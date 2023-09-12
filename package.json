@@ -341,6 +341,10 @@
       {
         "title": "Discloud",
         "properties": {
+          "discloud.debug": {
+            "type": "boolean",
+            "default": false
+          },
           "discloud.token": {
             "type": "string",
             "markdownDescription": "%config.token.description%"
