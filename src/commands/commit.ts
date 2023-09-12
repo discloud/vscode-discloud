@@ -55,17 +55,15 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      extension.emit("error", error);
       throw Error(error);
     }
 
     const form = new FormData();
     try {
       form.append("file", await resolveFile(savePath, zipName));
-      zipper.destroy();
+      if (!extension.debug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
-      extension.emit("error", error);
       throw Error(error);
     }
 
