@@ -17,14 +17,14 @@ import VSUser from "./VSUser";
 const fileExt = extname(__filename);
 
 interface Discloud extends EventEmitter {
-  on<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  on<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
-  once<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  once<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
   emit<K extends keyof Events>(event: K, ...args: Events[K]): boolean
   emit<S extends string | symbol>(event: Exclude<S, keyof Events>, ...args: unknown[]): boolean
   off<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
   off<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
+  on<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
+  on<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
+  once<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
+  once<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
 }
 
 class Discloud extends EventEmitter {
