@@ -44,6 +44,10 @@ class Discloud extends EventEmitter {
     super();
   }
 
+  get debug() {
+    return Boolean(this.config.get<boolean>("debug"));
+  }
+
   get config() {
     return workspace.getConfiguration("discloud");
   }
@@ -206,6 +210,7 @@ class Discloud extends EventEmitter {
   }
 
   activate(context: ExtensionContext) {
+    if (!context) return;
     this.context = context;
     this.appTree = new AppTreeDataProvider("discloud-apps");
     this.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
