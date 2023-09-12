@@ -20,6 +20,8 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   }
 
   protected _patch(data: Partial<UserTreeItemData & VSUser>): this {
+    if (!data) data = {};
+
     super._patch(data);
 
     this.userID ??= data.userID;

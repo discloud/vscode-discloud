@@ -27,6 +27,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
+    if (!data) data = {};
+
     super._patch(data);
 
     this.appId ??= data.appId ?? data.id;

@@ -24,6 +24,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   }
 
   protected _patch(data: Partial<AppTreeItemData & ApiVscodeApp>): this {
+    if (!data) data = {};
+
     super._patch(data);
 
     this.appId ??= data.appId ?? data.id ?? this.appId;

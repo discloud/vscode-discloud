@@ -84,7 +84,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   async getApps() {
     const res = await requester<RESTGetApiTeamResult>("/team", {}, true);
 
-    if (!res.apps) {
+    if (res && !res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
@@ -117,7 +117,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       | RESTGetApiAppAllStatusResult
     >(Routes.teamStatus(appId), {}, true);
 
-    if (!res.apps) {
+    if (res && !res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
