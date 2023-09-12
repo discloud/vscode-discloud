@@ -1,6 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { FileType, Uri, commands, env, workspace } from "vscode";
+import { logger } from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
 
 export const ALL_BLOCKED_FILES_IGNORE_PATTERN = `{${ALL_BLOCKED_FILES.join(",")}}`;
@@ -12,25 +13,30 @@ export interface FileSystemOptions {
 }
 
 export class FileSystem {
-  declare ignoreFile?: string;
-  ignoreList: string[] = ALL_BLOCKED_FILES;
+  declare readonly ignoreFile?: string;
+  readonly ignoreList = new Set(ALL_BLOCKED_FILES);
   ignorePattern: string = ALL_BLOCKED_FILES_IGNORE_PATTERN;
-  patterns: string[] = ["**"];
+  readonly patterns = new Set("**");
   found: Uri[] = [];
-  foundPath: string[] = [];
 
   constructor(public options: FileSystemOptions = {}) {
     if (!options) options = {};
 
     if (options.fileNames?.length) {
-      this.patterns = Array.from(new Set(FileSystem.transformFileListToGlobPatterns(options.fileNames)));
+      this.patterns.clear();
+
+      for (const filename of options.fileNames) {
+        this.patterns.add(filename);
+      };
     }
 
     if (options.ignoreFile) this.ignoreFile = options.ignoreFile;
 
     if (options.ignoreList?.length) {
-      this.ignoreList = Array.from(new Set(this.ignoreList.concat(options.ignoreList)));
-      this.ignorePattern = `{${this.ignoreList.join(",")}}`;
+      for (const ignore of options.ignoreList) {
+        this.ignoreList.add(ignore);
+      }
+      this.ignorePattern = `{${Array.from(this.ignoreList).join(",")}}`;
     }
   }
 
@@ -39,23 +45,15 @@ export class FileSystem {
     if (readSelectedPath)
       await this.#readSelectedPath();
 
-    const promises = this.patterns.flatMap((pattern) => {
-      if (pattern === "**") {
-        return workspace.findFiles(pattern, this.ignorePattern);
-      }
+    const promises = Array.from(this.patterns).flatMap((pattern) => [
+      workspace.findFiles(pattern, this.ignorePattern), // search a single file
+      workspace.findFiles(join(pattern, "**"), this.ignorePattern), // recursively search the directory
+    ]);
 
-      return [
-        workspace.findFiles(join("**", pattern), this.ignorePattern),
-        workspace.findFiles(join(pattern, "**"), this.ignorePattern),
-      ];
-    });
-
-    const uris = await Promise.all(promises)
+    this.found = await Promise.all(promises)
       .then(values => values.flat());
 
-    this.foundPath = uris.map(uri => uri.fsPath);
-
-    return this.found = uris;
+    return this.found;
   }
 
   async #findIgnoreFile() {
@@ -63,53 +61,54 @@ export class FileSystem {
 
     const patterns = await FileSystem.findIgnoreFile(this.ignoreFile, this.ignorePattern);
 
-    this.ignoreList = Array.from(new Set(this.ignoreList.concat(patterns)));
+    for (const pattern of patterns) {
+      this.ignoreList.add(pattern);
+    }
 
-    this.ignorePattern = `{${this.ignoreList.join(",")}}`;
+    this.ignorePattern = `{${Array.from(this.ignoreList).join(",")}}`;
   }
 
   async #readSelectedPath() {
     const files = FileSystem.transformFileListToGlobPatterns(await FileSystem.readSelectedPath(true));
 
-    if (this.options.fileNames?.length) {
-      this.patterns = Array.from(new Set(this.patterns.concat(files)));
-    } else {
-      this.patterns = files;
+    for (const file of files) {
+      this.patterns.add(file);
     }
   }
 
-  static async findIgnoreFile(fileName: string, ignoreList: string | string[]) {
+  static async findIgnoreFile(fileName: string, ignoreList: string | string[] | Set<string>) {
     if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
 
-    if (Array.isArray(ignoreList)) {
-      ignoreList = `{${ignoreList.join(",")}}`;
-    }
+    if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
+
+    if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList.join(",")}}`;
 
     const files = await workspace.findFiles(join("**", fileName), ignoreList);
 
-    const patterns = await Promise.all(files.map(async (f) => {
+    return await Promise.all(files.map(async (f) => {
       const stat = await workspace.fs.stat(f);
 
       if (stat.type !== FileType.File) return [];
 
       const fileBuffer = await workspace.fs.readFile(f);
 
-      const text = fileBuffer.toString();
-
-      return text
+      return fileBuffer.toString()
         .replace(/([\r\n]*\s*#.*)/g, "")
         .split(/([\r\n]+)/);
     }))
       .then(values => Array.from(new Set(values.flat())))
       .then(values => values.filter(Boolean))
       .then(values => values.flatMap(value => [value, join("**", value)]));
-
-    return patterns;
   }
 
-  static async readSelectedPath(relative = true) {
+  /**
+   * @param {boolean} relative
+   * @default true
+   */
+  static async readSelectedPath(relative: boolean = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
+    logger.info("File names:", copied);
     return copied.split(/[\r\n]+/);
   }
 

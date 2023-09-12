@@ -2,17 +2,14 @@ import { Archiver, ArchiverOptions, create } from "archiver";
 import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { isAbsolute, relative } from "node:path";
 import { Uri, workspace } from "vscode";
+import { logger } from "../extension";
 
 export class Zip {
-  declare stream: WriteStream;
-  declare zip: Archiver;
+  declare readonly stream: WriteStream;
+  declare readonly zip: Archiver;
 
   constructor(public file: string, format = "zip", public options: ArchiverOptions = {}) {
     if (existsSync(file)) try { rmSync(file); } catch { };
-    this.#create(file, format, options);
-  }
-
-  #create(file = this.file, format = "zip", options = this.options) {
     this.zip = create(format, options);
     writeFileSync(file, "");
     this.stream = createWriteStream(file);
@@ -25,6 +22,8 @@ export class Zip {
     const zipped: string[] = [];
 
     for (const uri of uriList) {
+      if (zipped.includes(uri.fsPath)) continue;
+
       if (!existsSync(uri.fsPath)) continue;
 
       const workspaceFolder = workspace.getWorkspaceFolder(uri);
@@ -33,7 +32,7 @@ export class Zip {
 
       const name = relative(workspaceFolder.uri.fsPath, uri.fsPath);
 
-      if (!name || zipped.includes(uri.fsPath)) continue;
+      if (!name) continue;
 
       zipped.push(uri.fsPath);
 
@@ -42,9 +41,11 @@ export class Zip {
       if (stats.isFile()) {
         this.zip.file(uri.fsPath, { name, stats });
       } else if (stats.isDirectory() && zipEmptyDirs) {
-        this.zip.file(uri.fsPath, { name, stats });
+        this.zip.directory(uri.fsPath, false);
       }
     }
+
+    logger.info("Zip:", zipped);
   }
 
   appendFileList(fileList: string[], targetPath: string, zipEmptyDirs?: boolean) {
