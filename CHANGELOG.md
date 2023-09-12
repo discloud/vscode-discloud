@@ -6,6 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.17.0
+
+- Configuração `discloud.debug` adicionada
+- Comandos `commit` e `upload` não apaga o zip caso a configuração `discloud.debug` esteja ativada
+- Refatoração das estruturas `FileSystem` e `Zip`
+- Refatoração e correção do `requester` e evento `rate limit`
+
 ## 2.16.2
 
 - Corrigido erro de desautorização commitando num app de equipe
