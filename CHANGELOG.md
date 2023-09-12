@@ -8,7 +8,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ## 2.17.4
 
-- Instalação do pacote `path-is-absolute` para correção de inutibilidade da extensão
+- Remoção do pacote `discloud.app` para correção de inutibilidade da extensão
 
 ## 2.17.0
 
