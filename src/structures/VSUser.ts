@@ -22,7 +22,8 @@ export default class VSUser {
     const res = await requester<RESTGetApiVscode>("/vscode", {
       headersTimeout: 60000,
     }, isVS);
-    if (!res) return;
+
+    if (!res) return this;
 
     if ("user" in res)
       Object.assign(this, res.user);

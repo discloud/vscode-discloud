@@ -125,7 +125,13 @@ class Discloud extends EventEmitter {
       if (file.isFile()) {
         if (!file.name.endsWith(fileExt)) continue;
 
-        const imported = await import(`${join(dir, file.name)}`);
+        let imported;
+        try {
+          imported = await import(`${join(dir, file.name)}`);
+        } catch (error) {
+          this.emit("error", error);
+          continue;
+        }
 
         let command: Command;
         try {
@@ -170,7 +176,7 @@ class Discloud extends EventEmitter {
 
         this.commands.set(commandName, command);
 
-        logger.info(commandName, disposable ? "registered ✅" : "failure ❌");
+        if (this.debug) logger.info(commandName, disposable ? "✅" : "❌");
 
         continue;
       }

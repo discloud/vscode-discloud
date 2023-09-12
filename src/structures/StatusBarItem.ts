@@ -12,7 +12,7 @@ export default class StatusBarItem implements IStatusBarItem {
     extension.subscriptions.push(this.data);
     bindFunctions(this.data);
     this.set(data);
-    this.originalData = this.extractData(this.data);
+    this.originalData = Object.assign(Object.create(this.data), this.data);
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -121,17 +121,6 @@ export default class StatusBarItem implements IStatusBarItem {
     if (this.limited) return;
 
     if (typeof text === "string") this.text = text;
-  }
-
-  protected extractData<T>(instance: T) {
-    const propertyNames = Object.getOwnPropertyNames(Object.getPrototypeOf(instance));
-
-    const data = <any>{};
-
-    for (const propertyName of propertyNames)
-      data[propertyName] = (<any>instance)[propertyName];
-
-    return <T>data;
   }
 
   get accessibilityInformation() {
