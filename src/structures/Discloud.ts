@@ -170,6 +170,8 @@ class Discloud extends EventEmitter {
 
         this.commands.set(commandName, command);
 
+        logger.info(commandName, disposable ? "registered ✅" : "failure ❌");
+
         continue;
       }
     }
