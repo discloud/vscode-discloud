@@ -1,10 +1,11 @@
+import { ApiStatusApp, ApiTeamApps } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
 import { TreeItemCollapsibleState } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
+import ModPermissionsBF, { ModPermissionsResolvable } from "../util/ModPermissionsBF";
 
 const totalModPerms = ModPermissionsBF.All.toArray().length;
 

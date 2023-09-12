@@ -1,10 +1,12 @@
+import { RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, ModPermissions, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
 import AppTreeItem from "./AppTreeItem";
+import ModPermissionsBF, { ModPermissions, ModPermissionsResolvable } from "../util/ModPermissionsBF";
+import { DiscloudConfig } from "../util/DiscloudConfig";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }

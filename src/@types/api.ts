@@ -1,4 +1,4 @@
-import type { ApiStatusApp, RESTApiBaseResult } from "discloud.app";
+import type { ApiStatusApp, RESTApiBaseResult } from "@discloudapp/api-types/v2";
 
 export interface RESTGetApiVscode extends RESTApiBaseResult {
   user: ApiVscodeUser

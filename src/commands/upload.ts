@@ -1,5 +1,5 @@
+import { RESTPostApiUploadResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, resolveFile, RESTPostApiUploadResult, Routes } from "discloud.app";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { FormData } from "undici";
@@ -7,7 +7,9 @@ import { ProgressLocation, window, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
-import { FileSystem, requester, Zip } from "../util";
+import { FileSystem, Zip, requester } from "../util";
+import { DiscloudConfig } from "../util/DiscloudConfig";
+import resolveFile from "../util/FileResolver";
 
 export default class extends Command {
   constructor() {

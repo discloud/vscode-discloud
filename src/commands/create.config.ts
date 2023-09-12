@@ -1,7 +1,7 @@
-import { DiscloudConfig } from "discloud.app";
 import { workspace } from "vscode";
 import extension from "../extension";
 import Command from "../structures/Command";
+import { DiscloudConfig } from "../util/DiscloudConfig";
 
 export default class extends Command {
   constructor() {

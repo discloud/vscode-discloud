@@ -1159,12 +1159,11 @@
     "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
+    "@discloudapp/api-types": "^0.4.0",
     "@vscode/l10n": "^0.0.16",
     "adm-zip": "^0.5.10",
     "archiver": "^6.0.1",
-    "discloud.app": "^0.8.1",
     "jsonwebtoken": "^9.0.2",
-    "path-is-absolute": "^2.0.0",
     "undici": "^5.24.0"
   },
   "devDependencies": {

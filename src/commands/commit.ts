@@ -1,5 +1,5 @@
+import { RESTPutApiAppCommitResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { join } from "node:path";
 import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
@@ -7,6 +7,7 @@ import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
 import { FileSystem, Zip, requester } from "../util";
+import resolveFile from "../util/FileResolver";
 
 export default class extends Command {
   constructor() {

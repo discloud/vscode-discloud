@@ -1,5 +1,5 @@
+import { RESTApiBaseResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RESTApiBaseResult, Routes } from "discloud.app";
 import { window } from "vscode";
 import { BaseApiApp, TaskData } from "../../../@types";
 import extension from "../../../extension";

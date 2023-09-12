@@ -1,5 +1,5 @@
+import { Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RouteLike, discloud } from "discloud.app";
 import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "node:timers/promises";
 import { Dispatcher, request } from "undici";
@@ -157,7 +157,12 @@ export function tokenIsDiscloudJwt(token = extension.token): boolean {
 export async function tokenValidator(token: string, isWorkspace?: boolean) {
   try {
     if (tokenIsDiscloudJwt(token)) {
-      await discloud.login(token);
+      await request(Routes.user(), {
+        headers: {
+          "api-token": extension.token,
+          "User-Agent": DEFAULT_USER_AGENT,
+        },
+      });
       tokenIsValid = true;
       extension.emit("authorized", token, isWorkspace);
       return true;
@@ -172,3 +177,5 @@ export async function tokenValidator(token: string, isWorkspace?: boolean) {
     return false;
   }
 }
+
+type RouteLike = `/${string}`;

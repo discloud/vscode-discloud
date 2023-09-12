@@ -1,5 +1,5 @@
+import { RESTGetApiAppBackupResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync, mkdirSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";

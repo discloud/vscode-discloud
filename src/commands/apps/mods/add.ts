@@ -1,10 +1,11 @@
+import { RESTPostApiAppTeamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { ModPermissions, RESTPostApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, QuickPickItem, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { requester } from "../../../util";
+import { ModPermissions } from "../../../util/ModPermissionsBF";
 
 export default class extends Command {
   constructor() {

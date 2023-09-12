@@ -1,4 +1,4 @@
-import { RESTPutApiLocaleResult, Routes } from "discloud.app";
+import { RESTPutApiLocaleResult, Routes } from "@discloudapp/api-types/v2";
 import { ApiVscodeApp, RESTGetApiVscode } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";

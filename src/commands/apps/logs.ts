@@ -1,5 +1,5 @@
+import { RESTGetApiAppLogResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
 import { TaskData } from "../../@types";
 import AppTreeItem from "../../structures/AppTreeItem";

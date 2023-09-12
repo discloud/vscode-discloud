@@ -1,6 +1,6 @@
+import { RESTGetApiAppBackupResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import * as AdmZip from "adm-zip";
-import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";

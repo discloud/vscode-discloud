@@ -1,5 +1,5 @@
+import { RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "discloud.app";
 import { ProviderResult, TreeItemCollapsibleState, commands, window } from "vscode";
 import { BaseApiApp } from "../@types";
 import extension from "../extension";
