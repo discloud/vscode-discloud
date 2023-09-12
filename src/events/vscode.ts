@@ -1,6 +1,6 @@
 import extension from "../extension";
 
-extension.on("vscode", (user) => {
+extension.on("vscode", async (user) => {
   // extension.logger.info("Get vscode");
 
   if (user)

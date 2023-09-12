@@ -5,16 +5,16 @@ import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenIsDiscloudJwt, tokenValidator } from "../util";
 
-extension.on("activate", (context) => {
+extension.on("activate", async (context) => {
   extension.logger.info("Activate: begin");
 
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
+  extension.loadCommands();
+
   new CompletionItemProvider({ path: "discloudconfig.json" });
   new LanguageConfigurationProvider({ path: "discloudconfig.json" });
-
-  extension.loadCommands();
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {

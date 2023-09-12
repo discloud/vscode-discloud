@@ -4,7 +4,7 @@ import extension from "../extension";
 
 let timer: NodeJS.Timeout;
 
-extension.on("rateLimited", (rateLimitData) => {
+extension.on("rateLimited", async (rateLimitData) => {
   if (isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
 
   clearTimeout(timer);

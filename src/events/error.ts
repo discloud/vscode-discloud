@@ -1,7 +1,7 @@
 import { window } from "vscode";
 import extension from "../extension";
 
-extension.on("error", (error) => {
+extension.on("error", async (error) => {
   const message = error?.body?.message ?? error;
 
   extension.logger.error(message);
