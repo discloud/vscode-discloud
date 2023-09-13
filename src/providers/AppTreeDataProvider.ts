@@ -72,8 +72,10 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   private clean(data: BaseApiApp[]) {
     let refresh;
 
+    const apps = data.map(app => app.id);
+
     for (const child of this.children.keys()) {
-      if (data.every(app => app.id !== child)) {
+      if (!apps.includes(child)) {
         refresh = this.children.delete(child);
       }
     }
