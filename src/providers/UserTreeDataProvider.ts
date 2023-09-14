@@ -9,7 +9,7 @@ export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeI
 
   update(user: VSUser) {
     this.children.clear();
-    this.children.set(user.userID!, new UserTreeItem(user));
+    this.children.set(`${user.userID}`, new UserTreeItem(user));
     this.refresh();
   }
 }
