@@ -35,6 +35,8 @@ export default class extends Command {
     }
 
     const res = await requester<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
+    if (!res) return;
+
     if (!res.backups) throw Error("No backup found");
 
     const backup = await fetch(res.backups.url);

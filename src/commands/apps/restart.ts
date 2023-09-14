@@ -30,6 +30,7 @@ export default class extends Command {
     const res = await requester<RESTPutApiAppRestartResult>(Routes.appRestart(item.appId), {
       method: "PUT",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);

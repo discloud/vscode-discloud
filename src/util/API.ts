@@ -34,8 +34,8 @@ const emitter = new EventEmitter({ captureRejections: true });
 const queueProcesses: string[] = [];
 const noQueueProcesses = new Set<string>();
 
-export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T> {
-  if (!tokenIsValid) return <T>false;
+export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T | null> {
+  if (!tokenIsValid) return null;
 
   if (!remain) {
     extension.emit("rateLimited", {
@@ -43,7 +43,7 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
       time,
     });
 
-    return <T>false;
+    return null;
   }
 
   const processKey = `${config.method ??= "GET"}.${path}`;
@@ -66,7 +66,7 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
   } else {
     if (queueProcesses.length) {
       window.showErrorMessage(t("process.already.running"));
-      return <T>false;
+      return null;
     } else {
       queueProcesses.push(processKey);
     }
@@ -80,8 +80,9 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
     "Content-Type": "application/json",
   } : {});
 
-  if (extension.debug)
+  if (extension.debug) {
     logger.info("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
+  }
 
   let response: Dispatcher.ResponseData;
   try {

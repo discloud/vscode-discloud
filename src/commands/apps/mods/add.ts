@@ -48,6 +48,7 @@ export default class extends Command {
       }),
       method: "POST",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);

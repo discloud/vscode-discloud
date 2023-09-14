@@ -191,7 +191,7 @@ export default abstract class Command {
     task?.progress.report({ message: t("choose.mod") });
 
     const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {}, true);
-    if (!res.team?.length) return;
+    if (!res?.team?.length) return;
 
     const mods = new Map(res.team.map(team => [team.modID, {
       id: team.modID,

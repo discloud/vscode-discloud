@@ -166,7 +166,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       | RESTGetApiAppAllStatusResult
     >(Routes.appStatus(appId), {}, true);
 
-    if (res && !res.apps) {
+    if (!res) return;
+
+    if (!res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:

@@ -37,6 +37,7 @@ export default class VSUser {
     const res = await requester<RESTPutApiLocaleResult>(Routes.locale(locale), {
       method: "PUT",
     });
+    if (!res) return null;
 
     if ("locale" in res)
       this.locale = res.locale;
