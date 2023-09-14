@@ -106,6 +106,8 @@ export default class extends Command {
 
     extension.resetStatusBar();
 
+    if (!res) return;
+
     if ("status" in res) {
       this.showApiMessage(res);
 

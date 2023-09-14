@@ -32,6 +32,7 @@ export default class extends Command {
     const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id), {
       method: "DELETE",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);

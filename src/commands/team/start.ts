@@ -27,6 +27,7 @@ export default class extends Command {
     const res = await requester<RESTPutApiAppStartResult>(Routes.teamStart(item.appId), {
       method: "PUT",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);

@@ -30,6 +30,7 @@ export default class extends Command {
     const res = await requester<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId), {
       method: "DELETE",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);

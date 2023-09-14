@@ -69,7 +69,7 @@ export default class extends Command {
 
     task.progress.report({ message: t("committing") });
 
-    const data = await requester<RESTPutApiAppCommitResult>(picked.isApp ?
+    const res = await requester<RESTPutApiAppCommitResult>(picked.isApp ?
       Routes.appCommit(picked.id) :
       Routes.teamCommit(picked.id), {
       body: form,
@@ -79,14 +79,16 @@ export default class extends Command {
 
     extension.resetStatusBar();
 
-    if ("status" in data) {
-      this.showApiMessage(data);
+    if (!res) return;
+
+    if ("status" in res) {
+      this.showApiMessage(res);
 
       picked.isApp ?
         await extension.appTree.getStatus(picked.id) :
         await extension.teamAppTree.getStatus(picked.id);
 
-      if (data.logs) this.logger(picked.id, data.logs);
+      if (res.logs) this.logger(picked.id, res.logs);
     }
   }
 }

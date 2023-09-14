@@ -51,6 +51,7 @@ export default class extends Command {
       }),
       method: "PUT",
     });
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);
