@@ -62,6 +62,8 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
       }).catch(() => null);
     }
 
+    if (!remain) return null;
+
     noQueueProcesses.add(processKey);
   } else {
     if (queueProcesses.length) {
