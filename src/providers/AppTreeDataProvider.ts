@@ -164,7 +164,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     const res = await requester<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
-    >(Routes.appStatus(appId));
+    >(Routes.appStatus(appId), {}, true);
 
     if (res && !res.apps) {
       if ("statusCode" in res) {

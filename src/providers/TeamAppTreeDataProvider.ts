@@ -84,7 +84,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   async getApps() {
-    const res = await requester<RESTGetApiTeamResult>("/team", {}, true);
+    const res = await requester<RESTGetApiTeamResult>("/team");
 
     if (res && !res.apps) {
       if ("statusCode" in res) {
