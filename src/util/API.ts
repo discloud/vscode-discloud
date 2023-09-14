@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
 import { RouteLike, discloud } from "discloud.app";
 import { decode } from "jsonwebtoken";
+import { EventEmitter } from "node:events";
 import { setTimeout as sleep } from "node:timers/promises";
 import { Dispatcher, request } from "undici";
 import { window } from "vscode";
@@ -28,16 +29,12 @@ async function initTimer() {
   if (extension.debug) logger.info("[ratelimit]: restored");
 }
 
-interface ProcessData {
-  isVS: boolean
-  method: RequestOptions["method"]
-  path: string
-}
+const emitter = new EventEmitter({ captureRejections: true });
 
-const processes: string[] = [];
-const vsProcesses = new Map<string, ProcessData>();
+const queueProcesses: string[] = [];
+const noQueueProcesses = new Set<string>();
 
-export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, isVS?: boolean): Promise<T> {
+export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T> {
   if (!tokenIsValid) return <T>false;
 
   if (!remain) {
@@ -51,25 +48,27 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
 
   const processKey = `${config.method ??= "GET"}.${path}`;
 
-  if (isVS) {
-    const existing = vsProcesses.get(processKey);
+  if (noQueue) {
+    while (noQueueProcesses.has(processKey)) {
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(), 10000);
 
-    if (existing) {
-      window.showErrorMessage(t("process.already.running"));
-      return <T>false;
-    } else {
-      vsProcesses.set(processKey, {
-        isVS: true,
-        method: config.method,
-        path: path,
-      });
+        emitter.once("resume", (key) => {
+          if (key === processKey) {
+            clearTimeout(timer);
+            resolve(key);
+          }
+        });
+      }).catch(() => null);
     }
+
+    noQueueProcesses.add(processKey);
   } else {
-    if (processes.length) {
+    if (queueProcesses.length) {
       window.showErrorMessage(t("process.already.running"));
       return <T>false;
     } else {
-      processes.push(path);
+      queueProcesses.push(processKey);
     }
   }
 
@@ -88,10 +87,11 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
   try {
     response = await request(`https://api.discloud.app/v2${path}`, config);
   } catch {
-    if (isVS) {
-      vsProcesses.delete(processKey);
+    if (noQueue) {
+      noQueueProcesses.delete(processKey);
+      emitter.emit("resume", processKey);
     } else {
-      processes.shift();
+      queueProcesses.shift();
     }
 
     throw Error("Missing Connection");
@@ -116,10 +116,11 @@ export async function requester<T = any>(path: RouteLike, config: RequestOptions
       time,
     });
 
-  if (isVS) {
-    vsProcesses.delete(processKey);
+  if (noQueue) {
+    noQueueProcesses.delete(processKey);
+    emitter.emit("resume", processKey);
   } else {
-    processes.shift();
+    queueProcesses.shift();
   }
 
   if (response.statusCode > 399) {
