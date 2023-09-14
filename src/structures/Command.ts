@@ -60,11 +60,11 @@ export default abstract class Command {
       const promises = [];
 
       if (!apps.length && (options.startInTeamApps ? options.showOther : true)) {
-        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all")).catch(() => null);
+        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all"), {}, true).catch(() => null);
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
-        promises[1] = requester<RESTGetApiTeamResult>(Routes.team()).catch(() => null);
+        promises[1] = requester<RESTGetApiTeamResult>(Routes.team(), {}, true).catch(() => null);
       }
 
       const [resApps, resTeamApps] = await Promise.all(promises) as [RESTGetApiAppAllResult, RESTGetApiTeamResult];
@@ -190,7 +190,7 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ message: t("choose.mod") });
 
-    const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId));
+    const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {}, true);
     if (!res.team?.length) return;
 
     const mods = new Map(res.team.map(team => [team.modID, {
