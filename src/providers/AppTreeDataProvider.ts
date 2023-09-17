@@ -121,12 +121,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const oldApp = app._clone();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.refresh(app._patch(data));
+      const clone = app._update(data);
 
-      extension.emit("appUpdate", oldApp, app);
+      this.refresh(app);
+
+      extension.emit("appUpdate", clone, app);
     } else {
       this.children.delete("x");
 
@@ -151,12 +150,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const oldApp = app._clone();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.refresh(app._patch(data));
+      const clone = app._update(data);
 
-      extension.emit("appUpdate", oldApp, app);
+      this.refresh(app);
+
+      extension.emit("appUpdate", clone, app);
     }
   }
 

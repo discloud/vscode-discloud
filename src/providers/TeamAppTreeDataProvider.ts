@@ -184,12 +184,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const oldApp = app._clone();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.refresh(app._patch(data));
+      const clone = app._update(data);
 
-      extension.emit("teamAppUpdate", oldApp, app);
+      this.refresh(app);
+
+      extension.emit("teamAppUpdate", clone, app);
     } else {
       this.children.set(data.id, new TeamAppTreeItem({
         collapsibleState: this.children.size ?
@@ -212,12 +211,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (app) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const oldApp = app._clone();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.refresh(app._patch(data));
+      const clone = app._update(data);
 
-      extension.emit("teamAppUpdate", oldApp, app);
+      this.refresh(app);
+
+      extension.emit("teamAppUpdate", clone, app);
     }
   }
 
