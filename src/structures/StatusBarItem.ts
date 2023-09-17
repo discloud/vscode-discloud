@@ -4,6 +4,12 @@ import { StatusBarItem as IStatusBarItem, ThemeColor, window, workspace } from "
 import extension from "../extension";
 import { bindFunctions, tokenIsValid } from "../util";
 
+enum EMOJIS {
+  commit = "git-commit",
+  logs = "console",
+  upload = "cloud-upload"
+}
+
 export default class StatusBarItem implements IStatusBarItem {
   protected readonly originalData: Omit<IStatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">;
   readonly data: IStatusBarItem;
@@ -92,9 +98,12 @@ export default class StatusBarItem implements IStatusBarItem {
       return this.setUpload();
     }
 
-    this.text = `$(console) ${this.text}`;
-    this.command = "discloud.logs";
-    this.tooltip = t("command.logs");
+    const behavior = extension.config.get<string>("status.bar.behavior");
+    const emoji = EMOJIS[<keyof typeof EMOJIS>behavior];
+
+    this.text = `$(${emoji}) ${this.text}`;
+    this.command = `discloud.${behavior}`;
+    this.tooltip = t(`command.${behavior}`);
   }
 
   setLoading() {

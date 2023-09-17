@@ -422,6 +422,22 @@
             "title": "%config.app.sort.online.title%",
             "markdownDescription": "%config.app.sort.online.description%"
           },
+          "discloud.status.bar.behavior": {
+            "type": "string",
+            "default": "logs",
+            "enum": [
+              "commit",
+              "logs",
+              "upload"
+            ],
+            "enumItemLabels": [
+              "%command.commit%",
+              "%command.logs%",
+              "%command.upload%"
+            ],
+            "title": "%config.status.bar.behavior.title%",
+            "markdownDescription": "%config.status.bar.behavior.description%"
+          },
           "discloud.team.backup.dir": {
             "type": "string",
             "default": "discloud/backup",

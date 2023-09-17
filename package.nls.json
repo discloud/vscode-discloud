@@ -55,6 +55,8 @@
   "config.auto.refresh.title": "Auto refresh",
   "config.auto.refresh.team.description": "Check this option to automatically update team apps.\n\n`Note: With this setting turned on, be aware that auto-update will make one more request to the Discloud API for every half of the value set in the auto-update setting.`",
   "config.auto.refresh.team.title": "Auto refresh team",
+  "config.status.bar.behavior.title": "Status bar behavior",
+  "config.status.bar.behavior.description": "Choose the status bar behavior (Default: logs)",
   "config.team.backup.dir.description": "Here you can change the place where backups will stay.\n\n`All files within this mass and subfolders will be ignored by Commit and Upload commands.`\n\n(Default: discloud/backup)",
   "config.team.backup.dir.title": "Your team app backup directory",
   "config.team.import.dir.description": "Here you can change the place where imports will stay.\n\n`All files within this mass and subfolders will be ignored by Commit and Upload commands.`\n\n(Default: discloud/import)",
