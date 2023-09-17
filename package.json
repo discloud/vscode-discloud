@@ -54,6 +54,11 @@
         "icon": "$(log-in)"
       },
       {
+        "command": "discloud.logs",
+        "title": "%command.logs%",
+        "icon": "$(console)"
+      },
+      {
         "command": "discloud.upload",
         "title": "%command.upload%",
         "icon": "$(cloud-upload)"
@@ -417,6 +422,22 @@
             "title": "%config.app.sort.online.title%",
             "markdownDescription": "%config.app.sort.online.description%"
           },
+          "discloud.status.bar.behavior": {
+            "type": "string",
+            "default": "logs",
+            "enum": [
+              "commit",
+              "logs",
+              "upload"
+            ],
+            "enumItemLabels": [
+              "%command.commit%",
+              "%command.logs%",
+              "%command.upload%"
+            ],
+            "title": "%config.status.bar.behavior.title%",
+            "markdownDescription": "%config.status.bar.behavior.description%"
+          },
           "discloud.team.backup.dir": {
             "type": "string",
             "default": "discloud/backup",
@@ -519,6 +540,10 @@
         {
           "command": "discloud.login",
           "when": "true"
+        },
+        {
+          "command": "discloud.logs",
+          "when": "false"
         },
         {
           "command": "discloud.upload",
@@ -897,6 +922,11 @@
       ],
       "view/title": [
         {
+          "command": "discloud.upload",
+          "when": "view == discloud-apps && workspaceFolderCount && !discloudTokenUnauthorized",
+          "group": "navigation"
+        },
+        {
           "command": "discloud.apps.refresh",
           "when": "view == discloud-apps",
           "group": "navigation"
@@ -959,6 +989,10 @@
         {
           "command": "discloud.create.config",
           "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.upload",
+          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized"
         }
       ],
       "discloud.apps.mods": [

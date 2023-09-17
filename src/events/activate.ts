@@ -40,6 +40,10 @@ extension.on("activate", async (context) => {
         extension.appTree.edit(id, <BaseApiApp>{ id });
       }
     }
+
+    if (event.affectsConfiguration("discloud.status.bar.behavior")) {
+      extension.statusBar.setDefault();
+    }
   });
 
   const disposableWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
@@ -56,7 +60,7 @@ extension.on("activate", async (context) => {
   );
 
   if (tokenIsDiscloudJwt(extension.token)) {
-    extension.statusBar.setUpload();
+    extension.statusBar.setDefault();
     extension.user.fetch(true);
   } else {
     extension.statusBar.setLogin();

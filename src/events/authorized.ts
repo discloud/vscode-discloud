@@ -10,7 +10,7 @@ extension.on("authorized", async (token, isWorkspace) => {
 
   extension.config.update("token", token, true);
 
-  extension.statusBar.setUpload();
+  extension.statusBar.setDefault();
 
   extension.logger.info("Authorized");
 });

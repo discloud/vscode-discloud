@@ -31,5 +31,6 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
 
   refresh(data: T | T[] | null | undefined | void) {
     this._onDidChangeTreeData.fire(data);
+    extension.statusBar.setDefault();
   }
 }
