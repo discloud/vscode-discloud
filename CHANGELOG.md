@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.18.0
+
+### Features
+
+- Mudança de comportamento da status bar (após upload você pode simplesmente clicar na status bar para ver os logs, commitar ou fazer upload - como sempre - alterando a configuração `discloud.status.bar.behavior`)
+
 ## 2.17.7
 
 - Refatoração de filas do API requester
