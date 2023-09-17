@@ -1,4 +1,5 @@
 import { t } from "@vscode/l10n";
+import { DiscloudConfig } from "discloud.app";
 import { StatusBarItem as IStatusBarItem, ThemeColor, window, workspace } from "vscode";
 import extension from "../extension";
 import { bindFunctions, tokenIsValid } from "../util";
@@ -45,7 +46,7 @@ export default class StatusBarItem implements IStatusBarItem {
     this.tooltip = data.tooltip ?? this.originalData.tooltip;
 
     if (this.token && tokenIsValid) {
-      this.setUpload();
+      this.setDefault();
     } else {
       this.setLogin();
     }
@@ -61,14 +62,6 @@ export default class StatusBarItem implements IStatusBarItem {
     this.tooltip = data.tooltip ?? this.data.tooltip;
   }
 
-  setLogin() {
-    if (this.limited) return;
-
-    this.command = "discloud.login";
-    this.text = t("status.text.login");
-    this.tooltip = t("status.tooltip.login");
-  }
-
   setCommitting() {
     if (this.limited) return;
 
@@ -77,12 +70,47 @@ export default class StatusBarItem implements IStatusBarItem {
     this.tooltip = undefined;
   }
 
+  setDefault() {
+    if (this.limited) return;
+
+    if (!extension.workspaceFolder) return this.setUpload();
+
+    const dConfig = new DiscloudConfig(extension.workspaceFolder);
+
+    if (!dConfig.data.ID) return this.setUpload();
+
+    const app = extension.appTree.children.get(dConfig.data.ID) ??
+      extension.teamAppTree.children.get(dConfig.data.ID);
+
+    if (!app) return this.setUpload();
+
+    if (typeof app.label === "string") {
+      this.text = app.label;
+    } else if (app.data.name || app.data.description) {
+      this.text = app.data.name || app.data.description!;
+    } else {
+      return this.setUpload();
+    }
+
+    this.text = `$(console) ${this.text}`;
+    this.command = "discloud.logs";
+    this.tooltip = t("command.logs");
+  }
+
   setLoading() {
     if (this.limited) return;
 
     this.command = undefined;
     this.text = t("status.text.loading");
     this.tooltip = undefined;
+  }
+
+  setLogin() {
+    if (this.limited) return;
+
+    this.command = "discloud.login";
+    this.text = t("status.text.login");
+    this.tooltip = t("status.tooltip.login");
   }
 
   setRateLimited(limited?: boolean) {
@@ -101,6 +129,12 @@ export default class StatusBarItem implements IStatusBarItem {
     }
   }
 
+  setText(text: string) {
+    if (this.limited) return;
+
+    if (typeof text === "string") this.text = text;
+  }
+
   setUpload() {
     if (this.limited) return;
 
@@ -115,12 +149,6 @@ export default class StatusBarItem implements IStatusBarItem {
     this.command = undefined;
     this.text = t("status.text.uploading");
     this.tooltip = undefined;
-  }
-
-  setText(text: string) {
-    if (this.limited) return;
-
-    if (typeof text === "string") this.text = text;
   }
 
   get accessibilityInformation() {

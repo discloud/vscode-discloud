@@ -56,7 +56,7 @@ extension.on("activate", async (context) => {
   );
 
   if (tokenIsDiscloudJwt(extension.token)) {
-    extension.statusBar.setUpload();
+    extension.statusBar.setDefault();
     extension.user.fetch(true);
   } else {
     extension.statusBar.setLogin();

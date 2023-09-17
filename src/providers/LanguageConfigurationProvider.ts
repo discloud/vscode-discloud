@@ -44,10 +44,13 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
   activate() {
     const disposable = workspace.onDidChangeTextDocument((event) => {
-      if (event.document.languageId === this.data.rules.languageId)
+      if (event.document.languageId === this.data.rules.languageId) {
         for (const _ of event.contentChanges) {
           this.checkDocument(event.document);
         }
+
+        extension.statusBar.setDefault();
+      }
     });
 
     extension.subscriptions.push(disposable);
@@ -55,8 +58,8 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
   }
 
   deactivate() {
-    for (let i = 0; i < this.disposableDocuments.length;) {
-      this.disposableDocuments.shift()?.dispose();
+    for (const disposable of this.disposableDocuments.splice(0)) {
+      disposable.dispose();
     }
   }
 

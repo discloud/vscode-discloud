@@ -54,6 +54,11 @@
         "icon": "$(log-in)"
       },
       {
+        "command": "discloud.logs",
+        "title": "%command.logs%",
+        "icon": "$(console)"
+      },
+      {
         "command": "discloud.upload",
         "title": "%command.upload%",
         "icon": "$(cloud-upload)"
@@ -521,6 +526,10 @@
           "when": "true"
         },
         {
+          "command": "discloud.logs",
+          "when": "false"
+        },
+        {
           "command": "discloud.upload",
           "when": "workspaceFolderCount"
         },
@@ -897,6 +906,11 @@
       ],
       "view/title": [
         {
+          "command": "discloud.upload",
+          "when": "view == discloud-apps && workspaceFolderCount && !discloudTokenUnauthorized",
+          "group": "navigation"
+        },
+        {
           "command": "discloud.apps.refresh",
           "when": "view == discloud-apps",
           "group": "navigation"
@@ -959,6 +973,10 @@
         {
           "command": "discloud.create.config",
           "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.upload",
+          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized"
         }
       ],
       "discloud.apps.mods": [
