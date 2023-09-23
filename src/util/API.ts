@@ -15,7 +15,7 @@ let { limit, remain, reset, time, timer, tokenIsValid } = {
   reset: 60,
   time: 0,
   timer: false,
-  tokenIsValid: true,
+  tokenIsValid: false,
 };
 
 export { tokenIsValid };
@@ -161,8 +161,13 @@ export function tokenIsDiscloudJwt(token = extension.token): boolean {
 export async function tokenValidator(token: string, isWorkspace?: boolean) {
   try {
     if (tokenIsDiscloudJwt(token)) {
-      await discloud.login(token);
-      tokenIsValid = true;
+      if (extension.token === token) {
+        tokenIsValid = true;
+        await extension.user.fetch(true);
+        discloud.rest.setToken(token);
+      } else {
+        await discloud.login(token);
+      }
       extension.emit("authorized", token, isWorkspace);
       return true;
     } else {
@@ -171,8 +176,6 @@ export async function tokenValidator(token: string, isWorkspace?: boolean) {
       return false;
     }
   } catch {
-    tokenIsValid = false;
-    extension.emit("unauthorized");
     return false;
   }
 }

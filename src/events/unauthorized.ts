@@ -5,8 +5,7 @@ extension.on("unauthorized", async () => {
   commands.executeCommand("setContext", "discloudTokenAuthorized", false);
   commands.executeCommand("setContext", "discloudTokenUnauthorized", true);
 
-  extension.userTree.children.clear();
-  extension.userTree.refresh();
+  extension.userTree.clear();
 
   extension.statusBar.setLogin();
 

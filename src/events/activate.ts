@@ -3,7 +3,7 @@ import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
-import { tokenIsDiscloudJwt, tokenValidator } from "../util";
+import { tokenValidator } from "../util";
 
 extension.on("activate", async (context) => {
   extension.logger.info("Activate: begin");
@@ -25,24 +25,34 @@ extension.on("activate", async (context) => {
       } else {
         extension.emit("missingToken");
       }
+
+      return;
     }
 
     if (event.affectsConfiguration("discloud.app.sort")) {
       extension.appTree.refresh();
+
+      return;
     }
 
     if (event.affectsConfiguration("discloud.team.sort")) {
       extension.teamAppTree.refresh();
+
+      return;
     }
 
     if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
       for (const id of extension.appTree.children.keys()) {
         extension.appTree.edit(id, <BaseApiApp>{ id });
       }
+
+      return;
     }
 
     if (event.affectsConfiguration("discloud.status.bar.behavior")) {
       extension.statusBar.setDefault();
+
+      return;
     }
   });
 
@@ -59,12 +69,7 @@ extension.on("activate", async (context) => {
     disposableWorkspaceFolders,
   );
 
-  if (tokenIsDiscloudJwt(extension.token)) {
-    extension.statusBar.setDefault();
-    extension.user.fetch(true);
-  } else {
-    extension.statusBar.setLogin();
-  }
-
   extension.logger.info("Activate: done");
+
+  await tokenValidator(extension.token!);
 });
