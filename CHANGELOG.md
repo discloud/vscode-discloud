@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.18.3
+
+- Correção de validação de autenticação do token
+- `discloud.config` `AVATAR` e `NAME` serão atualizados após comandos de editar os mesmos
+
 ## 2.18.0
 
 ### Features
