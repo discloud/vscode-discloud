@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { RESTApiBaseResult, Routes } from "discloud.app";
+import { DiscloudConfig, RESTApiBaseResult, Routes } from "discloud.app";
 import { window } from "vscode";
 import { BaseApiApp, TaskData } from "../../../@types";
 import extension from "../../../extension";
@@ -43,8 +43,11 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      if (res.status === "ok")
+      if (res.status === "ok") {
         extension.appTree.edit(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
+
+        new DiscloudConfig(extension.workspaceFolder!).update({ AVATAR: avatarURL });
+      }
     }
   }
 }
