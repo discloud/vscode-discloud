@@ -19,7 +19,6 @@ export default class extends Command {
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
       item = picked.app;
-      if (!item) throw Error(t("missing.appid"));
     }
 
     item = extension.teamAppTree.children.get(item.appId)!;

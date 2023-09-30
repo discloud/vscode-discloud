@@ -16,7 +16,6 @@ export default class extends Command {
     if (!item) {
       const picked = await this.pickAppOrTeamApp(null);
       item = picked.app;
-      if (!item) throw Error(t("missing.appid"));
     }
 
     await env.clipboard.writeText(item.appId);

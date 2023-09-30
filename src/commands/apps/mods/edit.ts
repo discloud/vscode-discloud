@@ -20,7 +20,6 @@ export default class extends Command {
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
       item = picked.app;
-      if (!item) throw Error(t("missing.appid"));
     }
 
     const mod = await this.pickAppMod(item.appId, task);

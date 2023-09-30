@@ -32,13 +32,13 @@ export default class extends Command {
             item.appId = dConfig.data.ID;
           }
         }
+
+        if (!item.appId) throw Error(t("missing.appid"));
       } else {
         const picked = await this.pickAppOrTeamApp(task);
         item.appId = picked.id;
         item.isApp = picked.isApp;
       }
-
-      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const res = await requester<RESTGetApiAppLogResult>(item.isApp ?

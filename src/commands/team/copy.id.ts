@@ -16,7 +16,6 @@ export default class extends Command {
     if (!item) {
       const picked = await this.pickAppOrTeamApp(null, { startInTeamApps: true });
       item = picked.app;
-      if (!item) return window.showWarningMessage(t("missing.team.appid"));
     }
 
 

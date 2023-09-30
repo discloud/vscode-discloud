@@ -12,29 +12,33 @@ export default abstract class Command {
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
-  pickAppOrTeamApp(task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps?: false }): Promise<{
-    app?: AppTreeItem;
-    id?: string;
-    isApp: true;
-    isTeamApp: false;
-  }>;
-  pickAppOrTeamApp(task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true }): Promise<{
-    app?: TeamAppTreeItem;
-    id?: string;
-    isApp: false;
-    isTeamApp: true;
-  }>;
-  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<{
-    app?: AppTreeItem | TeamAppTreeItem;
-    id?: string;
-    isApp?: boolean;
-    isTeamApp?: boolean;
-  }>;
-  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}) {
-    options = Object.assign({
+  pickAppOrTeamApp(
+    task: TaskData | null,
+    options: AppPickerOptions & { showOther: false, startInTeamApps?: false, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResponse<AppTreeItem>>>;
+  pickAppOrTeamApp(
+    task: TaskData | null,
+    options: AppPickerOptions & { showOther: false, startInTeamApps?: false }
+  ): Promise<AppPickerResponse<AppTreeItem>>;
+  pickAppOrTeamApp(
+    task: TaskData | null,
+    options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResponse<TeamAppTreeItem>>>;
+  pickAppOrTeamApp(
+    task: TaskData | null,
+    options: AppPickerOptions & { showOther: false, startInTeamApps: true }
+  ): Promise<AppPickerResponse<TeamAppTreeItem>>;
+  pickAppOrTeamApp(
+    task: TaskData | null,
+    options: AppPickerOptions & { throwOnCancel: false }
+  ): Promise<Partial<AppPickerResponse>>;
+  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<AppPickerResponse>;
+  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}): Promise<Partial<AppPickerResponse>> {
+    options = Object.assign(<AppPickerOptions>{
       ofTree: true,
       showOther: true,
       startInTeamApps: false,
+      throwOnCancel: true,
     }, options);
 
     task?.progress.report({ message: t("choose.app") });
@@ -193,7 +197,12 @@ export default abstract class Command {
       }
     } while (picked?.label ? [appsLabel, teamAppsLabel].includes(picked.label) : false);
 
-    if (!picked) return {};
+    if (!picked) {
+      if (options.throwOnCancel)
+        throw Error(t("missing.appid"));
+
+      return {};
+    }
 
     const id = picked.description;
 
@@ -316,4 +325,13 @@ interface AppPickerOptions {
   showOther?: boolean
   /** @default false */
   startInTeamApps?: boolean
+  /** @default true */
+  throwOnCancel?: boolean
+}
+
+interface AppPickerResponse<AppType extends AppTreeItem | TeamAppTreeItem = AppTreeItem | TeamAppTreeItem> {
+  app: AppType;
+  id: string;
+  isApp: boolean;
+  isTeamApp: boolean;
 }
