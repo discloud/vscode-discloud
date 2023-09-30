@@ -22,17 +22,16 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
+  async run(task: TaskData, item?: AppTreeItem) {
     let workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
       if (!workspaceFolder) throw Error("No workspace folder found");
     }
 
-    if (!item.appId) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
     }
 
     const res = await requester<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));

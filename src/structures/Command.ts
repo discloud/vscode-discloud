@@ -1,21 +1,39 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, ModPermissions, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { QuickPickItem, Uri, window } from "vscode";
+import { LogOutputChannel, QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
 import AppTreeItem from "./AppTreeItem";
+import TeamAppTreeItem from "./TeamAppTreeItem";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
-  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}) {
-    options = Object.assign({
+  pickAppOrTeamApp(
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult<TeamAppTreeItem>>>;
+  pickAppOrTeamApp(
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult<AppTreeItem>>>;
+  pickAppOrTeamApp(
+    task: TaskData | null, options: AppPickerOptions & { throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult>>;
+  pickAppOrTeamApp(
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true }
+  ): Promise<AppPickerResult<TeamAppTreeItem>>;
+  pickAppOrTeamApp(
+    task: TaskData | null, options: AppPickerOptions & { showOther: false }
+  ): Promise<AppPickerResult<AppTreeItem>>;
+  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<AppPickerResult>;
+  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}): Promise<Partial<AppPickerResult>> {
+    options = Object.assign(<AppPickerOptions>{
       ofTree: true,
       showOther: true,
       startInTeamApps: false,
+      throwOnCancel: true,
     }, options);
 
     task?.progress.report({ message: t("choose.app") });
@@ -174,13 +192,19 @@ export default abstract class Command {
       }
     } while (picked?.label ? [appsLabel, teamAppsLabel].includes(picked.label) : false);
 
-    if (!picked) return {};
+    if (!picked) {
+      if (options.throwOnCancel)
+        throw Error(t("missing.appid"));
+
+      return {};
+    }
 
     const id = picked.description;
 
     task?.progress.report({ message: id });
 
     return {
+      app: isTeamApp ? extension.teamAppTree.children.get(id!) : extension.appTree.children.get(id!),
       id,
       isApp: !isTeamApp,
       isTeamApp,
@@ -234,10 +258,18 @@ export default abstract class Command {
     return quickPick === actionOk;
   }
 
-  logger(name: string, log: string, show = true) {
-    const output = window.createOutputChannel(name, { log: true });
+  /**
+   * @param show
+   * @default true
+   */
+  logger(output: LogOutputChannel | string, log: string, show?: boolean): void;
+  logger(output: LogOutputChannel, log: string, show?: boolean): void;
+  logger(output: LogOutputChannel, log: string, show = true) {
+    if (typeof output === "string") {
+      output = window.createOutputChannel(output, { log: true });
+    }
 
-    output.info(log);
+    output.info("\n" + log);
 
     if (show) {
       output.show(false);
@@ -282,7 +314,19 @@ interface Data {
 }
 
 interface AppPickerOptions {
+  /** @default true */
   ofTree?: boolean
+  /** @default true */
   showOther?: boolean
+  /** @default false */
   startInTeamApps?: boolean
+  /** @default true */
+  throwOnCancel?: boolean
+}
+
+interface AppPickerResult<AppType extends AppTreeItem | TeamAppTreeItem = AppTreeItem | TeamAppTreeItem> {
+  app: AppType;
+  id: string;
+  isApp: boolean;
+  isTeamApp: boolean;
 }

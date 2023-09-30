@@ -1,8 +1,9 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
-import { StatusBarItem as IStatusBarItem, ThemeColor, window, workspace } from "vscode";
+import { StatusBarItem, ThemeColor, workspace } from "vscode";
 import extension from "../extension";
-import { bindFunctions, tokenIsValid } from "../util";
+import { tokenIsValid } from "../util";
+import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {
   commit = "git-commit",
@@ -10,16 +11,9 @@ enum EMOJIS {
   upload = "cloud-upload"
 }
 
-export default class StatusBarItem implements IStatusBarItem {
-  protected readonly originalData: Omit<IStatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">;
-  readonly data: IStatusBarItem;
-
-  constructor(data: Partial<Omit<IStatusBarItem, "dispose" | "hide" | "show">>) {
-    this.data = window.createStatusBarItem(data.alignment, data.priority);
-    extension.subscriptions.push(this.data);
-    bindFunctions(this.data);
-    this.set(data);
-    this.originalData = Object.assign(Object.create(this.data), this.data);
+export default class DiscloudStatusBarItem extends BaseStatusBarItem {
+  constructor(data: Partial<Omit<StatusBarItem, "dispose" | "hide" | "show">>) {
+    super(data);
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -40,32 +34,16 @@ export default class StatusBarItem implements IStatusBarItem {
     return extension.config.get<string>("token");
   }
 
-  reset(data: Partial<IStatusBarItem> = this.originalData) {
+  reset(data: Partial<Omit<StatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">> = this.originalData) {
     if (this.limited) return;
 
-    this.accessibilityInformation = data.accessibilityInformation ?? this.originalData.accessibilityInformation;
-    this.backgroundColor = data.backgroundColor ?? this.originalData.backgroundColor;
-    this.color = data.color ?? this.originalData.color;
-    this.command = data.command ?? this.originalData.command;
-    this.name = data.name ?? this.originalData.name;
-    this.text = data.text ?? this.originalData.text;
-    this.tooltip = data.tooltip ?? this.originalData.tooltip;
+    super.reset(data);
 
     if (this.token && tokenIsValid) {
       this.setDefault();
     } else {
       this.setLogin();
     }
-  }
-
-  set(data: Partial<IStatusBarItem>) {
-    this.accessibilityInformation = data.accessibilityInformation ?? this.data.accessibilityInformation;
-    this.backgroundColor = data.backgroundColor ?? this.data.backgroundColor;
-    this.color = data.color ?? this.data.color;
-    this.command = data.command ?? this.data.command;
-    this.name = data.name ?? this.data.name;
-    this.text = data.text ?? this.data.text;
-    this.tooltip = data.tooltip ?? this.data.tooltip;
   }
 
   setCommitting() {
@@ -158,66 +136,5 @@ export default class StatusBarItem implements IStatusBarItem {
     this.command = undefined;
     this.text = t("status.text.uploading");
     this.tooltip = undefined;
-  }
-
-  get accessibilityInformation() {
-    return this.data.accessibilityInformation;
-  }
-  set accessibilityInformation(accessibilityInformation) {
-    this.data.accessibilityInformation = accessibilityInformation;
-  }
-  get alignment() {
-    return this.data.alignment;
-  }
-  get backgroundColor() {
-    return this.data.backgroundColor;
-  }
-  set backgroundColor(backgroundColor) {
-    this.data.backgroundColor = backgroundColor;
-  }
-  get color() {
-    return this.data.color;
-  }
-  set color(color) {
-    this.data.color = color;
-  }
-  get command() {
-    return this.data.command;
-  }
-  set command(command) {
-    this.data.command = command;
-  }
-  get dispose() {
-    return this.data.dispose;
-  }
-  get hide() {
-    return this.data.hide;
-  }
-  get id() {
-    return this.data.id;
-  }
-  get name() {
-    return this.data.name;
-  }
-  set name(name) {
-    this.data.name = name;
-  }
-  get priority() {
-    return this.data.priority;
-  }
-  get show() {
-    return this.data.show;
-  }
-  get text() {
-    return this.data.text;
-  }
-  set text(text) {
-    this.data.text = text;
-  }
-  get tooltip() {
-    return this.data.tooltip;
-  }
-  set tooltip(tooltip) {
-    this.data.tooltip = tooltip;
   }
 }

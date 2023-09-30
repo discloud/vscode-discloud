@@ -3,18 +3,14 @@ import extension from "../extension";
 import BaseTreeItem from "../structures/BaseTreeItem";
 
 export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> implements TreeDataProvider<T> {
-  protected _onDidChangeTreeData = new EventEmitter<T | T[] | null | undefined | void>();
+  protected readonly _onDidChangeTreeData = new EventEmitter<T | T[] | null | undefined | void>();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
-  children: Map<string, T> = new Map();
+  readonly children: Map<string, T> = new Map();
 
-  constructor(public viewId: string) {
+  constructor(public readonly viewId: string) {
     const disposable = window.registerTreeDataProvider(viewId, this);
 
     extension.subscriptions.push(disposable, this._onDidChangeTreeData);
-
-    /* this.onDidChangeTreeData((e) => {
-      if (e) this.refresh();
-    }); */
   }
   getTreeItem(element: T): TreeItem | Thenable<TreeItem> {
     return element;
@@ -22,10 +18,10 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
   getChildren(element?: NonNullable<T>): ProviderResult<T[]> {
     return Array.from(element?.children?.values() ?? this.children.values());
   }
-  getParent?(element: T): ProviderResult<T> {
+  getParent(element: T): ProviderResult<T> {
     return element;
   }
-  resolveTreeItem?(item: TreeItem, element: T, _token: CancellationToken): ProviderResult<TreeItem> {
+  resolveTreeItem(item: TreeItem, element: T, _token: CancellationToken): ProviderResult<TreeItem> {
     return element ?? item;
   }
 

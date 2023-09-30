@@ -3,6 +3,7 @@ import { env, window } from "vscode";
 import { TaskData } from "../../@types";
 import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
 export default class extends Command {
   constructor() {
@@ -11,13 +12,10 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!item.appId) {
+  async run(_: TaskData, item?: AppTreeItem | TeamAppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(null);
-      item.appId = picked.id;
-
-      if (!item.appId)
-        return window.showWarningMessage(t("missing.appid"));
+      item = picked.app;
     }
 
     await env.clipboard.writeText(item.appId);

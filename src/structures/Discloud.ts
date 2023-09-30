@@ -10,8 +10,9 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
+import BaseStatusBarItem from "./BaseStatusBarItem";
 import Command from "./Command";
-import StatusBarItem from "./StatusBarItem";
+import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
 const fileExt = extname(__filename);
@@ -28,20 +29,20 @@ interface Discloud extends EventEmitter {
 }
 
 class Discloud extends EventEmitter {
-  declare appTree: AppTreeDataProvider;
-  declare context: ExtensionContext;
-  declare customDomainTree: CustomDomainTreeDataProvider;
-  declare statusBar: StatusBarItem;
-  declare subDomainTree: SubDomainTreeDataProvider;
-  declare teamAppTree: TeamAppTreeDataProvider;
-  declare userTree: UserTreeDataProvider;
-  readonly bars = new Map<string, StatusBarItem>();
+  declare readonly appTree: AppTreeDataProvider;
+  declare readonly context: ExtensionContext;
+  declare readonly customDomainTree: CustomDomainTreeDataProvider;
+  declare readonly statusBar: DiscloudStatusBarItem;
+  declare readonly subDomainTree: SubDomainTreeDataProvider;
+  declare readonly teamAppTree: TeamAppTreeDataProvider;
+  declare readonly userTree: UserTreeDataProvider;
+  readonly bars = new Map<string, BaseStatusBarItem>();
   readonly cache = new Map();
   readonly commands = new Map<string, Command>();
   readonly user = new VSUser();
 
   constructor() {
-    super();
+    super({ captureRejections: true });
   }
 
   get debug() {
@@ -79,7 +80,7 @@ class Discloud extends EventEmitter {
   }
 
   get workspaceFolder() {
-    return workspace.workspaceFolders?.[0]?.uri.fsPath;
+    return workspace.workspaceFolders?.find(wf => wf.name === workspace.name)?.uri.fsPath;
   }
 
   get workspaceIgnoreList() {
@@ -197,11 +198,13 @@ class Discloud extends EventEmitter {
   }
 
   loadStatusBar() {
-    this.statusBar = new StatusBarItem({
-      alignment: StatusBarAlignment.Left,
-      priority: 40,
-      text: t("status.text"),
-      tooltip: t("status.tooltip"),
+    Object.defineProperty(this, "statusBar", {
+      value: new DiscloudStatusBarItem({
+        alignment: StatusBarAlignment.Left,
+        priority: 40,
+        text: t("status.text"),
+        tooltip: t("status.tooltip"),
+      }),
     });
 
     this.bars.set("statusbar", this.statusBar);
@@ -209,8 +212,8 @@ class Discloud extends EventEmitter {
     return this.bars;
   }
 
-  async resetStatusBar(bars?: StatusBarItem | StatusBarItem[]) {
-    if (bars instanceof StatusBarItem)
+  async resetStatusBar(bars?: BaseStatusBarItem | BaseStatusBarItem[]) {
+    if (bars instanceof BaseStatusBarItem)
       return bars.reset();
 
     for (const bar of bars ?? this.bars.values())
@@ -219,12 +222,14 @@ class Discloud extends EventEmitter {
 
   activate(context: ExtensionContext) {
     if (!context) return;
-    this.context = context;
-    this.appTree = new AppTreeDataProvider("discloud-apps");
-    this.customDomainTree = new CustomDomainTreeDataProvider("discloud-domains");
-    this.subDomainTree = new SubDomainTreeDataProvider("discloud-subdomains");
-    this.teamAppTree = new TeamAppTreeDataProvider("discloud-teams");
-    this.userTree = new UserTreeDataProvider("discloud-user");
+    Object.defineProperty(this, "context", { value: context });
+    Object.defineProperties(this, {
+      appTree: { value: new AppTreeDataProvider("discloud-apps") },
+      customDomainTree: { value: new CustomDomainTreeDataProvider("discloud-domains") },
+      subDomainTree: { value: new SubDomainTreeDataProvider("discloud-subdomains") },
+      teamAppTree: { value: new TeamAppTreeDataProvider("discloud-teams") },
+      userTree: { value: new UserTreeDataProvider("discloud-user") },
+    });
     this.emit("activate", context);
   }
 }

@@ -19,14 +19,13 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
+  async run(task: TaskData, item?: AppTreeItem) {
     const workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) throw Error("No workspace folder found");
 
-    if (!item.appId) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
     }
 
     if (!await this.confirmAction())

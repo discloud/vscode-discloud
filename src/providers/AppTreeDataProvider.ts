@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { ProviderResult, TreeItemCollapsibleState, commands, window } from "vscode";
+import { ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
-import { requester } from "../util";
+import { getIconPath, requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
@@ -203,10 +203,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   init() {
     this.children.clear();
 
-    this.children.set("x", new AppTreeItem({
-      label: t("noappfound"),
-      iconName: "x",
-    }));
+    const x = new TreeItem(t("noappfound"));
+    x.contextValue = "EmptyTreeItem";
+    x.iconPath = getIconPath("x");
+
+    this.children.set("x", <AppTreeItem>x);
 
     this.refresh();
   }

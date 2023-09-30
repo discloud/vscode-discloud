@@ -3,11 +3,11 @@ import { TeamAppChildTreeItemData } from "../@types";
 import { getIconPath } from "../util";
 
 export default class TeamAppChildTreeItem extends TreeItem {
-  declare iconName?: string;
-  declare appId?: string;
-  declare children?: Map<string, TreeItem>;
+  iconName?: string;
+  readonly appId: string;
+  readonly children?: Map<string, TreeItem>;
 
-  constructor(options: TeamAppChildTreeItemData) {
+  constructor(options: TeamAppChildTreeItemData & { appId: string }) {
     super(options.label, options.collapsibleState);
     this.description = options.description;
     this.iconName = options.iconName;
@@ -23,4 +23,6 @@ export default class TeamAppChildTreeItem extends TreeItem {
       }
     }
   }
+
+  contextValue = "ChildTreeItem";
 }

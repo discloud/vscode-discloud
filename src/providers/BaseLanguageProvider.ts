@@ -1,15 +1,15 @@
 import { readFileSync } from "node:fs";
 import { TextDocument } from "vscode";
-import { LanguageConfig, ProviderOptions } from "../@types";
+import { LanguageConfig } from "../@types";
 import extension from "../extension";
 
 export default class BaseLanguageProvider {
-  declare data: LanguageConfig;
+  declare readonly data: LanguageConfig;
 
-  constructor(public options: ProviderOptions) {
-    if ("path" in options) {
+  constructor(path: string) {
+    if (path) {
       try {
-        this.data = JSON.parse(readFileSync(extension.context.asAbsolutePath(`${options.path}`), "utf8"));
+        this.data = JSON.parse(readFileSync(extension.context.asAbsolutePath(path), "utf8"));
       } catch (error: any) {
         extension.logger.error(error);
         return;

@@ -7,7 +7,7 @@ interface BaseTreeItem<T extends TreeItem> {
 
 abstract class BaseTreeItem<T> extends TreeItem {
   readonly children = new Map<string, T>();
-  declare data: unknown;
+  declare readonly data: unknown;
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);

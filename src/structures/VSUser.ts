@@ -4,17 +4,17 @@ import extension from "../extension";
 import { requester } from "../util";
 
 export default class VSUser implements ApiVscodeUser {
-  apps: string[] = [];
-  appsStatus: ApiVscodeApp[] = [];
-  appsTeam: string[] = [];
-  customdomains: string[] = [];
-  subdomains: string[] = [];
+  readonly apps: string[] = [];
+  readonly appsStatus: ApiVscodeApp[] = [];
+  readonly appsTeam: string[] = [];
+  readonly customdomains: string[] = [];
+  readonly subdomains: string[] = [];
   declare locale: string;
-  declare plan: string;
-  declare ramUsedMb: number;
-  declare totalRamMb: number;
-  declare userID: string;
-  declare username: string;
+  declare readonly plan: string;
+  declare readonly ramUsedMb: number;
+  declare readonly totalRamMb: number;
+  declare readonly userID: string;
+  declare readonly username: string;
 
   constructor() { }
 
@@ -25,10 +25,11 @@ export default class VSUser implements ApiVscodeUser {
 
     if (!res) return this;
 
-    if ("user" in res)
+    if ("user" in res) {
       Object.assign(this, res.user);
 
-    extension.emit("vscode", this);
+      extension.emit("vscode", this);
+    }
 
     return this;
   }

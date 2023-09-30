@@ -17,7 +17,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: Record<string, any> = {}) {
-    if (!item.appId) {
+    if (!item?.appId) {
       if (extension.workspaceFolder) {
         const dConfig = new DiscloudConfig(extension.workspaceFolder);
 
@@ -32,13 +32,13 @@ export default class extends Command {
             item.appId = dConfig.data.ID;
           }
         }
+
+        if (!item.appId) throw Error(t("missing.appid"));
       } else {
         const picked = await this.pickAppOrTeamApp(task);
         item.appId = picked.id;
         item.isApp = picked.isApp;
       }
-
-      if (!item.appId) throw Error(t("missing.appid"));
     }
 
     const res = await requester<RESTGetApiAppLogResult>(item.isApp ?
@@ -50,6 +50,6 @@ export default class extends Command {
       return window.showErrorMessage(t("log404"));
     };
 
-    this.logger(res.apps.id, res.apps.terminal.big);
+    this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }
 }

@@ -7,7 +7,7 @@ import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(options: ProviderOptions) {
-    super(options);
+    super(options.path.toString());
 
     if (!this.data) return;
 

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { ApiStatusApp, ApiTeamApps, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
-import { TreeItemCollapsibleState } from "vscode";
+import { LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
 import { TeamAppTreeItemData } from "../@types";
 import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
@@ -10,18 +10,23 @@ const totalModPerms = ModPermissionsBF.All.toArray().length;
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
   declare iconName?: string;
-  declare appId?: string;
+  declare readonly appId: string;
   declare appType?: string;
+  declare readonly output: LogOutputChannel;
   declare isOnline: boolean;
-  permissions = new ModPermissionsBF();
+  readonly permissions = new ModPermissionsBF();
 
-  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>) {
+  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & { id: string }) {
     data.label ??= typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     super(data.label, data.collapsibleState);
+
+    this.appId = data.appId ??= data.id;
+
+    this.output = window.createOutputChannel(this.appId, { log: true });
 
     this._patch(data);
   }
@@ -30,8 +35,6 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     if (!data) data = {};
 
     super._patch(data);
-
-    this.appId ??= data.appId ?? data.id;
 
     this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
@@ -112,7 +115,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       }));
 
     if ("perms" in data && data.perms) {
-      this.permissions = new ModPermissionsBF(<ModPermissionsResolvable>data.perms);
+      this.permissions.set(<ModPermissionsResolvable>data.perms);
 
       const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
       const json = values[2] ? JSONparse(values[2]) : null;

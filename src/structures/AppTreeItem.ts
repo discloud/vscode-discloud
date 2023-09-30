@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, Uri } from "vscode";
+import { LogOutputChannel, TreeItemCollapsibleState, Uri, window } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
 import extension from "../extension";
 import { calculatePercentage, getIconName, getIconPath } from "../util";
@@ -8,17 +8,22 @@ import BaseTreeItem from "./BaseTreeItem";
 
 export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare iconName?: string;
-  declare appId?: string;
+  declare readonly appId: string;
   declare appType?: string;
+  declare readonly output: LogOutputChannel;
   declare isOnline: boolean;
 
-  constructor(public data: Partial<AppTreeItemData & ApiVscodeApp>) {
+  constructor(public readonly data: Partial<AppTreeItemData & ApiVscodeApp> & { id: string }) {
     data.label ??= typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
     super(data.label, data.collapsibleState);
+
+    this.appId = data.appId ??= data.id;
+
+    this.output = window.createOutputChannel(this.appId, { log: true });
 
     this._patch(data);
   }
@@ -28,14 +33,12 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     super._patch(data);
 
-    this.appId ??= data.appId ?? data.id ?? this.appId;
-
     this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
       `${data.id}`;
 
-    this.appType = data.appType ?? "name" in data ?
+    this.appType = data.appType ??= "name" in data ?
       (data.name?.includes(`${data.id}`) ? "site" : "bot") :
       this.appType;
 

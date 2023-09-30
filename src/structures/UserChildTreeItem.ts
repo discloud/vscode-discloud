@@ -4,10 +4,10 @@ import { getIconPath } from "../util";
 
 export default class UserChildTreeItem extends TreeItem {
   iconName?: string;
-  userID?: string;
-  children?: Map<string, TreeItem>;
+  readonly userID: string;
+  readonly children?: Map<string, TreeItem>;
 
-  constructor(options: UserTreeItemData) {
+  constructor(options: UserTreeItemData & { userID: string }) {
     super(options.label!, options.collapsibleState);
     this.description = options.description;
     this.iconName = options.iconName;
@@ -23,4 +23,6 @@ export default class UserChildTreeItem extends TreeItem {
       }
     }
   }
+
+  contextValue = "ChildTreeItem";
 }

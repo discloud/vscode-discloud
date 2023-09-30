@@ -34,7 +34,7 @@ const emitter = new EventEmitter({ captureRejections: true });
 const queueProcesses: string[] = [];
 const noQueueProcesses = new Set<string>();
 
-export async function requester<T = any>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T | null> {
+export async function requester<T>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T | null> {
   if (!tokenIsValid) return null;
 
   if (!remain) {

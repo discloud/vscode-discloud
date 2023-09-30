@@ -12,11 +12,10 @@ export default class extends Command {
     super();
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!item.appId) {
+  async run(task: TaskData, item?: AppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
     }
 
     const name = await window.showInputBox({

@@ -16,11 +16,10 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
-    if (!item.appId) {
+  async run(task: TaskData, item?: TeamAppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
     }
 
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
@@ -30,6 +29,6 @@ export default class extends Command {
       return window.showErrorMessage(t("log404"));
     };
 
-    this.logger(res.apps.id, res.apps.terminal.big);
+    this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }
 }
