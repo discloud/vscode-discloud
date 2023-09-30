@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## x.x.x
+
+- Refatoração
+
 ## 2.18.3
 
 - Correção de validação de autenticação do token
