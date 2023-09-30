@@ -17,7 +17,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: Record<string, any> = {}) {
-    if (!item.appId) {
+    if (!item?.appId) {
       if (extension.workspaceFolder) {
         const dConfig = new DiscloudConfig(extension.workspaceFolder);
 
@@ -50,6 +50,6 @@ export default class extends Command {
       return window.showErrorMessage(t("log404"));
     };
 
-    this.logger(res.apps.id, res.apps.terminal.big);
+    this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }
 }

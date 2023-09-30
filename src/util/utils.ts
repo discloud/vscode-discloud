@@ -1,31 +1,18 @@
 import { join } from "node:path";
 import { Uri } from "vscode";
 
-export function bindFunctions(instance: any, bind?: any) {
+export function bindFunctions<I extends Record<any, any>, B extends Partial<I> & Record<any, any>>(instance: I, bind?: B) {
   if (!instance) return;
 
-  const propertyNames = Object.getOwnPropertyNames(Object.getPrototypeOf(instance));
-
-  for (const propertyName of propertyNames)
+  for (const propertyName of Object.getOwnPropertyNames(Object.getPrototypeOf(instance)))
     if (typeof instance[propertyName] === "function")
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       (bind ?? instance)[propertyName] = instance[propertyName].bind(bind ?? instance);
 }
 
 export function calculatePercentage(value: string | number, major: string | number) {
   return Number(value) / Number(major) * 100;
-}
-
-export function extractData(instance: any): Record<any, any> {
-  if (!instance) return {};
-
-  const propertyNames = Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).concat(Object.keys(instance));
-
-  const data = <any>{};
-
-  for (const propertyName of propertyNames)
-    data[propertyName] = instance[propertyName];
-
-  return data;
 }
 
 const resourcesDir = join(__dirname, "..", "..", "resources");

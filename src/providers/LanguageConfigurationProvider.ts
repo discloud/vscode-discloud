@@ -7,11 +7,11 @@ import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class LanguageConfigurationProvider extends BaseLanguageProvider {
-  disposableDocuments: Disposable[] = [];
-  declare collection: DiagnosticCollection;
+  readonly disposableDocuments: Disposable[] = [];
+  declare readonly collection: DiagnosticCollection;
 
   constructor(public options: ProviderOptions) {
-    super(options);
+    super(options.path.toString());
 
     if (!this.data) return;
 

@@ -15,15 +15,12 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem = <AppTreeItem>{}) {
-    if (!item.appId) {
+  async run(task: TaskData, item?: AppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
+      if (!item) throw Error(t("missing.appid"));
     }
-
-    item = extension.appTree.children.get(item.appId)!;
-    if (!item?.appId) throw Error(t("missing.appid"));
 
     if (!item.children.size)
       return extension.appTree.fetch();

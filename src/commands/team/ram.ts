@@ -17,11 +17,11 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
-    if (!item.appId) {
+  async run(task: TaskData, item?: TeamAppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
-      item.appId = picked.id;
-      if (!item.appId) throw Error(t("missing.appid"));
+      item = picked.app;
+      if (!item) throw Error(t("missing.appid"));
     }
 
     let ram;

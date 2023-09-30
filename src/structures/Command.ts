@@ -1,16 +1,35 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, ModPermissions, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { QuickPickItem, Uri, window } from "vscode";
+import { LogOutputChannel, QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
 import AppTreeItem from "./AppTreeItem";
+import TeamAppTreeItem from "./TeamAppTreeItem";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }
 
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
+  pickAppOrTeamApp(task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps?: false }): Promise<{
+    app?: AppTreeItem;
+    id?: string;
+    isApp: true;
+    isTeamApp: false;
+  }>;
+  pickAppOrTeamApp(task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true }): Promise<{
+    app?: TeamAppTreeItem;
+    id?: string;
+    isApp: false;
+    isTeamApp: true;
+  }>;
+  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<{
+    app?: AppTreeItem | TeamAppTreeItem;
+    id?: string;
+    isApp?: boolean;
+    isTeamApp?: boolean;
+  }>;
   async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}) {
     options = Object.assign({
       ofTree: true,
@@ -181,6 +200,7 @@ export default abstract class Command {
     task?.progress.report({ message: id });
 
     return {
+      app: isTeamApp ? extension.teamAppTree.children.get(id!) : extension.appTree.children.get(id!),
       id,
       isApp: !isTeamApp,
       isTeamApp,
@@ -234,10 +254,18 @@ export default abstract class Command {
     return quickPick === actionOk;
   }
 
-  logger(name: string, log: string, show = true) {
-    const output = window.createOutputChannel(name, { log: true });
+  /**
+   * @param show
+   * @default true
+   */
+  logger(output: LogOutputChannel | string, log: string, show?: boolean): void;
+  logger(output: LogOutputChannel, log: string, show?: boolean): void;
+  logger(output: LogOutputChannel, log: string, show = true) {
+    if (typeof output === "string") {
+      output = window.createOutputChannel(output, { log: true });
+    }
 
-    output.info(log);
+    output.info("\n" + log);
 
     if (show) {
       output.show(false);
@@ -282,7 +310,10 @@ interface Data {
 }
 
 interface AppPickerOptions {
+  /** @default true */
   ofTree?: boolean
+  /** @default true */
   showOther?: boolean
+  /** @default false */
   startInTeamApps?: boolean
 }

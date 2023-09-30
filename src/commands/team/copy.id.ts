@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
 import { env, window } from "vscode";
 import { TaskData } from "../../@types";
+import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -11,13 +12,11 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item: TeamAppTreeItem = <TeamAppTreeItem>{}) {
-    if (!item.appId) {
+  async run(_: TaskData, item?: AppTreeItem | TeamAppTreeItem) {
+    if (!item) {
       const picked = await this.pickAppOrTeamApp(null, { startInTeamApps: true });
-      item.appId = picked.id;
-
-      if (!item.appId)
-        return window.showWarningMessage(t("missing.team.appid"));
+      item = picked.app;
+      if (!item) return window.showWarningMessage(t("missing.team.appid"));
     }
 
 
