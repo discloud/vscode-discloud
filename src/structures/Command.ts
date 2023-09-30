@@ -13,27 +13,22 @@ export default abstract class Command {
   abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
 
   pickAppOrTeamApp(
-    task: TaskData | null,
-    options: AppPickerOptions & { showOther: false, startInTeamApps?: false, throwOnCancel: false }
-  ): Promise<Partial<AppPickerResponse<AppTreeItem>>>;
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult<TeamAppTreeItem>>>;
   pickAppOrTeamApp(
-    task: TaskData | null,
-    options: AppPickerOptions & { showOther: false, startInTeamApps?: false }
-  ): Promise<AppPickerResponse<AppTreeItem>>;
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult<AppTreeItem>>>;
   pickAppOrTeamApp(
-    task: TaskData | null,
-    options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }
-  ): Promise<Partial<AppPickerResponse<TeamAppTreeItem>>>;
+    task: TaskData | null, options: AppPickerOptions & { throwOnCancel: false }
+  ): Promise<Partial<AppPickerResult>>;
   pickAppOrTeamApp(
-    task: TaskData | null,
-    options: AppPickerOptions & { showOther: false, startInTeamApps: true }
-  ): Promise<AppPickerResponse<TeamAppTreeItem>>;
+    task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true }
+  ): Promise<AppPickerResult<TeamAppTreeItem>>;
   pickAppOrTeamApp(
-    task: TaskData | null,
-    options: AppPickerOptions & { throwOnCancel: false }
-  ): Promise<Partial<AppPickerResponse>>;
-  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<AppPickerResponse>;
-  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}): Promise<Partial<AppPickerResponse>> {
+    task: TaskData | null, options: AppPickerOptions & { showOther: false }
+  ): Promise<AppPickerResult<AppTreeItem>>;
+  pickAppOrTeamApp(task?: TaskData | null, options?: AppPickerOptions): Promise<AppPickerResult>;
+  async pickAppOrTeamApp(task?: TaskData | null, options: AppPickerOptions = {}): Promise<Partial<AppPickerResult>> {
     options = Object.assign(<AppPickerOptions>{
       ofTree: true,
       showOther: true,
@@ -329,7 +324,7 @@ interface AppPickerOptions {
   throwOnCancel?: boolean
 }
 
-interface AppPickerResponse<AppType extends AppTreeItem | TeamAppTreeItem = AppTreeItem | TeamAppTreeItem> {
+interface AppPickerResult<AppType extends AppTreeItem | TeamAppTreeItem = AppTreeItem | TeamAppTreeItem> {
   app: AppType;
   id: string;
   isApp: boolean;
