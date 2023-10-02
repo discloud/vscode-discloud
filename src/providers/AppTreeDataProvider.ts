@@ -72,7 +72,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   private clean(data: BaseApiApp[]) {
     let refresh;
 
-    const apps = data.map(app => app.id);
+    const apps = data.map(app => app.id ?? app);
 
     for (const child of this.children.keys()) {
       if (!apps.includes(child)) {
@@ -129,12 +129,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     } else {
       this.children.delete("x");
 
-      this.children.set(data.id, new AppTreeItem({
+      this.children.set(data.id, new AppTreeItem(Object.assign({
         collapsibleState: this.children.size ?
           TreeItemCollapsibleState.Collapsed :
           TreeItemCollapsibleState.Expanded,
-        ...data,
-      }));
+      }, data)));
 
       if (returnBoolean) {
         return true;
@@ -171,7 +170,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
         switch (res.statusCode) {
           case 404:
             if (appId === "all") {
-              this.children.clear();
+              this.init();
             } else {
               this.delete(appId);
             }

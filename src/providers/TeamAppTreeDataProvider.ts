@@ -71,7 +71,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   private clean(data: BaseApiApp[]) {
     let refresh;
 
-    const apps = data.map(app => app.id);
+    const apps = data.map(app => app.id ?? app);
 
     for (const child of this.children.keys()) {
       if (!apps.includes(child)) {
@@ -92,7 +92,6 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       if ("statusCode" in res) {
         switch (res.statusCode) {
           case 404:
-            this.children.clear();
             this.init();
             break;
         }
@@ -190,12 +189,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
       extension.emit("teamAppUpdate", clone, app);
     } else {
-      this.children.set(data.id, new TeamAppTreeItem({
+      this.children.set(data.id, new TeamAppTreeItem(Object.assign({
         collapsibleState: this.children.size ?
           TreeItemCollapsibleState.Collapsed :
           TreeItemCollapsibleState.Expanded,
-        ...data,
-      }));
+      }, data)));
 
       if (returnBoolean) {
         return true;

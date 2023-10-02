@@ -21,11 +21,10 @@ export default class extends Command {
       item = picked.app;
     }
 
-    item = extension.teamAppTree.children.get(item.appId)!;
-    if (!item?.appId) throw Error(t("missing.appid"));
-
-    if (!item.children.size)
-      return extension.teamAppTree.fetch();
+    if (!item.children.size) {
+      await extension.teamAppTree.fetch();
+      return;
+    }
 
     await extension.teamAppTree.getStatus(item.appId);
   }

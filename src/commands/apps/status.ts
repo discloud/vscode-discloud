@@ -21,8 +21,10 @@ export default class extends Command {
       item = picked.app;
     }
 
-    if (!item.children.size)
-      return extension.appTree.fetch();
+    if (!item.children.size) {
+      await extension.appTree.fetch();
+      return;
+    }
 
     await extension.appTree.getStatus(item.appId);
   }

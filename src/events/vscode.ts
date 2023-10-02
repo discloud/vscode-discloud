@@ -1,7 +1,7 @@
 import extension from "../extension";
 
 extension.on("vscode", async (user) => {
-  if (user)
+  if (user) {
     extension.userTree.update(Object.create(user));
 
   if ("appsStatus" in user)
@@ -14,5 +14,6 @@ extension.on("vscode", async (user) => {
     extension.subDomainTree.update(user.subdomains);
 
   if ("customdomains" in user)
-    extension.customDomainTree.update(user.customdomains);
+      extension.customDomainTree.update(user.customdomains);
+  }
 });

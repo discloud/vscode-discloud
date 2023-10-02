@@ -31,6 +31,10 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this._patch(data);
   }
 
+  get partial() {
+    return typeof this.data.name !== "string" || typeof this.data.container !== "string";
+  }
+
   protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
     if (!data) data = {};
 
