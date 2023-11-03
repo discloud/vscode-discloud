@@ -1,9 +1,9 @@
 {
   "app.status.on": "On",
-  "app.status.ramKilled": "Not enough RAM",
+  "app.status.ramKilled": "App shutdown due to lack of RAM",
   "app.status.errorCode": "Code error",
   "app.status.off": "Off",
-  "action.ok": "Ok",
+  "action.ok": "Yes",
   "action.cancel": "Cancel",
   "action.title": "Are you sure that you want to do {action}?",
   "backup.success": "Backup successful!\n{dir}",
