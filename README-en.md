@@ -14,10 +14,10 @@ This extension makes it easy to host and manage applications on [Discloud](https
 
 ## Application Status
 
-- 🟢 Green indicates App online
-- 🟡 Yellow has dropped due to lack of RAM
-- 🔴 Red has dropped due to some code error
-- ⚪ Gray indicates App offline
+- 🟢 Green: App online
+- 🟡 Yellow: App shutdown due to lack of ram.
+- 🔴 Red: App shutdown due to errors in your code.
+- ⚪ Gray: Offline due to discloud maintenance.
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016818276828979300/stats.png)
 
@@ -33,14 +33,14 @@ Here is a list of features that the extension currently supports.
 - ❌ Delete applications
 - 📜 Generate application logs
 - ⬇️ Download application backup
-- 💻 Import code from some hosted app to VSCode
+- 💻 Download and open hosted app code in VSCode.
 
 ## Installation
 
 - Install the extension
 - Enter your `access token` the first time you use the extension
 
-## Links Úteis
+## Useful links
 
 - [Discloud](https://discloud.app)
 - [Discloud Docs](https://docs.discloudbot.com/v/en/)
@@ -83,6 +83,6 @@ Here is a list of features that the extension currently supports.
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016803030563311636/backup.gif)
 
-### Import code from some hosted app to VSCode
+### Download and open hosted app code in VSCode.
 
 ![.](https://media.discordapp.net/attachments/685903739130740759/1016803117788049408/import.gif)
