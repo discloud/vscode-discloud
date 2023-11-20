@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RESTGetApiAppLogResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation } from "vscode";
 import { TaskData } from "../../@types";
 import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
@@ -26,7 +26,7 @@ export default class extends Command {
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) {
-      return window.showErrorMessage(t("log404"));
+      throw Error(t("log404"));
     };
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);

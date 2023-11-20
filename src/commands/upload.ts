@@ -117,7 +117,9 @@ export default class extends Command {
         extension.appTree.getStatus(res.app.id);
       }
 
-      if (res.logs) this.logger(res.app.id, res.logs);
+      if (res.logs) {
+        this.logger(res.app?.id ?? "Discloud Upload Error", res.logs);
+      }
     }
   }
 }
