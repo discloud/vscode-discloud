@@ -1213,6 +1213,6 @@
     "@vscode/test-electron": "^2.3.6",
     "eslint": "^8.54.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.2"
   }
 }
