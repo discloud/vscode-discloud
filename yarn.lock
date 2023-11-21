@@ -132,10 +132,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@types/adm-zip@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.5.4.tgz#cb7b24548612c947dd4c4744a1e22d21c806482f"
-  integrity sha512-/pYie/76O0TTqU4L/z1XqQ5mA5QvScaP/EO3lpH7iQ6/AjioYyuvi2IAmQeimuTTnytl03e9g8YFYkGV2Bxojw==
+"@types/adm-zip@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.5.5.tgz#4588042726aa5f351d7ea88232e4a952f60e7c1a"
+  integrity sha512-YCGstVMjc4LTY5uK9/obvxBya93axZOVOyf2GSUulADzmLhYE45u2nAssCs/fWBs1Ifq5Vat75JTPwd5XZoPJw==
   dependencies:
     "@types/node" "*"
 
