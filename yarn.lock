@@ -581,18 +581,18 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.9.3.tgz#617b061c1ebd394ee009a2f4af1819628a7d181a"
-  integrity sha512-gALfRknLUiRRXKTJ7oW+EquokOHY3umt4GqDafBjVT/sF+j4A4Gg1qc0ReAFY2P5z8C2hPNOHwq51Dl69dkslQ==
+discloud.app@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.9.5.tgz#e853c7abbf84ffa25a0bdf8772c6e98f9cc24892"
+  integrity sha512-hTrEdByD/EncoWopGd+6myce4UtKPdqw+SDqiv1gh/XxbCo9Axf8/3CYJEprKLoks4cd0Te9+35fY4O0GrzKYw==
   dependencies:
     "@discloudapp/api-types" "^0.4.0"
     "@discloudapp/rest" "^0.8.2"
     "@discloudapp/util" "^0.5.1"
     source-map-support "^0.5.21"
     tslib "^2.6.2"
-    undici "^5.24.0"
-    zod "^3.22.2"
+    undici "^5.27.2"
+    zod "^3.22.4"
 
 doctrine@^3.0.0:
   version "3.0.0"
@@ -1783,7 +1783,7 @@ zip-stream@^5.0.1:
     compress-commons "^5.0.1"
     readable-stream "^3.6.0"
 
-zod@^3.22.2:
-  version "3.22.2"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.2.tgz#3add8c682b7077c05ac6f979fea6998b573e157b"
-  integrity sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==
+zod@^3.22.4:
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
