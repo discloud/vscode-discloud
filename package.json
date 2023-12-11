@@ -1193,7 +1193,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
-    "@vscode/l10n": "^0.0.17",
+    "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.10",
     "archiver": "^6.0.1",
     "discloud.app": "^0.9.6",
