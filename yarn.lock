@@ -280,10 +280,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vscode/l10n@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@vscode/l10n/-/l10n-0.0.17.tgz#f12caff94c1985de5e6c6e7e704fb26381941f7e"
-  integrity sha512-ilT9j32+bI5FcP3TlfO3fhM39VF+qQZuxmZfUn0ABkntyJMEDREw3OKBT7ySfUCkc5ijgDjZF7KCeolfB3OVzA==
+"@vscode/l10n@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@vscode/l10n/-/l10n-0.0.18.tgz#916d3a5e960dbab47c1c56f58a7cb5087b135c95"
+  integrity sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ==
 
 "@vscode/test-electron@^2.3.8":
   version "2.3.8"
