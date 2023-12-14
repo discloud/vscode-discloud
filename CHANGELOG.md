@@ -6,9 +6,14 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## x.x.x
+## 2.18.5
+
+- Adicionado data de expiração do plano na visualização do usuário
+
+## 2.18.4
 
 - Refatoração
+- Corrigido erro de URI do `avatarURL`
 
 ## 2.18.3
 
