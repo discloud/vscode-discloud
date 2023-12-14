@@ -54,6 +54,7 @@
   "label.available.ram": "RAM disponível",
   "label.cpu": "CPU",
   "label.domains.amount": "Quant. de domínios",
+  "label.plan.expiration": "Expiração",
   "label.ram": "RAM",
   "label.ssd": "SSD NVMe",
   "label.subdomains.amount": "Quant. de subdomains",

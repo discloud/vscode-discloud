@@ -11,6 +11,7 @@ export default class VSUser implements ApiVscodeUser {
   readonly subdomains: string[] = [];
   declare locale: string;
   declare readonly plan: string;
+  declare readonly planDataEnd: string;
   declare readonly ramUsedMb: number;
   declare readonly totalRamMb: number;
   declare readonly userID: string;

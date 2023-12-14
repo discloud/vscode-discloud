@@ -50,6 +50,13 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         userID: this.userID,
       }));
 
+    if ("planDataEnd" in data && typeof data.planDataEnd === "string")
+      this.children.set("planDataEnd", new UserChildTreeItem({
+        label: new Date(data.planDataEnd).toLocaleDateString(),
+        description: t("label.plan.expiration"),
+        userID: this.userID,
+      }));
+
     if ("locale" in data)
       this.children.set("locale", new UserChildTreeItem({
         label: data.locale,
@@ -59,28 +66,28 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if ("apps" in data)
       this.children.set("apps", new UserChildTreeItem({
-        label: `${data.apps?.length}`,
+        label: `${data.apps?.length ?? 0}`,
         description: t("label.apps.amount"),
         userID: this.userID,
       }));
 
     if ("appsTeam" in data)
       this.children.set("team", new UserChildTreeItem({
-        label: `${data.appsTeam?.length}`,
+        label: `${data.appsTeam?.length ?? 0}`,
         description: t("label.team.apps.amount"),
         userID: this.userID,
       }));
 
     if ("customdomains" in data)
       this.children.set("domains", new UserChildTreeItem({
-        label: `${data.customdomains?.length}`,
+        label: `${data.customdomains?.length ?? 0}`,
         description: t("label.domains.amount"),
         userID: this.userID,
       }));
 
     if ("subdomains" in data)
       this.children.set("subdomains", new UserChildTreeItem({
-        label: `${data.subdomains?.length}`,
+        label: `${data.subdomains?.length ?? 0}`,
         description: t("label.subdomains.amount"),
         userID: this.userID,
       }));
