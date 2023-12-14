@@ -18,7 +18,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const avatarURL = await window.showInputBox({
+    let avatarURL = await window.showInputBox({
       prompt: t("input.avatar.prompt"),
       validateInput(value) {
         if (!/^(https?:\/\/.+\.(?:jpe?g|png))(?:\?.*)?$/.test(value))
@@ -30,6 +30,8 @@ export default class extends Command {
 
     if (!await this.confirmAction())
       throw Error("Reject action");
+
+    avatarURL = avatarURL.replace(/\s+/g, "");
 
     const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
       body: JSON.stringify({

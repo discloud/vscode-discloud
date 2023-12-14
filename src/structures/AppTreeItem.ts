@@ -33,6 +33,9 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     super._patch(data);
 
+    if (data.avatarURL)
+      this.data.avatarURL = data.avatarURL = data.avatarURL.replace(/\s+/g, "");
+
     this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :

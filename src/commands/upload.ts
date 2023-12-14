@@ -111,14 +111,14 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      if (res.app) {
+      if ("app" in res) {
         dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
         extension.appTree.addRawApp(res.app);
         extension.appTree.getStatus(res.app.id);
       }
 
       if (res.logs) {
-        this.logger(res.app?.id ?? "Discloud Upload Error", res.logs);
+        this.logger("app" in res ? res.app.id : "Discloud Upload Error", res.logs);
       }
     }
   }
