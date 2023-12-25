@@ -6,7 +6,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## x.x.x
+## 2.19.0
 
 - Adicionado acesso ao terminal da aplicação.
 
