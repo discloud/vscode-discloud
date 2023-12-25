@@ -217,6 +217,10 @@
         "icon": "$(debug-stop)"
       },
       {
+        "command": "discloud.apps.terminal",
+        "title": "%command.apps.terminal%"
+      },
+      {
         "command": "discloud.domain.refresh",
         "title": "%command.domain.refresh%",
         "icon": "$(refresh)"
@@ -674,6 +678,10 @@
           "when": "never"
         },
         {
+          "command": "discloud.apps.terminal",
+          "when": "never"
+        },
+        {
           "command": "discloud.domain.refresh",
           "when": "config.discloud.token"
         },
@@ -852,6 +860,11 @@
           "command": "discloud.apps.stop",
           "group": "0",
           "when": "view == discloud-apps && discloudAppLength"
+        },
+        {
+          "command": "discloud.apps.terminal",
+          "group": "1",
+          "when": "view == discloud-apps && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.upload",

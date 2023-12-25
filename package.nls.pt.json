@@ -23,6 +23,7 @@
   "command.apps.start": "Iniciar app",
   "command.apps.status": "Atualizar estado do app",
   "command.apps.stop": "Parar app",
+  "command.apps.terminal": "Usar o terminal",
   "command.domain.refresh": "Atualizar lista de domínios",
   "command.subdomain.refresh": "Atualizar lista de subdomínios",
   "command.team.backup": "Backup app de equipe",

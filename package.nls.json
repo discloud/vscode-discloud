@@ -23,6 +23,7 @@
   "command.apps.start": "Start app",
   "command.apps.status": "Refresh app status",
   "command.apps.stop": "Stop app",
+  "command.apps.terminal": "Use the terminal",
   "command.domain.refresh": "Refresh domain list",
   "command.subdomain.refresh": "Refresh subdomain list",
   "command.team.backup": "Backup team app",
