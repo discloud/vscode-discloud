@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { LogOutputChannel, TreeItemCollapsibleState, Uri, window } from "vscode";
 import { ApiVscodeApp, AppTreeItemData } from "../@types";
 import extension from "../extension";
-import { calculatePercentage, getIconName, getIconPath } from "../util";
+import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
@@ -49,6 +49,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this.iconPath = getIconPath(this.iconName);
     this.isOnline = this.iconName === "on";
 
+    const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
+    const json = values[2] ? JSONparse(values[2]) : null;
+
+    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { online: this.isOnline }))}`;
+
     const showAvatar = extension.config.get<string>("app.show.avatar.instead.status");
 
     switch (showAvatar) {
@@ -90,6 +95,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("container"),
         iconName: "container",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     if ("memory" in data)
@@ -98,6 +104,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     if ("cpu" in data)
@@ -106,6 +113,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     if ("ssd" in data)
@@ -114,6 +122,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     if ("netIO" in data)
@@ -122,6 +131,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("network"),
         iconName: "network",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     if ("last_restart" in data)
@@ -130,6 +140,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
+        online: this.isOnline,
       }));
 
     this.collapsibleState =
