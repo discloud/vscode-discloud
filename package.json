@@ -997,15 +997,18 @@
       "discloudsub": [
         {
           "command": "discloud.commit",
-          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized"
+          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized",
+          "group": "0"
         },
         {
           "command": "discloud.create.config",
-          "when": "workspaceFolderCount"
+          "when": "workspaceFolderCount",
+          "group": "1"
         },
         {
           "command": "discloud.upload",
-          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized"
+          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized",
+          "group": "0"
         }
       ],
       "discloud.apps.mods": [
