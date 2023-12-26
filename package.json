@@ -1212,7 +1212,7 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.10",
     "archiver": "^6.0.1",
-    "discloud.app": "^0.9.6",
+    "discloud.app": "^0.10.0",
     "jsonwebtoken": "^9.0.2",
     "path-is-absolute": "^1.0.0",
     "undici": "^5.28.2"
