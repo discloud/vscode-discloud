@@ -23,6 +23,6 @@ export default class extends Command {
 
     terminal.show();
 
-    terminal.sendText(`npx discloud-cli terminal ${item.appId}\nexit`);
+    terminal.sendText(`npx -y discloud-cli@latest terminal ${item.appId}\nexit`);
   }
 }
