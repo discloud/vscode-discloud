@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ModPermissions, RESTPutApiAppTeamResult, Routes } from "discloud.app";
+import { ModPermissionsFlags, RESTPutApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, QuickPickItem, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
@@ -25,7 +25,7 @@ export default class extends Command {
     const mod = await this.pickAppMod(item.appId, task);
     if (!mod) throw Error("Missing mod");
 
-    const permissions = Object.keys(ModPermissions).map(perm => <QuickPickItem>{
+    const permissions = Object.keys(ModPermissionsFlags).map(perm => <QuickPickItem>{
       label: t(`permission.${perm}`),
       description: perm,
       picked: mod.perms.has(perm),

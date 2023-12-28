@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ModPermissions, RESTPostApiAppTeamResult, Routes } from "discloud.app";
+import { ModPermissionsFlags, RESTPostApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, QuickPickItem, window } from "vscode";
 import { TaskData } from "../../../@types";
 import AppTreeItem from "../../../structures/AppTreeItem";
@@ -27,7 +27,7 @@ export default class extends Command {
     });
     if (!modID) throw Error("Missing mod id");
 
-    const permissions = Object.keys(ModPermissions).map(perm => <QuickPickItem>{
+    const permissions = Object.keys(ModPermissionsFlags).map(perm => <QuickPickItem>{
       label: t(`permission.${perm}`),
       description: perm,
     });

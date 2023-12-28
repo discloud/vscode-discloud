@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, ModPermissions, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { DiscloudConfig, ModPermissionsFlags, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { LogOutputChannel, QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
@@ -59,7 +59,7 @@ export default abstract class Command {
       if (options.startInTeamApps ? true : options.showOther) {
         if (!extension.teamAppTree.children.has("x")) {
           for (const app of extension.teamAppTree.children.values()) {
-            if (app.permissions.has(ModPermissions.commit_app)) {
+            if (app.permissions.has(ModPermissionsFlags.commit_app)) {
               teamApps.push({
                 description: app.appId,
                 iconPath: <Uri>app.iconPath,
@@ -108,7 +108,7 @@ export default abstract class Command {
         for (const app of resTeamApps.apps) {
           const perms = new ModPermissionsBF(<ModPermissionsResolvable>app.perms ?? []);
 
-          if (perms.has(ModPermissions.commit_app)) {
+          if (perms.has(ModPermissionsFlags.commit_app)) {
             teamApps.push(<QuickPickItem>{
               description: app.id,
               label: [
