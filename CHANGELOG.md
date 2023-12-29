@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.19.1
+
+- Sempre usar a última versão da cli no comando terminal
+
 ## 2.19.0
 
 - Adicionado acesso ao terminal da aplicação.
