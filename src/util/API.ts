@@ -153,8 +153,8 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   return await response.body.arrayBuffer() as T;
 }
 
-export function tokenIsDiscloudJwt(token = extension.token): boolean {
-  const payload = decode(token!, { json: true });
+export function tokenIsDiscloudJwt(token = extension.token!): boolean {
+  const payload = decode(token, { json: true });
   return payload && "id" in payload && "key" in payload || false;
 }
 
