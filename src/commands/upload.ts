@@ -1,9 +1,8 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, resolveFile, RESTPostApiUploadResult, Routes } from "discloud.app";
-import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { FormData } from "undici";
-import { ProgressLocation, window, workspace } from "vscode";
+import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
@@ -37,16 +36,6 @@ export default class extends Command {
       throw Error(t("invalid.discloud.config"));
     }
 
-    if (!existsSync(join(workspaceFolder, dConfig.data.MAIN))) {
-      window.showErrorMessage(t("invalid.discloud.config.main", {
-        file: dConfig.data.MAIN,
-      }) + "\n" + t("readdiscloudconfigdocs"));
-
-      throw Error(t("invalid.discloud.config.main", {
-        file: dConfig.data.MAIN,
-      }));
-    };
-
     const zipName = `${workspace.name}.zip`;
 
     const fs = new FileSystem({
@@ -61,16 +50,13 @@ export default class extends Command {
       throw Error(t("files.missing"));
     }
 
-    const pattern = RegExp(`${join(...dConfig.data.MAIN.split(/[\\/]/)).replace(/([\.\\])/g, "\\$1")}$`, "i");
+    const main = Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!fs.found.some(uri => pattern.test(uri.fsPath))) {
-      window.showErrorMessage(t("missing.discloud.config.main", {
-        file: dConfig.data.MAIN,
-      }) + "\n" + t("readdiscloudconfigdocs"));
+    if (!found.some(uri => uri.fsPath.endsWith(main))) {
+      window.showErrorMessage(t("missing.discloud.config.main", { file: dConfig.data.MAIN })
+        + "\n" + t("readdiscloudconfigdocs"));
 
-      throw Error(t("missing.discloud.config.main", {
-        file: dConfig.data.MAIN,
-      }));
+      throw Error(t("missing.discloud.config.main", { file: dConfig.data.MAIN }));
     }
 
     task.progress.report({ message: t("files.zipping") });
