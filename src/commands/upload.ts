@@ -118,7 +118,7 @@ export default class extends Command {
       }
 
       if (res.logs) {
-        this.logger(res.app ? res.app.id : "Discloud Upload Error", res.logs);
+        this.logger("app" in res && res.app ? res.app.id : "Discloud Upload Error", res.logs);
       }
     }
   }
