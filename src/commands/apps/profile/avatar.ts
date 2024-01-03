@@ -21,7 +21,7 @@ export default class extends Command {
     let avatarURL = await window.showInputBox({
       prompt: t("input.avatar.prompt"),
       validateInput(value) {
-        if (!/^(https?:\/\/.+\.(?:jpe?g|png))(?:\?.*)?$/.test(value))
+        if (!/^((?:s?ftp|https?):\/\/\S+\.(?:gif|jpe?g|png))(?:[?]\S*)?$/.test(value))
           return t("input.avatar.prompt");
       },
     });
