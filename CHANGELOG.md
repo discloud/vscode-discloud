@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.19.3
+
+- Permitido trocar o avatar do bot para gif, jpg, jpeg ou png.
+
 ## 2.19.1
 
 - Sempre usar a última versão da cli no comando terminal

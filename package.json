@@ -8,7 +8,7 @@
   },
   "publisher": "discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
-  "version": "2.19.2",
+  "version": "2.19.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/discloud/vscode-discloud.git"
