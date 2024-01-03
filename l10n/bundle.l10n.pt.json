@@ -17,7 +17,7 @@
   "copied.appid": "ID do app copiado com sucesso.",
   "copied.team.appid": "ID do app de equipe copiado com sucesso.",
   "diagnostic.apt.invalid": "Pacote APT inválido.",
-  "diagnostic.avatar.must.be.url": "O escopo do avatar deve ser uma url com extensão png.",
+  "diagnostic.avatar.must.be.url": "O escopo do avatar deve ser uma url com extensão gif, jpg, jpeg ou png.",
   "diagnostic.equal.missing": "Operador igual (=) ausente.",
   "diagnostic.main.not.exist": "O arquivo principal não existe.",
   "diagnostic.must.be.boolean": "Isso deve ser `true` ou `false`.",

@@ -17,7 +17,7 @@
   "copied.appid": "App ID successfully copied.",
   "copied.team.appid": "Team app ID successfully copied.",
   "diagnostic.apt.invalid": "Invalid APT Package.",
-  "diagnostic.avatar.must.be.url": "The avatar scope must be an url with png extension.",
+  "diagnostic.avatar.must.be.url": "The avatar scope must be an url with gif, jpg, jpeg or png extension.",
   "diagnostic.equal.missing": "Missing equal (=) operator.",
   "diagnostic.main.not.exist": "Main file does not exist.",
   "diagnostic.must.be.boolean": "This must be `true` or `false`.",

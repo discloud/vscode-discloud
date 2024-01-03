@@ -56,7 +56,7 @@
   },
   "AVATAR": {
     "message": "diagnostic.avatar.must.be.url",
-    "pattern": "^(https?:\\/\\/).+\\.(png)(?:[?].*)?$",
+    "pattern": "^((?:s?ftp|https?):\\/\\/)\\S+\\.(?:gif|jpe?g|png)(?:[?]\\S*)?$",
     "type": "string"
   },
   "ID": {
