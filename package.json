@@ -1215,7 +1215,7 @@
     "discloud.app": "^0.10.4",
     "jsonwebtoken": "^9.0.2",
     "path-is-absolute": "^1.0.0",
-    "undici": "^6.2.1"
+    "undici": "^6.3.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.5",
