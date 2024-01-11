@@ -91,6 +91,10 @@
   "view.subdomain.title": "Subdomínios",
   "view.team.title": "Apps de equipe",
   "view.user.title": "Usuário",
+  "walkthroughs.description": "Use a extensão da Discloud",
+  "walkthroughs.title": "Discloud",
+  "walkthroughs.login.description": "A extensão fica na barra à esquerda.",
+  "walkthroughs.login.title": "Bem-vindo à Discloud.",
   "welcome": "Bem vindo!",
   "welcome.token.missing": "Você ainda não forneceu um token para ter acesso aos recursos da Discloud.\n[Envie seu token Discloud](command:discloud.login)",
   "welcome.token.unauthorized": "Você forneceu um token inválido para acessar os recursos do Discloud.\n[Envie seu token Discloud](command:discloud.login)"

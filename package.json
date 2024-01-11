@@ -1198,6 +1198,26 @@
         "contents": "%welcome.token.unauthorized%",
         "when": "config.discloud.token && discloudTokenUnauthorized"
       }
+    ],
+    "walkthroughs": [
+      {
+        "id": "discloud",
+        "title": "%walkthroughs.title%",
+        "description": "%walkthroughs.description%",
+        "steps": [
+          {
+            "id": "login",
+            "title": "%walkthroughs.login.title%",
+            "description": "%walkthroughs.login.description%",
+            "media": {
+              "markdown": "resources/walkthrough/bar.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:discloud.token"
+            ]
+          }
+        ]
+      }
     ]
   },
   "scripts": {
