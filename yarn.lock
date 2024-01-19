@@ -585,10 +585,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-discloud.app@^0.10.5:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.10.5.tgz#805106c0d3fb631b56a705e434e4f54589b48867"
-  integrity sha512-2SF0cQCi72iYCT1dkv1+EXSSpN3aWyl/A6YORuO6l0eUHyygQ+wL6ky42AEgRhQ94geKZV2nHir+a9K5nJRRPQ==
+discloud.app@^0.10.6:
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.10.6.tgz#f53c5ced78d6e2ef8ba1f3520ab2261271b6e401"
+  integrity sha512-RPNaMlsGGrfc1QnoDAs0lQrfuQctaTCoNsPRjFSOQLndKUpY6tm94fnJucMCF9Hi6FZP3i22Kcc1ccVRO5gDaQ==
   dependencies:
     "@discloudapp/api-types" "^0.5.3"
     "@discloudapp/rest" "^0.8.11"
