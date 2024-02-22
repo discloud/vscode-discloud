@@ -1,32 +1,48 @@
 import { TreeItem } from "vscode";
-import { AppTreeItemData } from "../@types";
+import { AppChildTreeItemData } from "../@types";
 import { JSONparse, getIconPath } from "../util";
 
 export default class AppChildTreeItem extends TreeItem {
-  iconName?: string;
+  readonly iconName: string;
   readonly appId: string;
-  readonly children?: Map<string, TreeItem>;
+  declare children?: Map<string, TreeItem>;
 
-  constructor(options: AppTreeItemData & { appId: string, online: boolean }) {
-    super(options.label, options.collapsibleState);
-    this.description = options.description;
-    this.iconName = options.iconName;
-    this.tooltip = options.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-    this.appId = options.appId;
-    if (this.iconName)
-      this.iconPath = getIconPath(this.iconName);
-    if (options.children) {
-      if (options.children instanceof Map) {
-        this.children = options.children;
+  constructor(data: AppChildTreeItemData) {
+    super(data.label, data.collapsibleState);
+
+    this.appId = data.appId;
+    this.iconName = data.iconName;
+    this.iconPath = getIconPath(this.iconName);
+
+    this._patch(data);
+  }
+
+  _patch(data: Partial<AppChildTreeItemData>) {
+    if ("label" in data)
+      this.label = data.label;
+
+    if ("collapsibleState" in data)
+      this.collapsibleState = data.collapsibleState;
+
+    if ("description" in data)
+      this.description = data.description;
+
+    this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
+
+    if (data.children) {
+      if (data.children instanceof Map) {
+        this.children = data.children;
       } else {
-        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
+        this.children = new Map(data.children.map(child => [`${child.label}`, child]));
       }
     }
 
     const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-    const json = values[2] ? JSONparse(values[2]) : null;
+    const json = values[2] ? JSONparse<Record<string, any>>(values[2]) : null;
 
-    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { online: options.online }))}`;
+    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, {
+      online: data.online ?? json?.online,
+    }))}`;
   }
 
   contextValue = "ChildTreeItem";

@@ -1,4 +1,4 @@
-import { PathLike } from "node:fs";
+import { PathLike } from "fs";
 import { CodeActionKind, CompletionItemKind, DiagnosticSeverity } from "vscode";
 
 export interface ProviderOptions {

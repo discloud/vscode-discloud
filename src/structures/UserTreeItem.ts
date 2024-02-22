@@ -1,18 +1,17 @@
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
-import { UserTreeItemData } from "../@types";
+import { ApiVscodeUser, UserTreeItemData } from "../@types";
 import BaseTreeItem from "./BaseTreeItem";
 import UserChildTreeItem from "./UserChildTreeItem";
-import VSUser from "./VSUser";
 
 export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   iconName?: string;
   readonly userID: string;
 
-  constructor(public data: Partial<UserTreeItemData & VSUser> & { userID: string }) {
+  constructor(public data: Partial<UserTreeItemData> & ApiVscodeUser) {
     data.label = typeof data.username === "string" ?
-      `${data.username} (${data.userID})` :
-      `${data.userID}`;
+      data.username + ` (${data.userID})` :
+      data.userID;
 
     super(data.label, data.collapsibleState);
 
@@ -21,13 +20,13 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
     this._patch(data);
   }
 
-  protected _patch(data: Partial<UserTreeItemData & VSUser>): this {
+  protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
     if (!data) data = {};
 
     super._patch(data);
 
     this.label = typeof data.username === "string" ?
-      `${data.username} (${data.userID})` :
+      data.username + ` (${data.userID})` :
       `${data.userID}`;
 
     if (data.children instanceof Map) {
@@ -52,7 +51,9 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if ("planDataEnd" in data && typeof data.planDataEnd === "string")
       this.children.set("planDataEnd", new UserChildTreeItem({
-        label: new Date(data.planDataEnd).toLocaleDateString(),
+        label: ["Subscription"].includes(data.planDataEnd) ?
+          data.planDataEnd :
+          new Date(data.planDataEnd).toLocaleDateString(),
         description: t("label.plan.expiration"),
         userID: this.userID,
       }));

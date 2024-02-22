@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
-import { existsSync, mkdirSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { existsSync, mkdirSync } from "fs";
+import { writeFile } from "fs/promises";
+import { join } from "path";
 import { fetch } from "undici";
 import { ProgressLocation, window } from "vscode";
 import { TaskData } from "../../@types";

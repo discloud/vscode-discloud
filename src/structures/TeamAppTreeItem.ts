@@ -1,22 +1,23 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
+import { /* ApiStatusApp, */ ApiTeamApps, BaseApiApp, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
 import { LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
-import { TeamAppTreeItemData } from "../@types";
-import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
+import { AppType } from "../@enum";
+import { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
+import { JSONparse, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
 const totalModPerms = ModPermissionsBF.All.toArray().length;
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  declare iconName?: string;
+  declare iconName: string;
   declare readonly appId: string;
-  declare appType?: string;
+  declare type?: AppType;
   declare readonly output: LogOutputChannel;
   declare isOnline: boolean;
   readonly permissions = new ModPermissionsBF();
 
-  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & { id: string }) {
+  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps> & BaseApiApp) {
     data.label ??= typeof data.name === "string" ?
       `${data.name}`
       + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
@@ -31,23 +32,17 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this._patch(data);
   }
 
-  get partial() {
-    return typeof this.data.name !== "string" || typeof this.data.container !== "string";
-  }
-
-  protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
+  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps>): this {
     if (!data) data = {};
 
     super._patch(data);
 
+    if ("type" in data) this.type = data.type;
+
     this.label = data.label ??= "name" in data || "name" in this.data ?
       `${data.name ?? this.data.name}`
-      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
-      `${data.id}`;
-
-    this.appType = data.appType ?? "name" in data ?
-      (data.name?.includes(`${data.id}`) ? "site" : "bot") :
-      this.appType;
+      + (this.type === AppType.bot ? ` (${this.appId})` : "") :
+      this.appId;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
@@ -55,14 +50,14 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if ("memory" in data) {
+    /* if ("memory" in data) {
       const matched = data.memory?.match(/[\d.]+/g) ?? [];
       this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
-    }
+    } */
 
-    if ("startedAt" in data) {
+    /* if ("startedAt" in data) {
       this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
-    }
+    } */
 
     if (data.children instanceof Map) {
       for (const [id, child] of data.children) {
@@ -70,55 +65,55 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       }
     }
 
-    if ("container" in data)
+    /* if ("container" in data)
       this.children.set("container", new TeamAppChildTreeItem({
         label: data.container!,
         description: t("container"),
         iconName: "container",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("memory" in data)
+    /* if ("memory" in data)
       this.children.set("memory", new TeamAppChildTreeItem({
         label: data.memory!,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("cpu" in data)
+    /* if ("cpu" in data)
       this.children.set("cpu", new TeamAppChildTreeItem({
         label: data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("ssd" in data)
+    /* if ("ssd" in data)
       this.children.set("ssd", new TeamAppChildTreeItem({
         label: data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("netIO" in data)
+    /* if ("netIO" in data)
       this.children.set("netIO", new TeamAppChildTreeItem({
         label: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
         description: t("network"),
         iconName: "network",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("last_restart" in data)
+    /* if ("last_restart" in data)
       this.children.set("last_restart", new TeamAppChildTreeItem({
         label: data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
-      }));
+      })); */
 
-    if ("perms" in data && data.perms) {
+    if (data.perms) {
       this.permissions.set(<ModPermissionsResolvable>data.perms);
 
       const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
@@ -127,7 +122,10 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { perms: data.perms }))}`;
 
       this.children.set("perms", new TeamAppChildTreeItem({
-        label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
+        label: `${data.perms?.length} / ${totalModPerms}`,
+        description: "",
+        iconName: "",
+        tooltip: "",
         children: data.perms?.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
@@ -144,5 +142,16 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         TreeItemCollapsibleState.None;
 
     return this;
+  }
+
+  private _addChild(id: string, data: TeamAppChildTreeItemData) {
+    const existing = this.children.get(id);
+
+    if (existing) {
+      existing._patch(data);
+      return;
+    }
+
+    this.children.set(id, new TeamAppChildTreeItem(data));
   }
 }

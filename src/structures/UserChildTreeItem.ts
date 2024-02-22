@@ -13,8 +13,10 @@ export default class UserChildTreeItem extends TreeItem {
     this.iconName = options.iconName;
     this.tooltip = options.tooltip ?? `${this.description}: ${this.label}`;
     this.userID = options.userID;
+
     if (this.iconName)
       this.iconPath = getIconPath(this.iconName);
+
     if (options.children) {
       if (options.children instanceof Map) {
         this.children = options.children;

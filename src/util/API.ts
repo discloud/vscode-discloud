@@ -1,9 +1,10 @@
 import { t } from "@vscode/l10n";
 import { RouteLike, discloud } from "discloud.app";
+import { EventEmitter } from "events";
 import { decode } from "jsonwebtoken";
-import { EventEmitter } from "node:events";
-import { setTimeout as sleep } from "node:timers/promises";
+import { setTimeout as sleep } from "timers/promises";
 import { Dispatcher, request } from "undici";
+import { IncomingHttpHeaders } from "undici/types/header";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
 import extension, { logger } from "../extension";
@@ -31,25 +32,37 @@ async function initTimer() {
 
 const emitter = new EventEmitter({ captureRejections: true });
 
-const queueProcesses: string[] = [];
-const noQueueProcesses = new Set<string>();
+emitter.on("headers", async function (headers: IncomingHttpHeaders) {
+  time = Date.now();
 
-export async function requester<T>(path: RouteLike, config: RequestOptions = {}, noQueue?: boolean): Promise<T | null> {
+  const Limit = Number(headers["ratelimit-limit"]);
+  const Remaining = Number(headers["ratelimit-remaining"]);
+  const Reset = Number(headers["ratelimit-reset"]);
+  if (!isNaN(Limit)) limit = Limit;
+  if (!isNaN(Remaining)) remain = Remaining;
+  if (!isNaN(Reset)) reset = Reset;
+  initTimer();
+
+  if (extension.debug) logger.info("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
+
+  if (!remain) extension.emit("rateLimited", { reset, time });
+});
+
+const noQueueProcesses: string[] = [];
+const queueProcesses = new Set<string>();
+
+export async function requester<T>(path: RouteLike, config: RequestOptions = {}, queue?: boolean): Promise<T | null> {
   if (!tokenIsValid) return null;
 
   if (!remain) {
-    extension.emit("rateLimited", {
-      reset,
-      time,
-    });
-
+    extension.emit("rateLimited", { reset, time });
     return null;
   }
 
   const processKey = `${config.method ??= "GET"}.${path}`;
 
-  if (noQueue) {
-    while (noQueueProcesses.has(processKey)) {
+  if (queue) {
+    while (queueProcesses.has(processKey)) {
       await new Promise((resolve, reject) => {
         const timer = setTimeout(() => reject(), 10000);
 
@@ -64,13 +77,13 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
 
     if (!remain) return null;
 
-    noQueueProcesses.add(processKey);
+    queueProcesses.add(processKey);
   } else {
-    if (queueProcesses.length) {
+    if (noQueueProcesses.length) {
       window.showErrorMessage(t("process.already.running"));
       return null;
     } else {
-      queueProcesses.push(processKey);
+      noQueueProcesses.push(processKey);
     }
   }
 
@@ -90,40 +103,23 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   try {
     response = await request(`https://api.discloud.app/v2${path}`, config);
   } catch {
-    if (noQueue) {
-      noQueueProcesses.delete(processKey);
+    if (queue) {
+      queueProcesses.delete(processKey);
       emitter.emit("resume", processKey);
     } else {
-      queueProcesses.shift();
+      noQueueProcesses.shift();
     }
 
     throw Error("Missing Connection");
   }
 
-  time = Date.now();
-  const Limit = Number(response.headers["ratelimit-limit"]);
-  const Remaining = Number(response.headers["ratelimit-remaining"]);
-  const Reset = Number(response.headers["ratelimit-reset"]);
-  if (!isNaN(Limit)) limit = Limit;
-  if (!isNaN(Remaining)) remain = Remaining;
-  if (!isNaN(Reset)) reset = Reset;
-  initTimer();
+  emitter.emit("headers", response.headers);
 
-  if (extension.debug) {
-    logger.info("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
-  }
-
-  if (!remain)
-    extension.emit("rateLimited", {
-      reset,
-      time,
-    });
-
-  if (noQueue) {
-    noQueueProcesses.delete(processKey);
+  if (queue) {
+    queueProcesses.delete(processKey);
     emitter.emit("resume", processKey);
   } else {
-    queueProcesses.shift();
+    noQueueProcesses.shift();
   }
 
   if (response.statusCode > 399) {

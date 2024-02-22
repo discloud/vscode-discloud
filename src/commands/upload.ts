@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, resolveFile, RESTPostApiUploadResult, Routes } from "discloud.app";
-import { join } from "node:path";
+import { join } from "path";
 import { FormData } from "undici";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { TaskData } from "../@types";
@@ -99,8 +99,7 @@ export default class extends Command {
 
       if ("app" in res && res.app) {
         dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
-        extension.appTree.addRawApp(res.app);
-        extension.appTree.getStatus(res.app.id);
+        extension.appTree.fetch();
       }
 
       if (res.logs) {

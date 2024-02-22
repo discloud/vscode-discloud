@@ -11,10 +11,9 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     super(viewId);
   }
 
+  getChildren(element?: TeamAppTreeItem): ProviderResult<TeamAppTreeItem[]>;
   getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<any[]> {
-    if (element) {
-      return Array.from(element.children.values());
-    }
+    if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
 
@@ -68,10 +67,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     return children;
   }
 
-  private clean(data: BaseApiApp[]) {
+  private cleanNonMatchedApps(data: (string | BaseApiApp)[]) {
     let refresh;
 
-    const apps = data.map(app => app.id ?? app);
+    const apps = data.map(app => typeof app === "string" ? app : app.id);
 
     for (const child of this.children.keys()) {
       if (!apps.includes(child)) {
@@ -79,8 +78,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       }
     }
 
-    if (refresh)
-      this.refresh();
+    if (refresh) this.refresh();
   }
 
   async getApps() {
@@ -91,7 +89,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (!res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
-          case 404:
+          case 403:
             this.init();
             break;
         }
@@ -101,17 +99,6 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
 
     this.setRawApps(res.apps);
-
-    if (this.children.size) {
-      await window.withProgress({
-        location: { viewId: this.viewId },
-        title: t("refreshing"),
-      }, async () => {
-        await this.getStatus("all", true);
-      });
-    } else {
-      this.init();
-    }
   }
 
   async getStatus(appId: string = "all", noClear?: boolean) {
@@ -125,6 +112,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (!res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
+          case 403:
           case 404:
             if (noClear) break;
             if (appId === "all") {
@@ -142,7 +130,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (Array.isArray(res.apps)) {
       this.setRawApps(res.apps);
     } else {
-      this.edit(appId, res.apps);
+      this.editRawApp(appId, res.apps);
     }
   }
 
@@ -161,7 +149,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   setRawApps(data: BaseApiApp[]) {
-    this.clean(data);
+    this.cleanNonMatchedApps(data);
 
     let refresh;
 
@@ -170,24 +158,21 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
         refresh = true;
     }
 
-    if (!this.children.size)
-      this.init();
+    if (!this.children.size) this.init();
 
-    if (refresh)
-      this.refresh();
+    if (refresh) this.refresh();
   }
 
   addRawApp(data: BaseApiApp, returnBoolean?: boolean) {
-    const app = this.children.get(data.id);
+    const existing = this.children.get(data.id);
 
-    if (app) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const clone = app._update(data);
+    if (existing) {
+      // @ts-expect-error ts(2445)
+      const clone = existing._update(data);
 
-      this.refresh(app);
+      this.refresh(existing);
 
-      extension.emit("teamAppUpdate", clone, app);
+      extension.emit("teamAppUpdate", clone, existing);
     } else {
       this.children.set(data.id, new TeamAppTreeItem(Object.assign({
         collapsibleState: this.children.size ?
@@ -203,7 +188,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
   }
 
-  edit(appId: string, data: BaseApiApp) {
+  editRawApp(appId: string, data: BaseApiApp) {
     const app = this.children.get(appId);
 
     if (app) {

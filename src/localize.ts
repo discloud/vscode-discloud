@@ -1,6 +1,6 @@
 import { config } from "@vscode/l10n";
-import { existsSync, readFileSync } from "node:fs";
-import { isAbsolute, join } from "node:path";
+import { existsSync, readFileSync } from "fs";
+import { isAbsolute, join } from "path";
 import { env } from "vscode";
 
 function importJSON<T = any>(path: string): T {

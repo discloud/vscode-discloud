@@ -1,11 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
-import { Constructor } from "../@types";
 
-interface BaseTreeItem<T extends TreeItem> {
-  constructor: Constructor<T>
-}
-
-abstract class BaseTreeItem<T> extends TreeItem {
+export default abstract class BaseTreeItem<T extends TreeItem> extends TreeItem {
   readonly children = new Map<string, T>();
   declare readonly data: unknown;
 
@@ -32,5 +27,3 @@ abstract class BaseTreeItem<T> extends TreeItem {
     return clone;
   }
 }
-
-export default BaseTreeItem;

@@ -14,7 +14,7 @@
     "url": "git+https://github.com/discloud/vscode-discloud.git"
   },
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.86.0"
   },
   "sponsor": {
     "url": "https://discloudbot.com/plans"
@@ -845,7 +845,7 @@
         {
           "command": "discloud.apps.start",
           "group": "0",
-          "when": "view == discloud-apps && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /online\":false/"
         },
         {
           "command": "discloud.apps.status",
@@ -859,7 +859,7 @@
         {
           "command": "discloud.apps.stop",
           "group": "0",
-          "when": "view == discloud-apps && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.apps.terminal",

@@ -1,11 +1,12 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, ModPermissionsFlags, ModPermissionsBF, ModPermissionsResolvable, RESTGetApiAppAllResult, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, ModPermissionsResolvable, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { LogOutputChannel, QuickPickItem, Uri, window } from "vscode";
 import { CommandData, TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
 import AppTreeItem from "./AppTreeItem";
 import TeamAppTreeItem from "./TeamAppTreeItem";
+import VSUser from "./VSUser";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }
@@ -49,7 +50,7 @@ export default abstract class Command {
               iconPath: <Uri>app.iconPath,
               label: [
                 app.data.name,
-                app.isOnline ? t("online") : t("offline"),
+                app.online ? t("online") : t("offline"),
               ].join(" - "),
             });
           }
@@ -78,19 +79,19 @@ export default abstract class Command {
       const promises = [];
 
       if (!apps.length && (options.startInTeamApps ? options.showOther : true)) {
-        promises[0] = requester<RESTGetApiAppAllResult>(Routes.app("all"), {}, true).catch(() => null);
+        promises[0] = await extension.user.fetch(true);
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
         promises[1] = requester<RESTGetApiTeamResult>(Routes.team(), {}, true).catch(() => null);
       }
 
-      const [resApps, resTeamApps] = await Promise.all(promises) as [RESTGetApiAppAllResult, RESTGetApiTeamResult];
+      const [resApps, resTeamApps] = await Promise.all(promises) as [VSUser, RESTGetApiTeamResult];
 
       if (resApps?.apps) {
         apps.splice(0, apps.length);
 
-        for (const app of resApps.apps) {
+        for (const app of resApps.appsStatus) {
           apps.push(<QuickPickItem>{
             description: app.id,
             iconPath: <Uri>new AppTreeItem(app).iconPath,

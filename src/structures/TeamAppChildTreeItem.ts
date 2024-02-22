@@ -1,27 +1,31 @@
 import { TreeItem } from "vscode";
 import { TeamAppChildTreeItemData } from "../@types";
-import { getIconPath } from "../util";
 
 export default class TeamAppChildTreeItem extends TreeItem {
-  iconName?: string;
+  readonly iconName?: string;
   readonly appId: string;
-  readonly children?: Map<string, TreeItem>;
+  declare children: Map<string, TreeItem>;
 
-  constructor(options: TeamAppChildTreeItemData & { appId: string }) {
-    super(options.label, options.collapsibleState);
-    this.description = options.description;
-    this.iconName = options.iconName;
-    this.tooltip = options.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-    this.appId = options.appId;
-    if (this.iconName)
-      this.iconPath = getIconPath(this.iconName);
-    if (options.children) {
-      if (options.children instanceof Map) {
-        this.children = options.children;
+  constructor(data: TeamAppChildTreeItemData) {
+    super(data.label, data.collapsibleState);
+    this.iconName = data.iconName;
+    this.appId = data.appId;
+
+    this._patch(data);
+  }
+
+  _patch(data: Partial<TeamAppChildTreeItemData>) {
+    this.description = data.description;
+
+    if (data.children) {
+      if (data.children instanceof Map) {
+        this.children = data.children;
       } else {
-        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
+        this.children = new Map(data.children.map(child => [`${child.id}`, child]));
       }
     }
+
+    this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
   }
 
   contextValue = "ChildTreeItem";

@@ -20,9 +20,7 @@ export default class VSUser implements ApiVscodeUser {
   constructor() { }
 
   async fetch(isVS?: boolean) {
-    const res = await requester<RESTGetApiVscode>("/vscode", {
-      headersTimeout: 60000,
-    }, isVS);
+    const res = await requester<RESTGetApiVscode>("/vscode", {}, isVS);
 
     if (!res) return this;
 

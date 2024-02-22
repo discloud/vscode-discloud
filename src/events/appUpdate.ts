@@ -7,12 +7,12 @@ extension.on("appUpdate", async (oldApp, newApp) => {
 
   const messageList: string[] = [];
 
-  if (oldApp.data.container !== newApp.data.container) {
+  if (oldApp.online !== newApp.online) {
     messageList.push([
       t("your.app.is.now", {
         app: `${newApp.data.name} (${newApp.appId})`,
       }),
-      newApp.data.container,
+      newApp.online ? "Online" : "Offline",
     ].join(" "));
   }
 

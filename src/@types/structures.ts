@@ -22,15 +22,23 @@ export interface BaseTreeItemData {
   label: string | TreeItemLabel
 }
 
-export interface AppTreeItemData extends BaseTreeItemData {
-  appId?: string
-  appType?: string
-  children?: AppTreeItem[]
-  description?: string
-  iconName?: string
-  memoryUsage?: number
-  startedAtTimestamp?: number
+export interface AppChildTreeItemData extends BaseTreeItemData {
+  appId: string
+  online: boolean
+  description: string
+  iconName: string
   tooltip?: string
+  children?: TreeItem[] | Map<string, TreeItem>
+}
+
+export interface AppTreeItemData extends BaseTreeItemData {
+  appId: string
+  children: AppTreeItem[]
+  description: string
+  iconName: string
+  memoryUsage: number
+  startedAtTimestamp: number
+  tooltip: string
 }
 
 export interface CustomDomainTreeItemData extends BaseTreeItemData {
@@ -43,7 +51,6 @@ export interface SubDomainTreeItemData extends BaseTreeItemData {
 
 export interface TeamAppTreeItemData extends BaseTreeItemData {
   appId?: string
-  appType?: string
   children?: TeamAppTreeItem[]
   description?: string
   iconName?: string
@@ -53,7 +60,7 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
 }
 
 export interface TeamAppChildTreeItemData extends BaseTreeItemData {
-  appId?: string
+  appId: string
   children?: TreeItem[]
   description?: string
   iconName?: string

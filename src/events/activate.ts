@@ -1,5 +1,5 @@
+import { BaseApiApp } from "discloud.app";
 import { workspace } from "vscode";
-import { BaseApiApp } from "../@types";
 import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
@@ -43,7 +43,7 @@ extension.on("activate", async (context) => {
 
     if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
       for (const id of extension.appTree.children.keys()) {
-        extension.appTree.edit(id, <BaseApiApp>{ id });
+        extension.appTree.editRawApp(id, <BaseApiApp>{ id });
       }
 
       return;
