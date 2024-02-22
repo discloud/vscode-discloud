@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
-import { EventEmitter } from "node:events";
-import { existsSync, readdirSync } from "node:fs";
-import { extname, join } from "node:path";
-import { ExtensionContext, StatusBarAlignment, commands, window, workspace } from "vscode";
+import { EventEmitter } from "events";
+import { existsSync, readdirSync } from "fs";
+import { extname, join } from "path";
+import { ExtensionContext, LogOutputChannel, OutputChannel, StatusBarAlignment, commands, window, workspace } from "vscode";
 import { Events, TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -10,7 +10,6 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import BaseStatusBarItem from "./BaseStatusBarItem";
 import Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -36,7 +35,8 @@ class Discloud extends EventEmitter {
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
-  readonly bars = new Map<string, BaseStatusBarItem>();
+  readonly outputChannels = new Map<string, OutputChannel>();
+  readonly logOutputChannels = new Map<string, LogOutputChannel>();
   readonly cache = new Map();
   readonly commands = new Map<string, Command>();
   readonly user = new VSUser();
@@ -64,11 +64,11 @@ class Discloud extends EventEmitter {
   }
 
   get secrets() {
-    return this.context?.secrets;
+    return this.context.secrets;
   }
 
   get subscriptions() {
-    return this.context?.subscriptions;
+    return this.context.subscriptions;
   }
 
   get token() {
@@ -189,12 +189,16 @@ class Discloud extends EventEmitter {
 
     const files = readdirSync(path, { withFileTypes: true });
 
+    const promises = [];
+
     for (const file of files)
       if (file.isFile()) {
         if (!file.name.endsWith(fileExt)) continue;
 
-        await import(`${join(path, file.name)}`);
+        promises.push(import(`${join(path, file.name)}`));
       }
+
+    await Promise.all(promises);
   }
 
   loadStatusBar() {
@@ -206,18 +210,10 @@ class Discloud extends EventEmitter {
         tooltip: t("status.tooltip"),
       }),
     });
-
-    this.bars.set("statusbar", this.statusBar);
-
-    return this.bars;
   }
 
-  async resetStatusBar(bars?: BaseStatusBarItem | BaseStatusBarItem[]) {
-    if (bars instanceof BaseStatusBarItem)
-      return bars.reset();
-
-    for (const bar of bars ?? this.bars.values())
-      bar.reset();
+  async resetStatusBar() {
+    this.statusBar.reset();
   }
 
   activate(context: ExtensionContext) {

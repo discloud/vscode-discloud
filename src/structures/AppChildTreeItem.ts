@@ -1,33 +1,33 @@
-import { TreeItem } from "vscode";
-import { AppTreeItemData } from "../@types";
-import { JSONparse, getIconPath } from "../util";
+import { AppType } from "../@enum";
+import { AppChildTreeItemData } from "../@types";
+import { getIconPath } from "../util";
+import BaseChildTreeItem from "./BaseChildTreeItem";
 
-export default class AppChildTreeItem extends TreeItem {
-  iconName?: string;
+export default class AppChildTreeItem extends BaseChildTreeItem {
+  readonly iconName: string;
   readonly appId: string;
-  readonly children?: Map<string, TreeItem>;
+  declare online: boolean;
+  declare readonly type: AppType;
 
-  constructor(options: AppTreeItemData & { appId: string, online: boolean }) {
-    super(options.label, options.collapsibleState);
-    this.description = options.description;
-    this.iconName = options.iconName;
-    this.tooltip = options.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-    this.appId = options.appId;
-    if (this.iconName)
-      this.iconPath = getIconPath(this.iconName);
-    if (options.children) {
-      if (options.children instanceof Map) {
-        this.children = options.children;
-      } else {
-        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
-      }
-    }
+  constructor(data: AppChildTreeItemData) {
+    super(data.label, data.collapsibleState);
 
-    const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-    const json = values[2] ? JSONparse(values[2]) : null;
+    this.appId = data.appId;
+    this.type = data.appType;
+    this.iconName = data.iconName;
+    this.iconPath = getIconPath(this.iconName);
 
-    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { online: options.online }))}`;
+    this._patch(data);
   }
 
-  contextValue = "ChildTreeItem";
+  get contextJSON() {
+    return {
+      online: this.online,
+      type: this.type,
+    };
+  }
+
+  _patch(data: Partial<AppChildTreeItemData>) {
+    super._patch(data);
+  }
 }

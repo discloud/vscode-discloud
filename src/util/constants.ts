@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
-import { arch, platform, release, type } from "node:os";
-import { join } from "node:path";
+import { readFileSync } from "fs";
+import { arch, platform, release, type } from "os";
+import { join } from "path";
 
 export const VERSION: string = JSON.parse(readFileSync(join(__dirname, "..", "..", "package.json"), "utf8")).version;
 export const OS_NAME = type();

@@ -1,5 +1,5 @@
-import { existsSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync, readdirSync } from "fs";
+import { dirname, join } from "path";
 import { CompletionItem, CompletionItemKind, languages } from "vscode";
 import { ProviderOptions } from "../@types";
 import extension from "../extension";

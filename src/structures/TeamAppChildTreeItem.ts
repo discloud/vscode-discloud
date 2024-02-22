@@ -1,28 +1,30 @@
-import { TreeItem } from "vscode";
+import { AppType } from "../@enum";
 import { TeamAppChildTreeItemData } from "../@types";
-import { getIconPath } from "../util";
+import BaseChildTreeItem from "./BaseChildTreeItem";
 
-export default class TeamAppChildTreeItem extends TreeItem {
-  iconName?: string;
+export default class TeamAppChildTreeItem extends BaseChildTreeItem {
+  readonly iconName?: string;
   readonly appId: string;
-  readonly children?: Map<string, TreeItem>;
+  readonly contextKey = "ChildTreeItem";
+  type: AppType | null = null;
 
-  constructor(options: TeamAppChildTreeItemData & { appId: string }) {
-    super(options.label, options.collapsibleState);
-    this.description = options.description;
-    this.iconName = options.iconName;
-    this.tooltip = options.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-    this.appId = options.appId;
-    if (this.iconName)
-      this.iconPath = getIconPath(this.iconName);
-    if (options.children) {
-      if (options.children instanceof Map) {
-        this.children = options.children;
-      } else {
-        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
-      }
-    }
+  constructor(data: TeamAppChildTreeItemData) {
+    super(data.label, data.collapsibleState);
+    this.iconName = data.iconName;
+    this.appId = data.appId;
+
+    this._patch(data);
   }
 
-  contextValue = "ChildTreeItem";
+  get contextJSON() {
+    return {
+      type: this.type,
+    };
+  }
+
+  _patch(data: Partial<TeamAppChildTreeItemData>) {
+    super._patch(data);
+
+    this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
+  }
 }

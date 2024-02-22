@@ -1,13 +1,13 @@
-import { join } from "node:path";
+import { join } from "path";
 import { Uri } from "vscode";
 
-export function bindFunctions<I extends Record<any, any>, B extends Partial<I> & Record<any, any>>(instance: I, bind?: B) {
+export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
+export function bindFunctions<I extends Record<any, any>>(instance: I): void;
+export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any>) {
   if (!instance) return;
 
   for (const propertyName of Object.getOwnPropertyNames(Object.getPrototypeOf(instance)))
     if (typeof instance[propertyName] === "function")
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       (bind ?? instance)[propertyName] = instance[propertyName].bind(bind ?? instance);
 }
 

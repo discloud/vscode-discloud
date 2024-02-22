@@ -1,4 +1,4 @@
-import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem } from "vscode";
 import AppTreeItem from "../structures/AppTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
@@ -17,20 +17,28 @@ export interface TaskData {
   token: CancellationToken
 }
 
-export interface BaseTreeItemData {
-  collapsibleState?: TreeItemCollapsibleState
-  label: string | TreeItemLabel
+export interface BaseTreeItemData extends Omit<TreeItem, "id"> {
+  label: NonNullable<TreeItem["label"]>
+  children?: TreeItem[] | Map<string, TreeItem>
+}
+
+export interface BaseChildTreeItemData extends BaseTreeItemData { }
+
+export interface AppChildTreeItemData extends BaseTreeItemData {
+  appId: string
+  appType: number
+  online: boolean
+  description: string
+  iconName: string
 }
 
 export interface AppTreeItemData extends BaseTreeItemData {
-  appId?: string
-  appType?: string
-  children?: AppTreeItem[]
-  description?: string
-  iconName?: string
-  memoryUsage?: number
-  startedAtTimestamp?: number
-  tooltip?: string
+  appId: string
+  children: AppTreeItem[]
+  description: string
+  iconName: string
+  memoryUsage: number
+  startedAtTimestamp: number
 }
 
 export interface CustomDomainTreeItemData extends BaseTreeItemData {
@@ -43,7 +51,6 @@ export interface SubDomainTreeItemData extends BaseTreeItemData {
 
 export interface TeamAppTreeItemData extends BaseTreeItemData {
   appId?: string
-  appType?: string
   children?: TeamAppTreeItem[]
   description?: string
   iconName?: string
@@ -53,17 +60,17 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
 }
 
 export interface TeamAppChildTreeItemData extends BaseTreeItemData {
-  appId?: string
+  appId: string
   children?: TreeItem[]
   description?: string
   iconName?: string
   tooltip?: string
 }
 
-export interface UserTreeItemData extends Partial<BaseTreeItemData> {
-  userID?: string
+export interface UserTreeItemData extends BaseTreeItemData {
+  userID: string
+  description: string
   children?: TeamAppTreeItem[]
-  description?: string
   iconName?: string
   tooltip?: string
 }

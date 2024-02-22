@@ -15,14 +15,12 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly ramUsedMb: number;
   declare readonly totalRamMb: number;
   declare readonly userID: string;
-  declare readonly username: string;
+  declare readonly userName: string;
 
   constructor() { }
 
   async fetch(isVS?: boolean) {
-    const res = await requester<RESTGetApiVscode>("/vscode", {
-      headersTimeout: 60000,
-    }, isVS);
+    const res = await requester<RESTGetApiVscode>("/vscode", {}, isVS);
 
     if (!res) return this;
 

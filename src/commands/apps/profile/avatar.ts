@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, RESTApiBaseResult, Routes } from "discloud.app";
+import { BaseApiApp, DiscloudConfig, RESTApiBaseResult, Routes } from "discloud.app";
 import { window } from "vscode";
-import { BaseApiApp, TaskData } from "../../../@types";
+import { TaskData } from "../../../@types";
 import extension from "../../../extension";
 import AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
@@ -45,7 +45,7 @@ export default class extends Command {
       this.showApiMessage(res);
 
       if (res.status === "ok") {
-        extension.appTree.edit(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
+        extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
         new DiscloudConfig(extension.workspaceFolder!).update({ AVATAR: avatarURL });
       }

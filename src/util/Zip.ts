@@ -1,6 +1,6 @@
 import { Archiver, ArchiverOptions, create } from "archiver";
-import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
-import { isAbsolute, relative } from "node:path";
+import { WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "fs";
+import { isAbsolute, relative } from "path";
 import { Uri, workspace } from "vscode";
 import { logger } from "../extension";
 

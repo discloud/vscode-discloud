@@ -1,26 +1,24 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
+import { /* ApiStatusApp, */ ApiStatusApp, ApiTeamApps, BaseApiApp, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
 import { LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
-import { TeamAppTreeItemData } from "../@types";
-import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
+import { AppType } from "../@enum";
+import { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
+import { calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
 const totalModPerms = ModPermissionsBF.All.toArray().length;
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  declare iconName?: string;
+  declare iconName: string;
   declare readonly appId: string;
-  declare appType?: string;
+  declare type?: AppType;
   declare readonly output: LogOutputChannel;
-  declare isOnline: boolean;
   readonly permissions = new ModPermissionsBF();
+  readonly contextKey = "TreeItem";
 
-  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & { id: string }) {
-    data.label ??= typeof data.name === "string" ?
-      `${data.name}`
-      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
-      `${data.id}`;
+  constructor(public readonly data: Partial<TeamAppTreeItemData & ApiTeamApps> & BaseApiApp) {
+    data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
 
@@ -31,29 +29,37 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this._patch(data);
   }
 
-  get partial() {
-    return typeof this.data.name !== "string" || typeof this.data.container !== "string";
+  get contextJSON() {
+    return {
+      online: this.online,
+      perms: this.permissions.toArray(),
+    };
   }
 
-  protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
+  get online() {
+    return this.data.online ?? null;
+  }
+
+  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
     if (!data) data = {};
 
     super._patch(data);
 
-    this.label = data.label ??= "name" in data || "name" in this.data ?
-      `${data.name ?? this.data.name}`
-      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
-      `${data.id}`;
+    if ("type" in data) this.type = data.type;
 
-    this.appType = data.appType ?? "name" in data ?
-      (data.name?.includes(`${data.id}`) ? "site" : "bot") :
-      this.appType;
+    if ("name" in data && typeof data.name === "string")
+      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
-    this.isOnline = this.iconName === "on";
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
+
+    if (data.children instanceof Map) {
+      for (const [id, child] of data.children) {
+        this.children.set(id, child);
+      }
+    }
 
     if ("memory" in data) {
       const matched = data.memory?.match(/[\d.]+/g) ?? [];
@@ -64,78 +70,70 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
     }
 
-    if (data.children instanceof Map) {
-      for (const [id, child] of data.children) {
-        this.children.set(id, child);
-      }
-    }
-
-    if ("container" in data)
-      this.children.set("container", new TeamAppChildTreeItem({
-        label: data.container!,
-        description: t("container"),
+    if (typeof this.online === "boolean")
+      this._addChild("status", {
+        label: this.online ? t("online") : t("offline"),
+        description: "Status",
         iconName: "container",
         appId: this.appId,
-      }));
+      });
 
     if ("memory" in data)
-      this.children.set("memory", new TeamAppChildTreeItem({
+      this._addChild("memory", {
         label: data.memory!,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
-      }));
+      });
 
     if ("cpu" in data)
-      this.children.set("cpu", new TeamAppChildTreeItem({
+      this._addChild("cpu", {
         label: data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
-      }));
+      });
 
     if ("ssd" in data)
-      this.children.set("ssd", new TeamAppChildTreeItem({
+      this._addChild("ssd", {
         label: data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
-      }));
+      });
 
     if ("netIO" in data)
-      this.children.set("netIO", new TeamAppChildTreeItem({
+      this._addChild("netIO", {
         label: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
         description: t("network"),
         iconName: "network",
         appId: this.appId,
-      }));
+      });
 
     if ("last_restart" in data)
-      this.children.set("last_restart", new TeamAppChildTreeItem({
+      this._addChild("last_restart", {
         label: data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
-      }));
+      });
 
-    if ("perms" in data && data.perms) {
+    if (data.perms) {
       this.permissions.set(<ModPermissionsResolvable>data.perms);
 
-      const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-      const json = values[2] ? JSONparse(values[2]) : null;
-
-      this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { perms: data.perms }))}`;
-
-      this.children.set("perms", new TeamAppChildTreeItem({
-        label: t("permissions{s}", { s: `[${data.perms?.length}/${totalModPerms}]` }),
+      this._addChild("perms", {
+        label: `${data.perms?.length} / ${totalModPerms}`,
+        description: t("permissions"),
         children: data.perms?.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
         })),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-      }));
+      });
     }
+
+    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
     this.collapsibleState =
       this.children.size ?
@@ -144,5 +142,16 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         TreeItemCollapsibleState.None;
 
     return this;
+  }
+
+  private _addChild(id: string, data: TeamAppChildTreeItemData) {
+    const existing = this.children.get(id);
+
+    if (existing) {
+      existing._patch(data);
+      return;
+    }
+
+    this.children.set(id, new TeamAppChildTreeItem(data));
   }
 }

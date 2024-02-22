@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { resolveFile, RESTPutApiAppCommitResult, Routes } from "discloud.app";
-import { join } from "node:path";
+import { join } from "path";
 import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
@@ -82,7 +82,7 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      await extension.teamAppTree.getStatus(item.appId);
+      await extension.teamAppTree.fetch();
 
       if (res.logs) this.logger(item.appId, res.logs);
     }

@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
 import { RESTPutApiAppRamResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
+import { AppType } from "../../@enum";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import AppTreeItem from "../../structures/AppTreeItem";
@@ -23,20 +24,23 @@ export default class extends Command {
       item = picked.app;
     }
 
+    const min = item.type === AppType.site ? 512 : 100;
+    const max = extension.user.totalRamMb - extension.user.ramUsedMb - item.data.ram;
+
     let ram;
     do {
       ram = await window.showInputBox({
-        value: "100",
+        value: `${item.data.ram}`,
         prompt: t("input.ram.prompt"),
         validateInput(value) {
           const n = Number(value);
 
-          if (isNaN(n) || n < 100)
+          if (isNaN(n) || n === item!.data.ram || n < min || n > max)
             return t("input.ram.prompt");
         },
       });
     } while (typeof ram === "string" ?
-        isNaN(Number(ram)) || Number(ram) < 100 :
+        isNaN(Number(ram)) || Number(ram) < min || Number(ram) > max :
         false);
 
     if (!ram) throw Error("Missing input");
@@ -55,7 +59,7 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      await extension.appTree.getStatus(item.appId);
+      await extension.appTree.fetch();
     }
   }
 }

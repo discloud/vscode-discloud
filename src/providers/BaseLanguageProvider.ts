@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync } from "fs";
 import { TextDocument } from "vscode";
 import { LanguageConfig } from "../@types";
 import extension from "../extension";
