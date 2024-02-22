@@ -79,7 +79,7 @@ export default abstract class Command {
       const promises = [];
 
       if (!apps.length && (options.startInTeamApps ? options.showOther : true)) {
-        promises[0] = await extension.user.fetch(true);
+        promises[0] = await extension.user.fetch(true).catch(() => null);
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {

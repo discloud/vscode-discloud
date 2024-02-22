@@ -29,7 +29,7 @@ export default class extends Command {
     let ram;
     do {
       ram = await window.showInputBox({
-        value: `${min}`,
+        value: `${item.data.ram ?? min}`,
         prompt: t("input.ram.prompt"),
         validateInput(value) {
           const n = Number(value);

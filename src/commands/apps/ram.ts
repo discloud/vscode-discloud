@@ -35,7 +35,7 @@ export default class extends Command {
         validateInput(value) {
           const n = Number(value);
 
-          if (isNaN(n) || n < min || n > max)
+          if (isNaN(n) || n === item!.data.ram || n < min || n > max)
             return t("input.ram.prompt");
         },
       });
