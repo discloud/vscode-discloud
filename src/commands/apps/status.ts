@@ -25,6 +25,6 @@ export default class extends Command {
       await extension.appTree.fetch();
 
     if (extension.appTree.children.size)
-      await extension.appTree.getStatus(item.appId);
+      await extension.appTree.getStatus();
   }
 }
