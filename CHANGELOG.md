@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.20.0
+
+- refatoração
+
 ## 2.19.4
 
 - Adicionado walkthroug.
