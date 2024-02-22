@@ -123,6 +123,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
       this._addChild("perms", {
         label: `${data.perms?.length} / ${totalModPerms}`,
+        description: t("permissions"),
         children: data.perms?.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,

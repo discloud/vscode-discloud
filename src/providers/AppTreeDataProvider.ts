@@ -13,9 +13,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   getChildren(element?: NonNullable<AppTreeItem>): ProviderResult<any[]> {
-    if (element) {
-      return Array.from(element.children.values());
-    }
+    if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
 
@@ -24,11 +22,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     if (sort?.includes(".")) {
       switch (sort) {
         case "id.asc":
-          children.sort((a, b) => `${a.appId}` < `${b.appId}` ? -1 : 1);
+          children.sort((a, b) => a.appId < b.appId ? -1 : 1);
           break;
 
         case "id.desc":
-          children.sort((a, b) => `${a.appId}` > `${b.appId}` ? -1 : 1);
+          children.sort((a, b) => a.appId > b.appId ? -1 : 1);
           break;
 
         case "memory.usage.asc":
@@ -40,30 +38,27 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
           break;
 
         case "name.asc":
-          children.sort((a, b) => `${a.data.name}` < `${b.data.name}` ? -1 : 1);
+          children.sort((a, b) => a.data.name < b.data.name ? -1 : 1);
           break;
 
         case "name.desc":
-          children.sort((a, b) => `${a.data.name}` > `${b.data.name}` ? -1 : 1);
+          children.sort((a, b) => a.data.name > b.data.name ? -1 : 1);
           break;
 
         case "started.asc":
-          children.sort((a, b) => a.iconName === "on" &&
+          children.sort((a, b) => a.online &&
             (Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp)) ? -1 : 1);
           break;
 
         case "started.desc":
-          children.sort((a, b) => a.iconName === "on" &&
+          children.sort((a, b) => a.online &&
             (Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp)) ? -1 : 1);
           break;
       }
     }
 
-    if (
-      extension.config.get<boolean>("app.sort.online") ||
-      (sort && ["started.asc", "started.desc"].includes(sort))
-    ) {
-      children.sort((a, b) => a.iconName === "on" ? b.iconName === "on" ? 0 : -1 : 0);
+    if (extension.config.get<boolean>("app.sort.online")) {
+      children.sort((a, b) => b.online ? 1 : a.online ? -1 : 0);
     }
 
     return children;
