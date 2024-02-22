@@ -15,7 +15,7 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly ramUsedMb: number;
   declare readonly totalRamMb: number;
   declare readonly userID: string;
-  declare readonly username: string;
+  declare readonly userName: string;
 
   constructor() { }
 

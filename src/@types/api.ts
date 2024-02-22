@@ -16,7 +16,7 @@ export interface ApiVscodeUser {
   subdomains: string[]
   totalRamMb: number
   userID: string
-  username: string
+  userName: string
 }
 
 export interface ApiVscodeApp extends BaseApiApp {

@@ -16,6 +16,12 @@ export default class UserChildTreeItem extends TreeItem {
   }
 
   _patch(data: Partial<UserTreeItemData>) {
+    if ("label" in data)
+      this.label = data.label;
+
+    if ("collapsibleState" in data)
+      this.collapsibleState = data.collapsibleState;
+
     if ("description" in data)
       this.description = data.description;
 

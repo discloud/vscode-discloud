@@ -9,9 +9,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   readonly userID: string;
 
   constructor(public data: Partial<UserTreeItemData> & ApiVscodeUser) {
-    data.label = typeof data.username === "string" ?
-      data.username + ` (${data.userID})` :
-      data.userID;
+    data.label = data.userID;
 
     super(data.label, data.collapsibleState);
 
@@ -25,9 +23,8 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     super._patch(data);
 
-    this.label = typeof data.username === "string" ?
-      data.username + ` (${data.userID})` :
-      `${data.userID}`;
+    if ("username" in data && typeof data.userName === "string")
+      this.label = data.userName + ` (${this.userID})`;
 
     if (data.children instanceof Map) {
       for (const [id, child] of data.children) {
