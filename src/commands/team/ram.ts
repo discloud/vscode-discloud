@@ -55,7 +55,7 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      await extension.teamAppTree.getStatus(item.appId);
+      await extension.teamAppTree.fetch();
     }
   }
 }

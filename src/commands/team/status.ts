@@ -21,11 +21,10 @@ export default class extends Command {
       item = picked.app;
     }
 
-    if (!item.children.size) {
+    if (!item.children.size) 
       await extension.teamAppTree.fetch();
-      return;
-    }
 
-    await extension.teamAppTree.getStatus(item.appId);
+    if (extension.teamAppTree.children.size)
+      await extension.teamAppTree.getStatus(item.appId);
   }
 }

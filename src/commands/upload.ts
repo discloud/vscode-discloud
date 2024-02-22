@@ -99,7 +99,7 @@ export default class extends Command {
 
       if ("app" in res && res.app) {
         dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
-        extension.appTree.fetch();
+        await extension.appTree.fetch();
       }
 
       if (res.logs) {

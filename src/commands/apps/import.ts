@@ -26,7 +26,7 @@ export default class extends Command {
     let workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
-      if (!workspaceFolder) throw Error("No workspace folder found");
+      if (!workspaceFolder) throw Error("No folder found");
     }
 
     if (!item) {

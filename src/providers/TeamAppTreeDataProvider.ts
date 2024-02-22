@@ -168,7 +168,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     this.setRawApps(res.apps);
   }
 
-  async getStatus(appId: string = "all", noClear?: boolean) {
+  async getStatus(appId: string = "all") {
     const res = await requester<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
@@ -179,9 +179,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (!res.apps) {
       if ("statusCode" in res) {
         switch (res.statusCode) {
-          case 403:
           case 404:
-            if (noClear) break;
             if (appId === "all") {
               this.children.clear();
             } else {

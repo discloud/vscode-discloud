@@ -86,7 +86,7 @@ export default class extends Command {
 
       picked.isApp ?
         await extension.appTree.fetch() :
-        await extension.teamAppTree.getStatus(picked.id);
+        await extension.teamAppTree.fetch();
 
       if (res.logs) this.logger(picked.id, res.logs);
     }
