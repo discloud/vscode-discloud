@@ -26,7 +26,5 @@ export default class TeamAppChildTreeItem extends BaseChildTreeItem {
     super._patch(data);
 
     this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-
-    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
   }
 }

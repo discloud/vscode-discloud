@@ -1,4 +1,4 @@
-import { CancellationToken, ExtensionContext, MarkdownString, Progress, ProgressOptions, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem } from "vscode";
 import AppTreeItem from "../structures/AppTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
@@ -17,16 +17,12 @@ export interface TaskData {
   token: CancellationToken
 }
 
-export interface BaseTreeItemData {
-  collapsibleState?: TreeItemCollapsibleState
-  label: string | TreeItemLabel
+export interface BaseTreeItemData extends Omit<TreeItem, "id"> {
+  label: NonNullable<TreeItem["label"]>
+  children?: TreeItem[] | Map<string, TreeItem>
 }
 
-export interface BaseChildTreeItemData extends BaseTreeItemData {
-  children?: Map<string, TreeItem> | TreeItem[]
-  description?: string | boolean
-  tooltip?: string | MarkdownString
-}
+export interface BaseChildTreeItemData extends BaseTreeItemData { }
 
 export interface AppChildTreeItemData extends BaseTreeItemData {
   appId: string
@@ -34,8 +30,6 @@ export interface AppChildTreeItemData extends BaseTreeItemData {
   online: boolean
   description: string
   iconName: string
-  tooltip?: string
-  children?: TreeItem[] | Map<string, TreeItem>
 }
 
 export interface AppTreeItemData extends BaseTreeItemData {
@@ -45,7 +39,6 @@ export interface AppTreeItemData extends BaseTreeItemData {
   iconName: string
   memoryUsage: number
   startedAtTimestamp: number
-  tooltip: string
 }
 
 export interface CustomDomainTreeItemData extends BaseTreeItemData {

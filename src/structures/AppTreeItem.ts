@@ -91,7 +91,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       }
     }
 
-    this._addChild("container", {
+    this._addChild("status", {
       label: this.online ? t("online") : t("offline"),
       description: "Status",
       iconName: "container",

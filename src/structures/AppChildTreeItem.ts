@@ -6,7 +6,6 @@ import BaseChildTreeItem from "./BaseChildTreeItem";
 export default class AppChildTreeItem extends BaseChildTreeItem {
   readonly iconName: string;
   readonly appId: string;
-  readonly contextKey = "ChildTreeItem";
   declare online: boolean;
   declare readonly type: AppType;
 
@@ -30,7 +29,5 @@ export default class AppChildTreeItem extends BaseChildTreeItem {
 
   _patch(data: Partial<AppChildTreeItemData>) {
     super._patch(data);
-
-    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
   }
 }
