@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
+import { ApiStatusApp, ApiTeamApps, BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
 import { ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
@@ -81,59 +81,6 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (refresh) this.refresh();
   }
 
-  async getApps() {
-    const res = await requester<RESTGetApiTeamResult>("/team");
-
-    if (!res) return;
-
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
-          case 403:
-            this.init();
-            break;
-        }
-      }
-
-      return;
-    }
-
-    this.setRawApps(res.apps);
-  }
-
-  async getStatus(appId: string = "all", noClear?: boolean) {
-    const res = await requester<
-      | RESTGetApiAppStatusResult
-      | RESTGetApiAppAllStatusResult
-    >(Routes.teamStatus(appId), {}, true);
-
-    if (!res) return;
-
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
-          case 403:
-          case 404:
-            if (noClear) break;
-            if (appId === "all") {
-              this.children.clear();
-            } else {
-              this.delete(appId);
-            }
-            break;
-        }
-      }
-
-      return;
-    }
-
-    if (Array.isArray(res.apps)) {
-      this.setRawApps(res.apps);
-    } else {
-      this.editRawApp(appId, res.apps);
-    }
-  }
-
   delete(id: string) {
     if (this.children.delete(id)) {
       if (!this.children.size)
@@ -188,17 +135,71 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
   }
 
-  editRawApp(appId: string, data: BaseApiApp) {
+  editRawApp(appId: string, data: Partial<ApiTeamApps & ApiStatusApp>) {
     const app = this.children.get(appId);
 
     if (app) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
       this.refresh(app);
 
       extension.emit("teamAppUpdate", clone, app);
+    }
+  }
+
+  async getApps() {
+    const res = await requester<RESTGetApiTeamResult>("/team");
+
+    if (!res) return;
+
+    if (!res.apps) {
+      if ("statusCode" in res) {
+        switch (res.statusCode) {
+          case 403:
+            this.init();
+            break;
+        }
+      }
+
+      return;
+    }
+
+    this.setRawApps(res.apps);
+  }
+
+  async getStatus(appId: string = "all", noClear?: boolean) {
+    const res = await requester<
+      | RESTGetApiAppStatusResult
+      | RESTGetApiAppAllStatusResult
+    >(Routes.teamStatus(appId), {}, true);
+
+    if (!res) return;
+
+    if (!res.apps) {
+      if ("statusCode" in res) {
+        switch (res.statusCode) {
+          case 403:
+          case 404:
+            if (noClear) break;
+            if (appId === "all") {
+              this.children.clear();
+            } else {
+              this.delete(appId);
+            }
+            break;
+        }
+      }
+
+      return;
+    }
+
+    if (Array.isArray(res.apps)) {
+      for (const app of res.apps) {
+        this.editRawApp(app.id, app);
+      }
+    } else {
+      this.editRawApp(appId, res.apps);
     }
   }
 
