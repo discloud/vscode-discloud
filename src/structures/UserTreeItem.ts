@@ -48,9 +48,9 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
 
     if ("planDataEnd" in data && typeof data.planDataEnd === "string")
       this._addChild("planDataEnd", {
-        label: ["Subscription"].includes(data.planDataEnd) ?
-          data.planDataEnd :
-          new Date(data.planDataEnd).toLocaleDateString(),
+        label: new Date(data.planDataEnd).toJSON() ?
+          new Date(data.planDataEnd).toLocaleDateString() :
+          data.planDataEnd,
         description: t("label.plan.expiration"),
         userID: this.userID,
       });
