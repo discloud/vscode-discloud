@@ -54,7 +54,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         label: ["Subscription"].includes(data.planDataEnd) ?
           data.planDataEnd :
           new Date(data.planDataEnd).toLocaleDateString(),
-        description: t("label.planexpiration"),
+        description: t("label.plan.expiration"),
         userID: this.userID,
       });
 
