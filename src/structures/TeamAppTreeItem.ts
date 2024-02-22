@@ -3,7 +3,7 @@ import { /* ApiStatusApp, */ ApiTeamApps, BaseApiApp, ModPermissionsBF, ModPermi
 import { LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
 import { AppType } from "../@enum";
 import { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
-import { JSONparse, getIconName, getIconPath } from "../util";
+import { getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
@@ -14,14 +14,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   declare readonly appId: string;
   declare type?: AppType;
   declare readonly output: LogOutputChannel;
-  declare isOnline: boolean;
   readonly permissions = new ModPermissionsBF();
+  readonly contextKey = "TreeItem";
 
-  constructor(public data: Partial<TeamAppTreeItemData & ApiTeamApps> & BaseApiApp) {
-    data.label ??= typeof data.name === "string" ?
-      `${data.name}`
-      + (data.name?.includes(`${data.id}`) ? "" : ` (${data.id})`) :
-      `${data.id}`;
+  constructor(public readonly data: Partial<TeamAppTreeItemData & ApiTeamApps> & BaseApiApp) {
+    data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
 
@@ -32,6 +29,17 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     this._patch(data);
   }
 
+  get contextJSON() {
+    return {
+      online: this.online,
+      perms: this.permissions.toArray(),
+    };
+  }
+
+  get online() {
+    return this.data.online ?? null;
+  }
+
   _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps>): this {
     if (!data) data = {};
 
@@ -39,14 +47,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("type" in data) this.type = data.type;
 
-    this.label = data.label ??= "name" in data || "name" in this.data ?
-      `${data.name ?? this.data.name}`
-      + (this.type === AppType.bot ? ` (${this.appId})` : "") :
-      this.appId;
+    if ("name" in data && typeof data.name === "string")
+      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
-    this.isOnline = this.iconName === "on";
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
@@ -65,13 +70,13 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       }
     }
 
-    /* if ("container" in data)
-      this.children.set("container", new TeamAppChildTreeItem({
-        label: data.container!,
-        description: t("container"),
+    if (typeof this.online === "boolean")
+      this._addChild("status", {
+        label: this.online ? t("online") : t("offline"),
+        description: "Status",
         iconName: "container",
         appId: this.appId,
-      })); */
+      });
 
     /* if ("memory" in data)
       this.children.set("memory", new TeamAppChildTreeItem({
@@ -116,24 +121,18 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     if (data.perms) {
       this.permissions.set(<ModPermissionsResolvable>data.perms);
 
-      const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-      const json = values[2] ? JSONparse(values[2]) : null;
-
-      this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { perms: data.perms }))}`;
-
-      this.children.set("perms", new TeamAppChildTreeItem({
+      this._addChild("perms", {
         label: `${data.perms?.length} / ${totalModPerms}`,
-        description: "",
-        iconName: "",
-        tooltip: "",
         children: data.perms?.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
         })),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-      }));
+      });
     }
+
+    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
     this.collapsibleState =
       this.children.size ?

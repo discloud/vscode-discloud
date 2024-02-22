@@ -916,7 +916,7 @@
         {
           "command": "discloud.team.start",
           "group": "0",
-          "when": "view == discloud-teams && viewItem =~ /start_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && viewItem =~ /start_app/ && viewItem =~ /online\":false/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.team.status",
@@ -926,7 +926,7 @@
         {
           "command": "discloud.team.stop",
           "group": "0",
-          "when": "view == discloud-teams && viewItem =~ /stop_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && viewItem =~ /stop_app/ && viewItem =~ /online\":true/ && discloudTeamAppLength"
         },
         {
           "command": "discloud.user.set.locale",

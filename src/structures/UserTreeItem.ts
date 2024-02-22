@@ -36,62 +36,62 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
     }
 
     if (("ramUsedMb" in data) && ("totalRamMb" in data))
-      this.children.set("ram", new UserChildTreeItem({
+      this._addChild("ram", {
         label: `${data.ramUsedMb}/${data.totalRamMb}`,
         description: t("label.available.ram"),
         userID: this.userID,
-      }));
+      });
 
     if ("plan" in data)
-      this.children.set("plan", new UserChildTreeItem({
-        label: data.plan,
+      this._addChild("plan", {
+        label: data.plan!,
         description: t("plan"),
         userID: this.userID,
-      }));
+      });
 
     if ("planDataEnd" in data && typeof data.planDataEnd === "string")
-      this.children.set("planDataEnd", new UserChildTreeItem({
+      this._addChild("planDataEnd", {
         label: ["Subscription"].includes(data.planDataEnd) ?
           data.planDataEnd :
           new Date(data.planDataEnd).toLocaleDateString(),
-        description: t("label.plan.expiration"),
+        description: t("label.planexpiration"),
         userID: this.userID,
-      }));
+      });
 
     if ("locale" in data)
-      this.children.set("locale", new UserChildTreeItem({
-        label: data.locale,
+      this._addChild("locale", {
+        label: data.locale!,
         description: t("locale"),
         userID: this.userID,
-      }));
+      });
 
     if ("apps" in data)
-      this.children.set("apps", new UserChildTreeItem({
+      this._addChild("apps", {
         label: `${data.apps?.length ?? 0}`,
         description: t("label.apps.amount"),
         userID: this.userID,
-      }));
+      });
 
     if ("appsTeam" in data)
-      this.children.set("team", new UserChildTreeItem({
+      this._addChild("team", {
         label: `${data.appsTeam?.length ?? 0}`,
         description: t("label.team.apps.amount"),
         userID: this.userID,
-      }));
+      });
 
     if ("customdomains" in data)
-      this.children.set("domains", new UserChildTreeItem({
+      this._addChild("domains", {
         label: `${data.customdomains?.length ?? 0}`,
         description: t("label.domains.amount"),
         userID: this.userID,
-      }));
+      });
 
     if ("subdomains" in data)
-      this.children.set("subdomains", new UserChildTreeItem({
+      this._addChild("subdomains", {
         label: `${data.subdomains?.length ?? 0}`,
         description: t("label.subdomains.amount"),
         userID: this.userID,
-      }));
+      });
 
     this.collapsibleState =
       this.children.size ?
@@ -100,5 +100,16 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         TreeItemCollapsibleState.None;
 
     return this;
+  }
+
+  private _addChild(id: string, data: UserTreeItemData) {
+    const existing = this.children.get(id);
+
+    if (existing) {
+      existing._patch(data);
+      return;
+    }
+
+    this.children.set(id, new UserChildTreeItem(data));
   }
 }

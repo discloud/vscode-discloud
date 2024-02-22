@@ -4,7 +4,7 @@ import { LogOutputChannel, TreeItemCollapsibleState, Uri, window } from "vscode"
 import { AppType } from "../@enum";
 import { ApiVscodeApp, AppChildTreeItemData, AppTreeItemData } from "../@types";
 import extension from "../extension";
-import { JSONparse, calculatePercentage, getIconName, getIconPath } from "../util";
+import { calculatePercentage, getIconName, getIconPath } from "../util";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
@@ -13,11 +13,10 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare readonly appId: string;
   declare readonly type: AppType;
   declare readonly output: LogOutputChannel;
+  readonly contextKey = "TreeItem";
 
   constructor(public readonly data: Partial<AppTreeItemData> & ApiVscodeApp) {
-    data.label ??= typeof data.name === "string" ?
-      data.type === AppType.site ? data.id :
-        `${data.name} (${data.id})` : data.id;
+    data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
 
@@ -28,6 +27,13 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this.output = window.createOutputChannel(this.appId, { log: true });
 
     this._patch(data);
+  }
+
+  get contextJSON() {
+    return {
+      online: this.online,
+      type: this.type,
+    };
   }
 
   get online(): boolean {
@@ -43,15 +49,12 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       this.data.avatarURL = data.avatarURL = data.avatarURL.replace(/\s+/g, "");
 
     if ("name" in data && typeof data.name === "string")
-      this.label = this.type === AppType.site ? this.appId : `${data.name} (${this.appId})`;
+      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
-    const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-    const json = values[2] ? JSONparse(values[2]) : null;
-
-    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, { online: this.online }))}`;
+    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
     const showAvatar = extension.config.get<string>("app.show.avatar.instead.status");
 
@@ -88,23 +91,17 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       }
     }
 
-    if ("online" in data) {
-      this._addChild("container", {
-        label: data.online ? "Online" : "Offline",
-        description: "Status",
-        iconName: "container",
-        appId: this.appId,
-        online: this.online,
-      });
-    }
+    this._addChild("container", {
+      label: this.online ? t("online") : t("offline"),
+      description: "Status",
+      iconName: "container",
+    });
 
     if ("memory" in data)
       this._addChild("memory", {
         label: data.memory!,
         description: t("label.ram"),
         iconName: "ram",
-        appId: this.appId,
-        online: this.online,
       });
 
     if ("cpu" in data)
@@ -112,8 +109,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         label: data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
-        appId: this.appId,
-        online: this.online,
       });
 
     if ("ssd" in data)
@@ -121,8 +116,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         label: data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
-        appId: this.appId,
-        online: this.online,
       });
 
     if ("netIO" in data)
@@ -130,8 +123,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         label: `⬇${data.netIO!.down} ⬆${data.netIO!.up}`,
         description: t("network"),
         iconName: "network",
-        appId: this.appId,
-        online: this.online,
       });
 
     if ("last_restart" in data)
@@ -139,8 +130,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
         label: data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
-        appId: this.appId,
-        online: this.online,
       });
 
     this.collapsibleState =
@@ -152,7 +141,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     return this;
   }
 
-  private _addChild(id: string, data: AppChildTreeItemData) {
+  private _addChild(id: string, data: Partial<AppChildTreeItemData>) {
+    data.appId = this.appId;
+    data.online = this.online;
+    data.appType = this.type;
+
     const existing = this.children.get(id);
 
     if (existing) {
@@ -160,6 +153,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       return;
     }
 
-    this.children.set(id, new AppChildTreeItem(data));
+    this.children.set(id, new AppChildTreeItem(<AppChildTreeItemData>data));
   }
 }

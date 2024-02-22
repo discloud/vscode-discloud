@@ -3,25 +3,35 @@ import { UserTreeItemData } from "../@types";
 import { getIconPath } from "../util";
 
 export default class UserChildTreeItem extends TreeItem {
-  iconName?: string;
   readonly userID: string;
-  readonly children?: Map<string, TreeItem>;
+  declare iconName?: string;
+  declare children?: Map<string, TreeItem>;
 
-  constructor(options: UserTreeItemData & { userID: string }) {
-    super(options.label!, options.collapsibleState);
-    this.description = options.description;
-    this.iconName = options.iconName;
-    this.tooltip = options.tooltip ?? `${this.description}: ${this.label}`;
-    this.userID = options.userID;
+  constructor(data: UserTreeItemData) {
+    super(data.label, data.collapsibleState);
+
+    this.userID = data.userID;
+
+    this._patch(data);
+  }
+
+  _patch(data: Partial<UserTreeItemData>) {
+    if ("description" in data)
+      this.description = data.description;
+
+    if ("iconName" in data)
+      this.iconName = data.iconName;
+
+    this.tooltip = data.tooltip ??= `${this.description}: ${this.label}`;
 
     if (this.iconName)
       this.iconPath = getIconPath(this.iconName);
 
-    if (options.children) {
-      if (options.children instanceof Map) {
-        this.children = options.children;
+    if (data.children) {
+      if (data.children instanceof Map) {
+        this.children = data.children;
       } else {
-        this.children = new Map(options.children.map(child => [`${child.label}`, child]));
+        this.children = new Map(data.children.map(child => [`${child.label}`, child]));
       }
     }
   }

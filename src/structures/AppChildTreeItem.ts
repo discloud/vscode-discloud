@@ -1,25 +1,40 @@
 import { TreeItem } from "vscode";
+import { AppType } from "../@enum";
 import { AppChildTreeItemData } from "../@types";
-import { JSONparse, getIconPath } from "../util";
+import { getIconPath } from "../util";
 
 export default class AppChildTreeItem extends TreeItem {
   readonly iconName: string;
   readonly appId: string;
   declare children?: Map<string, TreeItem>;
+  readonly contextKey = "ChildTreeItem";
+  declare online: boolean;
+  declare readonly type: AppType;
 
   constructor(data: AppChildTreeItemData) {
     super(data.label, data.collapsibleState);
 
     this.appId = data.appId;
+    this.type = data.appType;
     this.iconName = data.iconName;
     this.iconPath = getIconPath(this.iconName);
 
     this._patch(data);
   }
 
+  get contextJSON() {
+    return {
+      online: this.online,
+      type: this.type,
+    };
+  }
+
   _patch(data: Partial<AppChildTreeItemData>) {
     if ("label" in data)
       this.label = data.label;
+
+    if ("online" in data)
+      this.online = data.online!;
 
     if ("collapsibleState" in data)
       this.collapsibleState = data.collapsibleState;
@@ -37,13 +52,6 @@ export default class AppChildTreeItem extends TreeItem {
       }
     }
 
-    const values = this.contextValue.match(/([^\W]+)(?:\W(.*))?/) ?? [];
-    const json = values[2] ? JSONparse<Record<string, any>>(values[2]) : null;
-
-    this.contextValue = `${values[1]}.${JSON.stringify(Object.assign({}, json, {
-      online: data.online ?? json?.online,
-    }))}`;
+    this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
   }
-
-  contextValue = "ChildTreeItem";
 }

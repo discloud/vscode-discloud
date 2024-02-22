@@ -66,7 +66,7 @@ export default abstract class Command {
                 iconPath: <Uri>app.iconPath,
                 label: [
                   app.data.name,
-                  app.isOnline ? t("online") : t("offline"),
+                  app.online ? t("online") : t("offline"),
                 ].join(" - "),
               });
             }
@@ -267,7 +267,10 @@ export default abstract class Command {
   logger(output: LogOutputChannel, log: string, show?: boolean): void;
   logger(output: LogOutputChannel, log: string, show = true) {
     if (typeof output === "string") {
-      output = window.createOutputChannel(output, { log: true });
+      output = extension.logOutputChannels.get(output) ??
+        extension.logOutputChannels
+          .set(output, window.createOutputChannel(output, { log: true }))
+          .get(output)!;
     }
 
     output.info("\n" + log);

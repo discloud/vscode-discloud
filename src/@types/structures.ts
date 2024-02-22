@@ -24,6 +24,7 @@ export interface BaseTreeItemData {
 
 export interface AppChildTreeItemData extends BaseTreeItemData {
   appId: string
+  appType: number
   online: boolean
   description: string
   iconName: string
@@ -67,10 +68,10 @@ export interface TeamAppChildTreeItemData extends BaseTreeItemData {
   tooltip?: string
 }
 
-export interface UserTreeItemData extends Partial<BaseTreeItemData> {
-  userID?: string
+export interface UserTreeItemData extends BaseTreeItemData {
+  userID: string
+  description: string
   children?: TeamAppTreeItem[]
-  description?: string
   iconName?: string
   tooltip?: string
 }

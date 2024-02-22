@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
 import { extname, join } from "path";
-import { ExtensionContext, StatusBarAlignment, commands, window, workspace } from "vscode";
+import { ExtensionContext, LogOutputChannel, OutputChannel, StatusBarAlignment, commands, window, workspace } from "vscode";
 import { Events, TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -35,6 +35,8 @@ class Discloud extends EventEmitter {
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
+  readonly outputChannels = new Map<string, OutputChannel>();
+  readonly logOutputChannels = new Map<string, LogOutputChannel>();
   readonly cache = new Map();
   readonly commands = new Map<string, Command>();
   readonly user = new VSUser();
