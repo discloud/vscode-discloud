@@ -1,11 +1,9 @@
-import { TreeItem } from "vscode";
 import { UserTreeItemData } from "../@types";
-import { getIconPath } from "../util";
+import BaseChildTreeItem from "./BaseChildTreeItem";
 
-export default class UserChildTreeItem extends TreeItem {
+export default class UserChildTreeItem extends BaseChildTreeItem {
   readonly userID: string;
   declare iconName?: string;
-  declare children?: Map<string, TreeItem>;
 
   constructor(data: UserTreeItemData) {
     super(data.label, data.collapsibleState);
@@ -16,31 +14,6 @@ export default class UserChildTreeItem extends TreeItem {
   }
 
   _patch(data: Partial<UserTreeItemData>) {
-    if ("label" in data)
-      this.label = data.label;
-
-    if ("collapsibleState" in data)
-      this.collapsibleState = data.collapsibleState;
-
-    if ("description" in data)
-      this.description = data.description;
-
-    if ("iconName" in data)
-      this.iconName = data.iconName;
-
-    this.tooltip = data.tooltip ??= `${this.description}: ${this.label}`;
-
-    if (this.iconName)
-      this.iconPath = getIconPath(this.iconName);
-
-    if (data.children) {
-      if (data.children instanceof Map) {
-        this.children = data.children;
-      } else {
-        this.children = new Map(data.children.map(child => [`${child.label}`, child]));
-      }
-    }
+    super._patch(data);
   }
-
-  contextValue = "ChildTreeItem";
 }

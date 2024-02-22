@@ -1,4 +1,4 @@
-import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import { CancellationToken, ExtensionContext, MarkdownString, Progress, ProgressOptions, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
 import AppTreeItem from "../structures/AppTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
@@ -20,6 +20,12 @@ export interface TaskData {
 export interface BaseTreeItemData {
   collapsibleState?: TreeItemCollapsibleState
   label: string | TreeItemLabel
+}
+
+export interface BaseChildTreeItemData extends BaseTreeItemData {
+  children?: Map<string, TreeItem> | TreeItem[]
+  description?: string | boolean
+  tooltip?: string | MarkdownString
 }
 
 export interface AppChildTreeItemData extends BaseTreeItemData {
