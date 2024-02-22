@@ -791,7 +791,7 @@
         {
           "command": "discloud.apps.commit",
           "group": "1",
-          "when": "view == discloud-apps && workspaceFolderCount && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && workspaceFolderCount"
         },
         {
           "command": "discloud.apps.copy.id",
@@ -810,7 +810,7 @@
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloud-apps && viewItem == TreeItem && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.apps.logs",
@@ -819,7 +819,7 @@
         {
           "command": "discloud.apps.logs",
           "group": "inline",
-          "when": "view == discloud-apps && viewItem == TreeItem && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /^TreeItem/"
         },
         {
           "submenu": "discloud.apps.mods",
@@ -854,7 +854,7 @@
         {
           "command": "discloud.apps.status",
           "group": "inline",
-          "when": "view == discloud-apps && viewItem == TreeItem && discloudAppLength"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.apps.stop",
@@ -864,22 +864,22 @@
         {
           "command": "discloud.apps.terminal",
           "group": "1",
-          "when": "view == discloud-apps && viewItem =~ /online\":true/"
+          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.upload",
           "group": "inline",
-          "when": "view == discloud-apps && workspaceFolderCount && !discloudAppLength"
+          "when": "view == discloud-apps && !discloudAppLength && workspaceFolderCount"
         },
         {
           "command": "discloud.team.backup",
           "group": "1",
-          "when": "view == discloud-teams && viewItem =~ /backup_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.commit",
           "group": "1",
-          "when": "view == discloud-teams && workspaceFolderCount && viewItem =~ /commit_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && workspaceFolderCount && viewItem =~ /commit_app/"
         },
         {
           "command": "discloud.team.copy.id",
@@ -888,45 +888,45 @@
         {
           "command": "discloud.team.import",
           "group": "1",
-          "when": "view == discloud-teams && viewItem =~ /backup_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.import",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.logs",
-          "when": "view == discloud-teams && viewItem =~ /logs_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.logs",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem =~ /^TreeItem/ && viewItem =~ /logs_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /^TreeItem/ && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.ram",
-          "when": "view == discloud-teams && viewItem =~ /edit_ram/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /edit_ram/"
         },
         {
           "command": "discloud.team.restart",
           "group": "0",
-          "when": "view == discloud-teams && viewItem =~ /restart_app/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /restart_app/"
         },
         {
           "command": "discloud.team.start",
           "group": "0",
-          "when": "view == discloud-teams && viewItem =~ /start_app/ && viewItem =~ /online\":false/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /start_app/ && viewItem =~ /online\":false/"
         },
         {
           "command": "discloud.team.status",
           "group": "inline",
-          "when": "view == discloud-teams && viewItem =~ /^TreeItem/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.team.stop",
           "group": "0",
-          "when": "view == discloud-teams && viewItem =~ /stop_app/ && viewItem =~ /online\":true/ && discloudTeamAppLength"
+          "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /stop_app/ && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.user.set.locale",

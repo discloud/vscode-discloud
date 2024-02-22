@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
-import extension from "../../extension";
-import Command from "../../structures/Command";
 import { TaskData } from "../../@types";
+import extension from "../../extension";
 import AppTreeItem from "../../structures/AppTreeItem";
+import Command from "../../structures/Command";
 
 export default class extends Command {
   constructor() {
@@ -21,11 +21,10 @@ export default class extends Command {
       item = picked.app;
     }
 
-    if (!item.children.size) {
+    if (!item.children.size) 
       await extension.appTree.fetch();
-      return;
-    }
 
-    await extension.appTree.getStatus(item.appId);
+    if (extension.appTree.children.size)
+      await extension.appTree.getStatus(item.appId);
   }
 }

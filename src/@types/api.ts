@@ -29,6 +29,7 @@ export interface ApiVscodeApp extends BaseApiApp {
   mainFile: string
   name: string
   online: boolean
+  ram: number
   ramKilled: boolean
   syncGit: string | null
   type: AppType
