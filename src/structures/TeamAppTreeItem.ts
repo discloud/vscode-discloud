@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
-import { /* ApiStatusApp, */ ApiTeamApps, BaseApiApp, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
+import { /* ApiStatusApp, */ ApiStatusApp, ApiTeamApps, BaseApiApp, ModPermissionsBF, ModPermissionsResolvable } from "discloud.app";
 import { LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
 import { AppType } from "../@enum";
 import { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
-import { getIconName, getIconPath } from "../util";
+import { calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
@@ -40,7 +40,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     return this.data.online ?? null;
   }
 
-  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps>): this {
+  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
     if (!data) data = {};
 
     super._patch(data);
@@ -55,19 +55,19 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    /* if ("memory" in data) {
-      const matched = data.memory?.match(/[\d.]+/g) ?? [];
-      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
-    } */
-
-    /* if ("startedAt" in data) {
-      this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
-    } */
-
     if (data.children instanceof Map) {
       for (const [id, child] of data.children) {
         this.children.set(id, child);
       }
+    }
+
+    if ("memory" in data) {
+      const matched = data.memory?.match(/[\d.]+/g) ?? [];
+      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
+    }
+
+    if ("startedAt" in data) {
+      this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
     }
 
     if (typeof this.online === "boolean")
@@ -78,45 +78,45 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    /* if ("memory" in data)
-      this.children.set("memory", new TeamAppChildTreeItem({
+    if ("memory" in data)
+      this._addChild("memory", {
         label: data.memory!,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
-      })); */
+      });
 
-    /* if ("cpu" in data)
-      this.children.set("cpu", new TeamAppChildTreeItem({
+    if ("cpu" in data)
+      this._addChild("cpu", {
         label: data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
-      })); */
+      });
 
-    /* if ("ssd" in data)
-      this.children.set("ssd", new TeamAppChildTreeItem({
+    if ("ssd" in data)
+      this._addChild("ssd", {
         label: data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
-      })); */
+      });
 
-    /* if ("netIO" in data)
-      this.children.set("netIO", new TeamAppChildTreeItem({
+    if ("netIO" in data)
+      this._addChild("netIO", {
         label: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
         description: t("network"),
         iconName: "network",
         appId: this.appId,
-      })); */
+      });
 
-    /* if ("last_restart" in data)
-      this.children.set("last_restart", new TeamAppChildTreeItem({
+    if ("last_restart" in data)
+      this._addChild("last_restart", {
         label: data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
-      })); */
+      });
 
     if (data.perms) {
       this.permissions.set(<ModPermissionsResolvable>data.perms);

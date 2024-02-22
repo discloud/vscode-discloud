@@ -358,6 +358,21 @@
             "type": "string",
             "markdownDescription": "%config.token.description%"
           },
+          "discloud.users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            },
+            "default": []
+          },
           "discloud.app.backup.dir": {
             "type": "string",
             "default": "discloud/backup",
@@ -852,11 +867,6 @@
           "when": "view == discloud-apps && discloudAppLength"
         },
         {
-          "command": "discloud.apps.status",
-          "group": "inline",
-          "when": "view == discloud-apps && discloudAppLength && viewItem =~ /^TreeItem/"
-        },
-        {
           "command": "discloud.apps.stop",
           "group": "0",
           "when": "view == discloud-apps && discloudAppLength && viewItem =~ /online\":true/"
@@ -920,7 +930,6 @@
         },
         {
           "command": "discloud.team.status",
-          "group": "inline",
           "when": "view == discloud-teams && discloudTeamAppLength && viewItem =~ /^TreeItem/"
         },
         {
@@ -941,7 +950,12 @@
         },
         {
           "command": "discloud.apps.refresh",
-          "when": "view == discloud-apps",
+          "when": "view == discloud-apps && !discloudTokenUnauthorized",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud.apps.status",
+          "when": "view == discloud-apps && discloudAppLength && !discloudTokenUnauthorized",
           "group": "navigation"
         },
         {
@@ -973,6 +987,11 @@
         {
           "command": "discloud.team.refresh",
           "when": "view == discloud-teams",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud.team.status",
+          "when": "view == discloud-teams && discloudTeamAppLength && !discloudTokenUnauthorized",
           "group": "navigation"
         },
         {

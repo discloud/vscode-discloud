@@ -1,8 +1,6 @@
 import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
-import { TaskData } from "../../@types";
 import extension from "../../extension";
-import AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
 export default class extends Command {
@@ -15,15 +13,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
-    if (!item.children.size) 
-      await extension.appTree.fetch();
-
+  async run() {
     if (extension.appTree.children.size)
       await extension.appTree.getStatus();
   }
