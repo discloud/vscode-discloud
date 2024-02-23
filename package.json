@@ -1261,7 +1261,7 @@
     "@types/archiver": "^6.0.2",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^20.11.19",
+    "@types/node": "^20.11.20",
     "@types/vscode": "^1.86.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.21.0",
