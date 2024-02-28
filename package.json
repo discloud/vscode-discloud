@@ -1250,7 +1250,7 @@
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.10",
-    "archiver": "^6.0.1",
+    "archiver": "^6.0.2",
     "discloud.app": "^0.11.0",
     "jsonwebtoken": "^9.0.2",
     "path-is-absolute": "^1.0.0",
