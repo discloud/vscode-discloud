@@ -61,7 +61,7 @@ export default class extends Command {
     const form = new FormData();
     try {
       form.append("file", await resolveFile(savePath, zipName));
-      if (!extension.debug) zipper.destroy();
+      if (!extension.isDebug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
       throw Error(error);

@@ -27,7 +27,7 @@ async function initTimer() {
   await sleep(reset * 1000 + time - Date.now());
   timer = false;
   remain = limit;
-  if (extension.debug) logger.info("[ratelimit]: restored");
+  extension.debug("[ratelimit]: restored");
 }
 
 const emitter = new EventEmitter({ captureRejections: true });
@@ -43,7 +43,7 @@ emitter.on("headers", async function (headers: IncomingHttpHeaders) {
   if (!isNaN(Reset)) reset = Reset;
   initTimer();
 
-  if (extension.debug) logger.info("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
+  extension.debug("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
 
   if (!remain) extension.emit("rateLimited", { reset, time });
 });
@@ -95,9 +95,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     "Content-Type": "application/json",
   } : {});
 
-  if (extension.debug) {
-    logger.info("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
-  }
+  extension.debug("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
 
   let response: Dispatcher.ResponseData;
   try {
@@ -110,6 +108,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
       noQueueProcesses.shift();
     }
 
+    extension.emit("missingConnection");
     throw Error("Missing Connection");
   }
 

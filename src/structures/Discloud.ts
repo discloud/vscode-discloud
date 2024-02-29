@@ -17,14 +17,18 @@ import VSUser from "./VSUser";
 const fileExt = extname(__filename);
 
 interface Discloud extends EventEmitter {
+  addListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
   emit<K extends keyof Events>(event: K, ...args: Events[K]): boolean
-  emit<S extends string | symbol>(event: Exclude<S, keyof Events>, ...args: unknown[]): boolean
+  listenerCount<K extends keyof Events>(event: K, listener?: (...args: Events[K]) => void | Promise<void>): number
+  listeners<K extends keyof Events>(event: K): ((...args: Events[K]) => void | Promise<void>)[]
   off<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  off<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
   on<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  on<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
   once<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  once<S extends string | symbol>(event: Exclude<S, keyof Events>, listener: (...args: any[]) => void | Promise<void>): this
+  prependListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
+  prependOnceListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
+  rawListeners<K extends keyof Events>(event: K): ((...args: Events[K]) => void | Promise<void>)[]
+  removeListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
+  removeAllListeners<K extends keyof Events>(event?: K): this
 }
 
 class Discloud extends EventEmitter {
@@ -45,10 +49,6 @@ class Discloud extends EventEmitter {
     super({ captureRejections: true });
   }
 
-  get debug() {
-    return Boolean(this.config.get<boolean>("debug"));
-  }
-
   get config() {
     return workspace.getConfiguration("discloud");
   }
@@ -57,6 +57,10 @@ class Discloud extends EventEmitter {
     if (this.token) return true;
     window.showErrorMessage(t("missing.token"));
     return false;
+  }
+
+  get isDebug() {
+    return Boolean(this.config.get<boolean>("debug"));
   }
 
   get logger() {
@@ -93,6 +97,10 @@ class Discloud extends EventEmitter {
       .map(config => join(...this.config.get<string>(config)?.split(/[\\/]/) ?? ""))
       .filter(Boolean)
       .concat("discloud", `${workspace.name}.zip`);
+  }
+
+  debug(...args: Parameters<LogOutputChannel["info"]>) {
+    this.emit("debug", ...args);
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
@@ -158,18 +166,18 @@ class Discloud extends EventEmitter {
 
               try {
                 await command.run(taskData, ...args);
-              } catch (error: any) {
+              } catch (error) {
                 this.emit("error", error);
-                this.resetStatusBar();
               }
+              this.resetStatusBar();
             });
           } else {
             try {
               await command.run(taskData, ...args);
-            } catch (error: any) {
+            } catch (error) {
               this.emit("error", error);
-              this.resetStatusBar();
             }
+            this.resetStatusBar();
           }
         });
 
@@ -177,7 +185,7 @@ class Discloud extends EventEmitter {
 
         this.commands.set(commandName, command);
 
-        if (this.debug) logger.info(commandName, disposable ? "✅" : "❌");
+        if (this.isDebug) logger.info(commandName, disposable ? "✅" : "❌");
 
         continue;
       }
@@ -227,6 +235,10 @@ class Discloud extends EventEmitter {
       userTree: { value: new UserTreeDataProvider("discloud-user") },
     });
     this.emit("activate", context);
+  }
+
+  dispose() {
+    this.removeAllListeners();
   }
 }
 

@@ -12,12 +12,11 @@ const totalModPerms = ModPermissionsBF.All.toArray().length;
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
   declare iconName: string;
   declare readonly appId: string;
-  declare type?: AppType;
   declare readonly output: LogOutputChannel;
   readonly permissions = new ModPermissionsBF();
   readonly contextKey = "TreeItem";
 
-  constructor(public readonly data: Partial<TeamAppTreeItemData & ApiTeamApps> & BaseApiApp) {
+  constructor(public readonly data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
@@ -40,34 +39,36 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     return this.data.online ?? null;
   }
 
+  get type() {
+    return this.data.type;
+  }
+
+  dispose() {
+    this.output.dispose();
+
+    super.dispose();
+  }
+
   _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
     if (!data) data = {};
 
     super._patch(data);
 
-    if ("type" in data) this.type = data.type;
+    if ("name" in data)
+      this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
 
-    if ("name" in data && typeof data.name === "string")
-      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
-
-    this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
+    this.iconName = getIconName(this.data) ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if (data.children instanceof Map) {
-      for (const [id, child] of data.children) {
-        this.children.set(id, child);
-      }
-    }
-
-    if ("memory" in data) {
-      const matched = data.memory?.match(/[\d.]+/g) ?? [];
+    if (typeof data.memory === "string") {
+      const matched = this.data.memory!.match(/[\d.]+/g) ?? [];
       this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if ("startedAt" in data) {
-      this.data.startedAtTimestamp = new Date(data.startedAt!).valueOf();
+    if (typeof data.startedAt === "string") {
+      this.data.startedAtTimestamp = new Date(this.data.startedAt!).valueOf();
     }
 
     if (typeof this.online === "boolean")
@@ -80,7 +81,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("memory" in data)
       this._addChild("memory", {
-        label: data.memory!,
+        label: this.data.memory!,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
@@ -88,7 +89,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("cpu" in data)
       this._addChild("cpu", {
-        label: data.cpu!,
+        label: this.data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
@@ -96,7 +97,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("ssd" in data)
       this._addChild("ssd", {
-        label: data.ssd!,
+        label: this.data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
@@ -104,7 +105,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("netIO" in data)
       this._addChild("netIO", {
-        label: `⬇${data.netIO?.down} ⬆${data.netIO?.up}`,
+        label: `⬇${this.data.netIO?.down} ⬆${this.data.netIO?.up}`,
         description: t("network"),
         iconName: "network",
         appId: this.appId,
@@ -112,19 +113,19 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if ("last_restart" in data)
       this._addChild("last_restart", {
-        label: data.last_restart!,
+        label: this.data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
       });
 
     if (data.perms) {
-      this.permissions.set(<ModPermissionsResolvable>data.perms);
+      this.permissions.set(<ModPermissionsResolvable>this.data.perms);
 
       this._addChild("perms", {
-        label: `${data.perms?.length} / ${totalModPerms}`,
+        label: `${this.data.perms!.length} / ${totalModPerms}`,
         description: t("permissions"),
-        children: data.perms?.map(perm => new TeamAppChildTreeItem({
+        children: this.data.perms!.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
         })),
