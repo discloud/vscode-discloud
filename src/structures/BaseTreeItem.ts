@@ -1,13 +1,18 @@
-import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import { Disposable, TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
+import DisposableMap from "./DisposableMap";
 
-export default abstract class BaseTreeItem<T extends TreeItem> extends TreeItem {
-  readonly children = new Map<string, T>();
+export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem {
+  readonly children = new DisposableMap<string, T>();
   declare readonly data: unknown;
 
   contextValue = "TreeItem";
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
+  }
+
+  dispose() {
+    this.children.dispose();
   }
 
   protected _clone(): this {

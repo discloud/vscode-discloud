@@ -16,4 +16,6 @@ export async function activate(context: ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+  extension.dispose();
+}

@@ -14,6 +14,8 @@ export default class BaseChildTreeItem extends TreeItem {
     return {};
   }
 
+  dispose() { }
+
   protected _patch(data: Partial<BaseChildTreeItemData>) {
     if ("accessibilityInformation" in data)
       this.accessibilityInformation = data.accessibilityInformation;

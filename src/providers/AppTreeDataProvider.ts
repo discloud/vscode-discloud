@@ -12,7 +12,8 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     super(viewId);
   }
 
-  getChildren(element?: NonNullable<AppTreeItem>): ProviderResult<any[]> {
+  getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
+  getChildren(element?: NonNullable<AppTreeItem>): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
@@ -69,9 +70,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
 
     const apps = data.map(app => typeof app === "string" ? app : app.id);
 
-    for (const child of this.children.keys()) {
-      if (!apps.includes(child)) {
-        refresh = this.children.delete(child);
+    for (const key of this.children.keys()) {
+      if (!apps.includes(key)) {
+        refresh = this.children.dispose(key);
       }
     }
 
@@ -79,7 +80,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   delete(id: string) {
-    if (this.children.delete(id)) {
+    if (this.children.dispose(id)) {
       if (!this.children.size)
         this.init();
 
@@ -139,8 +140,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     const app = this.children.get(appId);
 
     if (app) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
       this.refresh(app);
@@ -162,7 +162,6 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
         switch (res.statusCode) {
           case 404:
             if (appId === "all") {
-              this.children.clear();
               this.init();
             } else {
               this.delete(appId);
@@ -195,7 +194,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   init() {
-    this.children.clear();
+    this.children.dispose();
 
     const x = new TreeItem(t("noappfound"));
     x.contextValue = "EmptyTreeItem";

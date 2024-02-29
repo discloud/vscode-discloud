@@ -14,7 +14,7 @@
     "url": "git+https://github.com/discloud/vscode-discloud.git"
   },
   "engines": {
-    "vscode": "^1.86.0"
+    "vscode": "^1.87.0"
   },
   "sponsor": {
     "url": "https://discloudbot.com/plans"
@@ -1245,7 +1245,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "vscode-test"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
@@ -1265,6 +1265,7 @@
     "@types/vscode": "^1.87.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.57.0",
     "mocha": "^10.3.0",

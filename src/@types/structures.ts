@@ -1,4 +1,4 @@
-import { CancellationToken, ExtensionContext, Progress, ProgressOptions, TreeItem } from "vscode";
+import { CancellationToken, ExtensionContext, LogOutputChannel, Progress, ProgressOptions, TreeItem } from "vscode";
 import AppTreeItem from "../structures/AppTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import VSUser from "../structures/VSUser";
@@ -79,7 +79,8 @@ export interface Events {
   activate: [context: ExtensionContext]
   appUpdate: [oldApp: AppTreeItem, newApp: AppTreeItem]
   authorized: [token: string, isWorkspace?: boolean]
-  error: [error: any]
+  debug: Parameters<LogOutputChannel["info"]>
+  error: [error: Error | unknown]
   missingConnection: []
   missingToken: []
   rateLimited: [rateLimitData: RateLimitData]

@@ -15,7 +15,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare readonly output: LogOutputChannel;
   readonly contextKey = "TreeItem";
 
-  constructor(public readonly data: Partial<AppTreeItemData> & ApiVscodeApp) {
+  constructor(public readonly data: Partial<AppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
@@ -40,18 +40,24 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     return this.data.online;
   };
 
+  dispose() {
+    this.output.dispose();
+
+    super.dispose();
+  }
+
   _patch(data: Partial<AppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
     if (!data) data = {};
 
     super._patch(data);
 
-    if (typeof data.avatarURL === "string")
-      this.data.avatarURL = data.avatarURL = data.avatarURL.replace(/\s+/g, "");
+    if ("avatarURL" in data)
+      this.data.avatarURL = this.data.avatarURL.replace(/\s+/g, "");
 
-    if ("name" in data && typeof data.name === "string")
-      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
+    if ("name" in data)
+      this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
 
-    this.iconName = getIconName(data) ?? data.iconName ?? this.iconName ?? "off";
+    this.iconName = getIconName(this.data) ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
@@ -60,15 +66,15 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     switch (showAvatar) {
       case "always": {
-        if (data.avatarURL ?? this.data.avatarURL)
-          this.iconPath = Uri.parse(data.avatarURL ?? this.data.avatarURL!);
+        if (this.data.avatarURL)
+          this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
       }
 
       case "when.online": {
-        if (this.iconName === "on" && (data.avatarURL ?? this.data.avatarURL))
-          this.iconPath = Uri.parse(data.avatarURL ?? this.data.avatarURL!);
+        if (this.online && this.data.avatarURL)
+          this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
       }
@@ -76,19 +82,13 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if ("memory" in data && typeof data.memory === "string") {
-      const matched = data.memory.match(/[\d.]+/g) ?? [];
+    if (typeof data.memory === "string") {
+      const matched = this.data.memory!.match(/[\d.]+/g) ?? [];
       this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if ("startedAt" in data && typeof data.startedAt === "string") {
-      this.data.startedAtTimestamp = new Date(data.startedAt).valueOf();
-    }
-
-    if (data.children instanceof Map) {
-      for (const [id, child] of data.children) {
-        this.children.set(id, child);
-      }
+    if (typeof data.startedAt === "string") {
+      this.data.startedAtTimestamp = new Date(this.data.startedAt!).valueOf();
     }
 
     this._addChild("status", {
@@ -99,35 +99,35 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     if ("memory" in data)
       this._addChild("memory", {
-        label: data.memory!,
+        label: this.data.memory,
         description: t("label.ram"),
         iconName: "ram",
       });
 
     if ("cpu" in data)
       this._addChild("cpu", {
-        label: data.cpu!,
+        label: this.data.cpu,
         description: t("label.cpu"),
         iconName: "cpu",
       });
 
     if ("ssd" in data)
       this._addChild("ssd", {
-        label: data.ssd!,
+        label: this.data.ssd,
         description: t("label.ssd"),
         iconName: "ssd",
       });
 
     if ("netIO" in data)
       this._addChild("netIO", {
-        label: `⬇${data.netIO!.down} ⬆${data.netIO!.up}`,
+        label: `⬇${this.data.netIO!.down} ⬆${this.data.netIO!.up}`,
         description: t("network"),
         iconName: "network",
       });
 
     if ("last_restart" in data)
       this._addChild("last_restart", {
-        label: data.last_restart!,
+        label: this.data.last_restart,
         description: t("last.restart"),
         iconName: "uptime",
       });

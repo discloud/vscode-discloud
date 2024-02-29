@@ -12,7 +12,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   getChildren(element?: TeamAppTreeItem): ProviderResult<TeamAppTreeItem[]>;
-  getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<any[]> {
+  getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
@@ -69,9 +69,9 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
 
     const apps = data.map(app => typeof app === "string" ? app : app.id);
 
-    for (const child of this.children.keys()) {
-      if (!apps.includes(child)) {
-        refresh = this.children.delete(child);
+    for (const key of this.children.keys()) {
+      if (!apps.includes(key)) {
+        refresh = this.children.dispose(key);
       }
     }
 
@@ -79,7 +79,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   delete(id: string) {
-    if (this.children.delete(id)) {
+    if (this.children.dispose(id)) {
       if (!this.children.size)
         this.init();
 
@@ -208,7 +208,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   init() {
-    this.children.clear();
+    this.children.dispose();
 
     const x = new TreeItem(t("noappfound"));
     x.contextValue = "EmptyTreeItem";
