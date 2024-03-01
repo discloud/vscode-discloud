@@ -1,6 +1,7 @@
 import { existsSync, readdirSync } from "fs";
+import { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
 import { dirname, join } from "path";
-import { CompletionItem, CompletionItemKind, languages } from "vscode";
+import { CompletionItem, CompletionItemKind, TextDocument, languages } from "vscode";
 import { ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
@@ -9,47 +10,145 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(options: ProviderOptions) {
     super(options.path.toString());
 
-    if (!this.data) return;
+    if (!this.schema) return;
 
-    const disposable = languages.registerCompletionItemProvider(this.data.rules.languageId, {
+    const disposable = languages.registerCompletionItemProvider(this.schema.$id!, {
       provideCompletionItems: (document, position, _token, _context) => {
-        if (!position.character)
-          return this.data.rules.scopes.map(scope => new CompletionItem(`${scope}${this.data.rules.separator}`, CompletionItemKind.Value))
+        if (!this.schema.properties) return [];
+
+        if (!position.character) {
+          return this.scopes
+            .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
             .concat(new CompletionItem("# https://docs.discloudbot.com/discloud.config", CompletionItemKind.Reference));
-
-        const textLine = document.lineAt(position);
-        const text = textLine.text.substring(0, position.character);
-        const [key, value] = text.split(this.data.rules.separator);
-
-        if (typeof value !== "string") {
-          if (this.data.rules.scopes.includes(key))
-            return [new CompletionItem(`${key}${this.data.rules.separator}`, CompletionItemKind.Value)];
-
-          return this.data.rules.scopes
-            .filter(scope => scope.includes(key))
-            .map(scope => new CompletionItem(`${scope}${this.data.rules.separator}`, CompletionItemKind.Value));
         }
 
-        const scopeData = this.data[key];
+        const line = document.lineAt(position);
+        const text = line.text.substring(0, position.character);
+        const [key, value] = text.split("=");
 
-        if (!scopeData) return [];
+        return this.parseSchema(this.schema, {
+          document,
+          key,
+          value,
+        });
 
-        if ("minValue" in this.data[key]) {
-          const TYPE = this.getText(document, `^${scopeData.minValue.compare}${this.data.rules.separator}`);
+      },
+    });
 
-          const keys = Object.keys(scopeData.minValue.when);
+    extension.subscriptions.push(disposable);
+  }
 
-          const type = keys.find(key => key === TYPE) ?? "all";
-
-          const min = scopeData.minValue.when[type];
-
-          const values = min.values ?? [min.value];
-
-          return values.map(v => new CompletionItem(`${v}`, CompletionItemKind[scopeData.completionItemKind]));
+  parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): CompletionItem[] {
+    switch (schema.type) {
+      case "array":
+        const items = this.parseSchemaArray(schema, options);
+        if (schema.uniqueItems) {
+          const values = options.value.split(/\W+/);
+          return items.filter(item => !values.includes(item.label.toString()));
         }
+        return items;
+      case "boolean":
+        return [
+          new CompletionItem("false", CompletionItemKind.Keyword),
+          new CompletionItem("true", CompletionItemKind.Keyword),
+        ];
+      case "integer":
+      case "number":
+        return this.parseSchemaNumber(schema);
+      case "null":
+        return [];
+      case "string":
+        return this.parseSchemaString(schema, options);
+      case "object":
+      default:
+        return this.parseSchemaObject(schema, options);
+    }
+  }
 
-        if ("fs" in this.data[key]) {
-          let targetPath = join(dirname(document.uri.fsPath), value);
+  parseSchemaArray(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (schema.enum !== undefined) return this.parseSchemaEnum(schema);
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
+    if (schema.items !== undefined) return this.parseSchemaItems(schema, options);
+    return [];
+  }
+
+  parseSchemaEnum(schema: JSONSchema7) {
+    if (schema.enum !== undefined)
+      return schema.enum.flatMap(value => this.parseSchemaType(value));
+    return [];
+  }
+
+  parseSchemaExamples(schema: JSONSchema7) {
+    if (schema.examples !== undefined)
+      return this.parseSchemaType(schema.examples);
+    return [];
+  }
+
+  parseSchemaItems(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (Array.isArray(schema.items)) {
+      return schema.items.flatMap(value => this.parseSchemaDefinition(value, options));
+    } else {
+      return this.parseSchemaDefinition(schema.items!, options);
+    }
+  }
+
+  parseSchemaType(schema: JSONSchema7Type): CompletionItem[] {
+    if (Array.isArray(schema)) {
+      return schema.flatMap(value => this.parseSchemaType(value));
+    }
+
+    if (typeof schema === "string") {
+      return [new CompletionItem(schema)];
+    }
+
+    if (typeof schema === "number") {
+      return [new CompletionItem(`${schema}`)];
+    }
+
+    if (typeof schema === "boolean") {
+      return [new CompletionItem(`${schema}`)];
+    }
+
+    return [];
+  }
+
+  parseSchemaNumber(schema: JSONSchema7) {
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
+    return [];
+  }
+
+  parseSchemaObject(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (schema.properties !== undefined) {
+      return this.parseSchemaProperties(schema, options);
+    }
+
+    return [];
+  }
+
+  parseSchemaProperties(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (schema.properties !== undefined) {
+      if (schema.properties?.[options.key])
+        return this.parseSchemaDefinition(schema.properties?.[options.key], options);
+
+      return Object.values(schema.properties!).flatMap(property => this.parseSchemaDefinition(property, options));
+    }
+
+    return [];
+  }
+
+  parseSchemaDefinition(schema: JSONSchema7Definition, options: ParseSchemaOptions) {
+    if (typeof schema === "boolean") return [];
+    return this.parseSchema(schema, options);
+  }
+
+  parseSchemaString(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (schema.enum !== undefined) return this.parseSchemaEnum(schema);
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
+
+    if (typeof schema.format === "string") {
+      switch (schema.format) {
+        case "uri-reference":
+          let targetPath = join(dirname(options.document.uri.fsPath), options.value);
 
           while (targetPath && !existsSync(targetPath)) {
             targetPath = dirname(targetPath);
@@ -69,20 +168,16 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
             return item;
           });
-        }
+      }
+    }
 
-        if ("properties" in this.data[key]) {
-          const values = value.split(RegExp(scopeData.separatorPattern));
-
-          return scopeData.properties
-            .filter(p => !values.includes(p))
-            .map(value => new CompletionItem(value, CompletionItemKind[scopeData.completionItemKind]));
-        }
-
-        return [];
-      },
-    });
-
-    extension.subscriptions.push(disposable);
+    return [];
   }
+}
+
+interface ParseSchemaOptions {
+  document: TextDocument,
+  key: string
+  value: string
+  uniqueItems?: boolean
 }

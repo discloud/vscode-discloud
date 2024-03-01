@@ -13,12 +13,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
   constructor(public options: ProviderOptions) {
     super(options.path.toString());
 
-    if (!this.data) return;
+    if (!this.schema) return;
 
-    this.collection = languages.createDiagnosticCollection(this.data.rules.languageId);
+    this.collection = languages.createDiagnosticCollection(this.schema.$id);
 
     const disposableEditor = window.onDidChangeActiveTextEditor(editor => {
-      if (editor?.document.languageId === this.data.rules.languageId) {
+      if (editor?.document.languageId === this.schema.$id!) {
         this.checkDocument(editor.document);
         this.activate();
       } else {
@@ -28,12 +28,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     });
 
     const disposableOpen = workspace.onDidOpenTextDocument(document => {
-      if (document.languageId === this.data.rules.languageId) {
+      if (document.languageId === this.schema.$id) {
         this.checkOnOpenDocument(document);
       }
     });
 
-    if (window.activeTextEditor?.document.languageId === this.data.rules.languageId) {
+    if (window.activeTextEditor?.document.languageId === this.schema.$id!) {
       this.checkDocument(window.activeTextEditor.document);
       this.checkOnOpenDocument(window.activeTextEditor.document);
       this.activate();
@@ -44,7 +44,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
   activate() {
     const disposable = workspace.onDidChangeTextDocument((event) => {
-      if (event.document.languageId === this.data.rules.languageId) {
+      if (event.document.languageId === this.schema.$id) {
         for (const _ of event.contentChanges) {
           this.checkDocument(event.document);
         }
@@ -53,8 +53,8 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
-    extension.subscriptions.push(disposable);
     this.disposableDocuments.push(disposable);
+    extension.subscriptions.push(disposable);
   }
 
   deactivate() {
@@ -66,225 +66,84 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
   checkOnOpenDocument(document: TextDocument) {
     const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
 
-    const location = this.data.rules.location;
-
-    if (workspaceFolder && typeof location === "string") {
-      if (join(workspaceFolder, location) !== join(dirname(document.uri.fsPath), location)) {
-        window.showErrorMessage(t(this.data.rules.messages.wronglocation));
+    if (workspaceFolder) {
+      if (workspaceFolder !== dirname(document.uri.fsPath)) {
+        window.showErrorMessage(t("diagnostic.wrong.file.location"));
       }
     }
   }
 
   checkDocument(document: TextDocument) {
-    if (document.languageId !== this.data.rules.languageId) return;
+    if (document.languageId !== this.schema.$id) return;
 
     const diagnostics = <Diagnostic[]>[];
 
-    const scopes: Record<string, any> = {};
+    const errors = this.validateJsonSchema(this.transformConfigToJSON(document));
 
-    const ignore = RegExp(this.data.rules.ignore);
+    for (let i = 0; i < errors.length; i++) {
+      const error = errors[i];
 
-    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
-
-    const location = this.data.rules.location;
-
-    if (workspaceFolder && typeof location === "string") {
-      if (join(workspaceFolder, location) !== join(dirname(document.uri.fsPath), location)) {
-        diagnostics.push({
-          message: t(this.data.rules.messages.wronglocation),
-          range: new Range(
-            new Position(0, 0),
-            new Position(0, 0)
-          ),
-          severity: DiagnosticSeverity.Error,
-        });
+      switch (error.code) {
+        case "required-property-error":
+          errors.splice(i, 1);
+          diagnostics.push(new Diagnostic(new Range(new Position(0, 0), new Position(0, 0)), error.message));
+          break;
       }
     }
 
     for (let i = 0; i < document.lineCount; i++) {
-      const textLine = document.lineAt(i);
+      const line = document.lineAt(i);
 
-      if (ignore.test(textLine.text) || !textLine.text) continue;
+      if (!line.text) continue;
 
-      const keyAndValue = textLine.text.split(this.data.rules.separator);
-      const key = keyAndValue[0];
-      const value = keyAndValue[1];
+      const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
 
-      for (const keyOrValue of keyAndValue) {
-        const isKey = keyOrValue === key;
+      const keyAndValue = line.text.split("=");
+      const [key, value] = keyAndValue;
 
-        const scopeData = this.data[key] ?? {};
+      const scopeSchema = this.schema.properties?.[key];
 
-        if (this.data.rules.noSpaces) {
-          if (
-            (this.data.rules.noEndSpaces && keyOrValue.endsWith(" ")) ||
-            (!scopeData.allowSpaces && /\s+/.test(keyOrValue))
-          ) {
-            diagnostics.push({
-              message: t(
-                (!isKey && keyOrValue.endsWith(" ")) ?
-                  this.data.rules.noEndSpaces.message :
-                  this.data.rules.noSpaces.message
-              ),
-              range: new Range(
-                new Position(i, isKey ? 0 : (key.length + 1)),
-                new Position(i, isKey ? keyOrValue.length : textLine.text.length)
-              ),
-              severity: DiagnosticSeverity[this.data.rules.noSpaces.severity],
-            });
-          }
-        }
+      if (!scopeSchema || typeof scopeSchema === "boolean") return;
+
+      const errorIndex = errors.findIndex(e => e.data.pointer.includes(key));
+
+      if (errorIndex > -1) {
+        const error = errors.splice(errorIndex, 1)[0];
+
+        diagnostics.push({
+          range: new Range(
+            new Position(i, key.length + 1),
+            new Position(i, line.text.length),
+          ),
+          message: error.message.replace("#/", ""),
+          severity: DiagnosticSeverity.Error,
+        });
       }
 
-      if (value) {
-        scopes[key] = value;
-
-        for (const scope of this.data.rules.scopes) {
-          if (key !== scope) continue;
-          if (!(scope in this.data)) continue;
-
-          const scopeData = this.data[scope];
-
-          if ("fs" in scopeData) {
-            if (workspaceFolder) {
-              if (!existsSync(join(workspaceFolder, value))) {
-                diagnostics.push({
-                  message: t(scopeData.fs.message),
-                  range: new Range(
-                    new Position(i, key.length + 1),
-                    new Position(i, textLine.text.length)
-                  ),
-                  severity: DiagnosticSeverity.Error,
-                });
-              }
-            }
-          }
-
-          if ("minValue" in scopeData) {
-            if (isNaN(Number(value))) {
-              diagnostics.push({
-                message: t(scopeData.message),
-                range: new Range(
-                  new Position(i, key.length + 1),
-                  new Position(i, textLine.text.length)
-                ),
-                severity: DiagnosticSeverity.Error,
-              });
-            } else {
-              const TYPE = this.getText(document, `^${scopeData.minValue.compare}${this.data.rules.separator}`);
-
-              const keys = Object.keys(scopeData.minValue.when);
-
-              const type = keys.find(key => key === TYPE) ?? "common";
-
-              const min = scopeData.minValue.when[type].value;
-
-              if (Number(value) < min) {
-                diagnostics.push({
-                  message: t(scopeData.minValue.message, {
-                    min,
-                  }),
-                  range: new Range(
-                    new Position(i, key.length + 1),
-                    new Position(i, textLine.text.length)
-                  ),
-                  severity: DiagnosticSeverity.Error,
-                });
-              }
-            }
-          }
-
-          if ("pattern" in scopeData) {
-            if (!RegExp(scopeData.pattern).test(value)) {
-              diagnostics.push({
-                message: t(scopeData.message),
-                range: new Range(
-                  new Position(i, key.length + 1),
-                  new Position(i, textLine.text.length)
-                ),
-                severity: DiagnosticSeverity.Error,
-              });
-            }
-          }
-
-          if ("separatorPattern" in scopeData) {
-            const splitted = value.split(RegExp(scopeData.separatorPattern));
-
-            if (splitted.length) {
-              for (const data of splitted) {
-                if (!data) continue;
-
-                if (!RegExp(scopeData.pattern).test(data)) {
-                  diagnostics.push({
-                    message: t(scopeData.message),
-                    range: new Range(
-                      new Position(i, key.length + 1),
-                      new Position(i, textLine.text.length)
-                    ),
-                    severity: DiagnosticSeverity.Error,
-                  });
+      switch (scopeSchema.type) {
+        case "string":
+          if (scopeSchema.format) {
+            switch (scopeSchema.format) {
+              case "uri-reference":
+                if (workspaceFolder) {
+                  if (!existsSync(join(workspaceFolder, value))) {
+                    diagnostics.push({
+                      message: t("diagnostic.main.not.exist"),
+                      range: new Range(
+                        new Position(i, key.length + 1),
+                        new Position(i, line.text.length)
+                      ),
+                      severity: DiagnosticSeverity.Error,
+                    });
+                  }
                 }
-              }
+                break;
             }
           }
-        }
-      } else {
-        if (!textLine.text.includes(this.data.rules.separator)) {
-          diagnostics.push({
-            message: t(this.data.rules.messages.missingseparator),
-            range: new Range(
-              new Position(i, key.length),
-              new Position(i, textLine.text.length)
-            ),
-            severity: DiagnosticSeverity.Error,
-          });
-        }
+          break;
       }
     }
 
-    const missingScopes = this.getRequiredScopes(document)
-      .filter((scope) => !scopes[scope]);
-
-    if (missingScopes.length) {
-      diagnostics.push({
-        message: t(this.data.rules.messages.missingscopes, {
-          scopes: `[${missingScopes.join(", ")}]`,
-        }),
-        range: new Range(
-          new Position(0, 0),
-          new Position(document.lineCount, 0)
-        ),
-        severity: DiagnosticSeverity.Error,
-      });
-    }
-
-    this.updateDiagnostics(document, diagnostics);
-  }
-
-  updateDiagnostics(document: TextDocument, diagnostics: Diagnostic[]) {
     this.collection.set(document.uri, diagnostics);
-  }
-
-  getRequiredScopes(document: TextDocument) {
-    return this.data.rules.scopes
-      .filter(scope => {
-        const required = this.data[scope].required;
-
-        if (typeof required === "boolean") return required;
-
-        if (!required?.when) return false;
-
-        const keys = Object.keys(required.when);
-
-        for (let i = 0; i < keys.length; i++) {
-          const key = keys[i];
-
-          const value = this.getText(document, `^${key}${this.data.rules.separator}`);
-
-          keys[i] = required.when[key] === value ? value : "";
-        }
-
-        return keys.every(key => key);
-      });
   }
 }

@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "discloud.config",
+  "properties": {
+    "APT": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "canvas",
+          "ffmpeg",
+          "java",
+          "libgl",
+          "openssl",
+          "puppeteer",
+          "tools"
+        ]
+      }
+    },
+    "AUTORESTART": {
+      "type": "boolean",
+      "default": false
+    },
+    "AVATAR": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png)([?]\\S*)?$"
+    },
+    "ID": {
+      "type": "string"
+    },
+    "MAIN": {
+      "type": "string",
+      "format": "uri-reference",
+      "minLength": 1
+    },
+    "NAME": {
+      "type": "string",
+      "maxLength": 30
+    },
+    "RAM": {
+      "type": "integer",
+      "minimum": 100,
+      "default": 100,
+      "examples": [
+        100,
+        512
+      ]
+    },
+    "TYPE": {
+      "type": "string",
+      "default": "bot",
+      "enum": [
+        "bot",
+        "site"
+      ]
+    },
+    "VERSION": {
+      "type": "string",
+      "pattern": "^(current|latest|suja|(?:\\d+(?:\\.[\\dx]+(?:\\.[\\dx]+)?)?))$",
+      "default": "latest",
+      "examples": [
+        "current",
+        "latest",
+        "suja",
+        "x.x.x"
+      ]
+    }
+  },
+  "required": [
+    "MAIN",
+    "RAM",
+    "TYPE",
+    "VERSION"
+  ],
+  "if": {
+    "properties": {
+      "TYPE": {
+        "const": "site"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "ID": {
+        "minLength": 1
+      },
+      "RAM": {
+        "minimum": 512,
+        "examples": [
+          512
+        ]
+      }
+    },
+    "required": [
+      "ID"
+    ]
+  },
+  "else": {
+    "properties": {
+      "NAME": {
+        "minLength": 1
+      },
+      "RAM": {
+        "minimum": 100,
+        "examples": [
+          100
+        ]
+      }
+    },
+    "required": [
+      "NAME"
+    ]
+  }
+}
