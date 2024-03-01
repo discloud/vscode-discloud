@@ -47,8 +47,6 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         for (const _ of event.contentChanges) {
           this.checkDocument(event.document);
         }
-
-        extension.statusBar.setDefault();
       }
     });
 
