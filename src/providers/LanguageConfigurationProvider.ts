@@ -122,11 +122,11 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         const error = errors.splice(errorIndex, 1)[0];
 
         diagnostics.push({
+          message: error.message.replace("#/", ""),
           range: new Range(
             new Position(i, key.length + 1),
             new Position(i, line.text.length),
           ),
-          message: error.message.replace("#/", ""),
           severity: DiagnosticSeverity.Error,
         });
       }
