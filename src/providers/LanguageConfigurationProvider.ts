@@ -29,13 +29,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const disposableOpen = workspace.onDidOpenTextDocument(document => {
       if (document.languageId === this.schema.$id) {
-        this.checkOnOpenDocument(document);
+        this.checkDocument(document);
       }
     });
 
     if (window.activeTextEditor?.document.languageId === this.schema.$id!) {
       this.checkDocument(window.activeTextEditor.document);
-      this.checkOnOpenDocument(window.activeTextEditor.document);
       this.activate();
     }
 
@@ -63,20 +62,27 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     }
   }
 
-  checkOnOpenDocument(document: TextDocument) {
+  checkDocument(document: TextDocument) {
+    if (document.languageId !== this.schema.$id) return;
+
+    const diagnostics = <Diagnostic[]>[];
+
     const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
 
     if (workspaceFolder) {
       if (workspaceFolder !== dirname(document.uri.fsPath)) {
         window.showErrorMessage(t("diagnostic.wrong.file.location"));
+
+        diagnostics.push({
+          message: t("diagnostic.wrong.file.location"),
+          range: new Range(
+            new Position(0, 0),
+            new Position(0, 0),
+          ),
+          severity: DiagnosticSeverity.Error,
+        });
       }
     }
-  }
-
-  checkDocument(document: TextDocument) {
-    if (document.languageId !== this.schema.$id) return;
-
-    const diagnostics = <Diagnostic[]>[];
 
     const config = this.transformConfigToJSON(document);
 
@@ -88,7 +94,14 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       switch (error.code) {
         case "required-property-error":
           errors.splice(i, 1);
-          diagnostics.push(new Diagnostic(new Range(new Position(0, 0), new Position(0, 0)), error.message));
+          diagnostics.push({
+            message: error.message,
+            range: new Range(
+              new Position(0, 0),
+              new Position(0, 0)
+            ),
+            severity: DiagnosticSeverity.Error,
+          });
           break;
       }
     }
