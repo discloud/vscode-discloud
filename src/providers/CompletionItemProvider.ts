@@ -43,8 +43,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       case "array":
         const items = this.parseSchemaArray(schema, options);
         if (schema.uniqueItems) {
-          const values = options.value.split(/\W+/);
-          return items.filter(item => !values.includes(item.label.toString()));
+          return items.filter(item => !options.value.includes(item.label.toString()));
         }
         return items;
       case "boolean":
@@ -179,5 +178,4 @@ interface ParseSchemaOptions {
   document: TextDocument,
   key: string
   value: string
-  uniqueItems?: boolean
 }

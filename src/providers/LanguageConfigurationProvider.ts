@@ -78,7 +78,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const diagnostics = <Diagnostic[]>[];
 
-    const errors = this.validateJsonSchema(this.transformConfigToJSON(document));
+    const config = this.transformConfigToJSON(document);
+
+    const errors = this.validateJsonSchema(config);
 
     for (let i = 0; i < errors.length; i++) {
       const error = errors[i];
@@ -103,7 +105,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
       const scopeSchema = this.schema.properties?.[key];
 
-      if (!scopeSchema || typeof scopeSchema === "boolean") return;
+      if (!scopeSchema || typeof scopeSchema === "boolean") continue;
 
       const errorIndex = errors.findIndex(e => e.data.pointer.includes(key));
 
