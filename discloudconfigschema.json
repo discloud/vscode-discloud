@@ -61,8 +61,8 @@
       "pattern": "^(current|latest|suja|(?:\\d+(?:\\.[\\dx]+(?:\\.[\\dx]+)?)?))$",
       "default": "latest",
       "examples": [
-        "current",
         "latest",
+        "current",
         "suja",
         "x.x.x"
       ]

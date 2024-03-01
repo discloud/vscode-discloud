@@ -53,7 +53,7 @@ export default class BaseLanguageProvider {
 
       switch (key) {
         case "APT":
-          obj[key] = value.split(/\W+/g).filter(Boolean);
+          obj[key] = value.split(/,\s?/g).filter(Boolean);
           continue;
       }
 
