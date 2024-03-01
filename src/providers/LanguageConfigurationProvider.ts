@@ -109,8 +109,6 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
       if (!line.text) continue;
 
-      const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
-
       const keyAndValue = line.text.split("=");
       const [key, value] = keyAndValue;
 
@@ -138,17 +136,15 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
           if (scopeSchema.format) {
             switch (scopeSchema.format) {
               case "uri-reference":
-                if (workspaceFolder) {
-                  if (!existsSync(join(workspaceFolder, value))) {
-                    diagnostics.push({
-                      message: t("diagnostic.main.not.exist"),
-                      range: new Range(
-                        new Position(i, key.length + 1),
-                        new Position(i, line.text.length)
-                      ),
-                      severity: DiagnosticSeverity.Error,
-                    });
-                  }
+                if (!existsSync(join(dirname(document.uri.fsPath), value))) {
+                  diagnostics.push({
+                    message: t("diagnostic.main.not.exist"),
+                    range: new Range(
+                      new Position(i, key.length + 1),
+                      new Position(i, line.text.length)
+                    ),
+                    severity: DiagnosticSeverity.Error,
+                  });
                 }
                 break;
             }
