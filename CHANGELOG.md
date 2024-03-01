@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.21.0
+
+- Refatoração do serviço de linguagem
+- Melhorias no gerenciamento de apps
+
 ## 2.20.0
 
 - refatoração
