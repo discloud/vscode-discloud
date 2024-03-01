@@ -13,8 +13,8 @@ extension.on("activate", async (context) => {
 
   extension.loadCommands();
 
-  new CompletionItemProvider({ path: "discloudconfig.json" });
-  new LanguageConfigurationProvider({ path: "discloudconfig.json" });
+  new CompletionItemProvider({ path: "discloudconfigschema.json" });
+  new LanguageConfigurationProvider({ path: "discloudconfigschema.json" });
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
