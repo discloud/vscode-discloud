@@ -15,7 +15,6 @@ export interface FileSystemOptions {
 export class FileSystem {
   declare readonly ignoreFile?: string;
   readonly ignoreList = new Set(ALL_BLOCKED_FILES);
-  ignorePattern: string = ALL_BLOCKED_FILES_IGNORE_PATTERN;
   readonly patterns = new Set("**");
   found: Uri[] = [];
 
@@ -36,8 +35,11 @@ export class FileSystem {
       for (const ignore of options.ignoreList) {
         this.ignoreList.add(ignore);
       }
-      this.ignorePattern = `{${Array.from(this.ignoreList).join(",")}}`;
     }
+  }
+
+  get ignorePattern() {
+    return `{${Array.from(this.ignoreList).join(",")}}`;
   }
 
   async findFiles(readSelectedPath = false) {
@@ -64,8 +66,6 @@ export class FileSystem {
     for (const pattern of patterns) {
       this.ignoreList.add(pattern);
     }
-
-    this.ignorePattern = `{${Array.from(this.ignoreList).join(",")}}`;
   }
 
   async #readSelectedPath() {
