@@ -1249,10 +1249,10 @@ json-buffer@3.0.1:
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
 
-json-schema-library@^9.3.3:
-  version "9.3.3"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-9.3.3.tgz#11a421caab0096923cba8bce1bf3bf6a2caf2a4d"
-  integrity sha512-3kPhTPKYzAkATtd8GBr/40wZ4pJ//QhkRe74+HZBVLwrWz4bag6lLvIqc3nNmT+3Uy0PGCF2Sgm93KgXCe5Gtw==
+json-schema-library@^9.3.4:
+  version "9.3.4"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-9.3.4.tgz#e9ed78d289eece9d59bf8157d637e0bced9cd6cb"
+  integrity sha512-220lm9RVt9BUeF2QhBT711aX4IogUHhPT8Tjhkksc4CUw8WmChFMuf0mJdpDAHDfJDkI064jcZIH8P70HdPAOA==
   dependencies:
     "@sagold/json-pointer" "^5.1.2"
     "@sagold/json-query" "^6.1.3"
