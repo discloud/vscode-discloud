@@ -16,7 +16,7 @@ export class FileSystem {
   declare readonly ignoreFile?: string;
   readonly ignoreList = new Set(ALL_BLOCKED_FILES);
   readonly patterns = new Set("**");
-  found: Uri[] = [];
+  readonly found: Uri[] = [];
 
   constructor(public options: FileSystemOptions = {}) {
     if (!options) options = {};
@@ -47,11 +47,12 @@ export class FileSystem {
     if (readSelectedPath)
       await this.#readSelectedPath();
 
-    const promises = Array.from(this.patterns).flatMap((pattern) => [
+    const promises = Array.from(this.patterns).flatMap((pattern) => ([
       workspace.findFiles(pattern, this.ignorePattern), // search a single file
       workspace.findFiles(join(pattern, "**"), this.ignorePattern), // recursively search the directory
-    ]);
+    ]));
 
+    // @ts-expect-error ts(2540)
     this.found = await Promise.all(promises)
       .then(values => values.flat());
 

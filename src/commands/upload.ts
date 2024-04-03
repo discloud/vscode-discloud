@@ -67,7 +67,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip(savePath);
-      zipper.appendUriList(found, true);
+      zipper.appendUriList(found);
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
