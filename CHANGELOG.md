@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.21.3
+
+- Correção de bug no language provider do discloud.config [#30ec72c](https://github.com/discloud/vscode-discloud/commit/30ec72c37cefb80978e6cf6bb57672204c7a8bde)
+
 ## 2.21.0
 
 - Refatoração do serviço de linguagem
