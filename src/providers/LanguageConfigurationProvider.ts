@@ -1,13 +1,12 @@
 import { t } from "@vscode/l10n";
 import { existsSync } from "fs";
 import { dirname, join } from "path";
-import { Diagnostic, DiagnosticCollection, DiagnosticSeverity, Disposable, Position, Range, TextDocument, languages, window, workspace } from "vscode";
+import { Diagnostic, DiagnosticCollection, DiagnosticSeverity, Position, Range, TextDocument, languages, window, workspace } from "vscode";
 import { ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class LanguageConfigurationProvider extends BaseLanguageProvider {
-  readonly disposableDocuments: Disposable[] = [];
   declare readonly collection: DiagnosticCollection;
 
   constructor(public options: ProviderOptions) {
@@ -17,28 +16,27 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     this.collection = languages.createDiagnosticCollection(this.schema.$id);
 
-    const disposableEditor = window.onDidChangeActiveTextEditor(editor => {
-      if (editor?.document.languageId === this.schema.$id!) {
-        this.checkDocument(editor.document);
-        this.activate();
-      } else {
-        this.deactivate();
-        this.collection.clear();
-      }
-    });
-
-    const disposableOpen = workspace.onDidOpenTextDocument(document => {
+    const disposableOpen = workspace.onDidOpenTextDocument((document) => {
       if (document.languageId === this.schema.$id) {
         this.checkDocument(document);
       }
     });
 
-    if (window.activeTextEditor?.document.languageId === this.schema.$id!) {
-      this.checkDocument(window.activeTextEditor.document);
-      this.activate();
+    const disposableClose = workspace.onDidCloseTextDocument((document) => {
+      if (document.languageId === this.schema.$id) {
+        this.collection.delete(document.uri);
+      }
+    });
+
+    for (const document of workspace.textDocuments) {
+      if (document.languageId === this.schema.$id!) {
+        this.checkDocument(document);
+      }
     }
 
-    extension.subscriptions.push(this.collection, disposableEditor, disposableOpen);
+    this.activate();
+
+    extension.subscriptions.push(this.collection, disposableClose, disposableOpen);
   }
 
   activate() {
@@ -50,14 +48,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
-    this.disposableDocuments.push(disposable);
     extension.subscriptions.push(disposable);
-  }
-
-  deactivate() {
-    for (const disposable of this.disposableDocuments.splice(0)) {
-      disposable.dispose();
-    }
   }
 
   checkDocument(document: TextDocument) {
