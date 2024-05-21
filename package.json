@@ -1255,7 +1255,7 @@
     "json-schema-library": "^10.0.0-rc1",
     "jsonwebtoken": "^9.0.2",
     "path-is-absolute": "^1.0.0",
-    "undici": "^6.17.0"
+    "undici": "^6.18.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.5",
