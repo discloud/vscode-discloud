@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
-import { JSONSchema7 } from "json-schema";
+import type { JSONSchema7 } from "json-schema";
 import { Draft07 } from "json-schema-library";
-import { TextDocument } from "vscode";
+import { type TextDocument } from "vscode";
 import extension from "../extension";
 
 export default class BaseLanguageProvider {
@@ -47,25 +47,23 @@ export default class BaseLanguageProvider {
     const keys = Object.keys(obj);
 
     for (const key of keys) {
-      if (["AVATAR", "ID", "MAIN", "NAME", "TYPE", "VERSION"].includes(key)) continue;
-
       const value = obj[key];
 
       switch (key) {
         case "APT":
-          obj[key] = value.split(/,\s?/g).filter(Boolean);
+          obj[key] = value.split(/\s*,\s*/g).filter(Boolean);
           continue;
-      }
-
-      if (!isNaN(Number(value))) {
-        obj[key] = Number(value);
-        continue;
-      }
-
-      if (["true", "false"].includes(value)) {
-        // eslint-disable-next-line eqeqeq
-        obj[key] = value == "true";
-        continue;
+        case "AUTORESTART":
+          if (["true", "false"].includes(value)) {
+            // eslint-disable-next-line eqeqeq
+            obj[key] = value == "true";
+          }
+          continue;
+        case "RAM":
+          if (!isNaN(Number(value))) {
+            obj[key] = Number(value);
+            continue;
+          }
       }
     }
 

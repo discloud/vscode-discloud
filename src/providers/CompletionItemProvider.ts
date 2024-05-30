@@ -1,8 +1,8 @@
 import { existsSync, readdirSync } from "fs";
-import { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
+import type { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
 import { dirname, join } from "path";
-import { CompletionItem, CompletionItemKind, TextDocument, languages } from "vscode";
-import { ProviderOptions } from "../@types";
+import { CompletionItem, CompletionItemKind, languages, type TextDocument } from "vscode";
+import type { ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
