@@ -24,6 +24,20 @@ export function getIconPath(iconName: string, iconExt = "svg") {
   };
 }
 
+export function compareBooleans(a: boolean, b: boolean) {
+  let i = 0;
+  if (a) i--;
+  if (b) i++;
+  return i;
+}
+
+export function compareNumbers(a: number, b: number) {
+  let i = 0;
+  if (!isNaN(a)) i -= a;
+  if (!isNaN(b)) i += b;
+  return i;
+}
+
 export function getIconName(data: any) {
   if ("online" in data)
     return data.online ? "on" :
