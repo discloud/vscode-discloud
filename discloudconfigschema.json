@@ -12,8 +12,10 @@
           "ffmpeg",
           "java",
           "libgl",
+          "mysql",
           "openssl",
           "puppeteer",
+          "tesseract",
           "tools"
         ]
       }
@@ -26,6 +28,9 @@
       "type": "string",
       "format": "uri",
       "pattern": "^(s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png)([?]\\S*)?$"
+    },
+    "BUILD": {
+      "type": "string"
     },
     "ID": {
       "type": "string"
@@ -47,6 +52,9 @@
         100,
         512
       ]
+    },
+    "START": {
+      "type": "string"
     },
     "TYPE": {
       "type": "string",
