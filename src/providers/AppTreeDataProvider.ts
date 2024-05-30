@@ -4,7 +4,7 @@ import { ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } 
 import { ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
-import { getIconPath, requester } from "../util";
+import { compareBooleans, compareNumbers, getIconPath, requester } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
@@ -23,44 +23,46 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     if (sort?.includes(".")) {
       switch (sort) {
         case "id.asc":
-          children.sort((a, b) => a.appId < b.appId ? -1 : 1);
+          children.sort((a, b) => a.appId.localeCompare(b.appId));
           break;
 
         case "id.desc":
-          children.sort((a, b) => a.appId > b.appId ? -1 : 1);
+          children.sort((a, b) => b.appId.localeCompare(a.appId));
           break;
 
         case "memory.usage.asc":
-          children.sort((a, b) => Number(a.data.memoryUsage) < Number(b.data.memoryUsage) ? -1 : 1);
+          children.sort((a, b) => compareNumbers(Number(a.data.memoryUsage), Number(b.data.memoryUsage)));
           break;
 
         case "memory.usage.desc":
-          children.sort((a, b) => Number(a.data.memoryUsage) > Number(b.data.memoryUsage) ? -1 : 1);
+          children.sort((a, b) => compareNumbers(Number(b.data.memoryUsage), Number(a.data.memoryUsage)));
           break;
 
         case "name.asc":
-          children.sort((a, b) => a.data.name < b.data.name ? -1 : 1);
+          children.sort((a, b) => a.data.name.localeCompare(b.data.name));
           break;
 
         case "name.desc":
-          children.sort((a, b) => a.data.name > b.data.name ? -1 : 1);
+          children.sort((a, b) => b.data.name.localeCompare(a.data.name));
           break;
 
         case "started.asc":
-          children.sort((a, b) => a.online &&
-            (Number(a.data.startedAtTimestamp) < Number(b.data.startedAtTimestamp)) ? -1 : 1);
+          children.sort((a, b) => a.online || b.online
+            ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
+            : 0);
           break;
 
         case "started.desc":
-          children.sort((a, b) => a.online &&
-            (Number(a.data.startedAtTimestamp) > Number(b.data.startedAtTimestamp)) ? -1 : 1);
+          children.sort((a, b) => a.online || b.online
+            ? compareNumbers(Number(b.data.startedAtTimestamp), Number(a.data.startedAtTimestamp))
+            : 0);
           break;
       }
     }
 
-    if (extension.config.get<boolean>("app.sort.online")) {
-      children.sort((a, b) => b.online ? 1 : a.online ? -1 : 0);
-    }
+    const sortOnlineFirst = extension.config.get<boolean>("app.sort.online");
+
+    if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online, b.online));
 
     return children;
   }
