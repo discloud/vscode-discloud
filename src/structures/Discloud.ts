@@ -16,22 +16,7 @@ import VSUser from "./VSUser";
 
 const fileExt = extname(__filename);
 
-interface Discloud extends EventEmitter {
-  addListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  emit<K extends keyof Events>(event: K, ...args: Events[K]): boolean
-  listenerCount<K extends keyof Events>(event: K, listener?: (...args: Events[K]) => void | Promise<void>): number
-  listeners<K extends keyof Events>(event: K): ((...args: Events[K]) => void | Promise<void>)[]
-  off<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  on<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  once<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  prependListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  prependOnceListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  rawListeners<K extends keyof Events>(event: K): ((...args: Events[K]) => void | Promise<void>)[]
-  removeListener<K extends keyof Events>(event: K, listener: (...args: Events[K]) => void | Promise<void>): this
-  removeAllListeners<K extends keyof Events>(event?: K): this
-}
-
-class Discloud extends EventEmitter {
+class Discloud extends EventEmitter<Events> {
   declare readonly appTree: AppTreeDataProvider;
   declare readonly context: ExtensionContext;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
