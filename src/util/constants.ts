@@ -49,7 +49,7 @@ export const BLOCKED_FILES = {
   common: [".cache", ".git", ".vscode"],
   go: [],
   js: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
-  py: ["venv"],
+  py: [".venv"],
   rb: ["Gemfile.lock"],
   rs: ["Cargo.lock", "target"],
   ts: ["node_modules", ".npm", "package-lock.json", "yarn.lock"],
