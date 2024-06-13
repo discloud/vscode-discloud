@@ -3,8 +3,6 @@ import { RouteLike, discloud } from "discloud.app";
 import { EventEmitter } from "events";
 import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "timers/promises";
-import { Dispatcher, request } from "undici";
-import { IncomingHttpHeaders } from "undici/types/header";
 import { window } from "vscode";
 import { RequestOptions } from "../@types";
 import extension, { logger } from "../extension";
@@ -32,12 +30,12 @@ async function initTimer() {
 
 const emitter = new EventEmitter({ captureRejections: true });
 
-emitter.on("headers", async function (headers: IncomingHttpHeaders) {
+emitter.on("headers", async function (headers: Headers) {
   time = Date.now();
 
-  const Limit = Number(headers["ratelimit-limit"]);
-  const Remaining = Number(headers["ratelimit-remaining"]);
-  const Reset = Number(headers["ratelimit-reset"]);
+  const Limit = Number(headers.get("ratelimit-limit"));
+  const Remaining = Number(headers.get("ratelimit-remaining"));
+  const Reset = Number(headers.get("ratelimit-reset"));
   if (!isNaN(Limit)) limit = Limit;
   if (!isNaN(Remaining)) remain = Remaining;
   if (!isNaN(Reset)) reset = Reset;
@@ -87,7 +85,6 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     }
   }
 
-  config.headersTimeout ??= 60000;
   Object.assign(config.headers ??= {}, {
     "api-token": extension.token,
     "User-Agent": DEFAULT_USER_AGENT,
@@ -97,9 +94,9 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
 
   extension.debug("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
 
-  let response: Dispatcher.ResponseData;
+  let response: Response;
   try {
-    response = await request(`https://api.discloud.app/v2${path}`, config);
+    response = await fetch(`https://api.discloud.app/v2${path}`, config);
   } catch {
     if (queue) {
       queueProcesses.delete(processKey);
@@ -121,31 +118,31 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     noQueueProcesses.shift();
   }
 
-  if (response.statusCode > 399) {
-    switch (response.statusCode) {
+  if (response.status > 399) {
+    switch (response.status) {
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
-        logger.info(`${path} ${await response.body.json().catch(() => response.body.text())}`);
+        logger.info(`${path} ${await response.json().catch(() => response.text())}`);
         break;
     }
 
-    if (response.headers["content-type"]?.includes("application/json"))
-      throw Object.assign(response, { body: await response.body.json() });
+    if (response.headers.get("content-type")?.includes("application/json"))
+      throw Object.assign(response, { body: await response.json() });
 
-    if (response.headers["content-type"]?.includes("text/"))
-      throw Object.assign(response, { body: await response.body.text() });
+    if (response.headers.get("content-type")?.includes("text/"))
+      throw Object.assign(response, { body: await response.text() });
 
-    throw Object.assign(response, { body: await response.body.arrayBuffer() });
+    throw Object.assign(response, { body: await response.arrayBuffer() });
   }
 
-  if (response.headers["content-type"]?.includes("application/json"))
-    return await response.body.json() as T;
+  if (response.headers.get("content-type")?.includes("application/json"))
+    return await response.json() as T;
 
-  if (response.headers["content-type"]?.includes("text/"))
-    return await response.body.text() as T;
+  if (response.headers.get("content-type")?.includes("text/"))
+    return await response.text() as T;
 
-  return await response.body.arrayBuffer() as T;
+  return await response.arrayBuffer() as T;
 }
 
 export function tokenIsDiscloudJwt(token = extension.token!): boolean {

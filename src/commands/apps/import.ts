@@ -4,7 +4,6 @@ import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync, mkdirSync, unlinkSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
-import { fetch } from "undici";
 import { ProgressLocation, Uri, commands, window } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";

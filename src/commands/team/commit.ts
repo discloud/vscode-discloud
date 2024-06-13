@@ -1,7 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RESTPutApiAppCommitResult, Routes } from "discloud.app";
 import { join } from "path";
-import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
@@ -72,7 +71,6 @@ export default class extends Command {
 
     const res = await requester<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), {
       body: form,
-      headersTimeout: 420000,
       method: "PUT",
     });
 

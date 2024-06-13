@@ -1,6 +1,4 @@
-import { request } from "undici";
-
-export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
+export type RequestOptions = Parameters<typeof fetch>[1];
 
 export interface RateLimitData {
   reset: number

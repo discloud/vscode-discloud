@@ -1254,8 +1254,7 @@
     "discloud.app": "^0.12.0",
     "json-schema-library": "^10.0.0-rc1",
     "jsonwebtoken": "^9.0.2",
-    "path-is-absolute": "^1.0.0",
-    "undici": "^6.18.2"
+    "path-is-absolute": "^1.0.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.5",
@@ -1263,7 +1262,7 @@
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mocha": "^10.0.6",
-    "@types/node": "18.x",
+    "@types/node": "20.x",
     "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
