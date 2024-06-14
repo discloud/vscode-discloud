@@ -27,6 +27,8 @@ export default class extends Command {
       AUTORESTART: false,
       VERSION: "latest",
       APT: "",
+      BUILD: "",
+      START: "",
     }, [
       "# https://docs.discloudbot.com/discloud.config",
     ]);
