@@ -1,14 +1,12 @@
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppCommitResult, Routes } from "discloud.app";
+import { RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
-import { FormData } from "undici";
 import { ProgressLocation, workspace } from "vscode";
 import { TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
 import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { FileSystem, Zip, requester } from "../../util";
-import resolveFile from "../../util/resolveFile";
 
 export default class extends Command {
   constructor() {
@@ -72,7 +70,6 @@ export default class extends Command {
 
     const res = await requester<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), {
       body: form,
-      headersTimeout: 420000,
       method: "PUT",
     });
 

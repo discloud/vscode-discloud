@@ -1,13 +1,11 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, RESTPostApiUploadResult, Routes } from "discloud.app";
+import { DiscloudConfig, RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
-import { FormData } from "undici";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
 import { FileSystem, requester, Zip } from "../util";
-import resolveFile from "../util/resolveFile";
 
 export default class extends Command {
   constructor() {
@@ -87,7 +85,6 @@ export default class extends Command {
 
     const res = await requester<RESTPostApiUploadResult>(Routes.upload(), {
       body: form,
-      headersTimeout: 420000,
       method: "POST",
     });
 
