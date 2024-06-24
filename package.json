@@ -1244,7 +1244,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src",
     "test": "vscode-test"
   },
   "dependencies": {
