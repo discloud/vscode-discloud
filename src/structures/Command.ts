@@ -11,7 +11,7 @@ import VSUser from "./VSUser";
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }
 
-  abstract run(taskData: TaskData, ...args: any[]): Promise<any>;
+  abstract run(taskData: TaskData, ...args: any[]): Promise<unknown>;
 
   pickAppOrTeamApp(
     task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }

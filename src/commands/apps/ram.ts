@@ -25,33 +25,29 @@ export default class extends Command {
     }
 
     const min = item.type === AppType.site ? 512 : 100;
-    const max = extension.user.totalRamMb - extension.user.ramUsedMb - item.data.ram;
+    const max = extension.user.totalRamMb - extension.user.ramUsedMb;
 
-    let ram;
+    let ramMB;
     do {
-      ram = await window.showInputBox({
+      ramMB = await window.showInputBox({
         value: `${item.data.ram}`,
+        title: `${min} - ${max}`,
         prompt: t("input.ram.prompt"),
         validateInput(value) {
-          const n = Number(value);
+          const v = Number(value);
 
-          if (isNaN(n) || n === item!.data.ram || n < min || n > max)
-            return t("input.ram.prompt");
+          if (isNaN(v) || v === item.data.ram || v < min || v > max) return t("input.ram.prompt");
         },
       });
-    } while (typeof ram === "string" ?
-        isNaN(Number(ram)) || Number(ram) < min || Number(ram) > max :
-        false);
+      if (typeof ramMB === "string") ramMB = parseInt(ramMB);
+    } while (typeof ramMB === "number" ? isNaN(ramMB) || ramMB < min || ramMB > max : false);
 
-    if (!ram) throw Error("Missing input");
+    if (!ramMB) throw Error("Missing input");
 
-    if (!await this.confirmAction())
-      throw Error("Reject action");
+    if (!await this.confirmAction()) throw Error("Reject action");
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.appRam(item.appId), {
-      body: JSON.stringify({
-        ramMB: parseInt(ram),
-      }),
+      body: JSON.stringify({ ramMB }),
       method: "PUT",
     });
     if (!res) return;
