@@ -8,7 +8,7 @@ import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 export default class extends Command {
   constructor() {
     super({
-      noToken: true,
+      allowTokenless: true,
     });
   }
 

@@ -5,7 +5,7 @@ import VSUser from "../structures/VSUser";
 import { RateLimitData } from "./rest";
 
 export interface CommandData {
-  noToken?: boolean;
+  allowTokenless?: boolean;
   progress?: ProgressOptions
 }
 

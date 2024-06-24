@@ -4,7 +4,7 @@ import Command from "../../../structures/Command";
 export default class extends Command {
   constructor() {
     super({
-      noToken: true,
+      allowTokenless: true,
     });
   }
 

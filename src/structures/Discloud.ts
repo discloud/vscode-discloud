@@ -137,7 +137,7 @@ class Discloud extends EventEmitter<Events> {
         const commandName = `${category}.${file.name.replace(extname(file.name), "")}`;
 
         const disposable = commands.registerCommand(commandName, async (...args) => {
-          if (!command.data.noToken)
+          if (!command.data.allowTokenless)
             if (!this.hasToken) return;
 
           const taskData = <TaskData>{};
