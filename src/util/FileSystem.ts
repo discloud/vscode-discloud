@@ -26,7 +26,7 @@ export class FileSystem {
 
       for (const filename of options.fileNames) {
         this.patterns.add(filename);
-      };
+      }
     }
 
     if (options.ignoreFile) this.ignoreFile = options.ignoreFile;

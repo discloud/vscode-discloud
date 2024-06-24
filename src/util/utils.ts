@@ -39,17 +39,19 @@ export function compareNumbers(a: number, b: number) {
 }
 
 export function getIconName(data: any) {
-  if ("online" in data)
+  if ("online" in data) {
     return data.online ? "on" :
       data.ramKilled ? "ramKilled" :
         data.exitCode === 1 ? "errorCode" :
           "off";
+  }
 
-  if ("container" in data)
+  if ("container" in data) {
     return data.container === "Online" ? "on" :
       data.ramKilled ? "ramKilled" :
         data.exitCode === 1 ? "errorCode" :
           "off";
+  }
 }
 
 export function JSONparse<T extends any[] | Record<any, any>>(s: string) {

@@ -38,7 +38,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
   get online(): boolean {
     return this.data.online;
-  };
+  }
 
   dispose() {
     this.output.dispose();

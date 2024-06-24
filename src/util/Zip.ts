@@ -19,7 +19,7 @@ export class Zip {
   declare readonly zip: Archiver;
 
   constructor(public file: string, format = "zip", public options: ArchiverOptions = {}) {
-    if (existsSync(file)) try { rmSync(file); } catch { };
+    if (existsSync(file)) try { rmSync(file); } catch { }
     this.zip = create(format, options);
     writeFileSync(file, "");
     this.stream = createWriteStream(file);
@@ -81,4 +81,4 @@ export class Zip {
   async finalize() {
     return await this.zip.finalize().then(() => true);
   }
-};
+}

@@ -48,7 +48,7 @@ export default class extends Command {
 
     if (!res.apps || !res.apps.terminal.big) {
       return window.showErrorMessage(t("log404"));
-    };
+    }
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }

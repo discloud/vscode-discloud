@@ -279,7 +279,7 @@ export default abstract class Command {
       output.show(false);
 
       setTimeout(() => output.show(false), 250);
-    };
+    }
   }
 
   showApiMessage(data: Data) {
@@ -290,13 +290,13 @@ export default abstract class Command {
         window.showInformationMessage(
           `${status}`
           + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-          + (data.message ? `: ${data.message}` : "")
+          + (data.message ? `: ${data.message}` : ""),
         );
       } else {
         window.showWarningMessage(
           `${status}`
           + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-          + (data.message ? `: ${data.message}` : "")
+          + (data.message ? `: ${data.message}` : ""),
         );
       }
     }

@@ -87,7 +87,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
             message: error.message,
             range: new Range(
               new Position(0, 0),
-              new Position(0, 0)
+              new Position(0, 0),
             ),
             severity: DiagnosticSeverity.Error,
           });
@@ -132,7 +132,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
                     message: t("diagnostic.main.not.exist"),
                     range: new Range(
                       new Position(i, key.length + 1),
-                      new Position(i, line.text.length)
+                      new Position(i, line.text.length),
                     ),
                     severity: DiagnosticSeverity.Error,
                   });

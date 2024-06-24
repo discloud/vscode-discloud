@@ -160,7 +160,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
             const item = new CompletionItem(file.name,
               file.isFile() ?
                 CompletionItemKind.File :
-                CompletionItemKind.Folder
+                CompletionItemKind.Folder,
             );
 
             item.sortText = `${file.isFile()}`;
