@@ -1271,6 +1271,6 @@
     "globals": "^15.7.0",
     "mocha": "^10.5.2",
     "typescript": "^5.5.2",
-    "typescript-eslint": "^7.14.1"
+    "typescript-eslint": "^7.15.0"
   }
 }
