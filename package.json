@@ -1267,7 +1267,7 @@
     "@types/vscode": "^1.90.0",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.4.0",
-    "eslint": "^9.5.0",
+    "eslint": "^9.6.0",
     "globals": "^15.7.0",
     "mocha": "^10.5.2",
     "typescript": "^5.5.3",
