@@ -44,7 +44,7 @@ export default class extends Command {
 
     if (!await this.confirmAction()) throw Error("Reject action");
 
-    const res = await requester<RESTPutApiAppRamResult>(Routes.teamLogs(item.appId), {
+    const res = await requester<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), {
       body: JSON.stringify({ ramMB }),
       method: "PUT",
     });
