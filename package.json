@@ -1252,7 +1252,7 @@
     "adm-zip": "^0.5.14",
     "archiver": "^7.0.1",
     "discloud.app": "^0.12.1",
-    "json-schema-library": "^10.0.0-rc1",
+    "json-schema-library": "^10.0.0-rc2",
     "jsonwebtoken": "^9.0.2",
     "path-is-absolute": "^1.0.0"
   },
