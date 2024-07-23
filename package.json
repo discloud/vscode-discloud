@@ -1270,7 +1270,7 @@
     "eslint": "^9.7.0",
     "globals": "^15.8.0",
     "mocha": "^10.7.0",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "typescript-eslint": "^7.17.0"
   }
 }
