@@ -1263,7 +1263,7 @@
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^22.4.0",
+    "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
