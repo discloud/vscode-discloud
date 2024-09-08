@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.3
+
+- Correção de ratelimit negativo
+
 ## 2.22.0
 
 - 2 novos scopos do discloud.config adicionados e correção para aceitar AVATAR vazio
