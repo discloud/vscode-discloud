@@ -33,12 +33,12 @@ const emitter = new EventEmitter({ captureRejections: true });
 emitter.on("headers", async function (headers: Headers) {
   time = Date.now();
 
-  const Limit = Number(headers.get("ratelimit-limit"));
-  const Remaining = Number(headers.get("ratelimit-remaining"));
-  const Reset = Number(headers.get("ratelimit-reset"));
-  if (!isNaN(Limit)) limit = Limit;
-  if (!isNaN(Remaining)) remain = Remaining;
-  if (!isNaN(Reset)) reset = Reset;
+  const Limit = parseInt(headers.get("ratelimit-limit")!);
+  const Remaining = parseInt(headers.get("ratelimit-remaining")!);
+  const Reset = parseInt(headers.get("ratelimit-reset")!);
+  if (!isNaN(Limit)) limit = Math.max(Limit, 0);
+  if (!isNaN(Limit)) remain = Math.max(Remaining, 0);
+  if (!isNaN(Limit)) reset = Math.max(Reset, 0);
   initTimer();
 
   extension.debug("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
