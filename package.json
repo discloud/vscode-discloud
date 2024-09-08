@@ -1249,7 +1249,7 @@
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
-    "adm-zip": "^0.5.15",
+    "adm-zip": "^0.5.16",
     "archiver": "^7.0.1",
     "discloud.app": "^0.12.1",
     "json-schema-library": "^10.0.0-rc2",
@@ -1257,7 +1257,7 @@
     "path-is-absolute": "^1.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.1",
+    "@eslint/js": "^9.10.0",
     "@types/adm-zip": "^0.5.5",
     "@types/archiver": "^6.0.2",
     "@types/json-schema": "^7.0.15",
@@ -1267,7 +1267,7 @@
     "@types/vscode": "^1.93.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
-    "eslint": "^9.9.1",
+    "eslint": "^9.10.0",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
     "typescript": "^5.5.4",
