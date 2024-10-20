@@ -1,7 +1,7 @@
-import { Uri, window } from "vscode";
-import { TaskData } from "../../@types";
+import { type Uri, window } from "vscode";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import AppTreeItem from "../../structures/AppTreeItem";
+import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
 export default class extends Command {

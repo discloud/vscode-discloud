@@ -1,11 +1,11 @@
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
+import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
-import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { FileSystem, Zip, requester } from "../../util";
 
 export default class extends Command {
@@ -52,7 +52,7 @@ export default class extends Command {
       zipper = new Zip(savePath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch (error: any) {
+    } catch {
       zipper?.destroy();
       return;
     }
@@ -61,7 +61,7 @@ export default class extends Command {
     try {
       form.append("file", await resolveFile(savePath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch (error: any) {
+    } catch {
       zipper.destroy();
       return;
     }

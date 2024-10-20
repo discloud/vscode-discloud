@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, ApiTeamApps, BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
+import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { compareBooleans, compareNumbers, getIconPath, requester } from "../util";

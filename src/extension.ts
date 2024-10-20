@@ -1,4 +1,4 @@
-import { ExtensionContext, window } from "vscode";
+import { type ExtensionContext, window } from "vscode";
 import "./localize";
 import Discloud from "./structures/Discloud";
 

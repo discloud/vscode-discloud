@@ -1,4 +1,4 @@
-import { BaseApiApp } from "discloud.app";
+import { type BaseApiApp } from "discloud.app";
 import { workspace } from "vscode";
 import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";

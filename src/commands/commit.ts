@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
+import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
-import { TaskData } from "../@types";
+import { type TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
 import { FileSystem, Zip, requester } from "../util";
@@ -82,8 +82,9 @@ export default class extends Command {
     if ("status" in res) {
       this.showApiMessage(res);
 
-      picked.isApp ?
-        await extension.appTree.fetch() :
+      if (picked.isApp)
+        await extension.appTree.fetch();
+      else
         await extension.teamAppTree.fetch();
 
       if (res.logs) this.logger(picked.id, res.logs);

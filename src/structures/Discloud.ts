@@ -2,15 +2,15 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
 import { extname, join } from "path";
-import { ExtensionContext, LogOutputChannel, OutputChannel, StatusBarAlignment, commands, window, workspace } from "vscode";
-import { Events, TaskData } from "../@types";
+import { type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, commands, window, workspace } from "vscode";
+import { type Events, type TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import Command from "./Command";
+import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 

@@ -1,13 +1,13 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
+import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync, mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { ProgressLocation, window } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
-import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { requester } from "../../util";
 
 export default class extends Command {

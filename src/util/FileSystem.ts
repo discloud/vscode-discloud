@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "fs";
 import { join } from "path";
-import { FileType, Uri, commands, env, workspace } from "vscode";
+import { FileType, type Uri, commands, env, workspace } from "vscode";
 import { logger } from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
 

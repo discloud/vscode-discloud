@@ -1243,9 +1243,10 @@
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "lint": "eslint src --fix",
+    "pretest": "yarn run compile && yarn run test:lint",
+    "test": "vscode-test",
+    "test:lint": "eslint src"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",

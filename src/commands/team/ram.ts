@@ -1,11 +1,11 @@
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppRamResult, Routes } from "discloud.app";
+import { type RESTPutApiAppRamResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
 import { AppType } from "../../@enum";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
-import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { requester } from "../../util";
 
 export default class extends Command {

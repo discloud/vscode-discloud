@@ -1,8 +1,8 @@
-import { CancellationToken, ExtensionContext, LogOutputChannel, Progress, ProgressOptions, TreeItem } from "vscode";
-import AppTreeItem from "../structures/AppTreeItem";
-import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import VSUser from "../structures/VSUser";
-import { RateLimitData } from "./rest";
+import { type CancellationToken, type ExtensionContext, type LogOutputChannel, type Progress, type ProgressOptions, type TreeItem } from "vscode";
+import type AppTreeItem from "../structures/AppTreeItem";
+import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
+import type VSUser from "../structures/VSUser";
+import { type RateLimitData } from "./rest";
 
 export interface CommandData {
   allowTokenless?: boolean;

@@ -1,5 +1,5 @@
-import { TreeItem, TreeItemCollapsibleState, TreeItemLabel } from "vscode";
-import { BaseChildTreeItemData } from "../@types";
+import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { type BaseChildTreeItemData } from "../@types";
 
 export default class BaseChildTreeItem extends TreeItem {
   declare children: Map<string, TreeItem>;

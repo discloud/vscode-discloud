@@ -55,7 +55,7 @@ export default class BaseLanguageProvider {
           continue;
         case "AUTORESTART":
           if (["true", "false"].includes(value)) {
-            // eslint-disable-next-line eqeqeq
+             
             obj[key] = value == "true";
           }
           continue;

@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppLogResult, Routes } from "discloud.app";
+import { type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import Command from "../../structures/Command";
-import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { requester } from "../../util";
 
 export default class extends Command {

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
-import { StatusBarItem, ThemeColor, workspace } from "vscode";
+import { type StatusBarItem, ThemeColor, workspace } from "vscode";
 import extension from "../extension";
 import { tokenIsValid } from "../util";
 import BaseStatusBarItem from "./BaseStatusBarItem";

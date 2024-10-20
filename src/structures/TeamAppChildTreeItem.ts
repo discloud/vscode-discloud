@@ -1,5 +1,5 @@
-import { AppType } from "../@enum";
-import { TeamAppChildTreeItemData } from "../@types";
+import { type AppType } from "../@enum";
+import { type TeamAppChildTreeItemData } from "../@types";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 
 export default class TeamAppChildTreeItem extends BaseChildTreeItem {

@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
-import { RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
+import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import AppTreeItem from "../../structures/AppTreeItem";
+import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import { FileSystem, requester, Zip } from "../../util";
 

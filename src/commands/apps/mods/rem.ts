@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
-import { RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
+import { type RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
-import { TaskData } from "../../../@types";
-import AppTreeItem from "../../../structures/AppTreeItem";
+import { type TaskData } from "../../../@types";
+import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { requester } from "../../../util";
 

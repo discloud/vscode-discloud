@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
-import { ApiStatusApp, BaseApiApp, RESTGetApiAppAllStatusResult, RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
-import { ApiVscodeApp } from "../@types";
+import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
 import { compareBooleans, compareNumbers, getIconPath, requester } from "../util";

@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
-import { RouteLike, discloud } from "discloud.app";
+import { type RouteLike, discloud } from "discloud.app";
 import { EventEmitter } from "events";
 import { decode } from "jsonwebtoken";
 import { setTimeout as sleep } from "timers/promises";
 import { window } from "vscode";
-import { RequestOptions } from "../@types";
+import { type RequestOptions } from "../@types";
 import extension, { logger } from "../extension";
 import { DEFAULT_USER_AGENT } from "./constants";
 

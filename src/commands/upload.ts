@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
+import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
 import { join } from "path";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
-import { TaskData } from "../@types";
+import { type TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
 import { FileSystem, requester, Zip } from "../util";

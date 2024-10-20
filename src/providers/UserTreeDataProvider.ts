@@ -1,5 +1,5 @@
 import UserTreeItem from "../structures/UserTreeItem";
-import VSUser from "../structures/VSUser";
+import type VSUser from "../structures/VSUser";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeItem> {

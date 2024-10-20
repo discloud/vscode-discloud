@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, RESTGetApiAppLogResult, Routes } from "discloud.app";
+import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation, window } from "vscode";
-import { TaskData } from "../@types";
+import { type TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
 import { requester } from "../util";

@@ -1,4 +1,4 @@
-import { UserTreeItemData } from "../@types";
+import { type UserTreeItemData } from "../@types";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 
 export default class UserChildTreeItem extends BaseChildTreeItem {

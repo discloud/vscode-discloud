@@ -1,5 +1,5 @@
-import { AppType } from "../@enum";
-import { AppChildTreeItemData } from "../@types";
+import { type AppType } from "../@enum";
+import { type AppChildTreeItemData } from "../@types";
 import { getIconPath } from "../util";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 

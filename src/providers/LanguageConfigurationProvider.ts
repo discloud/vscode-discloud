@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { existsSync } from "fs";
 import { dirname, join } from "path";
-import { Diagnostic, DiagnosticCollection, DiagnosticSeverity, Position, Range, TextDocument, languages, window, workspace } from "vscode";
-import { ProviderOptions } from "../@types";
+import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, Position, Range, type TextDocument, languages, window, workspace } from "vscode";
+import { type ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 

@@ -1,12 +1,12 @@
 import { t } from "@vscode/l10n";
-import { RESTGetApiAppBackupResult, Routes } from "discloud.app";
+import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync, mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { ProgressLocation, window } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import AppTreeItem from "../../structures/AppTreeItem";
+import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import { requester } from "../../util";
 

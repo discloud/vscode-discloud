@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
-import { ModPermissionsFlags, RESTPostApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation, QuickPickItem, window } from "vscode";
-import { TaskData } from "../../../@types";
-import AppTreeItem from "../../../structures/AppTreeItem";
+import { ModPermissionsFlags, type RESTPostApiAppTeamResult, Routes } from "discloud.app";
+import { ProgressLocation, type QuickPickItem, window } from "vscode";
+import { type TaskData } from "../../../@types";
+import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { requester } from "../../../util";
 

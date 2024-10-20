@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
-import TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
 export default class extends Command {
   constructor() {

@@ -1,12 +1,12 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, ModPermissionsResolvable, RESTGetApiAppTeamResult, RESTGetApiTeamResult, Routes } from "discloud.app";
-import { LogOutputChannel, QuickPickItem, Uri, window } from "vscode";
-import { CommandData, TaskData } from "../@types";
+import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, type ModPermissionsResolvable, type RESTGetApiAppTeamResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
+import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vscode";
+import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../util";
 import AppTreeItem from "./AppTreeItem";
-import TeamAppTreeItem from "./TeamAppTreeItem";
-import VSUser from "./VSUser";
+import type TeamAppTreeItem from "./TeamAppTreeItem";
+import type VSUser from "./VSUser";
 
 export default abstract class Command {
   constructor(public data: CommandData = {}) { }

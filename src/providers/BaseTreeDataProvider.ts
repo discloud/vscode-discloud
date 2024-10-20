@@ -1,6 +1,6 @@
-import { CancellationToken, EventEmitter, ProviderResult, TreeDataProvider, TreeItem, window } from "vscode";
+import { type CancellationToken, EventEmitter, type ProviderResult, type TreeDataProvider, type TreeItem, window } from "vscode";
 import extension from "../extension";
-import BaseTreeItem from "../structures/BaseTreeItem";
+import type BaseTreeItem from "../structures/BaseTreeItem";
 import DisposableMap from "../structures/DisposableMap";
 
 export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> implements TreeDataProvider<T> {

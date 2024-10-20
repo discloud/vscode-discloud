@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
-import { TaskData } from "../../@types";
+import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
 

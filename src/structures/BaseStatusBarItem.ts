@@ -1,4 +1,4 @@
-import { StatusBarItem, window } from "vscode";
+import { type StatusBarItem, window } from "vscode";
 import extension from "../extension";
 import { bindFunctions } from "../util";
 

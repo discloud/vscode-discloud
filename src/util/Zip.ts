@@ -1,7 +1,7 @@
-import { Archiver, ArchiverOptions, create } from "archiver";
-import { Stats, WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "fs";
+import { type Archiver, type ArchiverOptions, create } from "archiver";
+import { type Stats, type WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { isAbsolute, join, relative } from "path";
-import { Uri, workspace } from "vscode";
+import { type Uri, workspace } from "vscode";
 import { logger } from "../extension";
 
 export interface AppendOptions {
