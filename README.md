@@ -1,6 +1,6 @@
 # Discloud para VSCode
 
-Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloudbot.com) pelo Visual Studio Code.
+Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloud.com) pelo Visual Studio Code.
 
 ## 🌐 Outros idiomas
 
@@ -8,81 +8,77 @@ Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discl
 
 ## Requisitos
 
-- Esta registrado em nosso site discloudbot.com e ter gerado um [token](https://docs.discloudbot.com/suporte/comandos/api) de acesso para a nossa API.
+- Estar registrado em nosso site discloud.com e ter gerado um [token](https://docs.discloud.com/suporte/comandos/api) de acesso para a nossa API.
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016822188839551026/token.gif)
+![Token de acesso](https://i.imgur.com/6OLhOMW.gif)
 
 ## Status da Aplicação
 
-- 🟢 Verde indica App online
-- 🟡 Amarelo caiu por falta de RAM
-- 🔴 Vermelho caiu por algum erro no código
-- ⚪ Cinza indica App offline
+- 🟢 Verde: App online.
+- 🟡 Amarelo: App desligado por falta de RAM.
+- 🔴 Vermelho: App desligado por erros no seu código.
+- ⚪ Cinza: App offline.
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016818276828979300/stats.png)
+<!-- ![Status da aplicação]() -->
 
 ## Características
 
-Aqui está uma lista de recursos que a extensão suporta atualmente.
+Aqui está uma lista de recursos que a extensão atualmente suporta:
 
-- 📤 Upload de aplicações
-- 🗃 Commit em aplicações
-- ▶️ Inicar aplicações
-- 🔁 Reiniciar aplicações
-- ⏹ Parar aplicações
-- ❌ Deletar aplicações
-- 📜 Gerar logs das aplicações
-- ⬇️ Baixar backup aplicações
-- 💻 Importar código de algum app hospedado para o VSCode
+- 📤 Upload de apps
+- 🗃 Commit de apps
+- ▶️ Iniciar apps
+- 🔁 Reiniciar apps
+- ⏹ Parar apps
+- ❌ Deletar apps
+- 📜 Gerar logs dos apps
+- ⬇️ Baixar backup dos apps
+- 💻 Importar código de um app hospedado para o VSCode
+- 👀 Ver status dos apps
+- 🖥 Usar o terminal dos apps
+- 👥 Gerenciar equipe de apps
+- 🖼 Alterar avatar dos apps
+- ✏️ Alterar nome dos apps
+- 💾 Alterar RAM dos apps
 
 ## Instalação
 
-- Instale a extensão
-- Informe seu `token de acesso` na primeira vez que utiliza a extesão
+- Instale a extensão.
+- Informe seu `token de acesso` na primeira vez que utilizar a extensão.
 
 ## Links Úteis
 
-- [Discloud](https://discloud.app)
-- [Documentação da Discloud](https://docs.discloudbot.com)
+- [Discloud](https://discloud.com/)
+- [Documentação da Discloud](https://docs.discloud.com/)
 
 ## Guia
 
 ### Upload de aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803343995244667/up.gif)
+![Upload de aplicação](https://i.imgur.com/uAcXj1P.gif)
 
 ### Status das aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803254350389259/status.gif)
+![Visualizando status da aplicação](https://i.imgur.com/5UdfaUO.gif)
 
 ### Commit em aplicações
+![Realizando commit de aplicação](https://i.imgur.com/I3AasqD.gif)
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803068345602058/commit.gif)
-
-### Inicar aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803225279676416/start.gif)
+### Iniciar aplicações
+![Iniciando aplicação](https://i.imgur.com/JCeesgb.gif)
 
 ### Parar aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803291805515846/stop.gif)
+![Parando aplicação](https://i.imgur.com/73wa0GU.gif)
 
 ### Reiniciar aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803186293624893/restart.gif)
+![Reiniciando aplicação](https://i.imgur.com/0znXyHu.gif)
 
 ### Deletar aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803094899724399/del.gif)
+![Deletando aplicação](https://i.imgur.com/HRqD2fi.gif)
 
 ### Gerar logs das aplicações
+![Gerando logs da aplicação](https://i.imgur.com/riXUYDt.gif)
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803145038430238/logs.gif)
-
-### Baixar backup aplicações
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803030563311636/backup.gif)
+### Baixar backup das aplicações
+![Baixando backup da aplicação](https://i.imgur.com/SOQNeMk.gif)
 
 ### Importar código de algum app hospedado para o VSCode
-
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803117788049408/import.gif)
+![Importando código da aplicação para o VSCode](https://i.imgur.com/nIbgGIU.gif)
