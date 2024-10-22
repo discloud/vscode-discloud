@@ -16,7 +16,7 @@ This extension makes it easy to host and manage applications on [Discloud](https
 
 - 🟢 Green: App online.
 - 🟡 Yellow: App shutdown due to lack of ram.
-- 🔴 Red: App has shut down due to code errors.
+- 🔴 Red: App shutdown due to code errors.
 - ⚪ Gray: App offline.
 
 <!-- ![Application status]() -->
