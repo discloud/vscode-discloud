@@ -1,6 +1,6 @@
 # Discloud for VSCode
 
-This extension makes it easy to host and manage applications on [Discloud](https://discloudbot.com) through Visual Studio Code.
+This extension makes it easy to host and manage applications on [Discloud](https://discloud.com/) through Visual Studio Code.
 
 ## 🌐 Other languages
 
@@ -8,81 +8,87 @@ This extension makes it easy to host and manage applications on [Discloud](https
 
 ## Requirements
 
-- You are registered on our website discloudbot.com and have generated an [access token](https://docs.discloudbot.com/v/en/suport/commands/api) for our API.
+- Be registered on our website, discloud.com, and have generated an [access token](https://docs.discloud.com/en/suport/commands/api) for our API.
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016822188839551026/token.gif)
+![Access token](https://i.imgur.com/6OLhOMW.gif)
 
 ## Application Status
 
-- 🟢 Green: App online
+- 🟢 Green: App online.
 - 🟡 Yellow: App shutdown due to lack of ram.
-- 🔴 Red: App shutdown due to errors in your code.
-- ⚪ Gray: Offline due to discloud maintenance.
+- 🔴 Red: App shutdown due to code errors.
+- ⚪ Gray: App offline.
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016818276828979300/stats.png)
+<!-- ![Application status]() -->
 
 ## Features
 
-Here is a list of features that the extension currently supports.
+Here is a list of features that the extension currently supports:
 
-- 📤 Upload applications
-- 🗃 Commit to applications
-- ▶️ Start applications
-- 🔁 Restart applications
-- ⏹ Stop applications
-- ❌ Delete applications
-- 📜 Generate application logs
-- ⬇️ Download application backup
-- 💻 Download and open hosted app code in VSCode.
+- 📤 Upload apps
+- 🗃 Commit apps
+- ▶️ Start apps
+- 🔁 Restart apps
+- ⏹ Stop apps
+- ❌ Delete apps
+- 📜 Generate app logs
+- ⬇️ Download app backups
+- 💻 Import code from a hosted app to VSCode
+- 👀 View app status
+- 🖥 Use app terminal
+- 👥 Manage app team
+- 🖼 Change app avatar
+- ✏️ Change app name
+- 💾 Change app RAM
 
 ## Installation
 
-- Install the extension
-- Enter your `access token` the first time you use the extension
+- Install the extension.
+- Enter your `access token` the first time you use the extension.
 
 ## Useful links
 
-- [Discloud](https://discloud.app)
-- [Discloud Docs](https://docs.discloudbot.com/v/en/)
+- [Discloud](https://discloud.com/)
+- [Discloud Docs](https://docs.discloud.com/en)
 
 ## Guide
 
 ### Upload applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803343995244667/up.gif)
+![Upload application](https://i.imgur.com/uAcXj1P.gif)
 
 ### Applications status
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803254350389259/status.gif)
+![Viewing application status](https://i.imgur.com/5UdfaUO.gif)
 
 ### Commit to applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803068345602058/commit.gif)
+![Committing application]([https://i](https://i.imgur.com/I3AasqD.gif))
 
 ### Start applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803225279676416/start.gif)
+![Starting application](https://i.imgur.com/JCeesgb.gif)
 
 ### Stop applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803291805515846/stop.gif)
+![Stopping application](https://i.imgur.com/73wa0GU.gif)
 
 ### Restart applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803186293624893/restart.gif)
+![Restarting application](https://i.imgur.com/0znXyHu.gif)
 
 ### Delete applications
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803094899724399/del.gif)
+![Deleting application](https://i.imgur.com/HRqD2fi.gif)
 
 ### Generate application logs
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803145038430238/logs.gif)
+![Generating application logs](https://i.imgur.com/riXUYDt.gif)
 
 ### Download application backup
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803030563311636/backup.gif)
+![Downloading application backup](https://i.imgur.com/SOQNeMk.gif)
 
 ### Download and open hosted app code in VSCode.
 
-![.](https://media.discordapp.net/attachments/685903739130740759/1016803117788049408/import.gif)
+![Importing application code to VSCode](https://i.imgur.com/nIbgGIU.gif)
