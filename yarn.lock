@@ -199,10 +199,10 @@
     "@sagold/json-pointer" "^5.1.2"
     ebnf "^1.9.1"
 
-"@types/adm-zip@^0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.5.6.tgz#12e010a45f68a40cbaf9906a329baf4ee7749c67"
-  integrity sha512-lRlcSLg5Yoo7C2H2AUiAoYlvifWoCx/se7iUNiCBTfEVVYFVn+Tr9ZGed4K73tYgLe9O4PjdJvbxlkdAOx/qiw==
+"@types/adm-zip@^0.5.7":
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.5.7.tgz#eec10b6f717d3948beb64aca0abebc4b344ac7e9"
+  integrity sha512-DNEs/QvmyRLurdQPChqq0Md4zGvPwHerAJYWk9l2jCbD1VPpnzRJorOdiq4zsw09NFbYnhfsoEhWtxIzXpn2yw==
   dependencies:
     "@types/node" "*"
 
