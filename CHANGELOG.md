@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.6
+
+- Correção comportamento ao tentar fazer commit sem aplicações.
+
 ## 2.22.3
 
 - Correção de ratelimit negativo
