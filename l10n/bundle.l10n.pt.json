@@ -69,6 +69,7 @@
   "more": "Mais",
   "network": "Rede",
   "n.more": "Mais {n}...",
+  "no.apps.found.to.choose": "Nenhuma aplicação encontrada, por favor, faça upload antes disso.",
   "noappfound": "Nenhuma aplicação encontrada.",
   "offline": "Desligado",
   "ok": "Ok",

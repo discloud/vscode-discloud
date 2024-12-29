@@ -125,6 +125,8 @@ export default abstract class Command {
     const appsLength = apps.length;
     const teamAppsLength = teamApps.length;
 
+    if (!appsLength && !teamAppsLength) throw new Error(t("no.apps.found.to.choose"));
+
     const dConfig = new DiscloudConfig(extension.workspaceFolder!);
 
     let hasApp = false;
