@@ -1269,7 +1269,7 @@
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.17.0",
     "globals": "^15.14.0",
-    "mocha": "^10.8.2",
+    "mocha": "^11.0.1",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.0"
   }
