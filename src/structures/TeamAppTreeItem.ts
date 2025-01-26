@@ -50,9 +50,9 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
-    if (!data) return this;
-
     super._patch(data);
+
+    if (!data) return this;
 
     if ("name" in data)
       this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;

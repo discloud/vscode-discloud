@@ -6,8 +6,8 @@ export default class DiscloudAPIError extends Error {
     readonly path: string,
     readonly requestBody?: any,
   ) {
-    if (typeof (responseBody.message ?? requestBody) === "string") {
-      super(responseBody.message ?? requestBody);
+    if (typeof (responseBody?.message ?? responseBody) === "string") {
+      super(responseBody?.message ?? responseBody);
     } else {
       super();
     }

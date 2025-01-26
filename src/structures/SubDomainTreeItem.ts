@@ -18,9 +18,9 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
   }
 
   protected _patch(data: Partial<SubDomainTreeItemData>): this {
-    if (!data) data = {};
-
     super._patch(data);
+
+    if (!data) return this;
 
     this.subdomain = data.subdomain ?? this.subdomain;
     this.label = data.subdomain ?? this.label;

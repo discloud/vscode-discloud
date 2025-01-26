@@ -8,7 +8,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   iconName?: string;
   readonly userID: string;
 
-  constructor(public data: Partial<UserTreeItemData> & ApiVscodeUser) {
+  constructor(readonly data: Partial<UserTreeItemData> & ApiVscodeUser) {
     data.label = data.userID;
 
     super(data.label, data.collapsibleState);
@@ -19,9 +19,9 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   }
 
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
-    if (!data) data = {};
-
     super._patch(data);
+    
+    if (!data) return this;
 
     if ("username" in data && typeof data.userName === "string")
       this.label = data.userName + ` (${this.userID})`;

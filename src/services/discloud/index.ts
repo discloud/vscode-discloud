@@ -146,7 +146,6 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
         break;
     }
 
-
     throw new DiscloudAPIError(responseBody, response.status, config?.method ?? "GET", path, config?.body);
   }
 

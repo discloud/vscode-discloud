@@ -17,9 +17,9 @@ export default class CustomDomainTreeItem extends BaseTreeItem<any> {
   }
 
   protected _patch(data: Partial<CustomDomainTreeItemData>): this {
-    if (!data) data = {};
-
     super._patch(data);
+    
+    if (!data) return this;
 
     this.domain = data.domain ?? this.domain;
     this.label = data.domain ?? this.label;
