@@ -1,36 +1,36 @@
 import { t } from "@vscode/l10n";
-import { type RouteLike, discloud } from "discloud.app";
+import { discloud, RouteBases, type RouteLike } from "discloud.app";
 import { EventEmitter } from "events";
 import { decode } from "jsonwebtoken";
-import { setTimeout as sleep } from "timers/promises";
 import { window } from "vscode";
-import { type RequestOptions } from "../@types";
-import extension, { logger } from "../extension";
-import { DEFAULT_USER_AGENT } from "./constants";
+import { type RequestOptions } from "../../@types";
+import extension, { logger } from "../../extension";
+import { DEFAULT_USER_AGENT } from "../../util/constants";
+import DiscloudAPIError from "./error";
 
-let { limit, remain, reset, time, timer, tokenIsValid } = {
+let { limit, remain, reset, time, tokenIsValid } = {
   limit: 60,
   remain: 60,
   reset: 60,
   time: 0,
-  timer: false,
   tokenIsValid: false,
 };
 
 export { tokenIsValid };
 
-async function initTimer() {
+let timer: NodeJS.Timeout | null = null;
+function initTimer() {
   if (timer) return;
-  timer = true;
-  await sleep(reset * 1000 + time - Date.now());
-  timer = false;
-  remain = limit;
-  extension.debug("[ratelimit]: restored");
+  timer = setTimeout(function () {
+    timer = null;
+    remain = limit;
+    extension.debug("[ratelimit]: restored");
+  }, reset * 1000 + time - Date.now());
 }
 
-const emitter = new EventEmitter({ captureRejections: true });
+export const requesterEmitter = new EventEmitter();
 
-emitter.on("headers", async function (headers: Headers) {
+requesterEmitter.on("headers", async function (headers: Headers) {
   time = Date.now();
 
   const Limit = parseInt(headers.get("ratelimit-limit")!);
@@ -49,6 +49,27 @@ emitter.on("headers", async function (headers: Headers) {
 const noQueueProcesses: string[] = [];
 const queueProcesses = new Set<string>();
 
+async function waitQueue(key: string) {
+  while (queueProcesses.has(key)) {
+    await new Promise((resolve) => {
+      function onResume(k: string) {
+        if (k === key) {
+          clearTimeout(timer);
+          requesterEmitter.removeListener("resume", onResume);
+          resolve(k);
+        }
+      }
+
+      const timer = setTimeout(function () {
+        requesterEmitter.removeListener("resume", onResume);
+        resolve(null);
+      }, 10000);
+
+      requesterEmitter.on("resume", onResume);
+    });
+  }
+}
+
 export async function requester<T>(path: RouteLike, config: RequestOptions = {}, queue?: boolean): Promise<T | null> {
   if (!tokenIsValid) return null;
 
@@ -60,18 +81,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   const processKey = `${config.method ??= "GET"}.${path}`;
 
   if (queue) {
-    while (queueProcesses.has(processKey)) {
-      await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(), 10000);
-
-        emitter.once("resume", (key) => {
-          if (key === processKey) {
-            clearTimeout(timer);
-            resolve(key);
-          }
-        });
-      }).catch(() => null);
-    }
+    await waitQueue(processKey);
 
     if (!remain) return null;
 
@@ -96,11 +106,11 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
 
   let response: Response;
   try {
-    response = await fetch(`https://api.discloud.app/v2${path}`, config);
+    response = await fetch(`${RouteBases.api}${path}`, config);
   } catch {
     if (queue) {
       queueProcesses.delete(processKey);
-      emitter.emit("resume", processKey);
+      requesterEmitter.emit("resume", processKey);
     } else {
       noQueueProcesses.shift();
     }
@@ -109,40 +119,38 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     throw Error("Missing Connection");
   }
 
-  emitter.emit("headers", response.headers);
+  requesterEmitter.emit("headers", response.headers);
 
   if (queue) {
     queueProcesses.delete(processKey);
-    emitter.emit("resume", processKey);
+    requesterEmitter.emit("resume", processKey);
   } else {
     noQueueProcesses.shift();
   }
 
-  if (response.status > 399) {
+  let responseBody: any;
+  if (response.headers.get("content-type")?.includes("application/json")) {
+    responseBody = await response.json();
+  } else if (response.headers.get("content-type")?.includes("text/")) {
+    responseBody = await response.text();
+  } else {
+    responseBody = await response.arrayBuffer();
+  }
+
+  if (!response.ok) {
     switch (response.status) {
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
-        logger.info(`${path} ${await response.json().catch(() => response.text())}`);
+        logger.info(`${path} ${responseBody}`);
         break;
     }
 
-    if (response.headers.get("content-type")?.includes("application/json"))
-      throw Object.assign(response, { body: await response.json() });
 
-    if (response.headers.get("content-type")?.includes("text/"))
-      throw Object.assign(response, { body: await response.text() });
-
-    throw Object.assign(response, { body: await response.arrayBuffer() });
+    throw new DiscloudAPIError(responseBody, response.status, config?.method ?? "GET", path, config?.body);
   }
 
-  if (response.headers.get("content-type")?.includes("application/json"))
-    return await response.json() as T;
-
-  if (response.headers.get("content-type")?.includes("text/"))
-    return await response.text() as T;
-
-  return await response.arrayBuffer() as T;
+  return responseBody as T;
 }
 
 export function tokenIsDiscloudJwt(token = extension.token!): boolean {

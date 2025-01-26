@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import extension from "../extension";
 
-extension.on("appUpdate", async (oldApp, newApp) => {
+extension.on("appUpdate", async function (oldApp, newApp) {
   if (!extension.config.get<boolean>("app.notification.status")) return;
 
   const messageList: string[] = [];
@@ -17,5 +17,5 @@ extension.on("appUpdate", async (oldApp, newApp) => {
   }
 
   if (messageList.length)
-    window.showInformationMessage(messageList.join("\n"));
+    await window.showInformationMessage(messageList.join("\n"));
 });

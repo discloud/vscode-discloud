@@ -70,10 +70,10 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   private cleanNonMatchedApps(data: (string | BaseApiApp)[]) {
     let refresh;
 
-    const apps = data.map(app => typeof app === "string" ? app : app.id);
+    const apps = new Set(data.map(app => typeof app === "string" ? app : app.id));
 
     for (const key of this.children.keys()) {
-      if (!apps.includes(key)) {
+      if (!apps.has(key)) {
         refresh = this.children.dispose(key);
       }
     }
@@ -90,7 +90,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     }
   }
 
-  refresh(data: void | AppTreeItem | AppTreeItem[] | null | undefined) {
+  refresh(data?: AppTreeItem | AppTreeItem[] | null) {
     commands.executeCommand("setContext", "discloudAppLength", this.children.has("x") ? 0 : this.children.size);
     super.refresh(data);
   }
@@ -122,7 +122,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
 
       extension.emit("appUpdate", clone, existing);
     } else {
-      this.children.delete("x");
+      this.children.dispose("x");
 
       this.children.set(data.id, new AppTreeItem(Object.assign({
         collapsibleState: this.children.size ?

@@ -69,10 +69,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   private cleanNonMatchedApps(data: (string | BaseApiApp)[]) {
     let refresh;
 
-    const apps = data.map(app => typeof app === "string" ? app : app.id);
+    const apps = new Set(data.map(app => typeof app === "string" ? app : app.id));
 
     for (const key of this.children.keys()) {
-      if (!apps.includes(key)) {
+      if (!apps.has(key)) {
         refresh = this.children.dispose(key);
       }
     }
@@ -89,7 +89,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
   }
 
-  refresh(data: void | TeamAppTreeItem | TeamAppTreeItem[] | null | undefined) {
+  refresh(data?: TeamAppTreeItem | TeamAppTreeItem[] | null) {
     commands.executeCommand("setContext", "discloudTeamAppLength", this.children.has("x") ? 0 : this.children.size);
     super.refresh(data);
   }
@@ -180,7 +180,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
         switch (res.statusCode) {
           case 404:
             if (appId === "all") {
-              this.children.clear();
+              this.children.dispose();
             } else {
               this.delete(appId);
             }

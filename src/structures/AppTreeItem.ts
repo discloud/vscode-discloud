@@ -47,7 +47,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   }
 
   _patch(data: Partial<AppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
-    if (!data) data = {};
+    if (!data) return this;
 
     super._patch(data);
 

@@ -5,7 +5,7 @@ import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenValidator } from "../util";
 
-extension.on("activate", async (context) => {
+extension.on("activate", async function (context) {
   extension.logger.info("Activate: begin");
 
   extension.loadStatusBar();

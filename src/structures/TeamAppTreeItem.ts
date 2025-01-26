@@ -50,7 +50,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
-    if (!data) data = {};
+    if (!data) return this;
 
     super._patch(data);
 

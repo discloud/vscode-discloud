@@ -1,7 +1,7 @@
 import { commands } from "vscode";
 import extension from "../extension";
 
-extension.on("authorized", async (token, isWorkspace) => {
+extension.on("authorized", async function (token, isWorkspace) {
   commands.executeCommand("setContext", "discloudTokenAuthorized", true);
   commands.executeCommand("setContext", "discloudTokenUnauthorized", false);
 

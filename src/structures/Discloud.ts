@@ -10,6 +10,7 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
+import { requesterEmitter } from "../util";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -203,6 +204,8 @@ class Discloud extends EventEmitter<Events> {
         tooltip: t("status.tooltip"),
       }),
     });
+
+    this.context.subscriptions.push(this.statusBar);
   }
 
   async resetStatusBar() {
@@ -223,6 +226,7 @@ class Discloud extends EventEmitter<Events> {
   }
 
   dispose() {
+    requesterEmitter.removeAllListeners();
     this.removeAllListeners();
   }
 }

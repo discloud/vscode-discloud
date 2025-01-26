@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import extension from "../extension";
 
-extension.on("teamAppUpdate", async (oldApp, newApp) => {
+extension.on("teamAppUpdate", async function (oldApp, newApp) {
   if (!extension.config.get<boolean>("team.app.notification.status")) return;
 
   const messageList: string[] = [];

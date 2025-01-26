@@ -55,7 +55,6 @@ export default class BaseLanguageProvider {
           continue;
         case "AUTORESTART":
           if (["true", "false"].includes(value)) {
-             
             obj[key] = value == "true";
           }
           continue;
