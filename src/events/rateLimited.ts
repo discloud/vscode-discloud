@@ -2,12 +2,10 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import extension from "../extension";
 
-let timer: NodeJS.Timeout;
+let timer: NodeJS.Timeout | null = null;
 
 extension.on("rateLimited", async function (rateLimitData) {
-  if (isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
-
-  clearTimeout(timer);
+  if (timer || isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
 
   const reset = rateLimitData.reset * 1000 + rateLimitData.time - Date.now();
 
@@ -22,6 +20,7 @@ extension.on("rateLimited", async function (rateLimitData) {
   extension.statusBar.setRateLimited(true);
 
   timer = setTimeout(() => {
+    timer = null;
     extension.statusBar.setRateLimited(false);
   }, reset);
 });
