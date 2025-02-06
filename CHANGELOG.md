@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.10
+
+- Correção de incompatibilidade com a nova versão do vscode (1.97.0)
+
 ## 2.22.7
 
 - Correção de erro ao tentar atribuir valor em Response#body
