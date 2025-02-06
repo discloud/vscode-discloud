@@ -2,7 +2,7 @@ import { type StatusBarItem, window } from "vscode";
 import extension from "../extension";
 import { bindFunctions } from "../util";
 
-export default class BaseStatusBarItem implements StatusBarItem {
+export default abstract class BaseStatusBarItem implements StatusBarItem {
   protected readonly originalData: Omit<StatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">;
   readonly data: StatusBarItem;
 

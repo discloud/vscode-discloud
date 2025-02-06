@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules", "out"],
-  "include": ["src"],
+  "include": ["src", "*.d.ts"],
   "compilerOptions": {
     "module": "commonjs",
     "target": "ESNext",

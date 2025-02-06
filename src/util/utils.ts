@@ -6,9 +6,16 @@ export function bindFunctions<I extends Record<any, any>>(instance: I): void;
 export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any>) {
   if (!instance) return;
 
-  for (const propertyName of Object.getOwnPropertyNames(Object.getPrototypeOf(instance)))
-    if (typeof instance[propertyName] === "function")
-      (bind ?? instance)[propertyName] = instance[propertyName].bind(bind ?? instance);
+  bind ??= instance;
+
+  for (const propertyName of Object.getOwnPropertyNames(Object.getPrototypeOf(instance))) {
+    try {
+      if (typeof instance[propertyName] === "function")
+        bind[propertyName] = instance[propertyName].bind(bind);
+    } catch {
+      continue;
+    }
+  }
 }
 
 export function calculatePercentage(value: string | number, major: string | number) {
