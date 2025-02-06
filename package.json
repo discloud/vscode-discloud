@@ -14,7 +14,7 @@
     "url": "git+https://github.com/discloud/vscode-discloud.git"
   },
   "engines": {
-    "vscode": "^1.96.0"
+    "vscode": "^1.97.0"
   },
   "sponsor": {
     "url": "https://discloudbot.com/plans"
@@ -1264,7 +1264,7 @@
     "@types/jsonwebtoken": "^9.0.8",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.13.1",
-    "@types/vscode": "^1.96.0",
+    "@types/vscode": "^1.97.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.19.0",
