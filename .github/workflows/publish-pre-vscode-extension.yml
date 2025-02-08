@@ -9,9 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
+      - name: Get short SHA
+        id: get-short-sha
+        run: |
+          id=$(echo ${{github.sha}} | cut -c 1-7)
+          echo "::set-output name=id::$id"
+
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
       - run: yarn
-      - run: echo "${{github.sha}}"
+      - run: echo "${{steps.get-short-sha.outputs.id}}"
