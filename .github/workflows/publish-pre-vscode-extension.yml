@@ -1,0 +1,17 @@
+name: Deploy Extension
+
+on:
+  push:
+    branches: [ "**" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: yarn
+      - run: echo "${{github.sha}}"
