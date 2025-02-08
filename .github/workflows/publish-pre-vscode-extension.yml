@@ -11,11 +11,13 @@ jobs:
     steps:
       - name: Get short SHA
         id: short_github_sha
-        run: echo ${{github.sha}} | cut -c 1-7 >> $GITHUB_OUTPUT
+        run: |
+          id=$(echo ${{github.sha}} | cut -c 1-7)
+          echo "id=$id" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
       - run: yarn
-      - run: echo "${{steps.short_github_sha.outputs}}"
+      - run: echo "${{ steps.short_github_sha.outputs.id }}"
