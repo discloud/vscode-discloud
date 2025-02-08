@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
-import { extname, join } from "path";
-import { type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, commands, window, workspace } from "vscode";
+import { join, relative } from "path";
+import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -10,14 +10,12 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import { requesterEmitter } from "../util";
+import { FILE_EXT, replaceFileExtension } from "../util";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
-const fileExt = extname(__filename);
-
-class Discloud extends EventEmitter<Events> {
+export default class Discloud extends EventEmitter<Events> {
   declare readonly appTree: AppTreeDataProvider;
   declare readonly context: ExtensionContext;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
@@ -90,7 +88,7 @@ class Discloud extends EventEmitter<Events> {
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
-    task?.progress.report({ message: "Please select a folder." });
+    task?.progress.report({ message: t("folder.get.one") });
 
     const uris = await window.showOpenDialog({
       canSelectFolders: true,
@@ -99,98 +97,85 @@ class Discloud extends EventEmitter<Events> {
     });
 
     if (uris?.length) {
-      task?.progress.report({ message: "Folder selected." });
+      task?.progress.report({ message: t("folder.selected") });
     }
 
     return uris?.[0].fsPath;
   }
 
-  async loadCommands(dir = join(__dirname, "..", "commands"), category = "discloud") {
+  async loadCommands(dir = join(__dirname, "..", "commands")) {
     if (!existsSync(dir)) return;
 
-    const files = readdirSync(dir, { withFileTypes: true });
+    for (const file of readdirSync(dir, { withFileTypes: true, recursive: true })) {
+      if (!file.isFile() || !file.name.endsWith(FILE_EXT)) continue;
 
-    for (const file of files) {
-      if (file.isDirectory()) {
-        this.loadCommands(join(dir, file.name), `${category}.${file.name}`);
+      const filePath = join(file.parentPath, file.name);
 
+      let imported;
+      try {
+        imported = await import(filePath);
+      } catch (error) {
+        this.emit("error", error);
         continue;
       }
 
-      if (file.isFile()) {
-        if (!file.name.endsWith(fileExt)) continue;
+      let command: Command;
+      try {
+        command = new (imported.default ?? imported)(this);
+      } catch {
+        command = imported.default ?? imported;
+      }
 
-        let imported;
-        try {
-          imported = await import(`${join(dir, file.name)}`);
-        } catch (error) {
-          this.emit("error", error);
-          continue;
-        }
+      const commandName = replaceFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
 
-        let command: Command;
-        try {
-          command = new (imported.default ?? imported)(this);
-        } catch {
-          command = imported.default ?? imported;
-        }
+      const disposable = commands.registerCommand(commandName, async (...args) => {
+        if (!command.data.allowTokenless)
+          if (!this.hasToken) return;
 
-        const commandName = `${category}.${file.name.replace(extname(file.name), "")}`;
+        const taskData = <TaskData>{};
 
-        const disposable = commands.registerCommand(commandName, async (...args) => {
-          if (!command.data.allowTokenless)
-            if (!this.hasToken) return;
+        if (command.data.progress) {
+          await window.withProgress(command.data.progress, async (progress, token) => {
+            token.onCancellationRequested(() => this.resetStatusBar());
 
-          const taskData = <TaskData>{};
+            taskData.progress = progress;
+            taskData.token = token;
 
-          if (command.data.progress) {
-            await window.withProgress(command.data.progress, async (progress, token) => {
-              token.onCancellationRequested(() => this.resetStatusBar());
-
-              taskData.progress = progress;
-              taskData.token = token;
-
-              try {
-                await command.run(taskData, ...args);
-              } catch (error) {
-                this.emit("error", error);
-              }
-              this.resetStatusBar();
-            });
-          } else {
             try {
               await command.run(taskData, ...args);
             } catch (error) {
               this.emit("error", error);
             }
             this.resetStatusBar();
+          });
+        } else {
+          try {
+            await command.run(taskData, ...args);
+          } catch (error) {
+            this.emit("error", error);
           }
-        });
+          this.resetStatusBar();
+        }
+      });
 
-        this.context.subscriptions.push(disposable);
+      this.context.subscriptions.push(disposable);
 
-        this.commands.set(commandName, command);
+      this.commands.set(commandName, command);
 
-        if (this.isDebug) logger.info(commandName, disposable ? "✅" : "❌");
-
-        continue;
-      }
+      if (this.isDebug) logger.info(commandName, disposable ? "✅" : "❌");
     }
   }
 
   async loadEvents(path = join(__dirname, "..", "events")) {
     if (!existsSync(path)) return;
 
-    const files = readdirSync(path, { withFileTypes: true });
+    const files = readdirSync(path, { withFileTypes: true, recursive: true });
 
     const promises = [];
 
     for (const file of files)
-      if (file.isFile()) {
-        if (!file.name.endsWith(fileExt)) continue;
-
+      if (file.isFile() && file.name.endsWith(FILE_EXT))
         promises.push(import(`${join(path, file.name)}`));
-      }
 
     await Promise.all(promises);
   }
@@ -226,9 +211,6 @@ class Discloud extends EventEmitter<Events> {
   }
 
   dispose() {
-    requesterEmitter.removeAllListeners();
     this.removeAllListeners();
   }
 }
-
-export default Discloud;

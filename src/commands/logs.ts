@@ -3,8 +3,8 @@ import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.ap
 import { ProgressLocation, window } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import Command from "../structures/Command";
-import { requester } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -47,7 +47,7 @@ export default class extends Command {
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) {
-      return window.showErrorMessage(t("log404"));
+      return window.showErrorMessage(t("no.log.found"));
     }
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);

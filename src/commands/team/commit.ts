@@ -4,9 +4,10 @@ import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { FileSystem, Zip, requester } from "../../util";
+import { FileSystem, Zip } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -20,7 +21,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: TeamAppTreeItem) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
@@ -28,7 +29,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 
@@ -82,7 +83,7 @@ export default class extends Command {
 
       await extension.teamAppTree.fetch();
 
-      if (res.logs) this.logger(item.appId, res.logs);
+      if (res.logs) this.logger(item.output ?? item.appId, res.logs);
     }
   }
 }

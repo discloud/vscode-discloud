@@ -1,5 +1,6 @@
 import { join } from "path";
 import { Uri } from "vscode";
+import { FILE_EXT_REGEXP } from "./regexp";
 
 export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
 export function bindFunctions<I extends Record<any, any>>(instance: I): void;
@@ -67,4 +68,8 @@ export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
   } catch {
     return null;
   }
+}
+
+export function replaceFileExtension(file: string, replacement = "") {
+  return file.replace(FILE_EXT_REGEXP, replacement);
 }

@@ -7,9 +7,9 @@ import { join } from "path";
 import { ProgressLocation, Uri, commands, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { requester } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -25,7 +25,7 @@ export default class extends Command {
     let workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
-      if (!workspaceFolder) throw Error("No folder found");
+      if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
     if (!item) {
@@ -36,10 +36,10 @@ export default class extends Command {
     const res = await requester<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
     if (!res) return;
 
-    if (!res.backups) throw Error("No backup found");
+    if (!res.backups) throw Error(t("no.backup.found"));
 
     const backup = await fetch(res.backups.url);
-    if (!backup.body) throw Error("Fail to request backup");
+    if (!backup.body) throw Error(t("backup.request.failed"));
 
     const configImportDir = extension.config.get<string>("team.import.dir");
     const importDir = extension.workspaceAvailable ? join(workspaceFolder, configImportDir!) : workspaceFolder;

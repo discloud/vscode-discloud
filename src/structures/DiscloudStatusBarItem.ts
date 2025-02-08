@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
 import { type StatusBarItem, ThemeColor, workspace } from "vscode";
 import extension from "../extension";
-import { tokenIsValid } from "../util";
+import { tokenIsValid } from "../services/discloud";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {

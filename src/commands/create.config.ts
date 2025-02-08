@@ -1,3 +1,4 @@
+import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
 import { workspace } from "vscode";
 import extension from "../extension";
@@ -12,7 +13,7 @@ export default class extends Command {
 
   async run() {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const dConfig = new DiscloudConfig(workspaceFolder);
     if (dConfig.exists) return;

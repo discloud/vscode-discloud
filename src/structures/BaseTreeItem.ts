@@ -11,6 +11,10 @@ export default abstract class BaseTreeItem<T extends TreeItem & Disposable> exte
     super(label, collapsibleState);
   }
 
+  get contextJSON(): Record<any, any> {
+    return {};
+  }
+
   dispose() {
     this.children.dispose();
   }

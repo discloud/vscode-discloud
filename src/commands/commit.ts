@@ -4,8 +4,9 @@ import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import Command from "../structures/Command";
-import { FileSystem, Zip, requester } from "../util";
+import { FileSystem, Zip } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -19,12 +20,12 @@ export default class extends Command {
 
   async run(task: TaskData) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const files = await FileSystem.readSelectedPath(true);
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 
@@ -54,7 +55,7 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      throw Error(error);
+      throw error;
     }
 
     const form = new FormData();
@@ -63,7 +64,7 @@ export default class extends Command {
       if (!extension.isDebug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
-      throw Error(error);
+      throw error;
     }
 
     task.progress.report({ message: t("committing") });
@@ -87,7 +88,7 @@ export default class extends Command {
       else
         await extension.teamAppTree.fetch();
 
-      if (res.logs) this.logger(picked.id, res.logs);
+      if (res.logs) this.logger(picked.app.output ?? picked.id, res.logs);
     }
   }
 }

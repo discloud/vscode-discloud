@@ -3,8 +3,9 @@ import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, 
 import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import AppTreeItem from "../structures/AppTreeItem";
-import { compareBooleans, compareNumbers, getIconPath, requester } from "../util";
+import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
@@ -198,7 +199,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   init() {
     this.children.dispose();
 
-    const x = new TreeItem(t("noappfound"));
+    const x = new TreeItem(t("no.app.found"));
     x.contextValue = "EmptyTreeItem";
     x.iconPath = getIconPath("x");
 

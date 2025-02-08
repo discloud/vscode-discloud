@@ -4,9 +4,10 @@ import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
-import { FileSystem, requester, Zip } from "../../util";
+import { FileSystem, Zip } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -20,7 +21,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: AppTreeItem) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
@@ -28,7 +29,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 
@@ -54,7 +55,7 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      throw Error(error);
+      throw error;
     }
 
     const form = new FormData();
@@ -63,7 +64,7 @@ export default class extends Command {
       if (!extension.isDebug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
-      throw Error(error);
+      throw error;
     }
 
     task.progress.report({ message: item.appId });
@@ -82,7 +83,7 @@ export default class extends Command {
 
       await extension.appTree.fetch();
 
-      if (res.logs) this.logger(item.appId, res.logs);
+      if (res.logs) this.logger(item.output ?? item.appId, res.logs);
     }
   }
 }

@@ -1252,7 +1252,7 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "archiver": "^7.0.1",
-    "discloud.app": "^0.12.3",
+    "discloud.app": "^0.12.4",
     "json-schema-library": "^10.0.0-rc7",
     "jsonwebtoken": "^9.0.2"
   },
@@ -1263,7 +1263,7 @@
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.13.1",
+    "@types/node": "20",
     "@types/vscode": "^1.97.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",

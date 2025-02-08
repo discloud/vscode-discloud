@@ -26,10 +26,10 @@ export default class extends Command {
       });
     }
 
-    if (!locale) throw Error("Missing locale");
+    if (!locale) throw Error(t("missing.locale"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await extension.user.setLocale(locale).catch(r => r?.body ?? r);
     if (!res) return;
