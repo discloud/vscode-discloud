@@ -2,7 +2,7 @@ name: Deploy Extension
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
 
 jobs:
   deploy:
@@ -20,4 +20,20 @@ jobs:
         with:
           node-version: lts/*
       - run: yarn
-      - run: echo "${{ steps.short_github_sha.outputs.id }}"
+      - run: npm version pre --preid=${{ steps.short_github_sha.outputs.id }} --no-git-tag-version
+
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v1
+        id: publishToOpenVSX
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          yarn: true
+          preRelease: true
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.VSCE_PAT }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          yarn: true
+          preRelease: true
