@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.11
+
+- Correção de erros menores
+- Melhoria de desempenho
+
 ## 2.22.10
 
 - Correção de incompatibilidade com a nova versão do vscode (1.97.0)
