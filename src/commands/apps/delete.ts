@@ -24,7 +24,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId), {
       method: "DELETE",

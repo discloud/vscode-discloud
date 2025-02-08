@@ -26,10 +26,10 @@ export default class extends Command {
       },
     });
 
-    if (!name) throw Error("Missing input");
+    if (!name) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
       body: JSON.stringify({

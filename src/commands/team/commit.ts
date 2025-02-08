@@ -21,7 +21,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: TeamAppTreeItem) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
@@ -29,7 +29,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 

@@ -116,7 +116,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     }
 
     extension.emit("missingConnection");
-    throw Error("Missing Connection");
+    throw Error(t("missing.connection"));
   }
 
   queueMicrotask(() => headers(response.headers));

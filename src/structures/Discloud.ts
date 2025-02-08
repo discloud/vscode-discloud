@@ -15,7 +15,7 @@ import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
-class Discloud extends EventEmitter<Events> {
+export default class Discloud extends EventEmitter<Events> {
   declare readonly appTree: AppTreeDataProvider;
   declare readonly context: ExtensionContext;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
@@ -88,7 +88,7 @@ class Discloud extends EventEmitter<Events> {
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
-    task?.progress.report({ message: "Please select a folder." });
+    task?.progress.report({ message: t("folder.get.one") });
 
     const uris = await window.showOpenDialog({
       canSelectFolders: true,
@@ -97,13 +97,13 @@ class Discloud extends EventEmitter<Events> {
     });
 
     if (uris?.length) {
-      task?.progress.report({ message: "Folder selected." });
+      task?.progress.report({ message: t("folder.selected") });
     }
 
     return uris?.[0].fsPath;
   }
 
-  async loadCommands(dir = join(__dirname, "..", "commands"), category = "discloud") {
+  async loadCommands(dir = join(__dirname, "..", "commands")) {
     if (!existsSync(dir)) return;
 
     for (const file of readdirSync(dir, { withFileTypes: true, recursive: true })) {
@@ -126,9 +126,7 @@ class Discloud extends EventEmitter<Events> {
         command = imported.default ?? imported;
       }
 
-      const relativePath = replaceFileExtension(relative(dir, filePath)).replace(/[/\\]+/g, ".");
-
-      const commandName = [category, relativePath].join(".");
+      const commandName = replaceFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
 
       const disposable = commands.registerCommand(commandName, async (...args) => {
         if (!command.data.allowTokenless)
@@ -216,5 +214,3 @@ class Discloud extends EventEmitter<Events> {
     this.removeAllListeners();
   }
 }
-
-export default Discloud;

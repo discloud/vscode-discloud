@@ -26,10 +26,10 @@ export default class extends Command {
       },
     });
 
-    if (!avatarURL) throw Error("Missing input");
+    if (!avatarURL) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     avatarURL = avatarURL.replace(/\s+/g, "");
 

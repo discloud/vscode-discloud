@@ -23,7 +23,7 @@ export default class extends Command {
     }
 
     const mod = await this.pickAppMod(item.appId, task);
-    if (!mod) throw Error("Missing mod");
+    if (!mod) throw Error(t("missing.moderator"));
 
     const permissions = Object.keys(ModPermissionsFlags).map(perm => <QuickPickItem>{
       label: t(`permission.${perm}`),
@@ -34,10 +34,10 @@ export default class extends Command {
     const perms = await window.showQuickPick(permissions, {
       canPickMany: true,
     }).then(values => values?.map(value => value.description!));
-    if (!perms) throw Error("Missing input");
+    if (!perms) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: JSON.stringify({

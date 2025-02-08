@@ -26,7 +26,7 @@ export default class extends Command {
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) {
-      throw Error(t("log404"));
+      throw Error(t("no.log.found"));
     }
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);

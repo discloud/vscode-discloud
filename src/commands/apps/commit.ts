@@ -21,7 +21,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: AppTreeItem) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
@@ -29,7 +29,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 
@@ -55,7 +55,7 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      throw Error(error);
+      throw error;
     }
 
     const form = new FormData();
@@ -64,7 +64,7 @@ export default class extends Command {
       if (!extension.isDebug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
-      throw Error(error);
+      throw error;
     }
 
     task.progress.report({ message: item.appId });

@@ -20,12 +20,12 @@ export default class extends Command {
 
   async run(task: TaskData) {
     const workspaceFolder = extension.workspaceFolder;
-    if (!workspaceFolder) throw Error("No workspace folder found");
+    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const files = await FileSystem.readSelectedPath(true);
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     extension.statusBar.setCommitting();
 
@@ -55,7 +55,7 @@ export default class extends Command {
       await zipper.finalize();
     } catch (error: any) {
       zipper?.destroy();
-      throw Error(error);
+      throw error;
     }
 
     const form = new FormData();
@@ -64,7 +64,7 @@ export default class extends Command {
       if (!extension.isDebug) zipper.destroy();
     } catch (error: any) {
       zipper.destroy();
-      throw Error(error);
+      throw error;
     }
 
     task.progress.report({ message: t("committing") });

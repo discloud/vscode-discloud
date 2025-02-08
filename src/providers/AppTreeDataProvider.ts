@@ -199,7 +199,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   init() {
     this.children.dispose();
 
-    const x = new TreeItem(t("noappfound"));
+    const x = new TreeItem(t("no.app.found"));
     x.contextValue = "EmptyTreeItem";
     x.iconPath = getIconPath("x");
 

@@ -23,10 +23,10 @@ export default class extends Command {
     }
 
     const mod = await this.pickAppMod(item.appId, task);
-    if (!mod) throw Error("Missing mod");
+    if (!mod) throw Error(t("missing.moderator"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id), {
       method: "DELETE",
