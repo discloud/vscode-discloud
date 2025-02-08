@@ -3,9 +3,9 @@ import { type BaseApiApp, DiscloudConfig, type RESTApiBaseResult, Routes } from 
 import { window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
+import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
-import { requester } from "../../../util";
 
 export default class extends Command {
   constructor() {
@@ -26,10 +26,10 @@ export default class extends Command {
       },
     });
 
-    if (!name) throw Error("Missing input");
+    if (!name) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
       body: JSON.stringify({

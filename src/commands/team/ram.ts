@@ -4,9 +4,9 @@ import { ProgressLocation, window } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { requester } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -40,9 +40,9 @@ export default class extends Command {
       if (typeof ramMB === "string") ramMB = parseInt(ramMB);
     } while (typeof ramMB === "number" ? isNaN(ramMB) || ramMB < min : false);
 
-    if (!ramMB) throw Error("Missing input");
+    if (!ramMB) throw Error(t("missing.input"));
 
-    if (!await this.confirmAction()) throw Error("Reject action");
+    if (!await this.confirmAction()) throw Error(t("rejected.action"));
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), {
       body: JSON.stringify({ ramMB }),

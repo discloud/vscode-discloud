@@ -2,9 +2,9 @@ import { t } from "@vscode/l10n";
 import { type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
+import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { requester } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -26,7 +26,7 @@ export default class extends Command {
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) {
-      throw Error(t("log404"));
+      throw Error(t("no.log.found"));
     }
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);

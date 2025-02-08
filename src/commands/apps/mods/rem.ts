@@ -2,9 +2,9 @@ import { t } from "@vscode/l10n";
 import { type RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../../@types";
+import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
-import { requester } from "../../../util";
 
 export default class extends Command {
   constructor() {
@@ -23,10 +23,10 @@ export default class extends Command {
     }
 
     const mod = await this.pickAppMod(item.appId, task);
-    if (!mod) throw Error("Missing mod");
+    if (!mod) throw Error(t("missing.moderator"));
 
     if (!await this.confirmAction())
-      throw Error("Reject action");
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id), {
       method: "DELETE",

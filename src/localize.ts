@@ -1,14 +1,11 @@
 import { config } from "@vscode/l10n";
 import { existsSync, readFileSync } from "fs";
-import { isAbsolute, join } from "path";
-import { env } from "vscode";
+import { join } from "path";
+import { env, type ExtensionContext } from "vscode";
 
-function importJSON<T = any>(path: string): T {
+function importJSON<T>(path: string): T {
   try {
-    if (!isAbsolute(path))
-      path = join(__dirname, path);
-
-    if (existsSync(path))
+    if (existsSync(path)) 
       return JSON.parse(readFileSync(path, "utf8"));
 
     return <T>{};
@@ -17,16 +14,17 @@ function importJSON<T = any>(path: string): T {
   }
 }
 
-const bundleDir = join("..", "l10n");
-const packageDir = join("..");
+const bundleDir = "l10n";
 
-config({
-  contents: Object.assign({},
-    importJSON(join(packageDir, "package.nls.json")),
-    importJSON(join(packageDir, `package.nls.${env.language.split(/\W+/)[0]}.json`)),
-    importJSON(join(packageDir, `package.nls.${env.language}.json`)),
-    importJSON(join(bundleDir, "bundle.l10n.json")),
-    importJSON(join(bundleDir, `bundle.l10n.${env.language.split(/\W+/)[0]}.json`)),
-    importJSON(join(bundleDir, `bundle.l10n.${env.language}.json`)),
-  ),
-});
+export function localize(context: ExtensionContext) {
+  config({
+    contents: Object.assign({},
+      importJSON(context.asAbsolutePath("package.nls.json")),
+      importJSON(context.asAbsolutePath(`package.nls.${env.language.split(/\W+/)[0]}.json`)),
+      importJSON(context.asAbsolutePath(`package.nls.${env.language}.json`)),
+      importJSON(context.asAbsolutePath(join(bundleDir, "bundle.l10n.json"))),
+      importJSON(context.asAbsolutePath(join(bundleDir, `bundle.l10n.${env.language.split(/\W+/)[0]}.json`))),
+      importJSON(context.asAbsolutePath(join(bundleDir, `bundle.l10n.${env.language}.json`))),
+    ),
+  });
+}

@@ -1,5 +1,5 @@
 import { type ExtensionContext, window } from "vscode";
-import "./localize";
+import { localize } from "./localize";
 import Discloud from "./structures/Discloud";
 
 export const logger = window.createOutputChannel("Discloud", { log: true });
@@ -11,6 +11,7 @@ const extension = new Discloud();
 export default extension;
 
 export async function activate(context: ExtensionContext) {
+  localize(context);
   await extension.loadEvents();
   extension.activate(context);
 }

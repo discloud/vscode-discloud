@@ -1,3 +1,4 @@
+import { t } from "@vscode/l10n";
 import { readFileSync } from "fs";
 import type { JSONSchema7 } from "json-schema";
 import { Draft07 } from "json-schema-library";
@@ -18,7 +19,7 @@ export default class BaseLanguageProvider {
         return;
       }
     } else {
-      extension.logger.error("Missing options.path");
+      extension.logger.error(t("missing.{input}", { input: "path" }));
       return;
     }
   }

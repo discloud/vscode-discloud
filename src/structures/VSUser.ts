@@ -1,7 +1,7 @@
 import { type RESTPutApiLocaleResult, Routes } from "discloud.app";
 import { type ApiVscodeApp, type ApiVscodeUser, type RESTGetApiVscode } from "../@types";
 import extension from "../extension";
-import { requester } from "../util";
+import { requester } from "../services/discloud";
 
 export default class VSUser implements ApiVscodeUser {
   readonly apps: string[] = [];

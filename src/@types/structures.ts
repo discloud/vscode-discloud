@@ -24,7 +24,7 @@ export interface BaseTreeItemData extends Omit<TreeItem, "id"> {
 
 export interface BaseChildTreeItemData extends BaseTreeItemData { }
 
-export interface AppChildTreeItemData extends BaseTreeItemData {
+export interface AppChildTreeItemData extends BaseChildTreeItemData {
   appId: string
   appType: number
   online: boolean
@@ -59,7 +59,7 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
   tooltip?: string
 }
 
-export interface TeamAppChildTreeItemData extends BaseTreeItemData {
+export interface TeamAppChildTreeItemData extends BaseChildTreeItemData {
   appId: string
   children?: TreeItem[]
   description?: string
@@ -79,7 +79,7 @@ export interface Events {
   activate: [context: ExtensionContext]
   appUpdate: [oldApp: AppTreeItem, newApp: AppTreeItem]
   authorized: [token: string, isWorkspace?: boolean]
-  debug: Parameters<LogOutputChannel["info"]>
+  debug: Parameters<LogOutputChannel["debug"]>
   error: [error: Error | unknown]
   missingConnection: []
   missingToken: []

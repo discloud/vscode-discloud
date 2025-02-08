@@ -6,9 +6,9 @@ import { join } from "path";
 import { ProgressLocation, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
-import { requester } from "../../util";
 
 export default class extends Command {
   constructor() {
@@ -24,7 +24,7 @@ export default class extends Command {
     let workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
-      if (!workspaceFolder) throw Error("No folder found");
+      if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
     if (!item) {
@@ -35,10 +35,10 @@ export default class extends Command {
     const res = await requester<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
     if (!res) return;
 
-    if (!res.backups) throw Error("No backup found");
+    if (!res.backups) throw Error(t("no.backup.found"));
 
     const backup = await fetch(res.backups.url);
-    if (!backup.body) throw Error("Fail to request backup");
+    if (!backup.body) throw Error(t("backup.request.failed"));
 
     const configBackupDir = extension.config.get<string>("app.backup.dir");
     const backupDir = extension.workspaceAvailable ? join(workspaceFolder, configBackupDir!) : workspaceFolder;

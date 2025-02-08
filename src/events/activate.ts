@@ -3,7 +3,7 @@ import { workspace } from "vscode";
 import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
-import { tokenValidator } from "../util";
+import { tokenValidator } from "../services/discloud";
 
 extension.on("activate", async function (context) {
   extension.logger.info("Activate: begin");

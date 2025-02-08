@@ -3,7 +3,7 @@ import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, type ModPermissi
 import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
-import { requester } from "../util";
+import { requester } from "../services/discloud";
 import AppTreeItem from "./AppTreeItem";
 import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
@@ -269,10 +269,12 @@ export default abstract class Command {
   logger(output: LogOutputChannel, log: string, show?: boolean): void;
   logger(output: LogOutputChannel, log: string, show = true) {
     if (typeof output === "string") {
-      output = extension.logOutputChannels.get(output) ??
-        extension.logOutputChannels
-          .set(output, window.createOutputChannel(output, { log: true }))
-          .get(output)!;
+      const id = output;
+      output = extension.logOutputChannels.get(id)!;
+      if (!output) {
+        output = window.createOutputChannel(id, { log: true });
+        extension.logOutputChannels.set(id, output);
+      }
     }
 
     output.info("\n" + log);
@@ -280,7 +282,7 @@ export default abstract class Command {
     if (show) {
       output.show(false);
 
-      setTimeout(() => output.show(false), 250);
+      queueMicrotask(() => output.show(false));
     }
   }
 
