@@ -29,6 +29,7 @@ jobs:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           yarn: true
           preRelease: true
+          skipDuplicate: true
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
@@ -37,3 +38,4 @@ jobs:
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           yarn: true
           preRelease: true
+          skipDuplicate: true
