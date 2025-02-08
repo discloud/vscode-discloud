@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: lts/*
       - run: yarn
-      - run: npm version pre --preid=${{ steps.short_github_sha.outputs.id }} --no-git-tag-version
+      #- run: npm version pre --preid=${{ steps.short_github_sha.outputs.id }} --no-git-tag-version
 
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v1
