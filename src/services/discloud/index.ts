@@ -28,9 +28,9 @@ function initTimer() {
   }, reset * 1000 + time - Date.now());
 }
 
-export const requesterEmitter = new EventEmitter();
+const requesterEmitter = new EventEmitter();
 
-requesterEmitter.on("headers", async function (headers: Headers) {
+function headers(headers: Headers) {
   time = Date.now();
 
   const Limit = parseInt(headers.get("ratelimit-limit")!);
@@ -44,7 +44,7 @@ requesterEmitter.on("headers", async function (headers: Headers) {
   extension.debug("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
 
   if (!remain) extension.emit("rateLimited", { reset, time });
-});
+}
 
 const noQueueProcesses: string[] = [];
 const queueProcesses = new Set<string>();
@@ -119,7 +119,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     throw Error("Missing Connection");
   }
 
-  requesterEmitter.emit("headers", response.headers);
+  queueMicrotask(() => headers(response.headers));
 
   if (queue) {
     queueProcesses.delete(processKey);

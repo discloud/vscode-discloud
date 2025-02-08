@@ -3,8 +3,8 @@ import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.ap
 import { ProgressLocation, window } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import Command from "../structures/Command";
-import { requester } from "../util";
 
 export default class extends Command {
   constructor() {

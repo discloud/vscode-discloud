@@ -7,9 +7,9 @@ import { join } from "path";
 import { ProgressLocation, Uri, commands, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { requester } from "../../util";
 
 export default class extends Command {
   constructor() {

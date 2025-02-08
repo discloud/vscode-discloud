@@ -4,8 +4,9 @@ import { join } from "path";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import Command from "../structures/Command";
-import { FileSystem, requester, Zip } from "../util";
+import { FileSystem, Zip } from "../util";
 
 export default class extends Command {
   constructor() {

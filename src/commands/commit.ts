@@ -4,8 +4,9 @@ import { join } from "path";
 import { ProgressLocation, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import Command from "../structures/Command";
-import { FileSystem, Zip, requester } from "../util";
+import { FileSystem, Zip } from "../util";
 
 export default class extends Command {
   constructor() {
@@ -87,7 +88,7 @@ export default class extends Command {
       else
         await extension.teamAppTree.fetch();
 
-      if (res.logs) this.logger(picked.id, res.logs);
+      if (res.logs) this.logger(picked.app.output ?? picked.id, res.logs);
     }
   }
 }

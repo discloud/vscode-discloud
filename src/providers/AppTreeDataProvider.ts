@@ -3,8 +3,9 @@ import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, 
 import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
+import { requester } from "../services/discloud";
 import AppTreeItem from "../structures/AppTreeItem";
-import { compareBooleans, compareNumbers, getIconPath, requester } from "../util";
+import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
