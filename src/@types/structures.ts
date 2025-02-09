@@ -1,20 +1,23 @@
-import { type CancellationToken, type ExtensionContext, type LogOutputChannel, type Progress, type ProgressOptions, type TreeItem } from "vscode";
+import { type ExtensionContext, type LogOutputChannel, type ProgressOptions, type TreeItem, type window } from "vscode";
 import type AppTreeItem from "../structures/AppTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import { type RateLimitData } from "./rest";
 
 export interface CommandData {
-  allowTokenless?: boolean;
+  allowTokenless?: boolean
   progress?: ProgressOptions
 }
 
+type VscodeWindowType = typeof window
+
+type ProgressTask = Parameters<VscodeWindowType["withProgress"]>[1]
+
+type ProgressTaskParameters = Parameters<ProgressTask>
+
 export interface TaskData {
-  progress: Progress<{
-    message?: string | undefined
-    increment?: number | undefined
-  }>
-  token: CancellationToken
+  progress: ProgressTaskParameters[0]
+  token: ProgressTaskParameters[1]
 }
 
 export interface BaseTreeItemData extends Omit<TreeItem, "id"> {

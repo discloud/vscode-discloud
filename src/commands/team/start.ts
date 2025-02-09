@@ -23,9 +23,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await requester<RESTPutApiAppStartResult>(Routes.teamStart(item.appId), {
-      method: "PUT",
-    });
+    const res = await requester<RESTPutApiAppStartResult>(Routes.teamStart(item.appId), { method: "PUT" });
     if (!res) return;
 
     if ("status" in res) {

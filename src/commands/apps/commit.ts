@@ -23,6 +23,8 @@ export default class extends Command {
     const workspaceFolder = extension.workspaceFolder;
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
+    const fileNames = await FileSystem.readSelectedPath(true);
+
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
       item = picked.app;
@@ -38,11 +40,12 @@ export default class extends Command {
     const zipName = `${workspace.name}.zip`;
 
     const fs = new FileSystem({
+      fileNames,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
     });
 
-    const found = await fs.findFiles(false);
+    const found = await fs.findFiles(task.token);
 
     task.progress.report({ message: t("files.zipping") });
 
@@ -53,7 +56,7 @@ export default class extends Command {
       zipper = new Zip(savePath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch (error: any) {
+    } catch (error) {
       zipper?.destroy();
       throw error;
     }
@@ -62,8 +65,8 @@ export default class extends Command {
     try {
       form.append("file", await resolveFile(savePath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch (error: any) {
-      zipper.destroy();
+    } catch (error) {
+      if (!extension.isDebug) zipper.destroy();
       throw error;
     }
 
@@ -73,8 +76,6 @@ export default class extends Command {
       body: form,
       method: "PUT",
     });
-
-    extension.resetStatusBar();
 
     if (!res) return;
 

@@ -150,7 +150,7 @@ export default class Discloud extends EventEmitter<Events> {
           });
         } else {
           try {
-            await command.run(taskData, ...args);
+            await command.run(null, ...args);
           } catch (error) {
             this.emit("error", error);
           }

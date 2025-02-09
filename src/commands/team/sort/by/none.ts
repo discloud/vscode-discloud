@@ -1,6 +1,8 @@
 import extension from "../../../../extension";
 import Command from "../../../../structures/Command";
 
+const configKey = "team.sort.by";
+
 export default class extends Command {
   constructor() {
     super({
@@ -9,10 +11,10 @@ export default class extends Command {
   }
 
   async run() {
-    const inspect = extension.config.inspect<number>("team.sort.by");
+    const inspect = extension.config.inspect<number>(configKey);
 
     const isGlobal = !inspect?.workspaceValue;
 
-    extension.config.update("team.sort.by", "none", isGlobal);
+    extension.config.update(configKey, "none", isGlobal);
   }
 }

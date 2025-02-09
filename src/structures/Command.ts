@@ -9,9 +9,9 @@ import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
 
 export default abstract class Command {
-  constructor(public data: CommandData = {}) { }
+  constructor(readonly data: CommandData = {}) { }
 
-  abstract run(taskData: TaskData, ...args: any[]): Promise<unknown>;
+  abstract run(taskData: TaskData | null, ...args: any[]): Promise<unknown>;
 
   pickAppOrTeamApp(
     task: TaskData | null, options: AppPickerOptions & { showOther: false, startInTeamApps: true, throwOnCancel: false }
@@ -240,7 +240,11 @@ export default abstract class Command {
     return mods.get(picked.label);
   }
 
-  async confirmAction(data?: string | ActionOptions) {
+  confirmAction(): Promise<boolean>
+  confirmAction(data: string): Promise<boolean>
+  confirmAction(data: ActionOptions & { throwOnReject: boolean | ErrorMessage }): Promise<void>
+  confirmAction(data: ActionOptions): Promise<boolean>
+  async confirmAction(data?: string | ActionOptions): Promise<unknown> {
     data = {
       title: typeof data === "string" ? data : data?.title ?? "common.confirm",
       type: typeof data === "string" ? "showInformationMessage" : data?.type ?? "showInformationMessage",
@@ -250,15 +254,24 @@ export default abstract class Command {
     const actionCancel = t("action.cancel");
 
     let quickPick;
-    if (data.type === "showQuickPick") {
-      quickPick = await window.showQuickPick([actionOk, actionCancel], {
-        title: t(data.title),
-      });
-    } else {
-      quickPick = await window[data.type!](t(data.title, { action: data.action! }), actionOk, actionCancel);
+    switch (data.type) {
+      case "showQuickPick":
+        quickPick = await window.showQuickPick([actionOk, actionCancel], { title: t(data.title!, { action: data.action! }) });
+        break;
+
+      default:
+        quickPick = await window[data.type!](t(data.title!, { action: data.action! }), actionOk, actionCancel);
+        break;
     }
 
-    return quickPick === actionOk;
+    const resultIsOk = quickPick === actionOk;
+
+    if (data.throwOnReject) {
+      if (resultIsOk) return;
+      throw Error(t(typeof data.throwOnReject === "string" ? data.throwOnReject : "rejected.action"));
+    }
+
+    return resultIsOk;
   }
 
   /**
@@ -309,10 +322,13 @@ export default abstract class Command {
 
 type ActionTypes = "showErrorMessage" | "showInformationMessage" | "showQuickPick" | "showWarningMessage";
 
+type ErrorMessage = string;
+
 interface ActionOptions {
   action?: string
-  title: string;
-  type?: ActionTypes;
+  title?: string
+  type?: ActionTypes
+  throwOnReject?: boolean | ErrorMessage
 }
 
 interface Data {

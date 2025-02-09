@@ -26,9 +26,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTPutApiAppStartResult>(Routes.teamStop(item.appId), {
-      method: "PUT",
-    });
+    const res = await requester<RESTPutApiAppStartResult>(Routes.teamStop(item.appId), { method: "PUT" });
     if (!res) return;
 
     if ("status" in res) {

@@ -38,7 +38,7 @@ export default class extends Command {
       this.showApiMessage(res);
 
     if ("localeList" in res) {
-      await commands.executeCommand("discloud.user.set.locale", res.localeList);
+      commands.executeCommand("discloud.user.set.locale", res.localeList);
     }
   }
 }

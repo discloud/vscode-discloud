@@ -53,18 +53,18 @@ export default class extends Command {
       zipper = new Zip(savePath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch {
+    } catch (error) {
       zipper?.destroy();
-      return;
+      throw error;
     }
 
     const form = new FormData();
     try {
       form.append("file", await resolveFile(savePath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch {
-      zipper.destroy();
-      return;
+    } catch (error) {
+      if (!extension.isDebug) zipper.destroy();
+      throw error;
     }
 
     task.progress.report({ message: item.appId });
@@ -73,8 +73,6 @@ export default class extends Command {
       body: form,
       method: "PUT",
     });
-
-    extension.resetStatusBar();
 
     if (!res) return;
 

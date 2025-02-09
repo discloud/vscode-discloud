@@ -43,7 +43,7 @@ export default class extends Command {
       ignoreList: extension.workspaceIgnoreList,
     });
 
-    const found = await fs.findFiles(false);
+    const found = await fs.findFiles(task.token);
 
     if (!found.length) {
       window.showErrorMessage(t("files.missing"));
@@ -68,7 +68,7 @@ export default class extends Command {
       zipper = new Zip(savePath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch (error: any) {
+    } catch (error) {
       zipper?.destroy();
       throw error;
     }
@@ -77,8 +77,8 @@ export default class extends Command {
     try {
       form.append("file", await resolveFile(savePath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch (error: any) {
-      zipper.destroy();
+    } catch (error) {
+      if (!extension.isDebug) zipper.destroy();
       throw error;
     }
 
@@ -88,8 +88,6 @@ export default class extends Command {
       body: form,
       method: "POST",
     });
-
-    extension.resetStatusBar();
 
     if (!res) return;
 
