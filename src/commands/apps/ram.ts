@@ -44,7 +44,8 @@ export default class extends Command {
 
     if (!ramMB) throw Error(t("missing.input"));
 
-    if (!await this.confirmAction()) throw Error(t("rejected.action"));
+    if (!await this.confirmAction())
+      throw Error(t("rejected.action"));
 
     const res = await requester<RESTPutApiAppRamResult>(Routes.appRam(item.appId), {
       body: JSON.stringify({ ramMB }),

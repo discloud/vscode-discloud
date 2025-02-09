@@ -136,28 +136,24 @@ export default class Discloud extends EventEmitter<Events> {
         if (!command.data.allowTokenless)
           if (!this.hasToken) return;
 
-        const taskData = <TaskData>{};
+        try {
+          if (command.data.progress) {
+            const taskData = <TaskData>{};
 
-        if (command.data.progress) {
-          await window.withProgress(command.data.progress, async (progress, token) => {
-            token.onCancellationRequested(() => this.resetStatusBar());
+            await window.withProgress(command.data.progress, async (progress, token) => {
+              token.onCancellationRequested(() => this.resetStatusBar());
 
-            taskData.progress = progress;
-            taskData.token = token;
+              taskData.progress = progress;
+              taskData.token = token;
 
-            try {
-              await command.run(taskData, ...args);
-            } catch (error) {
-              this.emit("error", error);
-            }
-            this.resetStatusBar();
-          });
-        } else {
-          try {
-            await command.run(null, ...args);
-          } catch (error) {
-            this.emit("error", error);
+              return await command.run(taskData, ...args);
+            });
+          } else {
+            return await command.run(null, ...args);
           }
+        } catch (error) {
+          this.emit("error", error);
+        } finally {
           this.resetStatusBar();
         }
       });

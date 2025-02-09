@@ -1,4 +1,4 @@
-import { join } from "path";
+import { dirname, join, relative } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
 import { logger } from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
@@ -94,20 +94,26 @@ export class FileSystem {
 
     const files = await workspace.findFiles(join("**", fileName), ignoreList);
 
-    return await Promise.all(files.map(async (f) => {
-      const stat = await workspace.fs.stat(f);
+    return await Promise.all(files.map(async function (file) {
+      const stat = await workspace.fs.stat(file);
 
       if (stat.type !== FileType.File || !stat.size) return [];
 
-      const fileBuffer = await workspace.fs.readFile(f);
+      const workspaceFolder = workspace.getWorkspaceFolder(file);
+      let relativeFolder = "";
+      if (workspaceFolder) relativeFolder = relative(workspaceFolder.uri.fsPath, dirname(file.fsPath));
+
+      const fileBuffer = await workspace.fs.readFile(file);
 
       return fileBuffer.toString()
         .replace(/[\r\n]*\s*#.*/g, "")
-        .split(/[\r\n]+/);
+        .split(/[\r\n]+/)
+        .reduce<string[]>(function (acc, value) {
+          if (value) acc.push(join(relativeFolder, value.replace(/(^[/\\]|[/\\]$)/g, "")));
+          return acc;
+        }, []);
     }))
-      .then(values => Array.from(new Set(values.flat())))
-      .then(values => values.filter(Boolean))
-      .then(values => values.map(value => value.replace(/(^[/\\]|[/\\]$)/g, "")));
+      .then(values => Array.from(new Set(values.flat())));
   }
 
 
