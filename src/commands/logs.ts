@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../services/discloud";
@@ -46,9 +46,8 @@ export default class extends Command {
       Routes.teamLogs(item.appId));
     if (!res) return;
 
-    if (!res.apps || !res.apps.terminal.big) {
-      return window.showErrorMessage(t("no.log.found"));
-    }
+    if (!res.apps || !res.apps.terminal.big)
+      throw Error(t("no.log.found"));
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }

@@ -3,8 +3,8 @@ import { type TreeItem, Uri } from "vscode";
 import extension from "../extension";
 import { FILE_EXT_REGEXP } from "./regexp";
 
-export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
 export function bindFunctions<I extends Record<any, any>>(instance: I): void;
+export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
 export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any>) {
   if (!instance) return;
 

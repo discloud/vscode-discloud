@@ -53,7 +53,6 @@ export class FileSystem {
     const ignorePattern = this.ignorePattern;
 
     const promises = [];
-
     for (const pattern of this.patterns) {
       promises.push(
         workspace.findFiles(pattern, ignorePattern, undefined, token), // search a single file
@@ -103,12 +102,12 @@ export class FileSystem {
       const fileBuffer = await workspace.fs.readFile(f);
 
       return fileBuffer.toString()
-        .replace(/([\r\n]*\s*#.*)/g, "")
-        .split(/([\r\n]+)/);
+        .replace(/[\r\n]*\s*#.*/g, "")
+        .split(/[\r\n]+/);
     }))
       .then(values => Array.from(new Set(values.flat())))
       .then(values => values.filter(Boolean))
-      .then(values => values.flatMap(value => [value, join("**", value)]));
+      .then(values => values.map(value => value.replace(/(^[/\\]|[/\\]$)/g, "")));
   }
 
 

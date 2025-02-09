@@ -42,14 +42,15 @@ export default class extends Command {
     });
 
     const found = await fs.findFiles(task.token);
+    if (!found.length) throw Error(t("files.missing"));
 
-    const savePath = Uri.joinPath(workspaceFolder, zipName);
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
     task.progress.report({ message: t("files.zipping") });
 
     let zipper;
     try {
-      zipper = new Zip(savePath.fsPath);
+      zipper = new Zip(saveUri.fsPath);
       zipper.appendUriList(found);
       await zipper.finalize();
     } catch (error) {
@@ -59,7 +60,7 @@ export default class extends Command {
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(savePath.fsPath, zipName));
+      form.append("file", await resolveFile(saveUri.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
     } catch (error) {
       if (!extension.isDebug) zipper.destroy();

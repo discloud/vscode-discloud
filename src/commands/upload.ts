@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { ProgressLocation, Uri, window, workspace } from "vscode";
+import { ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../services/discloud";
@@ -30,10 +30,8 @@ export default class extends Command {
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
-    if (!dConfig.exists || dConfig.missingProps.length) {
-      window.showErrorMessage(t("invalid.discloud.config"));
+    if (!dConfig.exists || dConfig.missingProps.length)
       throw Error(t("invalid.discloud.config"));
-    }
 
     const zipName = `${workspace.name}.zip`;
 
@@ -43,28 +41,23 @@ export default class extends Command {
     });
 
     const found = await fs.findFiles(task.token);
-
-    if (!found.length) {
-      window.showErrorMessage(t("files.missing"));
-      throw Error(t("files.missing"));
-    }
+    if (!found.length) throw Error(t("files.missing"));
 
     const main = Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!found.some(uri => uri.fsPath.endsWith(main))) {
-      window.showErrorMessage(t("missing.discloud.config.main", { file: dConfig.data.MAIN })
-        + "\n" + t("readdiscloudconfigdocs"));
-
-      throw Error(t("missing.discloud.config.main", { file: dConfig.data.MAIN }));
-    }
+    if (!found.some(uri => uri.fsPath.endsWith(main)))
+      throw Error([
+        t("missing.discloud.config.main", { file: dConfig.data.MAIN }),
+        t("readdiscloudconfigdocs"),
+      ].join("\n"));
 
     task.progress.report({ message: t("files.zipping") });
 
-    const savePath = Uri.joinPath(workspaceFolder, zipName);
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
     let zipper;
     try {
-      zipper = new Zip(savePath.fsPath);
+      zipper = new Zip(saveUri.fsPath);
       zipper.appendUriList(found);
       await zipper.finalize();
     } catch (error) {
@@ -74,7 +67,7 @@ export default class extends Command {
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(savePath.fsPath, zipName));
+      form.append("file", await resolveFile(saveUri.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
     } catch (error) {
       if (!extension.isDebug) zipper.destroy();
