@@ -34,9 +34,7 @@ export default class VSUser implements ApiVscodeUser {
   }
 
   async setLocale(locale: string) {
-    const res = await requester<RESTPutApiLocaleResult>(Routes.locale(locale), {
-      method: "PUT",
-    });
+    const res = await requester<RESTPutApiLocaleResult>(Routes.locale(locale), { method: "PUT" });
     if (!res) return null;
 
     if ("locale" in res)

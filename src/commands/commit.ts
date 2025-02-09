@@ -1,7 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
-import { join } from "path";
-import { ProgressLocation, workspace } from "vscode";
+import { ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../services/discloud";
@@ -19,10 +18,10 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = extension.workspaceFolder;
+    const workspaceFolder = extension.workspaceFolderUri;
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
-    const files = await FileSystem.readSelectedPath(true);
+    const fileNames = await FileSystem.readSelectedPath(true);
 
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
@@ -37,33 +36,34 @@ export default class extends Command {
     const zipName = `${workspace.name}.zip`;
 
     const fs = new FileSystem({
-      fileNames: files,
+      fileNames,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
     });
 
-    const found = await fs.findFiles();
+    const found = await fs.findFiles(task.token);
+    if (!found.length) throw Error(t("files.missing"));
 
-    const savePath = join(workspaceFolder, zipName);
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
     task.progress.report({ message: t("files.zipping") });
 
     let zipper;
     try {
-      zipper = new Zip(savePath);
+      zipper = new Zip(saveUri.fsPath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch (error: any) {
+    } catch (error) {
       zipper?.destroy();
       throw error;
     }
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(savePath, zipName));
+      form.append("file", await resolveFile(saveUri.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch (error: any) {
-      zipper.destroy();
+    } catch (error) {
+      if (!extension.isDebug) zipper.destroy();
       throw error;
     }
 
@@ -75,8 +75,6 @@ export default class extends Command {
       body: form,
       method: "PUT",
     });
-
-    extension.resetStatusBar();
 
     if (!res) return;
 

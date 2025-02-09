@@ -1,9 +1,10 @@
 import { join } from "path";
-import { Uri } from "vscode";
+import { type TreeItem, Uri } from "vscode";
+import extension from "../extension";
 import { FILE_EXT_REGEXP } from "./regexp";
 
-export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
 export function bindFunctions<I extends Record<any, any>>(instance: I): void;
+export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
 export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any>) {
   if (!instance) return;
 
@@ -23,12 +24,10 @@ export function calculatePercentage(value: string | number, major: string | numb
   return Number(value) / Number(major) * 100;
 }
 
-const resourcesDir = join(__dirname, "..", "..", "resources");
-
-export function getIconPath(iconName: string, iconExt = "svg") {
+export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
-    dark: Uri.file(join(resourcesDir, "dark", `${iconName}.${iconExt}`)),
-    light: Uri.file(join(resourcesDir, "light", `${iconName}.${iconExt}`)),
+    dark: Uri.file(extension.context.asAbsolutePath(join("resources", "dark", `${iconName}.${iconExt}`))),
+    light: Uri.file(extension.context.asAbsolutePath(join("resources", "light", `${iconName}.${iconExt}`))),
   };
 }
 

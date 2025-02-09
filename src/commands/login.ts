@@ -22,11 +22,8 @@ export default class extends Command {
 
     if (!input) throw Error(t("invalid.input"));
 
-    if (!await tokenValidator(input)) {
-      window.showErrorMessage(t("invalid.token"));
-
+    if (!await tokenValidator(input))
       throw Error(t("invalid.token"));
-    }
 
     window.showInformationMessage(t("valid.token"));
   }

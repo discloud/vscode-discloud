@@ -1,11 +1,10 @@
-import { type Archiver, type ArchiverOptions, create } from "archiver";
-import { type Stats, type WriteStream, createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { isAbsolute, join, relative } from "path";
+import { type Archiver, type ArchiverOptions, create, type Format } from "archiver";
+import { createWriteStream, existsSync, rmSync, type Stats, statSync, unlinkSync, writeFileSync, type WriteStream } from "fs";
+import { relative } from "path";
 import { type Uri, workspace } from "vscode";
 import { logger } from "../extension";
 
 export interface AppendOptions {
-  rootDir: string
   zipEmptyDirs: boolean
 }
 
@@ -18,7 +17,7 @@ export class Zip {
   declare readonly stream: WriteStream;
   declare readonly zip: Archiver;
 
-  constructor(public file: string, format = "zip", public options: ArchiverOptions = {}) {
+  constructor(readonly file: string, readonly format: Format = "zip", readonly options: ArchiverOptions = {}) {
     if (existsSync(file)) try { rmSync(file); } catch { }
     this.zip = create(format, options);
     writeFileSync(file, "");
@@ -26,14 +25,11 @@ export class Zip {
     this.zip.pipe(this.stream);
   }
 
-  getUriData(uri: Uri, rootDir?: string): UriData | void {
+  getUriData(uri: Uri): UriData | void {
     const workspaceFolder = workspace.getWorkspaceFolder(uri);
     if (!workspaceFolder) return;
 
-    rootDir ??= "";
-    if (isAbsolute(rootDir)) rootDir = relative(workspaceFolder.uri.fsPath, rootDir);
-
-    const name = relative(join(workspaceFolder.uri.fsPath, rootDir), uri.fsPath);
+    const name = relative(workspaceFolder.uri.fsPath, uri.fsPath);
     if (!name) return;
 
     const stats = statSync(uri.fsPath);
@@ -47,17 +43,17 @@ export class Zip {
     options ??= {};
     options.zipEmptyDirs ??= true;
 
-    const zipped: string[] = [];
+    const zipped = new Set<string>();
 
     for (const uri of uriList) {
-      if (zipped.includes(uri.fsPath) || !existsSync(uri.fsPath)) continue;
+      if (zipped.has(uri.fsPath) || !existsSync(uri.fsPath)) continue;
 
-      const uriData = this.getUriData(uri, options.rootDir);
+      const uriData = this.getUriData(uri);
       if (!uriData) continue;
 
       const { name, stats } = uriData;
 
-      zipped.push(uri.fsPath);
+      zipped.add(uri.fsPath);
 
       if (stats.isFile()) {
         this.zip.file(uri.fsPath, { name, stats });
@@ -66,16 +62,14 @@ export class Zip {
       }
     }
 
-    logger.info("Zip:", zipped);
+    logger.info("Zip:", [...zipped]);
   }
 
   destroy() {
-    try {
-      this.zip.destroy();
-      this.stream.destroy();
-      unlinkSync(this.file);
-      rmSync(this.file);
-    } catch { }
+    try { this.zip.destroy(); } catch { }
+    try { this.stream.destroy(); } catch { }
+    try { unlinkSync(this.file); } catch { }
+    try { rmSync(this.file); } catch { }
   }
 
   async finalize() {

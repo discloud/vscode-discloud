@@ -13,9 +13,7 @@ extension.on("rateLimited", async function (rateLimitData) {
 
   extension.logger.warn("Rate limited by " + time + " seconds");
 
-  window.showInformationMessage(t("ratelimited", {
-    s: time,
-  }));
+  window.showInformationMessage(t("ratelimited", { s: time }));
 
   extension.statusBar.setRateLimited(true);
 

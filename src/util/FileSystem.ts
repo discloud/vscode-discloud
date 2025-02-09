@@ -1,6 +1,5 @@
-import { existsSync, statSync } from "fs";
 import { join } from "path";
-import { FileType, type Uri, commands, env, workspace } from "vscode";
+import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
 import { logger } from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
 
@@ -18,7 +17,7 @@ export class FileSystem {
   readonly patterns = new Set("**");
   readonly found: Uri[] = [];
 
-  constructor(public options: FileSystemOptions = {}) {
+  constructor(readonly options: FileSystemOptions = {}) {
     if (!options) options = {};
 
     if (options.fileNames?.length) {
@@ -29,7 +28,7 @@ export class FileSystem {
       }
     }
 
-    if (options.ignoreFile) this.ignoreFile = options.ignoreFile;
+    if (typeof options.ignoreFile === "string") this.ignoreFile = options.ignoreFile;
 
     if (options.ignoreList?.length) {
       for (const ignore of options.ignoreList) {
@@ -39,18 +38,27 @@ export class FileSystem {
   }
 
   get ignorePattern() {
-    return `{${Array.from(this.ignoreList).join(",")}}`;
+    return `{${Array.from(this.ignoreList)}}`;
   }
 
-  async findFiles(readSelectedPath = false) {
-    await this.#findIgnoreFile();
-    if (readSelectedPath)
-      await this.#readSelectedPath();
+  findFiles(): Promise<Uri[]>
+  findFiles(readSelectedPath: boolean): Promise<Uri[]>
+  findFiles(token: CancellationToken, readSelectedPath?: boolean): Promise<Uri[]>
+  async findFiles(token?: CancellationToken | boolean, readSelectedPath?: boolean) {
+    if (typeof token === "boolean") [readSelectedPath, token] = [token, undefined];
 
-    const promises = Array.from(this.patterns).flatMap((pattern) => ([
-      workspace.findFiles(pattern, this.ignorePattern), // search a single file
-      workspace.findFiles(join(pattern, "**"), this.ignorePattern), // recursively search the directory
-    ]));
+    await this.#findIgnoreFile();
+    if (readSelectedPath) await this.#readSelectedPath();
+
+    const ignorePattern = this.ignorePattern;
+
+    const promises = [];
+    for (const pattern of this.patterns) {
+      promises.push(
+        workspace.findFiles(pattern, ignorePattern, undefined, token), // search a single file
+        workspace.findFiles(join(pattern, "**"), ignorePattern, undefined, token), // recursively search the directory
+      );
+    }
 
     // @ts-expect-error ts(2540)
     this.found = await Promise.all(promises)
@@ -70,51 +78,46 @@ export class FileSystem {
   }
 
   async #readSelectedPath() {
-    const files = FileSystem.transformFileListToGlobPatterns(await FileSystem.readSelectedPath(true));
+    const files = await FileSystem.readSelectedPath(true);
 
     for (const file of files) {
       this.patterns.add(file);
     }
   }
 
-  static async findIgnoreFile(fileName: string, ignoreList: string | string[] | Set<string>) {
+  static async findIgnoreFile(fileName: string, ignoreList?: string | string[] | Set<string>) {
     if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
 
     if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
 
-    if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList.join(",")}}`;
+    if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
 
     const files = await workspace.findFiles(join("**", fileName), ignoreList);
 
     return await Promise.all(files.map(async (f) => {
       const stat = await workspace.fs.stat(f);
 
-      if (stat.type !== FileType.File) return [];
+      if (stat.type !== FileType.File || !stat.size) return [];
 
       const fileBuffer = await workspace.fs.readFile(f);
 
       return fileBuffer.toString()
-        .replace(/([\r\n]*\s*#.*)/g, "")
-        .split(/([\r\n]+)/);
+        .replace(/[\r\n]*\s*#.*/g, "")
+        .split(/[\r\n]+/);
     }))
       .then(values => Array.from(new Set(values.flat())))
       .then(values => values.filter(Boolean))
-      .then(values => values.flatMap(value => [value, join("**", value)]));
+      .then(values => values.map(value => value.replace(/(^[/\\]|[/\\]$)/g, "")));
   }
 
-  /**
-   * @param {boolean} relative
-   * @default true
-   */
+
+  static readSelectedPath(relative?: true): Promise<string[]>
+  static readSelectedPath(relative: boolean): Promise<string[]>
   static async readSelectedPath(relative: boolean = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
     logger.info("File names:", copied);
     return copied.split(/[\r\n]+/);
-  }
-
-  static transformFileListToGlobPatterns(fileNames: string[]) {
-    return fileNames.map(file => existsSync(file) && statSync(file).isDirectory() ? join(file, "**") : file);
   }
 }
 

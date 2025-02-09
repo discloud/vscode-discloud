@@ -6,6 +6,7 @@ import extension from "../../../extension";
 import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
+import { IMAGE_URL_REGEXP } from "../../../util/regexp";
 
 export default class extends Command {
   constructor() {
@@ -21,7 +22,7 @@ export default class extends Command {
     let avatarURL = await window.showInputBox({
       prompt: t("input.avatar.prompt"),
       validateInput(value) {
-        if (!/^((?:s?ftp|https?):\/\/\S+\.(?:gif|jpe?g|png))(?:[?]\S*)?$/.test(value))
+        if (!IMAGE_URL_REGEXP.test(value))
           return t("input.avatar.prompt");
       },
     });
@@ -34,9 +35,7 @@ export default class extends Command {
     avatarURL = avatarURL.replace(/\s+/g, "");
 
     const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
-      body: JSON.stringify({
-        avatarURL,
-      }),
+      body: JSON.stringify({ avatarURL }),
       method: "PUT",
     });
     if (!res) return;
@@ -47,7 +46,9 @@ export default class extends Command {
       if (res.status === "ok") {
         extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
-        new DiscloudConfig(extension.workspaceFolder!).update({ AVATAR: avatarURL });
+        const dConfig = new DiscloudConfig(extension.workspaceFolder!);
+
+        if (dConfig.data.ID === item.appId) dConfig.update({ AVATAR: avatarURL });
       }
     }
   }

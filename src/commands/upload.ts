@@ -1,7 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { join } from "path";
-import { ProgressLocation, Uri, window, workspace } from "vscode";
+import { ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../services/discloud";
@@ -19,7 +18,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = extension.workspaceFolder;
+    const workspaceFolder = extension.workspaceFolderUri;
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
@@ -29,12 +28,10 @@ export default class extends Command {
 
     task.progress.report({ message: t("files.checking") });
 
-    const dConfig = new DiscloudConfig(workspaceFolder);
+    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
-    if (!dConfig.exists || dConfig.missingProps.length) {
-      window.showErrorMessage(t("invalid.discloud.config"));
+    if (!dConfig.exists || dConfig.missingProps.length)
       throw Error(t("invalid.discloud.config"));
-    }
 
     const zipName = `${workspace.name}.zip`;
 
@@ -43,42 +40,37 @@ export default class extends Command {
       ignoreList: extension.workspaceIgnoreList,
     });
 
-    const found = await fs.findFiles(false);
-
-    if (!found.length) {
-      window.showErrorMessage(t("files.missing"));
-      throw Error(t("files.missing"));
-    }
+    const found = await fs.findFiles(task.token);
+    if (!found.length) throw Error(t("files.missing"));
 
     const main = Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!found.some(uri => uri.fsPath.endsWith(main))) {
-      window.showErrorMessage(t("missing.discloud.config.main", { file: dConfig.data.MAIN })
-        + "\n" + t("readdiscloudconfigdocs"));
-
-      throw Error(t("missing.discloud.config.main", { file: dConfig.data.MAIN }));
-    }
+    if (!found.some(uri => uri.fsPath.endsWith(main)))
+      throw Error([
+        t("missing.discloud.config.main", { file: dConfig.data.MAIN }),
+        t("readdiscloudconfigdocs"),
+      ].join("\n"));
 
     task.progress.report({ message: t("files.zipping") });
 
-    const savePath = join(workspaceFolder, zipName);
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
     let zipper;
     try {
-      zipper = new Zip(savePath);
+      zipper = new Zip(saveUri.fsPath);
       zipper.appendUriList(found);
       await zipper.finalize();
-    } catch (error: any) {
+    } catch (error) {
       zipper?.destroy();
       throw error;
     }
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(savePath, zipName));
+      form.append("file", await resolveFile(saveUri.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
-    } catch (error: any) {
-      zipper.destroy();
+    } catch (error) {
+      if (!extension.isDebug) zipper.destroy();
       throw error;
     }
 
@@ -88,8 +80,6 @@ export default class extends Command {
       body: form,
       method: "POST",
     });
-
-    extension.resetStatusBar();
 
     if (!res) return;
 
