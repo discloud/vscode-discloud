@@ -1,9 +1,7 @@
 import { t } from "@vscode/l10n";
 import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
-import { existsSync, mkdirSync } from "fs";
-import { writeFile } from "fs/promises";
-import { join } from "path";
-import { ProgressLocation, window } from "vscode";
+import { existsSync } from "fs";
+import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import { requester } from "../../services/discloud";
@@ -21,7 +19,9 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item?: TeamAppTreeItem) {
-    let workspaceFolder = extension.workspaceFolder;
+    const workspaceAvailable = extension.workspaceAvailable;
+    let workspaceFolder: Uri | undefined;
+    if (workspaceAvailable) workspaceFolder = extension.workspaceFolderUri;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
@@ -40,18 +40,15 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
-    const configBackupDir = extension.config.get<string>("team.backup.dir");
-    const backupDir = extension.workspaceAvailable ? join(workspaceFolder, configBackupDir!) : workspaceFolder;
-    const backupFolderPath = join(backupDir, res.backups.id);
-    const backupFilePath = `${backupFolderPath}.zip`;
+    const configBackupDir = extension.config.get<string>("app.backup.dir") ?? "";
+    const backupDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configBackupDir) : workspaceFolder;
+    const backupZipUri = Uri.joinPath(backupDirUri, `${res.backups.id}.zip`);
 
-    if (!existsSync(backupDir))
-      mkdirSync(backupDir, { recursive: true });
+    if (!existsSync(backupDirUri.fsPath))
+      await workspace.fs.createDirectory(backupDirUri);
 
-    await writeFile(backupFilePath, backup.body, "utf8");
+    await workspace.fs.writeFile(backupZipUri, Buffer.from(await backup.arrayBuffer()));
 
-    window.showInformationMessage(t("backup.success", {
-      dir: join(`${configBackupDir}`, `${res.backups.id}.zip`),
-    }));
+    window.showInformationMessage(t("backup.success", { dir: backupZipUri.fsPath }));
   }
 }

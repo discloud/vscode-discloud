@@ -1,6 +1,5 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { join } from "path";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
@@ -19,7 +18,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = extension.workspaceFolder;
+    const workspaceFolder = extension.workspaceFolderUri;
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
@@ -29,7 +28,7 @@ export default class extends Command {
 
     task.progress.report({ message: t("files.checking") });
 
-    const dConfig = new DiscloudConfig(workspaceFolder);
+    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
     if (!dConfig.exists || dConfig.missingProps.length) {
       window.showErrorMessage(t("invalid.discloud.config"));
@@ -61,11 +60,11 @@ export default class extends Command {
 
     task.progress.report({ message: t("files.zipping") });
 
-    const savePath = join(workspaceFolder, zipName);
+    const savePath = Uri.joinPath(workspaceFolder, zipName);
 
     let zipper;
     try {
-      zipper = new Zip(savePath);
+      zipper = new Zip(savePath.fsPath);
       zipper.appendUriList(found);
       await zipper.finalize();
     } catch (error) {
@@ -75,7 +74,7 @@ export default class extends Command {
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(savePath, zipName));
+      form.append("file", await resolveFile(savePath.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
     } catch (error) {
       if (!extension.isDebug) zipper.destroy();

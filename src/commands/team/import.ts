@@ -1,10 +1,8 @@
 import { t } from "@vscode/l10n";
 import * as AdmZip from "adm-zip";
 import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
-import { existsSync, mkdirSync, unlinkSync } from "fs";
-import { writeFile } from "fs/promises";
-import { join } from "path";
-import { ProgressLocation, Uri, commands, window } from "vscode";
+import { existsSync } from "fs";
+import { ProgressLocation, Uri, commands, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import { requester } from "../../services/discloud";
@@ -22,7 +20,9 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item?: TeamAppTreeItem) {
-    let workspaceFolder = extension.workspaceFolder;
+    const workspaceAvailable = extension.workspaceAvailable;
+    let workspaceFolder: Uri | undefined;
+    if (workspaceAvailable) workspaceFolder = extension.workspaceFolderUri;
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
@@ -41,27 +41,25 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
-    const configImportDir = extension.config.get<string>("team.import.dir");
-    const importDir = extension.workspaceAvailable ? join(workspaceFolder, configImportDir!) : workspaceFolder;
-    const importFolderPath = join(importDir, res.backups.id);
-    const importFilePath = `${importFolderPath}.zip`;
+    const configImportDir = extension.config.get<string>("team.import.dir") ?? "";
+    const importDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configImportDir) : workspaceFolder;
+    const importUri = Uri.joinPath(importDirUri, res.backups.id);
+    const importZipUri = Uri.joinPath(importDirUri, `${res.backups.id}.zip`);
 
-    if (!existsSync(importDir))
-      mkdirSync(importDir, { recursive: true });
+    if (!existsSync(importDirUri.fsPath))
+      await workspace.fs.createDirectory(importDirUri);
 
-    await writeFile(importFilePath, backup.body, "utf8");
+    await workspace.fs.writeFile(importZipUri, Buffer.from(await backup.arrayBuffer()));
 
-    new AdmZip(importFilePath)
-      .extractAllTo(extension.workspaceAvailable ? importFolderPath : importDir, true);
-    unlinkSync(importFilePath);
+    new AdmZip(importZipUri.fsPath).extractAllTo(importUri.fsPath, true);
 
-    (async () => {
+    await workspace.fs.delete(importZipUri);
+
+    queueMicrotask(async function () {
       const actionOk = t("open.dir");
       const action = await window.showInformationMessage(t("import.success"), actionOk);
       if (action === actionOk)
-        commands.executeCommand("vscode.openFolder", Uri.file(extension.workspaceAvailable ? importFolderPath : importDir), {
-          forceNewWindow: extension.workspaceAvailable,
-        });
-    })();
+        commands.executeCommand("vscode.openFolder", importUri, { forceNewWindow: workspaceAvailable });
+    });
   }
 }

@@ -71,6 +71,10 @@ export default class Discloud extends EventEmitter<Events> {
     return workspace.workspaceFolders?.find(wf => wf.name === workspace.name)?.uri.fsPath;
   }
 
+  get workspaceFolderUri() {
+    return workspace.workspaceFolders?.find(wf => wf.name === workspace.name)?.uri;
+  }
+
   get workspaceIgnoreList() {
     return [
       "app.backup.dir",
@@ -100,7 +104,7 @@ export default class Discloud extends EventEmitter<Events> {
       task?.progress.report({ message: t("folder.selected") });
     }
 
-    return uris?.[0].fsPath;
+    return uris?.[0];
   }
 
   async loadCommands(dir = join(__dirname, "..", "commands")) {
