@@ -47,7 +47,7 @@ export class FileSystem {
   async findFiles(token?: CancellationToken | boolean, readSelectedPath?: boolean) {
     if (typeof token === "boolean") [readSelectedPath, token] = [token, undefined];
 
-    await this.#findIgnoreFile();
+    await this.#findIgnoreFile(token);
     if (readSelectedPath) await this.#readSelectedPath();
 
     const ignorePattern = this.ignorePattern;
@@ -67,10 +67,10 @@ export class FileSystem {
     return this.found;
   }
 
-  async #findIgnoreFile() {
+  async #findIgnoreFile(token?: CancellationToken) {
     if (!this.ignoreFile) return;
 
-    const patterns = await FileSystem.findIgnoreFile(this.ignoreFile, this.ignorePattern);
+    const patterns = await FileSystem.findIgnoreFile(this.ignoreFile, this.ignorePattern, token);
 
     for (const pattern of patterns) {
       this.ignoreList.add(pattern);
@@ -85,14 +85,14 @@ export class FileSystem {
     }
   }
 
-  static async findIgnoreFile(fileName: string, ignoreList?: string | string[] | Set<string>) {
+  static async findIgnoreFile(fileName: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
     if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
 
     if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
 
     if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
 
-    const files = await workspace.findFiles(join("**", fileName), ignoreList);
+    const files = await workspace.findFiles(join("**", fileName), ignoreList, undefined, token);
 
     return await Promise.all(files.map(async function (file) {
       const stat = await workspace.fs.stat(file);
