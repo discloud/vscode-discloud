@@ -14,9 +14,7 @@ export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any
     try {
       if (typeof instance[propertyName] === "function")
         bind[propertyName] = instance[propertyName].bind(bind);
-    } catch {
-      continue;
-    }
+    } catch { }
   }
 }
 

@@ -8,14 +8,12 @@
       "items": {
         "type": "string",
         "enum": [
-          "canvas",
           "ffmpeg",
+          "canvas",
           "java",
           "libgl",
-          "mysql",
           "openssl",
           "puppeteer",
-          "tesseract",
           "tools"
         ]
       }

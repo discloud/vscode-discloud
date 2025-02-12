@@ -129,10 +129,15 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   }
 
   let responseBody: any;
-  if (response.headers.get("content-type")?.includes("application/json")) {
-    responseBody = await response.json();
-  } else if (response.headers.get("content-type")?.includes("text/")) {
-    responseBody = await response.text();
+  const contentType = response.headers.get("content-type");
+  if (typeof contentType === "string") {
+    if (contentType.includes("application/json")) {
+      responseBody = await response.json();
+    } else if (contentType.includes("text/")) {
+      responseBody = await response.text();
+    } else {
+      responseBody = await response.arrayBuffer();
+    }
   } else {
     responseBody = await response.arrayBuffer();
   }
