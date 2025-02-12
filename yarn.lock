@@ -7,29 +7,29 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@discloudapp/api-types@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.6.0.tgz#2774357578c1c26de45af8fef794ca6d17d80a56"
-  integrity sha512-8scHE4lgvra0R5wdHlFaBn6ymmuZXryYXxvSL9koSviHgVscLaBAslpABd1VjM5eYiFcwt0nOn6d0tT3Gsep1g==
+"@discloudapp/api-types@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.7.0.tgz#ce519735351370e28ed842a49891a5a1eb5e1564"
+  integrity sha512-qanqT/gUA+6Ubh+bH/2GngI4Q/TQN2FKm9lSJqj6KfRdsM3+HMuG2HRLfKVbx8BdokZytEzl8ZcIIqgnGHsnNA==
   dependencies:
-    tslib "^2.6.2"
+    tslib "^2.8.1"
 
-"@discloudapp/rest@^0.10.2":
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.10.2.tgz#628008400925a55c57924be7f689e2a2a506dd80"
-  integrity sha512-JdfziQ51YJTAmKkU+YUozw9a0YBeJp14isNhtcrI7D/d2FjGV9ks8OU/cXIVokGWC+xiKxjJPpDFqlS5yZvcXw==
+"@discloudapp/rest@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.10.3.tgz#5a3078f5eb949d601f8d4e2fe72e99993c0bdc32"
+  integrity sha512-VBdXdWrK+nTxSNm3welV/8rHLOYBj4N3K2AfAu8KwgJgMfJsoXcMScC39kT2BI0u/waMXekPHmMd/mB2HaLe1w==
   dependencies:
-    "@discloudapp/api-types" "^0.6.0"
-    "@discloudapp/util" "^0.7.3"
+    "@discloudapp/api-types" "^0.7.0"
+    "@discloudapp/util" "^0.7.4"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
 
-"@discloudapp/util@^0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.7.3.tgz#9f13cf60017f9041b721ed73b35a9f89b1855769"
-  integrity sha512-PLjexgDRpG/EFP9S1IFN7tI0X4s1/H2GR9GJ7XcAM7/SRQWk6k3VMKhkqfCmvxgLFGh1Z/eHMv7C2v+t4hXT+Q==
+"@discloudapp/util@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.7.4.tgz#7ba7734d5e31a296bbea5a6cf6c6d5d396bed757"
+  integrity sha512-iKWrmXhZ49QUPdF1gHKX1SMWZ2RKwNJofYkfeh4p0MdXNJ6jrI5yb3Szu1REW9L5eaaIev5HfhxYTgbmcbERJg==
   dependencies:
-    "@discloudapp/api-types" "^0.6.0"
+    "@discloudapp/api-types" "^0.7.0"
     glob "^11.0.1"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
@@ -763,17 +763,17 @@ diff@^5.2.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
   integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
 
-discloud.app@^0.12.4:
-  version "0.12.4"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.12.4.tgz#0eed3a1ca6e7f6872f93feb99f90a5eb60689e92"
-  integrity sha512-eg7d8r51/SAqe4ltNIfQsgbycEdyLpQgun2hl24EJluL0rkY9gxRN+v7ber4MKo5jCSgh13YJnJcJmBSP9VYpg==
+discloud.app@^0.12.5:
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.12.5.tgz#d466aaa6c4ed8ccaae12d1a00389a23434f37eec"
+  integrity sha512-Ifb6Bq7Os4vcToUV1rQ9mgBont1wuKXiXYUpannSMFUxmEj51oA6YtGgvzKG/2RITtvHjtpIparn25uy8bWUlQ==
   dependencies:
-    "@discloudapp/api-types" "^0.6.0"
-    "@discloudapp/rest" "^0.10.2"
-    "@discloudapp/util" "^0.7.3"
+    "@discloudapp/api-types" "^0.7.0"
+    "@discloudapp/rest" "^0.10.3"
+    "@discloudapp/util" "^0.7.4"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
-    zod "^3.24.1"
+    zod "^3.24.2"
 
 discontinuous-range@1.0.0:
   version "1.0.0"
@@ -2075,7 +2075,7 @@ ts-api-utils@^2.0.1:
   resolved "https://registry.yarnpkg.com/ts-api-utils/-/ts-api-utils-2.0.1.tgz#660729385b625b939aaa58054f45c058f33f10cd"
   integrity sha512-dnlgjFSVetynI8nzgJ+qF62efpglpWRk8isUEWZGWlJYySCTD6aKvbUDu+zbPeDakk3bg5H4XpitHukgfL1m9w==
 
-tslib@^2.6.2, tslib@^2.8.1:
+tslib@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
@@ -2251,7 +2251,7 @@ zip-stream@^6.0.1:
     compress-commons "^6.0.2"
     readable-stream "^4.0.0"
 
-zod@^3.24.1:
-  version "3.24.1"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
-  integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
+zod@^3.24.2:
+  version "3.24.2"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.2.tgz#8efa74126287c675e92f46871cfc8d15c34372b3"
+  integrity sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==
