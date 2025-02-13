@@ -1252,7 +1252,7 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "archiver": "^7.0.1",
-    "discloud.app": "^0.12.5",
+    "discloud.app": "^0.12.6",
     "json-schema-library": "^10.0.0-rc7",
     "jsonwebtoken": "^9.0.2"
   },
