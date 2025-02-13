@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.14
+
+- Correção de erro do `discloud.config` no comando `upload`
+
 ## 2.22.13
 
 - Atualização dos `APTs` do `discloud.config`
