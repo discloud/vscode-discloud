@@ -1,10 +1,18 @@
-import { commands, window } from "vscode";
+import { commands, version, window } from "vscode";
 import extension from "../extension";
 
 extension.on("error", async function (error: any) {
-  const message = error?.message ?? error;
+  if (!error) return;
 
-  extension.logger.error(error);
+  const metadata = [
+    "",
+    `Extension v${extension.context.extension.packageJSON.version}`,
+    `VSCode v${version}`,
+  ];
+
+  extension.logger.error(error, metadata.join("\n"));
+
+  const message = error.message ?? error;
 
   if (error.responseBody && "button" in error.responseBody) {
     const buttonLabel = error.responseBody.button.label;

@@ -67,12 +67,12 @@ export default class Discloud extends EventEmitter<Events> {
     return Boolean(workspace.workspaceFolders?.length);
   }
 
-  get workspaceFolder() {
-    return workspace.workspaceFolders?.find(wf => wf.name === workspace.name)?.uri.fsPath;
+  get workspaceFolderUri() {
+    return workspace.workspaceFolders?.at(0)?.uri;
   }
 
-  get workspaceFolderUri() {
-    return workspace.workspaceFolders?.find(wf => wf.name === workspace.name)?.uri;
+  get workspaceFolder() {
+    return this.workspaceFolderUri?.fsPath;
   }
 
   get workspaceIgnoreList() {
@@ -100,11 +100,9 @@ export default class Discloud extends EventEmitter<Events> {
       openLabel,
     });
 
-    if (uris?.length) {
-      task?.progress.report({ message: t("folder.selected") });
-    }
+    if (uris?.length) task?.progress.report({ message: t("folder.selected") });
 
-    return uris?.[0];
+    return uris?.at(0);
   }
 
   async loadCommands(dir = join(__dirname, "..", "commands")) {
@@ -169,11 +167,9 @@ export default class Discloud extends EventEmitter<Events> {
   async loadEvents(path = join(__dirname, "..", "events")) {
     if (!existsSync(path)) return;
 
-    const files = readdirSync(path, { withFileTypes: true, recursive: true });
-
     const promises = [];
 
-    for (const file of files)
+    for (const file of readdirSync(path, { withFileTypes: true, recursive: true }))
       if (file.isFile() && file.name.endsWith(FILE_EXT))
         promises.push(import(`${join(path, file.name)}`));
 

@@ -102,7 +102,10 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     "Content-Type": "application/json",
   } : {});
 
-  extension.debug("Request:", path, "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])));
+  extension.debug(
+    "Request:", path,
+    "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])),
+  );
 
   let response: Response;
   try {
@@ -128,7 +131,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     noQueueProcesses.shift();
   }
 
-  let responseBody: any;
+  let responseBody;
   const contentType = response.headers.get("content-type");
   if (typeof contentType === "string") {
     if (contentType.includes("application/json")) {
@@ -151,7 +154,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
         break;
     }
 
-    throw new DiscloudAPIError(responseBody, response.status, config?.method ?? "GET", path, config?.body);
+    throw new DiscloudAPIError(responseBody, response.status, config.method, path, config.body);
   }
 
   return responseBody as T;
