@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
 import { join, relative } from "path";
-import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, window, workspace } from "vscode";
+import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -25,7 +25,6 @@ export default class Discloud extends EventEmitter<Events> {
   declare readonly userTree: UserTreeDataProvider;
   readonly outputChannels = new Map<string, OutputChannel>();
   readonly logOutputChannels = new Map<string, LogOutputChannel>();
-  readonly cache = new Map();
   readonly commands = new Map<string, Command>();
   readonly user = new VSUser();
 
@@ -68,7 +67,20 @@ export default class Discloud extends EventEmitter<Events> {
   }
 
   get workspaceFolderUri() {
-    return workspace.workspaceFolders?.at(0)?.uri;
+    const folders = workspace.workspaceFolders;
+    if (folders?.length) {
+      if (folders.length > 1) {
+        const name = workspace.name;
+        if (name) {
+          return folders.find(wf => name === wf.name || name.startsWith(wf.name) || name.endsWith(wf.name))?.uri
+            ?? folders[0].uri;
+        } else {
+          return folders[0].uri;
+        }
+      } else {
+        return folders[0].uri;
+      }
+    }
   }
 
   get workspaceFolder() {
@@ -103,6 +115,31 @@ export default class Discloud extends EventEmitter<Events> {
     if (uris?.length) task?.progress.report({ message: t("folder.selected") });
 
     return uris?.at(0);
+  }
+
+  getLogOutputChannel(name: string) {
+    let output = this.logOutputChannels.get(name);
+    if (output) return output;
+    output = window.createOutputChannel(name, { log: true });
+    this.context.subscriptions.push(output);
+    this.logOutputChannels.set(name, output);
+    return output;
+  }
+
+  getOutputChannel(name: string, languageId?: string) {
+    let output = this.outputChannels.get(`${name}${languageId}`);
+    if (output) return output;
+    output = window.createOutputChannel(name, languageId);
+    this.context.subscriptions.push(output);
+    this.outputChannels.set(`${name}${languageId}`, output);
+    return output;
+  }
+
+  async getWorkspaceFolder(uri?: Uri) {
+    if (uri) return workspace.getWorkspaceFolder(uri)?.uri ?? this.workspaceFolderUri;
+    const [workspaceFile] = await workspace.findFiles("*", null, 1);
+    if (workspaceFile) return workspace.getWorkspaceFolder(workspaceFile)?.uri ?? this.workspaceFolderUri;
+    return this.workspaceFolderUri;
   }
 
   async loadCommands(dir = join(__dirname, "..", "commands")) {
@@ -208,5 +245,8 @@ export default class Discloud extends EventEmitter<Events> {
 
   dispose() {
     this.removeAllListeners();
+    this.outputChannels.clear();
+    this.logOutputChannels.clear();
+    this.commands.clear();
   }
 }

@@ -19,7 +19,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item?: TeamAppTreeItem) {
-    const workspaceFolder = extension.workspaceFolderUri;
+    const workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!item) {

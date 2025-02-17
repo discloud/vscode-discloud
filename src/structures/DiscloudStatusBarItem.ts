@@ -54,12 +54,14 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this.tooltip = undefined;
   }
 
-  setDefault() {
+  async setDefault() {
     if (this.limited) return;
 
-    if (!extension.workspaceFolder) return this.setUpload();
+    const workspaceFolder = await extension.getWorkspaceFolder();
 
-    const dConfig = new DiscloudConfig(extension.workspaceFolder);
+    if (!workspaceFolder) return this.setUpload();
+
+    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
     if (!dConfig.data.ID) return this.setUpload();
 

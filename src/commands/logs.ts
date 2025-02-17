@@ -18,8 +18,9 @@ export default class extends Command {
 
   async run(task: TaskData, item: Record<string, any> = {}) {
     if (!item?.appId) {
-      if (extension.workspaceFolder) {
-        const dConfig = new DiscloudConfig(extension.workspaceFolder);
+      const workspaceFolder = await extension.getWorkspaceFolder();
+      if (workspaceFolder) {
+        const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
         if (dConfig.data.ID) {
           if (extension.appTree.children.has(dConfig.data.ID)) {

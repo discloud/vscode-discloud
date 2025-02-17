@@ -12,10 +12,10 @@ export default class extends Command {
   }
 
   async run() {
-    const workspaceFolder = extension.workspaceFolder;
+    const workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
-    const dConfig = new DiscloudConfig(workspaceFolder);
+    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
     if (dConfig.exists) return;
 
     dConfig.update({
