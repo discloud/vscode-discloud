@@ -5,7 +5,7 @@ import { decode } from "jsonwebtoken";
 import { window } from "vscode";
 import { type RequestOptions } from "../../@types";
 import extension, { logger } from "../../extension";
-import { DEFAULT_USER_AGENT } from "../../util/constants";
+import { DEFAULT_USER_AGENT } from "../../util";
 import DiscloudAPIError from "./error";
 
 let { limit, remain, reset, time, tokenIsValid } = {

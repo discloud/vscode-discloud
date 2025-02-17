@@ -1,4 +1,4 @@
-import { dirname, join, relative } from "path";
+import { dirname, join } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
 import { logger } from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
@@ -99,9 +99,7 @@ export class FileSystem {
 
       if (stat.type !== FileType.File || !stat.size) return [];
 
-      const workspaceFolder = workspace.getWorkspaceFolder(file);
-      let relativeFolder = "";
-      if (workspaceFolder) relativeFolder = relative(workspaceFolder.uri.fsPath, dirname(file.fsPath));
+      const relativeFolder = workspace.asRelativePath(dirname(file.fsPath));
 
       const fileBuffer = await workspace.fs.readFile(file);
 

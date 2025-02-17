@@ -281,22 +281,12 @@ export default abstract class Command {
   logger(output: LogOutputChannel | string, log: string, show?: boolean): void;
   logger(output: LogOutputChannel, log: string, show?: boolean): void;
   logger(output: LogOutputChannel, log: string, show = true) {
-    if (typeof output === "string") {
-      const id = output;
-      output = extension.logOutputChannels.get(id)!;
-      if (!output) {
-        output = window.createOutputChannel(id, { log: true });
-        extension.logOutputChannels.set(id, output);
-      }
-    }
+    if (typeof output === "string")
+      output = extension.getLogOutputChannel(output);
 
     output.info("\n" + log);
 
-    if (show) {
-      output.show(false);
-
-      queueMicrotask(() => output.show(false));
-    }
+    if (show) queueMicrotask(() => output.show(false));
   }
 
   showApiMessage(data: Data) {

@@ -21,7 +21,7 @@ export default class extends Command {
   async run(task: TaskData, item?: AppTreeItem) {
     const workspaceAvailable = extension.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = extension.workspaceFolderUri;
+    if (workspaceAvailable) workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) {
       workspaceFolder = await extension.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));

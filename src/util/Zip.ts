@@ -1,6 +1,5 @@
 import { type Archiver, type ArchiverOptions, create, type Format } from "archiver";
 import { createWriteStream, existsSync, rmSync, type Stats, statSync, unlinkSync, writeFileSync, type WriteStream } from "fs";
-import { relative } from "path";
 import { type Uri, workspace } from "vscode";
 import { logger } from "../extension";
 
@@ -25,18 +24,6 @@ export class Zip {
     this.zip.pipe(this.stream);
   }
 
-  getUriData(uri: Uri): UriData | void {
-    const workspaceFolder = workspace.getWorkspaceFolder(uri);
-    if (!workspaceFolder) return;
-
-    const name = relative(workspaceFolder.uri.fsPath, uri.fsPath);
-    if (!name) return;
-
-    const stats = statSync(uri.fsPath);
-
-    return { name, stats };
-  }
-
   appendUriList(uriList: Uri[], options?: Partial<AppendOptions>) {
     if (!uriList?.length) return;
 
@@ -48,12 +35,13 @@ export class Zip {
     for (const uri of uriList) {
       if (zipped.has(uri.fsPath) || !existsSync(uri.fsPath)) continue;
 
-      const uriData = this.getUriData(uri);
-      if (!uriData) continue;
+      const name = workspace.asRelativePath(uri.fsPath);
+      if (!name) continue;
 
-      const { name, stats } = uriData;
+      let stats;
+      try { stats = statSync(uri.fsPath); } catch { continue; }
 
-      zipped.add(uri.fsPath);
+      zipped.add(name);
 
       if (stats.isFile()) {
         this.zip.file(uri.fsPath, { name, stats });

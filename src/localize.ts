@@ -1,9 +1,9 @@
-import { config } from "@vscode/l10n";
+import { config, type l10nJsonFormat } from "@vscode/l10n";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { env, type ExtensionContext } from "vscode";
 
-function importJSON<T>(path: string): T {
+function importJSON<T extends l10nJsonFormat>(path: string): T {
   try {
     if (existsSync(path)) 
       return JSON.parse(readFileSync(path, "utf8"));

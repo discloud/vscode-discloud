@@ -17,8 +17,6 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly userID: string;
   declare readonly userName: string;
 
-  constructor() { }
-
   async fetch(isVS?: boolean) {
     const res = await requester<RESTGetApiVscode>("/vscode", {}, isVS);
 

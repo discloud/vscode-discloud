@@ -1,5 +1,6 @@
 import { commands, version, window } from "vscode";
 import extension from "../extension";
+import DiscloudAPIError from "../services/discloud/error";
 
 extension.on("error", async function (error: any) {
   if (!error) return;
@@ -10,11 +11,19 @@ extension.on("error", async function (error: any) {
     `VSCode v${version}`,
   ];
 
+  if (error instanceof DiscloudAPIError) {
+    if (error.code > 499) {
+      extension.logger.error(`Server error ${error.code}`, metadata.join("\n"));
+      await window.showErrorMessage(`Server error ${error.code}`);
+      return;
+    }
+  }
+
   extension.logger.error(error, metadata.join("\n"));
 
   const message = error.message ?? error;
 
-  if (error.responseBody && "button" in error.responseBody) {
+  if (error.responseBody && typeof error.responseBody === "object" && "button" in error.responseBody) {
     const buttonLabel = error.responseBody.button.label;
     const buttonUrl = error.responseBody.button.url;
     const action = await window.showErrorMessage(message, buttonLabel);
