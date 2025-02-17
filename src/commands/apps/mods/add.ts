@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { ModPermissionsFlags, type RESTPostApiAppTeamResult, Routes } from "discloud.app";
+import { ModPermissionsBF, type RESTPostApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
 import { requester } from "../../../services/discloud";
@@ -27,7 +27,7 @@ export default class extends Command {
     });
     if (!modID) throw Error(t("missing.moderator.id"));
 
-    const permissions = Object.keys(ModPermissionsFlags).map(perm => <QuickPickItem>{
+    const permissions = ModPermissionsBF.All.toArray().map(perm => <QuickPickItem>{
       label: t(`permission.${perm}`),
       description: perm,
     });
