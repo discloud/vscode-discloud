@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
 import { join, relative } from "path";
-import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, window, workspace } from "vscode";
+import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -135,7 +135,8 @@ export default class Discloud extends EventEmitter<Events> {
     return output;
   }
 
-  async getWorkspaceFolder() {
+  async getWorkspaceFolder(uri?: Uri) {
+    if (uri) return workspace.getWorkspaceFolder(uri)?.uri ?? this.workspaceFolderUri;
     const [workspaceFile] = await workspace.findFiles("*", null, 1);
     if (workspaceFile) return workspace.getWorkspaceFolder(workspaceFile)?.uri ?? this.workspaceFolderUri;
     return this.workspaceFolderUri;
