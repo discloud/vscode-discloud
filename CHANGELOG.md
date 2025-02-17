@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.17
+
+- Correção de permissões dos comandos de mods
+
 ## 2.22.15
 
 - Correção da detecção da pasta do workspace
