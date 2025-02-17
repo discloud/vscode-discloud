@@ -25,9 +25,7 @@ export default class extends Command {
     const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!res) return;
 
-    if (!res.apps || !res.apps.terminal.big) {
-      throw Error(t("no.log.found"));
-    }
+    if (!res.apps || !res.apps.terminal.big) throw Error(t("no.log.found"));
 
     this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
   }
