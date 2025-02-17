@@ -45,9 +45,13 @@ export default class extends Command {
       if (res.status === "ok") {
         extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, name });
 
-        const dConfig = new DiscloudConfig(extension.workspaceFolder!);
+        const workspaceFolder = await extension.getWorkspaceFolder();
 
-        if (dConfig.data.ID === item.appId) dConfig.update({ NAME: name });
+        if (workspaceFolder) {
+          const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+
+          if (dConfig.data.ID === item.appId) dConfig.update({ NAME: name });
+        }
       }
     }
   }

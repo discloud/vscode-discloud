@@ -11,7 +11,7 @@ extension.on("activate", async function (context) {
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
-  extension.loadCommands();
+  await extension.loadCommands();
 
   new CompletionItemProvider({ path: "discloudconfigschema.json" });
   new LanguageConfigurationProvider({ path: "discloudconfigschema.json" });
