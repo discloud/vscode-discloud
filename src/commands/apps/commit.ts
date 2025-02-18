@@ -34,7 +34,7 @@ export default class extends Command {
 
     extension.statusBar.setCommitting();
 
-    task.progress.report({ message: `${item.appId} - ${t("choose.files")}` });
+    task.progress.report({ increment: 30, message: `${item.appId} - ${t("choose.files")}` });
 
     const zipName = `${workspace.name}.zip`;
 
@@ -47,7 +47,7 @@ export default class extends Command {
     const found = await fs.findFiles(task.token);
     if (!found.length) throw Error(t("files.missing"));
 
-    task.progress.report({ message: t("files.zipping") });
+    task.progress.report({ increment: 30, message: t("files.zipping") });
 
     const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
@@ -70,7 +70,7 @@ export default class extends Command {
       throw error;
     }
 
-    task.progress.report({ message: item.appId });
+    task.progress.report({ increment: -1, message: item.appId });
 
     const res = await requester<RESTPutApiAppCommitResult>(Routes.appCommit(item.appId), {
       body: form,

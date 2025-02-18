@@ -37,7 +37,7 @@ export default abstract class Command {
       throwOnCancel: true,
     }, options);
 
-    task?.progress.report({ message: t("choose.app") });
+    task?.progress.report({ increment: -1, message: t("choose.app") });
 
     const apps = <QuickPickItem[]>[];
     const teamApps = <QuickPickItem[]>[];
@@ -218,7 +218,7 @@ export default abstract class Command {
   }
 
   async pickAppMod(appId: string, task?: TaskData | null) {
-    task?.progress.report({ message: t("choose.mod") });
+    task?.progress.report({ increment: -1, message: t("choose.mod") });
 
     const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {}, true);
     if (!res?.team?.length) return;

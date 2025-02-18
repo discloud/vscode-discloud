@@ -26,7 +26,7 @@ export default class extends Command {
 
     extension.statusBar.setUploading();
 
-    task.progress.report({ message: t("files.checking") });
+    task.progress.report({ increment: 30, message: t("files.checking") });
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
@@ -58,7 +58,7 @@ export default class extends Command {
       ].join("\n"));
     }
 
-    task.progress.report({ message: t("files.zipping") });
+    task.progress.report({ increment: 30, message: t("files.zipping") });
 
     const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
@@ -83,7 +83,7 @@ export default class extends Command {
       throw error;
     }
 
-    task.progress.report({ message: t("uploading") });
+    task.progress.report({ increment: -1, message: t("uploading") });
 
     const res = await requester<RESTPostApiUploadResult>(Routes.upload(), {
       body: form,

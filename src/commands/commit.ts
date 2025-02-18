@@ -31,7 +31,7 @@ export default class extends Command {
     const picked = await this.pickAppOrTeamApp(task, { showOther: true });
     if (!picked.id) throw Error(t("missing.appid"));
 
-    task.progress.report({ message: t("files.checking") });
+    task.progress.report({ increment: 30, message: t("files.checking") });
 
     const zipName = `${workspace.name}.zip`;
 
@@ -46,7 +46,7 @@ export default class extends Command {
 
     const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
-    task.progress.report({ message: t("files.zipping") });
+    task.progress.report({ increment: 30, message: t("files.zipping") });
 
     let zipper;
     try {
@@ -67,7 +67,7 @@ export default class extends Command {
       throw error;
     }
 
-    task.progress.report({ message: t("committing") });
+    task.progress.report({ increment: -1, message: t("committing") });
 
     const res = await requester<RESTPutApiAppCommitResult>(picked.isApp ?
       Routes.appCommit(picked.id) :

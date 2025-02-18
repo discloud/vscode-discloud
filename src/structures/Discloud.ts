@@ -104,7 +104,7 @@ export default class Discloud extends EventEmitter<Events> {
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
-    task?.progress.report({ message: t("folder.get.one") });
+    task?.progress.report({ increment: -1, message: t("folder.get.one") });
 
     const uris = await window.showOpenDialog({
       canSelectFolders: true,
@@ -181,10 +181,10 @@ export default class Discloud extends EventEmitter<Events> {
               taskData.progress = progress;
               taskData.token = token;
 
-              return await command.run(taskData, ...args);
+              await command.run(taskData, ...args);
             });
           } else {
-            return await command.run(null, ...args);
+            await command.run(null, ...args);
           }
         } catch (error) {
           this.emit("error", error);
