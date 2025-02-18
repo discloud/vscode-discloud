@@ -49,6 +49,7 @@ export default class extends Command {
 
         if (workspaceFolder) {
           const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+          queueMicrotask(() => dConfig.dispose());
 
           if (dConfig.data.ID === item.appId) dConfig.update({ NAME: name });
         }

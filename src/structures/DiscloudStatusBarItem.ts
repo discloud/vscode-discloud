@@ -62,6 +62,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (!workspaceFolder) return this.setUpload();
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+    queueMicrotask(() => dConfig.dispose());
 
     if (!dConfig.data.ID) return this.setUpload();
 

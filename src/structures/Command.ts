@@ -130,6 +130,7 @@ export default abstract class Command {
     const workspaceFolder = await extension.getWorkspaceFolder().then(f => f?.fsPath);
 
     const dConfig = new DiscloudConfig(workspaceFolder!);
+    queueMicrotask(() => dConfig.dispose());
 
     let hasApp = false;
     let hasTeamApp = false;
