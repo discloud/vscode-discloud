@@ -90,10 +90,9 @@ export default class extends Command {
       method: "POST",
     });
 
-    if (!res) {
-      dConfig.dispose();
-      return;
-    }
+    queueMicrotask(() => dConfig.dispose());
+
+    if (!res) return;
 
     if ("status" in res) {
       this.showApiMessage(res);
@@ -107,7 +106,5 @@ export default class extends Command {
         this.logger("app" in res && res.app ? res.app.id : "Discloud Upload Error", res.logs);
       }
     }
-
-    dConfig.dispose();
   }
 }
