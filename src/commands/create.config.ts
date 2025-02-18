@@ -16,6 +16,8 @@ export default class extends Command {
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+    queueMicrotask(() => dConfig.dispose());
+
     if (dConfig.exists) return;
 
     dConfig.update({

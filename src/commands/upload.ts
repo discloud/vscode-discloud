@@ -30,8 +30,10 @@ export default class extends Command {
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
-    if (!dConfig.exists || dConfig.missingProps.length)
+    if (!dConfig.exists || dConfig.missingProps.length) {
+      dConfig.dispose();
       throw Error(t("invalid.discloud.config"));
+    }
 
     const zipName = `${workspace.name}.zip`;
 
@@ -41,15 +43,20 @@ export default class extends Command {
     });
 
     const found = await fs.findFiles(task.token);
-    if (!found.length) throw Error(t("files.missing"));
+    if (!found.length) {
+      dConfig.dispose();
+      throw Error(t("files.missing"));
+    }
 
     const main = Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!found.some(uri => uri.fsPath.endsWith(main)))
+    if (!found.some(uri => uri.fsPath.endsWith(main))) {
+      dConfig.dispose();
       throw Error([
         t("missing.discloud.config.main", { file: dConfig.data.MAIN }),
         t("readdiscloudconfigdocs"),
       ].join("\n"));
+    }
 
     task.progress.report({ message: t("files.zipping") });
 
@@ -61,6 +68,7 @@ export default class extends Command {
       zipper.appendUriList(found);
       await zipper.finalize();
     } catch (error) {
+      dConfig.dispose();
       zipper?.destroy();
       throw error;
     }
@@ -70,6 +78,7 @@ export default class extends Command {
       form.append("file", await resolveFile(saveUri.fsPath, zipName));
       if (!extension.isDebug) zipper.destroy();
     } catch (error) {
+      dConfig.dispose();
       if (!extension.isDebug) zipper.destroy();
       throw error;
     }
@@ -80,6 +89,8 @@ export default class extends Command {
       body: form,
       method: "POST",
     });
+
+    queueMicrotask(() => dConfig.dispose());
 
     if (!res) return;
 

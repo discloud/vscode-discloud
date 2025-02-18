@@ -21,6 +21,7 @@ export default class extends Command {
       const workspaceFolder = await extension.getWorkspaceFolder();
       if (workspaceFolder) {
         const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+        queueMicrotask(() => dConfig.dispose());
 
         if (dConfig.data.ID) {
           if (extension.appTree.children.has(dConfig.data.ID)) {
