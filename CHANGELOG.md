@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.18
+
+- Melhoria no status de progresso de algums comandos
+- Correção no cálculo de RAM máxima disponível ao editar RAM de um app
+- Diversas correções de bugs
+
 ## 2.22.17
 
 - Correção de permissões dos comandos de mods
