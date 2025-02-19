@@ -28,6 +28,7 @@ export default class extends Command {
     const min = item.type === AppType.site ? 512 : 100;
 
     const ramMB = await InputBox.getInt({
+      denyInitial: typeof item.data.ram === "number" && item.data.ram >= min,
       initial: item.data.ram,
       min,
       prompt: t("input.ram.prompt"),

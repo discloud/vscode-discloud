@@ -29,8 +29,8 @@ export default class extends Command {
     const max = extension.user.totalRamMb - (extension.user.ramUsedMb - item.data.ram);
 
     const ramMB = await InputBox.getInt({
+      denyInitial: item.data.ram >= min || item.data.ram <= max,
       initial: item.data.ram,
-      denyInitial: item.data.ram > max,
       max,
       min,
       prompt: t("input.ram.prompt"),
