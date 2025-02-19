@@ -25,7 +25,7 @@ export default class extends Command {
     }
 
     const min = item.type === AppType.site ? 512 : 100;
-    const max = extension.user.totalRamMb - extension.user.ramUsedMb;
+    const max = extension.user.totalRamMb - (extension.user.ramUsedMb - item.data.ram);
 
     let ramMB;
     do {
