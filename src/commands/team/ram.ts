@@ -1,12 +1,13 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppRamResult, Routes } from "discloud.app";
-import { ProgressLocation, window } from "vscode";
+import { ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import { InputBox } from "../../util/Input";
 
 export default class extends Command {
   constructor() {
@@ -26,19 +27,11 @@ export default class extends Command {
 
     const min = item.type === AppType.site ? 512 : 100;
 
-    let ramMB;
-    do {
-      ramMB = await window.showInputBox({
-        value: `${item.data.ram ?? min}`,
-        prompt: t("input.ram.prompt"),
-        validateInput(value) {
-          const v = Number(value);
-
-          if (isNaN(v) || v < min) return t("input.ram.prompt");
-        },
-      });
-      if (typeof ramMB === "string") ramMB = parseInt(ramMB);
-    } while (typeof ramMB === "number" ? isNaN(ramMB) || ramMB < min : false);
+    const ramMB = await InputBox.getInt({
+      initial: item.data.ram,
+      min,
+      prompt: t("input.ram.prompt"),
+    });
 
     if (!ramMB) throw Error(t("missing.input"));
 

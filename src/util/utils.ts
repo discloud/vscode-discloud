@@ -70,3 +70,7 @@ export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
 export function replaceFileExtension(file: string, replacement = "") {
   return file.replace(FILE_EXT_REGEXP, replacement);
 }
+
+export function clamp(value: number, lowerLimit: number, upperLimit: number) {
+  return Math.min(Math.max(value, lowerLimit), upperLimit);
+}
