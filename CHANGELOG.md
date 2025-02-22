@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.19
+
+- Melhorias no sistema de linguagem do `discloud.config`
+- Correções e melhorias de performance
+
 ## 2.22.18
 
 - Melhoria no status de progresso de algums comandos
