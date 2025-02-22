@@ -7,11 +7,9 @@ function importJSON<T extends l10nJsonFormat>(path: string): T {
   try {
     if (existsSync(path))
       return JSON.parse(readFileSync(path, "utf8"));
+  } catch { }
 
-    return <T>{};
-  } catch {
-    return <T>{};
-  }
+  return <T>{};
 }
 
 export function localize(context: ExtensionContext) {
