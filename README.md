@@ -51,34 +51,46 @@ Aqui está uma lista de recursos que a extensão atualmente suporta:
 - [Discloud](https://discloud.com/)
 - [Documentação da Discloud](https://docs.discloud.com/)
 
+[![Discord](https://discord.com/api/guilds/584490943034425391/widget.png?style=banner2)](https://discord.gg/discloud)
+
 ## Guia
 
 ### Upload de aplicações
+
 ![Upload de aplicação](https://i.imgur.com/uAcXj1P.gif)
 
 ### Status das aplicações
+
 ![Visualizando status da aplicação](https://i.imgur.com/5UdfaUO.gif)
 
 ### Commit em aplicações
+
 ![Realizando commit de aplicação](https://i.imgur.com/I3AasqD.gif)
 
 ### Iniciar aplicações
+
 ![Iniciando aplicação](https://i.imgur.com/JCeesgb.gif)
 
 ### Parar aplicações
+
 ![Parando aplicação](https://i.imgur.com/73wa0GU.gif)
 
 ### Reiniciar aplicações
+
 ![Reiniciando aplicação](https://i.imgur.com/0znXyHu.gif)
 
 ### Deletar aplicações
+
 ![Deletando aplicação](https://i.imgur.com/HRqD2fi.gif)
 
 ### Gerar logs das aplicações
+
 ![Gerando logs da aplicação](https://i.imgur.com/riXUYDt.gif)
 
 ### Baixar backup das aplicações
+
 ![Baixando backup da aplicação](https://i.imgur.com/SOQNeMk.gif)
 
 ### Importar código de algum app hospedado para o VSCode
+
 ![Importando código da aplicação para o VSCode](https://i.imgur.com/nIbgGIU.gif)

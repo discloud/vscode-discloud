@@ -51,6 +51,8 @@ Here is a list of features that the extension currently supports:
 - [Discloud](https://discloud.com/)
 - [Discloud Docs](https://docs.discloud.com/en)
 
+[![Discord](https://discord.com/api/guilds/584490943034425391/widget.png?style=banner2)](https://discord.gg/discloud)
+
 ## Guide
 
 ### Upload applications
@@ -89,6 +91,6 @@ Here is a list of features that the extension currently supports:
 
 ![Downloading application backup](https://i.imgur.com/SOQNeMk.gif)
 
-### Download and open hosted app code in VSCode.
+### Download and open hosted app code in VSCode
 
 ![Importing application code to VSCode](https://i.imgur.com/nIbgGIU.gif)
