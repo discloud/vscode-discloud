@@ -37,8 +37,8 @@ function headers(headers: Headers) {
   const Remaining = parseInt(headers.get("ratelimit-remaining")!);
   const Reset = parseInt(headers.get("ratelimit-reset")!);
   if (!isNaN(Limit)) limit = Math.max(Limit, 0);
-  if (!isNaN(Limit)) remain = Math.max(Remaining, 0);
-  if (!isNaN(Limit)) reset = Math.max(Reset, 0);
+  if (!isNaN(Remaining)) remain = Math.max(Remaining, 0);
+  if (!isNaN(Reset)) reset = Math.max(Reset, 0);
   initTimer();
 
   extension.debug("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
@@ -88,7 +88,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
     queueProcesses.add(processKey);
   } else {
     if (noQueueProcesses.length) {
-      window.showErrorMessage(t("process.already.running"));
+      window.showErrorMessage(t("process.already.running", noQueueProcesses.length));
       return null;
     } else {
       noQueueProcesses.push(processKey);
@@ -98,15 +98,16 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   Object.assign(config.headers ??= {}, {
     "api-token": extension.token,
     "User-Agent": DEFAULT_USER_AGENT,
-  }, typeof config.body === "string" ? {
+  }, typeof config.body === "string" || config.body === undefined ? {
     "Content-Type": "application/json",
   } : {});
 
-  extension.debug(
+  queueMicrotask(() => extension.debug(
     "Request:", path,
-    "Headers:", Object.fromEntries(Object.entries(config.headers).map(([k, v]) => [k, typeof v])),
-  );
+    "Headers:", Object.entries(config.headers!).map(([k, v]) => `${k}:${typeof v}(${`${v}`.length})`).join(" "),
+  ));
 
+  remain--;
   let response: Response;
   try {
     response = await fetch(`${RouteBases.api}${path}`, config);
