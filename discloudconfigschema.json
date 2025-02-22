@@ -8,8 +8,8 @@
       "items": {
         "type": "string",
         "enum": [
-          "ffmpeg",
           "canvas",
+          "ffmpeg",
           "java",
           "libgl",
           "openssl",
@@ -20,7 +20,11 @@
     },
     "AUTORESTART": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "enum": [
+        false,
+        true
+      ]
     },
     "AVATAR": {
       "type": "string",
@@ -94,6 +98,7 @@
       },
       "RAM": {
         "minimum": 512,
+        "default": 512,
         "examples": [
           512
         ]
