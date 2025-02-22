@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { readFileSync } from "fs";
 import type { JSONSchema7 } from "json-schema";
-import { Draft07 } from "json-schema-library";
+import { JsonEditor } from "json-schema-library";
 import { type TextDocument } from "vscode";
 import extension from "../extension";
 
@@ -29,7 +29,7 @@ export default class BaseLanguageProvider {
   }
 
   validateJsonSchema(data: Record<any, any>) {
-    return new Draft07(this.schema).validate(data);
+    return new JsonEditor(this.schema).validate(data);
   }
 
   #configToObj(s: string) {
@@ -37,7 +37,7 @@ export default class BaseLanguageProvider {
 
     return this.#processValues(Object.fromEntries(s
       .replace(/\s*#.*/g, "")
-      .split(/[\r\n]/)
+      .split(/[\r\n]+/)
       .filter(Boolean)
       .map(line => line.split("="))));
   }
@@ -45,9 +45,7 @@ export default class BaseLanguageProvider {
   #processValues(obj: any) {
     if (!obj) return obj;
 
-    const keys = Object.keys(obj);
-
-    for (const key of keys) {
+    for (const key in obj) {
       const value = obj[key];
 
       switch (key) {
@@ -55,15 +53,13 @@ export default class BaseLanguageProvider {
           obj[key] = value.split(/\s*,\s*/g).filter(Boolean);
           continue;
         case "AUTORESTART":
-          if (["true", "false"].includes(value)) {
+          if (["true", "false"].includes(value))
             obj[key] = value == "true";
-          }
           continue;
         case "RAM":
-          if (!isNaN(Number(value))) {
+          if (!isNaN(Number(value)))
             obj[key] = Number(value);
-            continue;
-          }
+          continue;
       }
     }
 

@@ -83,8 +83,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       switch (error.code) {
         case "required-property-error":
           errors.splice(i, 1);
+
           diagnostics.push({
-            message: error.message,
+            message: error.message.substring(0, error.message.indexOf(` at \`${error.data.pointer}\``)),
             range: new Range(
               new Position(0, 0),
               new Position(0, 0),

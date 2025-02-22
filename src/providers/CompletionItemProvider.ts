@@ -1,7 +1,7 @@
-import { existsSync, readdirSync } from "fs";
+import { existsSync } from "fs";
 import type { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
-import { dirname, join } from "path";
-import { CompletionItem, CompletionItemKind, languages, type TextDocument } from "vscode";
+import { JsonEditor } from "json-schema-library";
+import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type TextDocument, type TextLine } from "vscode";
 import type { ProviderOptions } from "../@types";
 import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
@@ -23,100 +23,139 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
         }
 
         const line = document.lineAt(position);
-        const text = line.text.substring(0, position.character);
-        const [key, value] = text.split("=");
+        const text = line.text.replace(/\s*#.*/, "");
+        const [key, value] = text.substring(0, position.character).split("=");
+        const [_, fullValue] = text.split("=");
+        const startValueIndex = key.length + 1;
 
-        return this.parseSchema(this.schema, {
+        const data = this.transformConfigToJSON(document);
+
+        let schema = this.schema;
+
+        const maybeSchema = new JsonEditor(schema).getSchema({ data, pointer: key });
+
+        if (maybeSchema && maybeSchema.type !== "error")
+          schema = maybeSchema as JSONSchema7;
+
+        return this.parseSchema(schema, {
           document,
+          line,
+          position,
+          text,
           key,
           value,
+          fullValue,
+          startValueIndex,
         });
-
       },
     });
 
     extension.subscriptions.push(disposable);
   }
 
-  parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): CompletionItem[] {
+  async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): Promise<CompletionItem[]> {
     switch (schema.type) {
       case "array":
-        const items = this.parseSchemaArray(schema, options);
+        const items = await this.parseSchemaArray(schema, options);
         if (schema.uniqueItems) {
           return items.filter(item => !options.value.includes(item.label.toString()));
         }
         return items;
       case "boolean":
-        return [
-          new CompletionItem("false", CompletionItemKind.Keyword),
-          new CompletionItem("true", CompletionItemKind.Keyword),
-        ];
+        return this.parseSchemaBoolean(schema, options, true);
       case "integer":
       case "number":
-        return this.parseSchemaNumber(schema);
+        return this.parseSchemaNumber(schema, options, true);
       case "null":
         return [];
       case "string":
-        return this.parseSchemaString(schema, options);
+        return this.parseSchemaString(schema, options, true);
       case "object":
       default:
         return this.parseSchemaObject(schema, options);
     }
   }
 
-  parseSchemaArray(schema: JSONSchema7, options: ParseSchemaOptions) {
-    if (schema.enum !== undefined) return this.parseSchemaEnum(schema);
-    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
+  async parseSchemaArray(schema: JSONSchema7, options: ParseSchemaOptions) {
+    if (schema.enum !== undefined) return this.parseSchemaEnum(schema, options);
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema, options);
     if (schema.items !== undefined) return this.parseSchemaItems(schema, options);
     return [];
   }
 
-  parseSchemaEnum(schema: JSONSchema7) {
+  parseSchemaBoolean(_: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
+    const itemFalse = new CompletionItem("false", CompletionItemKind.Keyword);
+    const itemTrue = new CompletionItem("true", CompletionItemKind.Keyword);
+
+    if (replaceValue) {
+      itemFalse.range = new Range(
+        new Position(options.position.line, options.startValueIndex),
+        new Position(options.position.line, options.line.text.length),
+      );
+      itemTrue.range = new Range(
+        new Position(options.position.line, options.startValueIndex),
+        new Position(options.position.line, options.line.text.length),
+      );
+    }
+
+    return [
+      itemFalse,
+      itemTrue,
+    ];
+  }
+
+  parseSchemaEnum(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
     if (schema.enum !== undefined)
-      return schema.enum.flatMap(value => this.parseSchemaType(value));
+      return schema.enum.flatMap(value => this.parseSchemaType(value, options, replaceValue));
     return [];
   }
 
-  parseSchemaExamples(schema: JSONSchema7) {
+  parseSchemaExamples(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
     if (schema.examples !== undefined)
-      return this.parseSchemaType(schema.examples);
+      return this.parseSchemaType(schema.examples, options, replaceValue);
     return [];
   }
 
-  parseSchemaItems(schema: JSONSchema7, options: ParseSchemaOptions) {
+  async parseSchemaItems(schema: JSONSchema7, options: ParseSchemaOptions) {
     if (Array.isArray(schema.items)) {
-      return schema.items.flatMap(value => this.parseSchemaDefinition(value, options));
+      return Promise.all(schema.items.map(value => this.parseSchemaDefinition(value, options))).then(r => r.flat());
     } else {
       return this.parseSchemaDefinition(schema.items!, options);
     }
   }
 
-  parseSchemaType(schema: JSONSchema7Type): CompletionItem[] {
-    if (Array.isArray(schema)) {
-      return schema.flatMap(value => this.parseSchemaType(value));
+  parseSchemaType(schema: JSONSchema7Type, options: ParseSchemaOptions, replaceValue?: boolean): CompletionItem[] {
+    if (Array.isArray(schema))
+      return schema.flatMap(value => this.parseSchemaType(value, options, replaceValue));
+
+    const data = [];
+
+    switch (typeof schema) {
+      case "boolean":
+      case "number":
+      case "string":
+        const item = new CompletionItem(`${schema}`);
+
+        if (replaceValue) {
+          item.range = new Range(
+            new Position(options.position.line, options.startValueIndex),
+            new Position(options.position.line, options.line.text.length),
+          );
+        }
+
+        data.push(item);
+        break;
     }
 
-    if (typeof schema === "string") {
-      return [new CompletionItem(schema)];
-    }
+    return data;
+  }
 
-    if (typeof schema === "number") {
-      return [new CompletionItem(`${schema}`)];
-    }
-
-    if (typeof schema === "boolean") {
-      return [new CompletionItem(`${schema}`)];
-    }
-
+  parseSchemaNumber(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema, options, replaceValue);
     return [];
   }
 
-  parseSchemaNumber(schema: JSONSchema7) {
-    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
-    return [];
-  }
-
-  parseSchemaObject(schema: JSONSchema7, options: ParseSchemaOptions) {
+  async parseSchemaObject(schema: JSONSchema7, options: ParseSchemaOptions) {
     if (schema.properties !== undefined) {
       return this.parseSchemaProperties(schema, options);
     }
@@ -124,49 +163,70 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     return [];
   }
 
-  parseSchemaProperties(schema: JSONSchema7, options: ParseSchemaOptions) {
+  async parseSchemaProperties(schema: JSONSchema7, options: ParseSchemaOptions) {
     if (schema.properties !== undefined) {
-      if (schema.properties?.[options.key])
-        return this.parseSchemaDefinition(schema.properties?.[options.key], options);
+      if (schema.properties[options.key])
+        return this.parseSchemaDefinition(schema.properties[options.key], options);
 
-      return Object.values(schema.properties!).flatMap(property => this.parseSchemaDefinition(property, options));
+      return Promise.all(Object.values(schema.properties)
+        .map(property => this.parseSchemaDefinition(property, options)))
+        .then(r => r.flat());
     }
 
     return [];
   }
 
-  parseSchemaDefinition(schema: JSONSchema7Definition, options: ParseSchemaOptions) {
+  async parseSchemaDefinition(schema: JSONSchema7Definition, options: ParseSchemaOptions): Promise<CompletionItem[]> {
     if (typeof schema === "boolean") return [];
     return this.parseSchema(schema, options);
   }
 
-  parseSchemaString(schema: JSONSchema7, options: ParseSchemaOptions) {
-    if (schema.enum !== undefined) return this.parseSchemaEnum(schema);
-    if (schema.examples !== undefined) return this.parseSchemaExamples(schema);
+  async parseSchemaString(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
+    if (schema.enum !== undefined) return this.parseSchemaEnum(schema, options, replaceValue);
+    if (schema.examples !== undefined) return this.parseSchemaExamples(schema, options, replaceValue);
 
     if (typeof schema.format === "string") {
       switch (schema.format) {
         case "uri-reference":
-          let targetPath = join(dirname(options.document.uri.fsPath), options.value);
+          const startIndex = options.value.lastIndexOf("/") + 1;
+          const endIndex = Math.max(options.fullValue.indexOf("/", startIndex), 0) || options.fullValue.length;
+          const fullRangedIndex = options.line.text.length;
+          const startPositionIndex = options.startValueIndex + startIndex;
+          const endPositionIndex = options.startValueIndex + endIndex;
 
-          while (targetPath && !existsSync(targetPath)) {
-            targetPath = dirname(targetPath);
-          }
-          if (!targetPath) return [];
+          const value = options.value.substring(0, startIndex);
 
-          const files = readdirSync(targetPath, { withFileTypes: true });
+          const rootUri = Uri.joinPath(options.document.uri, "..");
+          const targetUri = Uri.joinPath(rootUri, value);
 
-          return files.map(file => {
-            const item = new CompletionItem(file.name,
-              file.isFile() ?
-                CompletionItemKind.File :
-                CompletionItemKind.Folder,
+          const data: CompletionItem[] = [];
+
+          for (const [filename, fileType] of await safeReadDirectory(targetUri)) {
+            const type = fileTypeAsCompletionItemKind[fileType];
+
+            const item = new CompletionItem(filename, type);
+
+            const fullValueUri = Uri.joinPath(
+              rootUri,
+              options.fullValue.substring(0, startIndex),
+              filename,
+              options.fullValue.substring(endIndex),
             );
 
-            item.sortText = `${file.isFile()}`;
+            const exists = existsSync(fullValueUri.fsPath);
+            const isDirectory = fileType === FileType.Directory;
 
-            return item;
-          });
+            item.sortText = `${!isDirectory}${filename}`;
+            item.insertText = isDirectory ? filename + "/" : filename;
+            item.range = new Range(
+              new Position(options.position.line, startPositionIndex),
+              new Position(options.position.line, exists ? endPositionIndex + (isDirectory ? 1 : 0) : fullRangedIndex),
+            );
+
+            data.push(item);
+          }
+
+          return data;
       }
     }
 
@@ -174,8 +234,28 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 }
 
+async function safeReadDirectory(uri: Uri) {
+  try {
+    return await workspace.fs.readDirectory(uri);
+  } catch {
+    return [];
+  }
+}
+
+const fileTypeAsCompletionItemKind = {
+  [FileType.Unknown]: CompletionItemKind.Keyword,
+  [FileType.SymbolicLink]: CompletionItemKind.Keyword,
+  [FileType.File]: CompletionItemKind.File,
+  [FileType.Directory]: CompletionItemKind.Folder,
+};
+
 interface ParseSchemaOptions {
-  document: TextDocument,
+  document: TextDocument
+  line: TextLine
+  position: Position
+  text: string
   key: string
   value: string
+  fullValue: string
+  startValueIndex: number
 }
