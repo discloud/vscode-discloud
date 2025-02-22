@@ -281,8 +281,10 @@ export default abstract class Command {
    * @param show
    * @default true
    */
-  logger(output: LogOutputChannel | string, log: string, show?: boolean): void;
-  logger(output: LogOutputChannel, log: string, show?: boolean): void;
+  logger(output: LogOutputChannel | string, log: string, show?: true): void;
+  logger(output: LogOutputChannel | string, log: string, show: false): void;
+  logger(output: LogOutputChannel, log: string, show?: true): void;
+  logger(output: LogOutputChannel, log: string, show: false): void;
   logger(output: LogOutputChannel, log: string, show = true) {
     if (typeof output === "string")
       output = extension.getLogOutputChannel(output);
