@@ -8,8 +8,8 @@ import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {
-  constructor(viewId: string) {
-    super(viewId);
+  constructor() {
+    super("discloud-teams");
   }
 
   getChildren(element?: TeamAppTreeItem): ProviderResult<TeamAppTreeItem[]>;
@@ -101,7 +101,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     let refresh;
 
     for (const app of data) {
-      if (this.addRawApp(app))
+      if (this.addRawApp(app, true))
         refresh = true;
     }
 
@@ -110,6 +110,8 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     if (refresh) this.refresh();
   }
 
+  addRawApp(data: BaseApiApp): void
+  addRawApp(data: BaseApiApp, returnBoolean: true): boolean
   addRawApp(data: BaseApiApp, returnBoolean?: boolean) {
     const existing = this.children.get(data.id);
 
@@ -120,6 +122,8 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       this.refresh(existing);
 
       extension.emit("teamAppUpdate", clone, existing);
+
+      if (returnBoolean) return false;
     } else {
       this.children.set(data.id, new TeamAppTreeItem(Object.assign({
         collapsibleState: this.children.size ?
@@ -145,7 +149,11 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       this.refresh(app);
 
       extension.emit("teamAppUpdate", clone, app);
+
+      return true;
     }
+
+    return false;
   }
 
   async getApps() {

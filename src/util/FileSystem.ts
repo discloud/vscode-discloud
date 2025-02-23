@@ -1,6 +1,6 @@
 import { dirname, join } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
-import { logger } from "../extension";
+import extension from "../extension";
 import { ALL_BLOCKED_FILES } from "./constants";
 
 export const ALL_BLOCKED_FILES_IGNORE_PATTERN = `{${ALL_BLOCKED_FILES.join(",")}}`;
@@ -120,7 +120,7 @@ export class FileSystem {
   static async readSelectedPath(relative: boolean = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
-    logger.info("File names:", copied);
+    extension.debug("File names:", copied);
     return copied.split(/[\r\n]+/);
   }
 }

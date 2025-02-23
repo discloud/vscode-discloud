@@ -1,11 +1,11 @@
 import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import DisposableMap from "./DisposableMap";
 
-export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem {
+export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem implements Disposable {
   readonly children = new DisposableMap<string, T>();
   declare readonly data: unknown;
-
-  contextValue = "TreeItem";
+  readonly contextKey = "TreeItem";
+  contextValue = this.contextKey;
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
@@ -25,36 +25,27 @@ export default abstract class BaseTreeItem<T extends TreeItem & Disposable> exte
 
   protected _patch(data: unknown): this;
   protected _patch(data: any): this {
-    if (data) {
-      Object.assign(<any>this.data, data);
+    if (!data) return this;
 
-      if ("accessibilityInformation" in data)
-        this.accessibilityInformation = data.accessibilityInformation;
+    Object.assign(<any>this.data, data);
 
-      if ("checkboxState" in data)
-        this.checkboxState = data.checkboxState;
+    if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;
 
-      if ("collapsibleState" in data)
-        this.collapsibleState = data.collapsibleState;
+    if (data.checkboxState !== undefined) this.checkboxState = data.checkboxState;
 
-      if ("command" in data)
-        this.command = data.command;
+    if (data.collapsibleState !== undefined) this.collapsibleState = data.collapsibleState;
 
-      if ("description" in data)
-        this.description = data.description;
+    if (data.command !== undefined) this.command = data.command;
 
-      if ("iconPath" in data)
-        this.iconPath = data.iconPath;
+    if (data.description !== undefined) this.description = data.description;
 
-      if ("label" in data)
-        this.label = data.label;
+    if (data.iconPath !== undefined) this.iconPath = data.iconPath;
 
-      if ("resourceUri" in data)
-        this.resourceUri = data.resourceUri;
+    if (data.label !== undefined) this.label = data.label;
 
-      if ("tooltip" in data)
-        this.tooltip = data.tooltip;
-    }
+    if (data.resourceUri !== undefined) this.resourceUri = data.resourceUri;
+
+    if (data.tooltip !== undefined) this.tooltip = data.tooltip;
 
     return this;
   }

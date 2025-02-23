@@ -28,6 +28,10 @@ export default class AppChildTreeItem extends BaseChildTreeItem {
   }
 
   _patch(data: Partial<AppChildTreeItemData>) {
+    if (!data) return this;
+
     super._patch(data);
+
+    return this;
   }
 }

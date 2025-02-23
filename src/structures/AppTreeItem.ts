@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp } from "discloud.app";
-import { type LogOutputChannel, TreeItemCollapsibleState, Uri, window } from "vscode";
+import { type LogOutputChannel, TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
 import extension from "../extension";
@@ -13,7 +13,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare readonly appId: string;
   declare readonly type: AppType;
   declare readonly output: LogOutputChannel;
-  readonly contextKey = "TreeItem";
 
   constructor(public readonly data: Partial<AppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
@@ -24,7 +23,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.type = data.type;
 
-    this.output = window.createOutputChannel(this.appId, { log: true });
+    this.output = extension.getLogOutputChannel(this.appId);
 
     this._patch(data);
   }
@@ -40,21 +39,15 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     return this.data.online;
   }
 
-  dispose() {
-    this.output.dispose();
-
-    super.dispose();
-  }
-
   _patch(data: Partial<AppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
     if (!data) return this;
 
     super._patch(data);
 
-    if ("avatarURL" in data)
+    if (data.avatarURL !== undefined)
       this.data.avatarURL = this.data.avatarURL.replace(/\s+/g, "");
 
-    if ("name" in data)
+    if (data.name !== undefined)
       this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
@@ -97,35 +90,35 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       iconName: "container",
     });
 
-    if ("memory" in data)
+    if (data.memory !== undefined)
       this._addChild("memory", {
         label: this.data.memory,
         description: t("label.ram"),
         iconName: "ram",
       });
 
-    if ("cpu" in data)
+    if (data.cpu !== undefined)
       this._addChild("cpu", {
         label: this.data.cpu,
         description: t("label.cpu"),
         iconName: "cpu",
       });
 
-    if ("ssd" in data)
+    if (data.ssd !== undefined)
       this._addChild("ssd", {
         label: this.data.ssd,
         description: t("label.ssd"),
         iconName: "ssd",
       });
 
-    if ("netIO" in data)
+    if (data.netIO !== undefined)
       this._addChild("netIO", {
         label: `⬇${this.data.netIO!.down} ⬆${this.data.netIO!.up}`,
         description: t("network"),
         iconName: "network",
       });
 
-    if ("last_restart" in data)
+    if (data.last_restart !== undefined)
       this._addChild("last_restart", {
         label: this.data.last_restart,
         description: t("last.restart"),

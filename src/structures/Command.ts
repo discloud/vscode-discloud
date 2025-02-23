@@ -4,7 +4,7 @@ import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vsc
 import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
 import { requester } from "../services/discloud";
-import AppTreeItem from "./AppTreeItem";
+import type AppTreeItem from "./AppTreeItem";
 import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
 
@@ -92,9 +92,11 @@ export default abstract class Command {
         apps.splice(0, apps.length);
 
         for (const app of resApps.appsStatus) {
+          extension.appTree.addRawApp(app, true);
+
           apps.push(<QuickPickItem>{
             description: app.id,
-            iconPath: <Uri>new AppTreeItem(app).iconPath,
+            iconPath: <Uri>extension.appTree.children.get(app.id)?.iconPath,
             label: [
               app.name,
               app.online ? t("online") : t("offline"),
@@ -205,12 +207,12 @@ export default abstract class Command {
       return {};
     }
 
-    const id = picked.description;
+    const id = picked.description!;
 
     task?.progress.report({ message: id });
 
     return {
-      app: isTeamApp ? extension.teamAppTree.children.get(id!) : extension.appTree.children.get(id!),
+      app: isTeamApp ? extension.teamAppTree.children.get(id) : extension.appTree.children.get(id),
       id,
       isApp: !isTeamApp,
       isTeamApp,

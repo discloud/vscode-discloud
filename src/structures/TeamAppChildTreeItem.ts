@@ -5,8 +5,8 @@ import BaseChildTreeItem from "./BaseChildTreeItem";
 export default class TeamAppChildTreeItem extends BaseChildTreeItem {
   readonly iconName?: string;
   readonly appId: string;
-  readonly contextKey = "ChildTreeItem";
   type: AppType | null = null;
+  online: boolean | null = null;
 
   constructor(data: TeamAppChildTreeItemData) {
     super(data.label, data.collapsibleState);
@@ -18,13 +18,22 @@ export default class TeamAppChildTreeItem extends BaseChildTreeItem {
 
   get contextJSON() {
     return {
+      online: this.online,
       type: this.type,
     };
   }
 
   _patch(data: Partial<TeamAppChildTreeItemData>) {
+    if (!data) return this;
+
     super._patch(data);
 
+    if (data.appType !== undefined) this.type = data.appType;
+
+    if (data.online !== undefined) this.online = data.online;
+
     this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
+
+    return this;
   }
 }

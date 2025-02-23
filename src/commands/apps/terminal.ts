@@ -21,6 +21,8 @@ export default class extends Command {
       name: typeof item.label === "string" ? item.label : item.appId,
     });
 
+    extension.subscriptions.push(terminal);
+
     terminal.show();
 
     terminal.sendText(`npx -y discloud-cli@latest terminal ${item.appId}\nexit`);

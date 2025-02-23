@@ -19,13 +19,13 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   }
 
   set(data: Partial<StatusBarItem>) {
-    this.accessibilityInformation = data.accessibilityInformation ?? this.data.accessibilityInformation;
-    this.backgroundColor = data.backgroundColor ?? this.data.backgroundColor;
-    this.color = data.color ?? this.data.color;
-    this.command = data.command ?? this.data.command;
-    this.name = data.name ?? this.data.name;
-    this.text = data.text ?? this.data.text;
-    this.tooltip = data.tooltip ?? this.data.tooltip;
+    if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;
+    if (data.backgroundColor !== undefined) this.backgroundColor = data.backgroundColor;
+    if (data.color !== undefined) this.color = data.color;
+    if (data.command !== undefined) this.command = data.command;
+    if (data.name !== undefined) this.name = data.name;
+    if (data.text !== undefined) this.text = data.text;
+    if (data.tooltip !== undefined) this.tooltip = data.tooltip;
   }
 
   get accessibilityInformation() {

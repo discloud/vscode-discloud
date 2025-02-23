@@ -64,6 +64,8 @@ export interface TeamAppTreeItemData extends BaseTreeItemData {
 
 export interface TeamAppChildTreeItemData extends BaseChildTreeItemData {
   appId: string
+  appType: number | null
+  online: boolean | null
   children?: TreeItem[]
   description?: string
   iconName?: string
