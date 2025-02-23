@@ -2,8 +2,8 @@ import SubDomainTreeItem from "../structures/SubDomainTreeItem";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<SubDomainTreeItem> {
-  constructor(viewId: string) {
-    super(viewId);
+  constructor() {
+    super("discloud-subdomains");
   }
 
   private clean(data: string[]) {

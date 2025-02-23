@@ -19,11 +19,11 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   }
 
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
-    super._patch(data);
-    
     if (!data) return this;
 
-    if ("username" in data && typeof data.userName === "string")
+    super._patch(data);
+
+    if (data.userName !== undefined)
       this.label = data.userName + ` (${this.userID})`;
 
     if (data.children instanceof Map) {
@@ -32,14 +32,14 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       }
     }
 
-    if (("ramUsedMb" in data) && ("totalRamMb" in data))
+    if (data.ramUsedMb !== undefined && data.totalRamMb !== undefined)
       this._addChild("ram", {
         label: `${data.ramUsedMb}/${data.totalRamMb}`,
         description: t("label.available.ram"),
         userID: this.userID,
       });
 
-    if ("plan" in data)
+    if (data.plan !== undefined)
       this._addChild("plan", {
         label: data.plan!,
         description: t("plan"),
@@ -55,35 +55,35 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         userID: this.userID,
       });
 
-    if ("locale" in data)
+    if (data.locale !== undefined)
       this._addChild("locale", {
         label: data.locale!,
         description: t("locale"),
         userID: this.userID,
       });
 
-    if ("apps" in data)
+    if (data.apps !== undefined)
       this._addChild("apps", {
         label: `${data.apps?.length ?? 0}`,
         description: t("label.apps.amount"),
         userID: this.userID,
       });
 
-    if ("appsTeam" in data)
+    if (data.appsTeam !== undefined)
       this._addChild("team", {
         label: `${data.appsTeam?.length ?? 0}`,
         description: t("label.team.apps.amount"),
         userID: this.userID,
       });
 
-    if ("customdomains" in data)
+    if (data.customdomains !== undefined)
       this._addChild("domains", {
         label: `${data.customdomains?.length ?? 0}`,
         description: t("label.domains.amount"),
         userID: this.userID,
       });
 
-    if ("subdomains" in data)
+    if (data.subdomains !== undefined)
       this._addChild("subdomains", {
         label: `${data.subdomains?.length ?? 0}`,
         description: t("label.subdomains.amount"),

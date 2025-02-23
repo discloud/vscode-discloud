@@ -1,7 +1,7 @@
-import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import { type BaseChildTreeItemData } from "../@types";
 
-export default class BaseChildTreeItem extends TreeItem {
+export default class BaseChildTreeItem extends TreeItem implements Disposable {
   declare children: Map<string, TreeItem>;
   readonly contextKey = "ChildTreeItem";
   contextValue = this.contextKey;
@@ -17,29 +17,23 @@ export default class BaseChildTreeItem extends TreeItem {
   dispose() { }
 
   protected _patch(data: Partial<BaseChildTreeItemData>) {
-    if ("accessibilityInformation" in data)
-      this.accessibilityInformation = data.accessibilityInformation;
+    if (!data) return this;
 
-    if ("checkboxState" in data)
-      this.checkboxState = data.checkboxState;
+    if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;
 
-    if ("collapsibleState" in data)
-      this.collapsibleState = data.collapsibleState;
+    if (data.checkboxState !== undefined) this.checkboxState = data.checkboxState;
 
-    if ("command" in data)
-      this.command = data.command;
+    if (data.collapsibleState !== undefined) this.collapsibleState = data.collapsibleState;
 
-    if ("description" in data)
-      this.description = data.description;
+    if (data.command !== undefined) this.command = data.command;
 
-    if ("iconPath" in data)
-      this.iconPath = data.iconPath;
+    if (data.description !== undefined) this.description = data.description;
 
-    if ("label" in data)
-      this.label = data.label;
+    if (data.iconPath !== undefined) this.iconPath = data.iconPath;
 
-    if ("resourceUri" in data)
-      this.resourceUri = data.resourceUri;
+    if (data.label !== undefined) this.label = data.label;
+
+    if (data.resourceUri !== undefined) this.resourceUri = data.resourceUri;
 
     this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
 
@@ -52,5 +46,7 @@ export default class BaseChildTreeItem extends TreeItem {
     }
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
+
+    return this;
   }
 }

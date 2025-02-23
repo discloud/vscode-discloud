@@ -9,8 +9,8 @@ import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
-  constructor(viewId: string) {
-    super(viewId);
+  constructor() {
+    super("discloud-apps");
   }
 
   getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
@@ -112,6 +112,8 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     if (refresh) this.refresh();
   }
 
+  addRawApp(data: ApiVscodeApp): void
+  addRawApp(data: ApiVscodeApp, returnBoolean: true): boolean
   addRawApp(data: ApiVscodeApp, returnBoolean?: boolean) {
     const existing = this.children.get(data.id);
 
@@ -122,6 +124,8 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       this.refresh(existing);
 
       extension.emit("appUpdate", clone, existing);
+
+      if (returnBoolean) return false;
     } else {
       this.children.dispose("x");
 
@@ -149,7 +153,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       this.refresh(app);
 
       extension.emit("appUpdate", clone, app);
+
+      return true;
     }
+
+    return false;
   }
 
   async getStatus(appId: string = "all") {

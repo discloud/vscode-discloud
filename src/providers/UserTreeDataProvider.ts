@@ -3,8 +3,8 @@ import type VSUser from "../structures/VSUser";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeItem> {
-  constructor(viewId: string) {
-    super(viewId);
+  constructor() {
+    super("discloud-user");
   }
 
   clear() {

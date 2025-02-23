@@ -4,6 +4,8 @@ import { extname, join } from "path";
 
 export const FILE_EXT = extname(__filename);
 
+export const NODE_MODULES_EXTENSIONS = new Set<string>([FILE_EXT, ".cjs", ".js", ".mjs"]);
+
 export const EXTENSION_ROOT_PATH = join(__dirname, "..", "..");
 export let PACKAGE_JSON: Record<any, any> = {};
 try { PACKAGE_JSON = JSON.parse(readFileSync(join(EXTENSION_ROOT_PATH, "package.json"), "utf8")); } catch { }

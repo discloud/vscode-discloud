@@ -1,8 +1,9 @@
 import { t } from "@vscode/l10n";
 import { /* ApiStatusApp, */ type ApiStatusApp, type ApiTeamApps, type BaseApiApp, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
-import { type LogOutputChannel, TreeItemCollapsibleState, window } from "vscode";
+import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
 import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";
+import extension from "../extension";
 import { calculatePercentage, getIconName, getIconPath } from "../util";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
@@ -14,16 +15,15 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   declare readonly appId: string;
   declare readonly output: LogOutputChannel;
   readonly permissions = new ModPermissionsBF();
-  readonly contextKey = "TreeItem";
 
-  constructor(public readonly data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & BaseApiApp) {
+  constructor(readonly data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
 
     this.appId = data.appId ??= data.id;
 
-    this.output = window.createOutputChannel(this.appId, { log: true });
+    this.output = extension.getLogOutputChannel(this.appId);
 
     this._patch(data);
   }
@@ -40,21 +40,15 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   get type() {
-    return this.data.type;
-  }
-
-  dispose() {
-    this.output.dispose();
-
-    super.dispose();
+    return this.data.type ?? null;
   }
 
   _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
-    super._patch(data);
-
     if (!data) return this;
 
-    if ("name" in data)
+    super._patch(data);
+
+    if (data.name !== undefined)
       this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
@@ -79,7 +73,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if ("memory" in data)
+    if (data.memory !== undefined)
       this._addChild("memory", {
         label: this.data.memory!,
         description: t("label.ram"),
@@ -87,7 +81,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if ("cpu" in data)
+    if (data.cpu !== undefined)
       this._addChild("cpu", {
         label: this.data.cpu!,
         description: t("label.cpu"),
@@ -95,7 +89,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if ("ssd" in data)
+    if (data.ssd !== undefined)
       this._addChild("ssd", {
         label: this.data.ssd!,
         description: t("label.ssd"),
@@ -103,15 +97,15 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if ("netIO" in data)
+    if (data.netIO !== undefined)
       this._addChild("netIO", {
-        label: `⬇${this.data.netIO?.down} ⬆${this.data.netIO?.up}`,
+        label: `⬇${data.netIO.down} ⬆${data.netIO.up}`,
         description: t("network"),
         iconName: "network",
         appId: this.appId,
       });
 
-    if ("last_restart" in data)
+    if (data.last_restart !== undefined)
       this._addChild("last_restart", {
         label: this.data.last_restart!,
         description: t("last.restart"),
@@ -125,12 +119,14 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this._addChild("perms", {
         label: `${this.data.perms!.length} / ${totalModPerms}`,
         description: t("permissions"),
+        appId: this.appId,
+        collapsibleState: TreeItemCollapsibleState.Collapsed,
         children: this.data.perms!.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
+          appType: this.type,
+          online: this.online,
         })),
-        appId: this.appId,
-        collapsibleState: TreeItemCollapsibleState.Collapsed,
       });
     }
 
@@ -145,7 +141,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     return this;
   }
 
-  private _addChild(id: string, data: TeamAppChildTreeItemData) {
+  private _addChild(id: string, data: Partial<TeamAppChildTreeItemData>) {
+    data.appId = this.appId;
+    data.online = this.online;
+    data.appType = this.type;
+
     const existing = this.children.get(id);
 
     if (existing) {
@@ -153,6 +153,6 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       return;
     }
 
-    this.children.set(id, new TeamAppChildTreeItem(data));
+    this.children.set(id, new TeamAppChildTreeItem(<TeamAppChildTreeItemData>data));
   }
 }

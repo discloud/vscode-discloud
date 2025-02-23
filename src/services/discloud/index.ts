@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 import { decode } from "jsonwebtoken";
 import { window } from "vscode";
 import { type RequestOptions } from "../../@types";
-import extension, { logger } from "../../extension";
+import extension from "../../extension";
 import { DEFAULT_USER_AGENT } from "../../util";
 import DiscloudAPIError from "./error";
 
@@ -24,7 +24,7 @@ function initTimer() {
   timer = setTimeout(function () {
     timer = null;
     remain = limit;
-    extension.debug("[ratelimit]: restored");
+    extension.debug("[ratelimit] restored");
   }, reset * 1000 + time - Date.now());
 }
 
@@ -41,7 +41,7 @@ function headers(headers: Headers) {
   if (!isNaN(Reset)) reset = Math.max(Reset, 0);
   initTimer();
 
-  extension.debug("[ratelimit]:", "limit", Limit, "remaining", Remaining, "reset", Reset);
+  extension.debug("[ratelimit]", "limit", Limit, "remaining", Remaining, "reset", Reset);
 
   if (!remain) extension.emit("rateLimited", { reset, time });
 }
@@ -151,7 +151,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
       case 401:
         tokenIsValid = false;
         extension.emit("unauthorized");
-        logger.info(`${path} ${responseBody}`);
+        extension.debug(`${path} ${responseBody}`);
         break;
     }
 

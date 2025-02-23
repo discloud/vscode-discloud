@@ -1,15 +1,10 @@
 import { type Archiver, type ArchiverOptions, create, type Format } from "archiver";
-import { createWriteStream, existsSync, rmSync, type Stats, statSync, unlinkSync, writeFileSync, type WriteStream } from "fs";
+import { createWriteStream, existsSync, rmSync, statSync, unlinkSync, writeFileSync, type WriteStream } from "fs";
 import { type Uri, workspace } from "vscode";
-import { logger } from "../extension";
+import extension from "../extension";
 
 export interface AppendOptions {
   zipEmptyDirs: boolean
-}
-
-export interface UriData {
-  name: string
-  stats: Stats
 }
 
 export class Zip {
@@ -50,7 +45,7 @@ export class Zip {
       }
     }
 
-    logger.info("Zip:", [...zipped]);
+    extension.debug("Zip:", [...zipped]);
   }
 
   destroy() {

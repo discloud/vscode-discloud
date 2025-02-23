@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync, readdirSync } from "fs";
-import { join, relative } from "path";
-import { commands, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
+import { extname, join, relative } from "path";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -10,12 +10,12 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import { FILE_EXT, replaceFileExtension } from "../util";
+import { NODE_MODULES_EXTENSIONS, replaceFileExtension } from "../util";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
-export default class Discloud extends EventEmitter<Events> {
+export default class Discloud extends EventEmitter<Events> implements Disposable {
   declare readonly appTree: AppTreeDataProvider;
   declare readonly context: ExtensionContext;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
@@ -135,8 +135,9 @@ export default class Discloud extends EventEmitter<Events> {
     return output;
   }
 
+  getWorkspaceFolder(uri?: Uri): Promise<Uri | undefined>
   async getWorkspaceFolder(uri?: Uri) {
-    if (uri) return workspace.getWorkspaceFolder(uri)?.uri ?? this.workspaceFolderUri;
+    if (uri) return workspace.getWorkspaceFolder(uri)?.uri ?? this.getWorkspaceFolder();
     const [workspaceFile] = await workspace.findFiles("*", null, 1);
     if (workspaceFile) return workspace.getWorkspaceFolder(workspaceFile)?.uri ?? this.workspaceFolderUri;
     return this.workspaceFolderUri;
@@ -146,7 +147,7 @@ export default class Discloud extends EventEmitter<Events> {
     if (!existsSync(dir)) return;
 
     for (const file of readdirSync(dir, { withFileTypes: true, recursive: true })) {
-      if (!file.isFile() || !file.name.endsWith(FILE_EXT)) continue;
+      if (!file.isFile() || !NODE_MODULES_EXTENSIONS.has(extname(file.name))) continue;
 
       const filePath = join(file.parentPath, file.name);
 
@@ -166,6 +167,11 @@ export default class Discloud extends EventEmitter<Events> {
       }
 
       const commandName = replaceFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
+
+      if (typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
+        this.debug(commandName, "❌");
+        continue;
+      }
 
       const disposable = commands.registerCommand(commandName, async (...args) => {
         if (!command.data.allowTokenless)
@@ -197,8 +203,10 @@ export default class Discloud extends EventEmitter<Events> {
 
       this.commands.set(commandName, command);
 
-      if (this.isDebug) logger.info(commandName, disposable ? "✅" : "❌");
+      this.debug(commandName, "✅");
     }
+
+    this.debug("Commands loaded:", this.commands.size);
   }
 
   async loadEvents(path = join(__dirname, "..", "events")) {
@@ -207,10 +215,12 @@ export default class Discloud extends EventEmitter<Events> {
     const promises = [];
 
     for (const file of readdirSync(path, { withFileTypes: true, recursive: true }))
-      if (file.isFile() && file.name.endsWith(FILE_EXT))
+      if (file.isFile() && NODE_MODULES_EXTENSIONS.has(extname(file.name)))
         promises.push(import(`${join(path, file.name)}`));
 
     await Promise.all(promises);
+
+    this.debug("Events loaded:", promises.length);
   }
 
   loadStatusBar() {
@@ -234,11 +244,11 @@ export default class Discloud extends EventEmitter<Events> {
     if (!context) return;
     Object.defineProperty(this, "context", { value: context });
     Object.defineProperties(this, {
-      appTree: { value: new AppTreeDataProvider("discloud-apps") },
-      customDomainTree: { value: new CustomDomainTreeDataProvider("discloud-domains") },
-      subDomainTree: { value: new SubDomainTreeDataProvider("discloud-subdomains") },
-      teamAppTree: { value: new TeamAppTreeDataProvider("discloud-teams") },
-      userTree: { value: new UserTreeDataProvider("discloud-user") },
+      appTree: { value: new AppTreeDataProvider() },
+      customDomainTree: { value: new CustomDomainTreeDataProvider() },
+      subDomainTree: { value: new SubDomainTreeDataProvider() },
+      teamAppTree: { value: new TeamAppTreeDataProvider() },
+      userTree: { value: new UserTreeDataProvider() },
     });
     this.emit("activate", context);
   }

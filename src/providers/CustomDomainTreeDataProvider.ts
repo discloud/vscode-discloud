@@ -2,8 +2,8 @@ import CustomDomainTreeItem from "../structures/CustomDomainTreeItem";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<CustomDomainTreeItem> {
-  constructor(viewId: string) {
-    super(viewId);
+  constructor() {
+    super("discloud-domains");
   }
 
   private clean(data: string[]) {

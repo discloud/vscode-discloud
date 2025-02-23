@@ -14,6 +14,10 @@ export default class UserChildTreeItem extends BaseChildTreeItem {
   }
 
   _patch(data: Partial<UserTreeItemData>) {
+    if (!data) return this;
+
     super._patch(data);
+
+    return this;
   }
 }
