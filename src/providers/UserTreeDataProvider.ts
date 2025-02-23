@@ -8,7 +8,7 @@ export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeI
   }
 
   clear() {
-    this.children.clear();
+    this.children.dispose();
     this.refresh();
   }
 

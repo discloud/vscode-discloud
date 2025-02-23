@@ -68,19 +68,19 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   get workspaceFolderUri() {
     const folders = workspace.workspaceFolders;
-    if (folders?.length) {
-      if (folders.length > 1) {
-        const name = workspace.name;
-        if (name) {
-          return folders.find(wf => name === wf.name || name.startsWith(wf.name) || name.endsWith(wf.name))?.uri
-            ?? folders[0].uri;
-        } else {
-          return folders[0].uri;
-        }
-      } else {
-        return folders[0].uri;
-      }
+
+    if (!folders?.length) return;
+
+    if (folders.length > 1) {
+      const name = workspace.name;
+
+      if (name) return folders
+        .find(wf => name === wf.name || name.startsWith(wf.name) || name.endsWith(wf.name))?.uri ?? folders[0].uri;
+
+      return folders[0].uri;
     }
+
+    return folders[0].uri;
   }
 
   get workspaceFolder() {
