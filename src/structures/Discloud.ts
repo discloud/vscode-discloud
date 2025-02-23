@@ -168,7 +168,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
       const commandName = replaceFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
 
-      if (typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
+      if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
         this.debug(commandName, "❌");
         continue;
       }
