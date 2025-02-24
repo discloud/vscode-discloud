@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.24
+
+- Correção do header do requester da api da Discloud
+- Correção da exibição do avatar do app
+
 ## 2.22.23
 
 - Melhorias de performance do sistema de linguagem do `discloud.config`
