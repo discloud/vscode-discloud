@@ -98,7 +98,7 @@ export async function requester<T>(path: RouteLike, config: RequestOptions = {},
   Object.assign(config.headers ??= {}, {
     "api-token": extension.token,
     "User-Agent": DEFAULT_USER_AGENT,
-  }, typeof config.body === "string" || config.body === undefined ? {
+  }, typeof config.body === "string" ? {
     "Content-Type": "application/json",
   } : {});
 
