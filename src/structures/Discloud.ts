@@ -10,7 +10,7 @@ import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvi
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import { NODE_MODULES_EXTENSIONS, replaceFileExtension } from "../util";
+import { NODE_MODULES_EXTENSIONS, removeFileExtension } from "../util";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -94,7 +94,11 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
       "team.backup.dir",
       "team.import.dir",
     ]
-      .map(config => join(...this.config.get<string>(config)?.split(/[\\/]/) ?? ""))
+      .reduce<string[]>((acc, config) => {
+        const data = this.config.get<string>(config);
+        if (data !== undefined) acc.push(join(data));
+        return acc;
+      }, [])
       .filter(Boolean)
       .concat("discloud", `${workspace.name}.zip`);
   }
@@ -166,7 +170,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
         command = imported.default ?? imported;
       }
 
-      const commandName = replaceFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
+      const commandName = removeFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
 
       if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
         this.debug(commandName, "❌");

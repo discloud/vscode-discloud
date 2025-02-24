@@ -1,7 +1,6 @@
-import { join } from "path";
+import { join, parse } from "path";
 import { type TreeItem, Uri } from "vscode";
 import extension from "../extension";
-import { NODE_MODULES_EXTENSIONS_REGEXP } from "./regexp";
 
 export function bindFunctions<I extends Record<any, any>>(instance: I): void;
 export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
@@ -67,8 +66,9 @@ export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
   }
 }
 
-export function replaceFileExtension(file: string, replacement = "") {
-  return file.replace(NODE_MODULES_EXTENSIONS_REGEXP, replacement);
+export function removeFileExtension(file: string) {
+  const parsed = parse(file);
+  return join(parsed.dir, parsed.name);
 }
 
 export function clamp(value: number, lowerLimit: number, upperLimit: number) {
