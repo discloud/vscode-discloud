@@ -8,7 +8,7 @@ export default abstract class BaseTreeDataProvider<T extends BaseTreeItem<any>> 
   onDidChangeTreeData = this._onDidChangeTreeData.event;
   readonly children = new DisposableMap<string, T>();
 
-  constructor(public readonly viewId: string) {
+  constructor(readonly viewId: string) {
     const disposable = window.registerTreeDataProvider(viewId, this);
 
     extension.subscriptions.push(disposable, this._onDidChangeTreeData, this.children);
