@@ -9,7 +9,7 @@ export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<SubD
   private clean(data: string[]) {
     for (const child of this.children.keys()) {
       if (!data.includes(child)) {
-        this.children.delete(child);
+        this.children.dispose(child);
       }
     }
   }

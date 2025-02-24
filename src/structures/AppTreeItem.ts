@@ -28,6 +28,12 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     this._patch(data);
   }
 
+  dispose() {
+    this.output.dispose();
+
+    super.dispose();
+  }
+
   get contextJSON() {
     return {
       online: this.online,
