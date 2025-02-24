@@ -6,6 +6,7 @@ import { type TextDocument } from "vscode";
 import extension from "../extension";
 
 export default class BaseLanguageProvider {
+  declare readonly draft: JsonEditor;
   declare readonly schema: JSONSchema7;
   declare readonly scopes: string[];
 
@@ -13,6 +14,7 @@ export default class BaseLanguageProvider {
     if (path) {
       try {
         this.schema = JSON.parse(readFileSync(extension.context.asAbsolutePath(path), "utf8"));
+        this.draft = new JsonEditor(this.schema);
         this.scopes = Object.keys(this.schema.properties ?? {});
       } catch (error: any) {
         extension.logger.error(error);
