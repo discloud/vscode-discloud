@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.23
+
+- Melhorias de performance do sistema de linguagem do `discloud.config`
+- Correção de descarte de apps ao deletá-los
+
 ## 2.22.19
 
 - Melhorias no sistema de linguagem do `discloud.config`
