@@ -65,15 +65,15 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     switch (showAvatar) {
       case "always": {
-        if (data.avatarURL)
-          this.iconPath = Uri.parse(data.avatarURL);
+        if (this.data.avatarURL !== undefined)
+          this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
       }
 
       case "when.online": {
-        if (this.online && data.avatarURL)
-          this.iconPath = Uri.parse(data.avatarURL);
+        if (this.online && this.data.avatarURL !== undefined)
+          this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
       }
