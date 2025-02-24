@@ -45,10 +45,10 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     super._patch(data);
 
     if (data.avatarURL !== undefined)
-      this.data.avatarURL = this.data.avatarURL.replace(/\s+/g, "");
+      this.data.avatarURL = data.avatarURL = data.avatarURL.replace(/\s+/g, "");
 
     if (data.name !== undefined)
-      this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
+      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
     this.iconPath = getIconPath(this.iconName);
@@ -59,15 +59,15 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     switch (showAvatar) {
       case "always": {
-        if (this.data.avatarURL)
-          this.iconPath = Uri.parse(this.data.avatarURL);
+        if (data.avatarURL)
+          this.iconPath = Uri.parse(data.avatarURL);
 
         break;
       }
 
       case "when.online": {
-        if (this.online && this.data.avatarURL)
-          this.iconPath = Uri.parse(this.data.avatarURL);
+        if (this.online && data.avatarURL)
+          this.iconPath = Uri.parse(data.avatarURL);
 
         break;
       }
@@ -75,14 +75,13 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if (typeof data.memory === "string") {
-      const matched = this.data.memory!.match(/[\d.]+/g) ?? [];
-      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
+    if (data.memory !== undefined) {
+      const matched = data.memory.match(/[\d.]+/g) ?? [];
+      data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if (typeof data.startedAt === "string") {
-      this.data.startedAtTimestamp = new Date(this.data.startedAt!).valueOf();
-    }
+    if (data.startedAt !== undefined)
+      data.startedAtTimestamp = new Date(data.startedAt).valueOf();
 
     this._addChild("status", {
       label: this.online ? t("online") : t("offline"),
@@ -92,35 +91,35 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     if (data.memory !== undefined)
       this._addChild("memory", {
-        label: this.data.memory,
+        label: data.memory,
         description: t("label.ram"),
         iconName: "ram",
       });
 
     if (data.cpu !== undefined)
       this._addChild("cpu", {
-        label: this.data.cpu,
+        label: data.cpu,
         description: t("label.cpu"),
         iconName: "cpu",
       });
 
     if (data.ssd !== undefined)
       this._addChild("ssd", {
-        label: this.data.ssd,
+        label: data.ssd,
         description: t("label.ssd"),
         iconName: "ssd",
       });
 
     if (data.netIO !== undefined)
       this._addChild("netIO", {
-        label: `⬇${this.data.netIO!.down} ⬆${this.data.netIO!.up}`,
+        label: `⬇${data.netIO.down} ⬆${data.netIO.up}`,
         description: t("network"),
         iconName: "network",
       });
 
     if (data.last_restart !== undefined)
       this._addChild("last_restart", {
-        label: this.data.last_restart,
+        label: data.last_restart,
         description: t("last.restart"),
         iconName: "uptime",
       });

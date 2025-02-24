@@ -49,21 +49,20 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     super._patch(data);
 
     if (data.name !== undefined)
-      this.label = this.type === AppType.bot ? `${this.data.name} (${this.appId})` : this.appId;
+      this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
     this.iconPath = getIconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if (typeof data.memory === "string") {
-      const matched = this.data.memory!.match(/[\d.]+/g) ?? [];
-      this.data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
+    if (data.memory !== undefined) {
+      const matched = data.memory.match(/[\d.]+/g) ?? [];
+      data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if (typeof data.startedAt === "string") {
-      this.data.startedAtTimestamp = new Date(this.data.startedAt!).valueOf();
-    }
+    if (data.startedAt !== undefined)
+      data.startedAtTimestamp = new Date(data.startedAt).valueOf();
 
     if (typeof this.online === "boolean")
       this._addChild("status", {
@@ -75,7 +74,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if (data.memory !== undefined)
       this._addChild("memory", {
-        label: this.data.memory!,
+        label: data.memory!,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
@@ -83,7 +82,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if (data.cpu !== undefined)
       this._addChild("cpu", {
-        label: this.data.cpu!,
+        label: data.cpu!,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
@@ -91,7 +90,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if (data.ssd !== undefined)
       this._addChild("ssd", {
-        label: this.data.ssd!,
+        label: data.ssd!,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
@@ -107,21 +106,21 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     if (data.last_restart !== undefined)
       this._addChild("last_restart", {
-        label: this.data.last_restart!,
+        label: data.last_restart!,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,
       });
 
     if (data.perms) {
-      this.permissions.set(<ModPermissionsResolvable>this.data.perms);
+      this.permissions.set(<ModPermissionsResolvable>data.perms);
 
       this._addChild("perms", {
-        label: `${this.data.perms!.length} / ${totalModPerms}`,
+        label: `${data.perms.length} / ${totalModPerms}`,
         description: t("permissions"),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-        children: this.data.perms!.map(perm => new TeamAppChildTreeItem({
+        children: data.perms.map(perm => new TeamAppChildTreeItem({
           label: t(`permission.${perm}`),
           appId: this.appId,
           appType: this.type,
