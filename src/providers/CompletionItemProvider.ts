@@ -1,6 +1,5 @@
 import { existsSync } from "fs";
 import type { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
-import { JsonEditor } from "json-schema-library";
 import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type TextDocument, type TextLine } from "vscode";
 import type { ProviderOptions } from "../@types";
 import extension from "../extension";
@@ -32,7 +31,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
         let schema = this.schema;
 
-        const maybeSchema = new JsonEditor(schema).getSchema({ data, pointer: key });
+        const maybeSchema = this.draft.getSchema({ data, pointer: key });
 
         if (maybeSchema && maybeSchema.type !== "error")
           schema = maybeSchema as JSONSchema7;
@@ -242,11 +241,11 @@ async function safeReadDirectory(uri: Uri) {
   }
 }
 
-const fileTypeAsCompletionItemKind = {
+const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {
   [FileType.Unknown]: CompletionItemKind.Keyword,
-  [FileType.SymbolicLink]: CompletionItemKind.Keyword,
   [FileType.File]: CompletionItemKind.File,
   [FileType.Directory]: CompletionItemKind.Folder,
+  [FileType.SymbolicLink]: CompletionItemKind.Keyword,
 };
 
 interface ParseSchemaOptions {

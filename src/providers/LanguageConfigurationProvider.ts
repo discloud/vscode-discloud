@@ -54,12 +54,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
   checkDocument(document: TextDocument) {
     if (document.languageId !== this.schema.$id) return;
 
-    const diagnostics = <Diagnostic[]>[];
+    const diagnostics: Diagnostic[] = [];
 
-    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
+    const workspaceFolder = workspace.getWorkspaceFolder(document.uri)?.uri;
 
     if (workspaceFolder) {
-      if (workspaceFolder !== dirname(document.uri.fsPath)) {
+      if (workspaceFolder.fsPath !== dirname(document.uri.fsPath)) {
         window.showErrorMessage(t("diagnostic.wrong.file.location"));
 
         diagnostics.push({
@@ -73,9 +73,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     }
 
-    const config = this.transformConfigToJSON(document);
+    const data = this.transformConfigToJSON(document);
 
-    const errors = this.validateJsonSchema(config);
+    const errors = this.validateJsonSchema(data);
 
     for (let i = 0; i < errors.length; i++) {
       const error = errors[i];
@@ -85,7 +85,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
           errors.splice(i, 1);
 
           diagnostics.push({
-            message: error.message.substring(0, error.message.indexOf(` at \`${error.data.pointer}\``)),
+            message: error.message.substring(0, error.message.lastIndexOf(` at \`${error.data.pointer}\``)),
             range: new Range(
               new Position(0, 0),
               new Position(0, 0),
@@ -104,9 +104,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       const keyAndValue = line.text.split("=");
       const [key, value] = keyAndValue;
 
-      const scopeSchema = this.schema.properties?.[key];
+      const scopeSchema = this.draft.getSchema({ data, pointer: key });
 
-      if (!scopeSchema || typeof scopeSchema === "boolean") continue;
+      if (!scopeSchema || scopeSchema.type === "error") continue;
 
       const errorIndex = errors.findIndex(e => e.data.pointer.includes(key));
 
