@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.25
+
+- Correção do sistema de arquivos para ignorar corretamente o que contiver no `.discloudignore`
+
 ## 2.22.24
 
 - Correção do header do requester da api da Discloud
