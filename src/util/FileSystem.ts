@@ -85,33 +85,36 @@ export class FileSystem {
     }
   }
 
-  static async findIgnoreFile(fileName: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
+  static async findIgnoreFile(filename: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
     if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
 
     if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
 
     if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
 
-    const files = await workspace.findFiles(join("**", fileName), ignoreList, undefined, token);
+    const files = await workspace.findFiles(join("**", filename), ignoreList, undefined, token);
 
-    return await Promise.all(files.map(async function (file) {
+    const result = new Set<string>();
+
+    for (const file of files) {
       const stat = await workspace.fs.stat(file);
 
       if (stat.type !== FileType.File || !stat.size) return [];
 
-      const relativeFolder = workspace.asRelativePath(dirname(file.fsPath));
+      const relativeFolder = dirname(workspace.asRelativePath(file, false));
 
       const fileBuffer = await workspace.fs.readFile(file);
 
-      return fileBuffer.toString()
-        .replace(/[\r\n]*\s*#.*/g, "")
-        .split(/[\r\n]+/)
-        .reduce<string[]>(function (acc, value) {
-          if (value) acc.push(join(relativeFolder, value.replace(/(^[/\\]|[/\\]$)/g, "")));
-          return acc;
-        }, []);
-    }))
-      .then(values => Array.from(new Set(values.flat())));
+      const patterns = fileBuffer.toString()
+        .replace(/\s*#.*/g, "")
+        .split(/[\r\n]+/);
+
+      for (const pattern of patterns) {
+        result.add(join(relativeFolder, pattern));
+      }
+    }
+
+    return Array.from(result);
   }
 
 
