@@ -30,7 +30,7 @@ export class Zip {
     for (const uri of uriList) {
       if (zipped.has(uri.fsPath) || !existsSync(uri.fsPath)) continue;
 
-      const name = workspace.asRelativePath(uri.fsPath);
+      const name = workspace.asRelativePath(uri.fsPath, false);
       if (!name) continue;
 
       let stats;
