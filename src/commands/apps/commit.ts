@@ -51,22 +51,15 @@ export default class extends Command {
 
     const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
-    let zipper;
-    try {
-      zipper = new Zip(saveUri.fsPath);
-      zipper.appendUriList(found);
-      await zipper.finalize();
-    } catch (error) {
-      zipper?.destroy();
-      throw error;
-    }
+    const zipper = new Zip();
+
+    zipper.appendUriList(found);
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(saveUri.fsPath, zipName));
-      if (!extension.isDebug) zipper.destroy();
+      form.append("file", await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
-      if (!extension.isDebug) zipper.destroy();
+      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
       throw error;
     }
 

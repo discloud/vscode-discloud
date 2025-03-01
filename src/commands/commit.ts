@@ -44,26 +44,19 @@ export default class extends Command {
     const found = await fs.findFiles(task.token);
     if (!found.length) throw Error(t("files.missing"));
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
-
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
-    let zipper;
-    try {
-      zipper = new Zip(saveUri.fsPath);
-      zipper.appendUriList(found);
-      await zipper.finalize();
-    } catch (error) {
-      zipper?.destroy();
-      throw error;
-    }
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
+
+    const zipper = new Zip();
+
+    await zipper.appendUriList(found);
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(saveUri.fsPath, zipName));
-      if (!extension.isDebug) zipper.destroy();
+      form.append("file", await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
-      if (!extension.isDebug) zipper.destroy();
+      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
       throw error;
     }
 
