@@ -65,7 +65,7 @@ export default class extends Command {
     let zipper;
     try {
       zipper = new Zip();
-      zipper.appendUriList(found);
+      await zipper.appendUriList(found);
     } catch (error) {
       dConfig.dispose();
       throw error;

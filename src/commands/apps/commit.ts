@@ -53,7 +53,7 @@ export default class extends Command {
 
     const zipper = new Zip();
 
-    zipper.appendUriList(found);
+    await zipper.appendUriList(found);
 
     const form = new FormData();
     try {
