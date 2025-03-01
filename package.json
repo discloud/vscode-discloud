@@ -1,20 +1,20 @@
 {
   "name": "discloud",
   "displayName": "Discloud",
-  "icon": "resources/icons/discloudlogo.png",
-  "galleryBanner": {
-    "color": "#0b0b0b",
-    "theme": "dark"
-  },
-  "publisher": "discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
+  "publisher": "discloud",
   "version": "2.22.25",
+  "engines": {
+    "vscode": "^1.97.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/discloud/vscode-discloud.git"
   },
-  "engines": {
-    "vscode": "^1.97.0"
+  "icon": "resources/icons/discloudlogo.png",
+  "galleryBanner": {
+    "color": "#0b0b0b",
+    "theme": "dark"
   },
   "sponsor": {
     "url": "https://discloudbot.com/plans"
