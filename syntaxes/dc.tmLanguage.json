@@ -4,7 +4,7 @@
   "patterns": [
     {
       "comment": "Comments",
-      "match": "(\\s*#.*)",
+      "match": "\\s*(#.*)",
       "captures": {
         "1": {
           "patterns": [
@@ -17,7 +17,7 @@
     },
     {
       "comment": "Entries",
-      "match": "^(\\w+)(\\=)(.*)$",
+      "match": "^(\\w+)(=)([^#]*)(#.*)?$",
       "captures": {
         "1": {
           "name": "variable.parameter"
@@ -35,6 +35,13 @@
             },
             {
               "include": "#unquoted"
+            }
+          ]
+        },
+        "4": {
+          "patterns": [
+            {
+              "include": "#inline"
             }
           ]
         }

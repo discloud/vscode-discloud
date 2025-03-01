@@ -520,7 +520,7 @@
       },
       {
         "language": "discloudignore",
-        "scopeName": "discloudignore",
+        "scopeName": "text.discloudignore",
         "path": "./syntaxes/di.tmLanguage.json"
       }
     ],
