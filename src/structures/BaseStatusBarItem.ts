@@ -8,7 +8,7 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
 
   constructor(data: Partial<Omit<StatusBarItem, "dispose" | "hide" | "show">>) {
     this.data = window.createStatusBarItem(data.alignment, data.priority);
-    extension.subscriptions.push(this.data);
+    extension.context.subscriptions.push(this.data);
     bindFunctions(this.data);
     this.originalData = Object.assign(Object.create(this.data), this.data);
     this.set(data);

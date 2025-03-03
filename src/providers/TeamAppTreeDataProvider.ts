@@ -1,19 +1,18 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
-import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {
-  constructor() {
-    super("discloud-teams");
+  constructor(context: ExtensionContext) {
+    super(context, "discloud-teams");
   }
 
   getChildren(element?: TeamAppTreeItem): ProviderResult<TeamAppTreeItem[]>;
-  getChildren(element?: NonNullable<TeamAppTreeItem>): ProviderResult<TreeItem[]> {
+  getChildren(element?: TeamAppTreeItem): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
@@ -157,7 +156,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   async getApps() {
-    const res = await requester<RESTGetApiTeamResult>("/team");
+    const res = await extension.rest.get<RESTGetApiTeamResult>("/team");
 
     if (!res) return;
 
@@ -177,10 +176,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   async getStatus(appId: string = "all") {
-    const res = await requester<
+    const res = await extension.rest.queueGet<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
-    >(Routes.teamStatus(appId), {}, true);
+      >(Routes.teamStatus(appId), {});
 
     if (!res) return;
 

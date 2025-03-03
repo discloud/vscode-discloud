@@ -2,6 +2,7 @@ import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import DiscloudAPIError from "../../services/discloud/error";
 import Command from "../../structures/Command";
 
 export default class extends Command {
@@ -31,14 +32,16 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.user.setLocale(locale).catch(r => r?.body ?? r);
-    if (!res) return;
+    try {
+      const response = await extension.user.setLocale(locale);
+      if (!response) return;
 
-    if (res.status === "ok")
-      this.showApiMessage(res);
-
-    if ("localeList" in res) {
-      commands.executeCommand("discloud.user.set.locale", res.localeList);
+      if (response.status === "ok")
+        this.showApiMessage(response);
+    } catch (error) {
+      if (error instanceof DiscloudAPIError)
+        if ("localeList" in error.body)
+          commands.executeCommand("discloud.user.set.locale", error.body.localeList);
     }
   }
 }

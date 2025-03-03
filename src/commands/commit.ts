@@ -3,7 +3,6 @@ import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.ap
 import { ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import Command from "../structures/Command";
 import { FileSystem, Zip } from "../util";
 
@@ -52,9 +51,9 @@ export default class extends Command {
 
     await zipper.appendUriList(found);
 
-    const form = new FormData();
+    const files = [];
     try {
-      form.append("file", await resolveFile(zipper.getBuffer(), zipName));
+      files.push(await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
       if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
       throw error;
@@ -62,12 +61,10 @@ export default class extends Command {
 
     task.progress.report({ increment: -1, message: t("committing") });
 
-    const res = await requester<RESTPutApiAppCommitResult>(picked.isApp ?
-      Routes.appCommit(picked.id) :
-      Routes.teamCommit(picked.id), {
-      body: form,
-      method: "PUT",
-    });
+    const res = await extension.rest.put<RESTPutApiAppCommitResult>(
+      picked.isApp ? Routes.appCommit(picked.id) : Routes.teamCommit(picked.id),
+      { files },
+    );
 
     if (!res) return;
 

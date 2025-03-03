@@ -4,7 +4,6 @@ import { existsSync } from "fs";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import { requester } from "../../services/discloud";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
@@ -32,7 +31,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await requester<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
+    const res = await extension.rest.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
     if (!res) return;
 
     if (!res.backups) throw Error(t("no.backup.found"));

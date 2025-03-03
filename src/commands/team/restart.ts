@@ -3,7 +3,6 @@ import { type RESTPutApiAppRestartResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -26,7 +25,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTPutApiAppRestartResult>(Routes.teamRestart(item.appId), { method: "PUT" });
+    const res = await extension.rest.put<RESTPutApiAppRestartResult>(Routes.teamRestart(item.appId));
     if (!res) return;
 
     if ("status" in res) {

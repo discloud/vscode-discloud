@@ -25,7 +25,9 @@ export interface BaseTreeItemData extends Omit<TreeItem, "id"> {
   children?: TreeItem[] | Map<string, TreeItem>
 }
 
-export interface BaseChildTreeItemData extends BaseTreeItemData { }
+export interface BaseChildTreeItemData extends Omit<TreeItem, "id"> {
+  label: NonNullable<TreeItem["label"]>
+}
 
 export interface AppChildTreeItemData extends BaseChildTreeItemData {
   appId: string

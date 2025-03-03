@@ -3,7 +3,6 @@ import { type RESTPutApiAppStartResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import { requester } from "../../services/discloud";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
@@ -23,7 +22,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await requester<RESTPutApiAppStartResult>(Routes.appStart(item.appId), { method: "PUT" });
+    const res = await extension.rest.put<RESTPutApiAppStartResult>(Routes.appStart(item.appId));
     if (!res) return;
 
     if ("status" in res) {

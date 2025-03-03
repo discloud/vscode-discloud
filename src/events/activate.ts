@@ -3,18 +3,17 @@ import { workspace } from "vscode";
 import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
-import { tokenValidator } from "../services/discloud";
+import { tokenValidator } from "../services/discloud/utils";
+import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util";
 
 extension.on("activate", async function (context) {
-  extension.logger.info("Activate: begin");
-
   extension.loadStatusBar();
   extension.statusBar.setLoading();
 
   await extension.loadCommands();
 
-  new CompletionItemProvider({ path: "discloudconfigschema.json" });
-  new LanguageConfigurationProvider({ path: "discloudconfigschema.json" });
+  new CompletionItemProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
+  new LanguageConfigurationProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {

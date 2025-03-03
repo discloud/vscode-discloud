@@ -2,7 +2,7 @@ import extension from "../extension";
 
 extension.on("vscode", async function (user) {
   if (user) {
-    extension.userTree.set(Object.create(user));
+    extension.userTree.set(user);
 
     if ("appsStatus" in user)
       extension.appTree.setRawApps(user.appsStatus);

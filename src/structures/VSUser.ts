@@ -1,7 +1,6 @@
 import { type RESTPutApiLocaleResult, Routes } from "discloud.app";
 import { type ApiVscodeApp, type ApiVscodeUser, type RESTGetApiVscode } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 
 export default class VSUser implements ApiVscodeUser {
   readonly apps: string[] = [];
@@ -18,7 +17,9 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly userName: string;
 
   async fetch(isVS?: boolean) {
-    const res = await requester<RESTGetApiVscode>("/vscode", {}, isVS);
+    const method = isVS ? "queueGet" : "get";
+
+    const res = await extension.rest[method]<RESTGetApiVscode>("/vscode", {});
 
     if (!res) return this;
 
@@ -32,7 +33,7 @@ export default class VSUser implements ApiVscodeUser {
   }
 
   async setLocale(locale: string) {
-    const res = await requester<RESTPutApiLocaleResult>(Routes.locale(locale), { method: "PUT" });
+    const res = await extension.rest.put<RESTPutApiLocaleResult>(Routes.locale(locale));
     if (!res) return null;
 
     if ("locale" in res)

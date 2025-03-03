@@ -2,7 +2,6 @@ import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItem
 import { type BaseChildTreeItemData } from "../@types";
 
 export default class BaseChildTreeItem extends TreeItem implements Disposable {
-  declare children: Map<string, TreeItem>;
   readonly contextKey = "ChildTreeItem";
   contextValue = this.contextKey;
 
@@ -36,14 +35,6 @@ export default class BaseChildTreeItem extends TreeItem implements Disposable {
     if (data.resourceUri !== undefined) this.resourceUri = data.resourceUri;
 
     this.tooltip = data.tooltip ?? this.description ? `${this.description}: ${this.label}` : `${this.label}`;
-
-    if (data.children) {
-      if (data.children instanceof Map) {
-        this.children = data.children;
-      } else {
-        this.children = new Map(data.children.map(child => [`${child.label}`, child]));
-      }
-    }
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 

@@ -2,19 +2,22 @@ import { t } from "@vscode/l10n";
 import { readFileSync } from "fs";
 import type { JSONSchema7 } from "json-schema";
 import { JsonEditor } from "json-schema-library";
-import { type TextDocument } from "vscode";
+import { type ExtensionContext, type TextDocument } from "vscode";
 import extension from "../extension";
 
 export default class BaseLanguageProvider {
+  static readonly #schemas: Record<string, JSONSchema7> = {};
+  static readonly #drafts: Record<string, JsonEditor> = {};
   declare readonly draft: JsonEditor;
   declare readonly schema: JSONSchema7;
   declare readonly scopes: string[];
 
-  constructor(path: string) {
+  constructor(readonly context: ExtensionContext, path: string) {
     if (path) {
       try {
-        this.schema = JSON.parse(readFileSync(extension.context.asAbsolutePath(path), "utf8"));
-        this.draft = new JsonEditor(this.schema);
+        this.schema = BaseLanguageProvider.#schemas[path]
+          ??= JSON.parse(readFileSync(context.asAbsolutePath(path), "utf8"));
+        this.draft = BaseLanguageProvider.#drafts[path] ??= new JsonEditor(this.schema);
         this.scopes = Object.keys(this.schema.properties ?? {});
       } catch (error: any) {
         extension.logger.error(error);
@@ -31,7 +34,7 @@ export default class BaseLanguageProvider {
   }
 
   validateJsonSchema(data: Record<any, any>) {
-    return new JsonEditor(this.schema).validate(data);
+    return this.draft.validate(data);
   }
 
   #configToObj(s: string) {

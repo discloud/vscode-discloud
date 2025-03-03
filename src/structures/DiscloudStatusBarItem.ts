@@ -2,7 +2,6 @@ import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
 import { type StatusBarItem, ThemeColor, workspace } from "vscode";
 import extension from "../extension";
-import { tokenIsValid } from "../services/discloud";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {
@@ -39,7 +38,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     super.reset(data);
 
-    if (this.token && tokenIsValid) {
+    if (this.token && extension.rest.tokenIsValid) {
       this.setDefault();
     } else {
       this.setLogin();

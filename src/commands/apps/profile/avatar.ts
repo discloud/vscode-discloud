@@ -3,7 +3,6 @@ import { type BaseApiApp, DiscloudConfig, type RESTApiBaseResult, Routes } from 
 import { window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
-import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import { IMAGE_URL_REGEXP } from "../../../util/regexp";
@@ -34,10 +33,7 @@ export default class extends Command {
 
     avatarURL = avatarURL.replace(/\s+/g, "");
 
-    const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
-      body: JSON.stringify({ avatarURL }),
-      method: "PUT",
-    });
+    const res = await extension.rest.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
     if (!res) return;
 
     if ("status" in res) {

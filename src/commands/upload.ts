@@ -3,7 +3,6 @@ import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } fro
 import { ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import Command from "../structures/Command";
 import { FileSystem, Zip } from "../util";
 
@@ -60,8 +59,6 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
-
     let zipper;
     try {
       zipper = new Zip();
@@ -71,9 +68,11 @@ export default class extends Command {
       throw error;
     }
 
-    const form = new FormData();
+    const saveUri = Uri.joinPath(workspaceFolder, zipName);
+
+    const files = [];
     try {
-      form.append("file", await resolveFile(zipper.getBuffer(), zipName));
+      files.push(await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
       dConfig.dispose();
       if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
@@ -82,10 +81,7 @@ export default class extends Command {
 
     task.progress.report({ increment: -1, message: t("uploading") });
 
-    const res = await requester<RESTPostApiUploadResult>(Routes.upload(), {
-      body: form,
-      method: "POST",
-    });
+    const res = await extension.rest.post<RESTPostApiUploadResult>(Routes.upload(), { files });
 
     queueMicrotask(() => dConfig.dispose());
 

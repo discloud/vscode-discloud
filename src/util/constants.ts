@@ -1,21 +1,10 @@
-import { readFileSync } from "fs";
-import { arch, platform, release, type } from "os";
-import { extname, join } from "path";
+import { extname } from "path";
 
 export const FILE_EXT = extname(__filename);
 
 export const NODE_MODULES_EXTENSIONS = new Set<string>([FILE_EXT, ".cjs", ".js", ".mjs"]);
 
-export const EXTENSION_ROOT_PATH = join(__dirname, "..", "..");
-export let PACKAGE_JSON: Record<any, any> = {};
-try { PACKAGE_JSON = JSON.parse(readFileSync(join(EXTENSION_ROOT_PATH, "package.json"), "utf8")); } catch { }
-export const VERSION: string = PACKAGE_JSON.version ?? "*";
-export const OS_NAME = type();
-export const OS_RELEASE = release().split?.(".").slice(0, 2).join(".") ?? release();
-export const OS_PLATFORM = platform();
-export const CPU_ARCH = arch();
-
-export const DEFAULT_USER_AGENT = `vscode/${VERSION} (${OS_NAME} ${OS_RELEASE}; ${OS_PLATFORM}; ${CPU_ARCH})`;
+export const DISCLOUD_CONFIG_SCHEMA_FILE_NAME = "discloudconfigschema.json";
 
 export const DISCLOUD_CONFIG_SCOPES = [
   "ID",

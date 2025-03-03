@@ -3,7 +3,6 @@ import { type BaseApiApp, DiscloudConfig, type RESTApiBaseResult, Routes } from 
 import { window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
-import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 
@@ -31,12 +30,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTApiBaseResult>(Routes.appProfile(item.appId), {
-      body: JSON.stringify({
-        name,
-      }),
-      method: "PUT",
-    });
+    const res = await extension.rest.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { name } });
     if (!res) return;
 
     if ("status" in res) {

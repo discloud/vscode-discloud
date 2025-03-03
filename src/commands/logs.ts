@@ -3,7 +3,6 @@ import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.ap
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import Command from "../structures/Command";
 
 export default class extends Command {
@@ -43,9 +42,9 @@ export default class extends Command {
       }
     }
 
-    const res = await requester<RESTGetApiAppLogResult>(item.isApp ?
-      Routes.appLogs(item.appId) :
-      Routes.teamLogs(item.appId));
+    const res = await extension.rest.get<RESTGetApiAppLogResult>(item.isApp
+      ? Routes.appLogs(item.appId)
+      : Routes.teamLogs(item.appId));
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big)

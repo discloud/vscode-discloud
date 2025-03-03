@@ -68,7 +68,7 @@
     },
     "VERSION": {
       "type": "string",
-      "pattern": "^(current|latest|suja|(?:\\d+(?:\\.[\\dx]+(?:\\.[\\dx]+)?)?))$",
+      "pattern": "^(current|latest|suja|(?:\\d+(?:\\.[\\dx]+){0,2}))$",
       "default": "latest",
       "examples": [
         "latest",

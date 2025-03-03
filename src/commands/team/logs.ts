@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import { requester } from "../../services/discloud";
+import extension from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -22,7 +22,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await requester<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
+    const res = await extension.rest.get<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) throw Error(t("no.log.found"));
