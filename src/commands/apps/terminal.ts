@@ -21,7 +21,7 @@ export default class extends Command {
       name: typeof item.label === "string" ? item.label : item.appId,
     });
 
-    extension.subscriptions.push(terminal);
+    extension.context.subscriptions.push(terminal);
 
     terminal.show();
 

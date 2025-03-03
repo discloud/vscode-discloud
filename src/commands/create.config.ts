@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
-import { workspace } from "vscode";
+import { Uri, workspace } from "vscode";
 import extension from "../extension";
 import Command from "../structures/Command";
 
@@ -15,25 +15,25 @@ export default class extends Command {
     const workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
-    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
-    queueMicrotask(() => dConfig.dispose());
+    const findConfig = await workspace.findFiles(DiscloudConfig.filename);
 
-    if (dConfig.exists) return;
+    if (findConfig.length) return;
 
-    dConfig.update({
-      ID: "",
-      TYPE: "bot",
-      MAIN: "",
-      NAME: workspace.name,
-      AVATAR: "",
-      RAM: 100,
-      AUTORESTART: false,
-      VERSION: "latest",
-      APT: "",
-      BUILD: "",
-      START: "",
-    }, [
+    const content = [
       "# https://docs.discloudbot.com/discloud.config",
-    ]);
+      "ID=",
+      "TYPE=bot",
+      "MAIN=",
+      `NAME=${workspace.name}`,
+      "AVATAR=",
+      "RAM=100",
+      "AUTORESTART=false",
+      "VERSION=latest",
+      "APT=",
+      "BUILD=",
+      "START=",
+    ].join("\n");
+
+    await workspace.fs.writeFile(Uri.joinPath(workspaceFolder, DiscloudConfig.filename), Buffer.from(content, "utf8"));
   }
 }

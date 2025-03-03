@@ -1,9 +1,10 @@
+import { type ExtensionContext } from "vscode";
 import CustomDomainTreeItem from "../structures/CustomDomainTreeItem";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<CustomDomainTreeItem> {
-  constructor() {
-    super("discloud-domains");
+  constructor(context: ExtensionContext) {
+    super(context, "discloud-domains");
   }
 
   private clean(data: string[]) {

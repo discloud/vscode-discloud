@@ -1,11 +1,12 @@
-export default class DiscloudAPIError extends Error {
+export default class DiscloudAPIError<T = any> extends Error {
   constructor(
-    readonly responseBody: any,
+    readonly body: T,
     readonly code: number,
     readonly method: string,
     readonly path: string,
     readonly requestBody?: any,
   ) {
-    super(responseBody?.message ?? responseBody);
+    // @ts-expect-error ts(2339)
+    super(body?.message ?? body);
   }
 }

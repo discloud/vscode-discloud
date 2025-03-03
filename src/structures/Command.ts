@@ -3,7 +3,6 @@ import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, type ModPermissi
 import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import type AppTreeItem from "./AppTreeItem";
 import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
@@ -83,7 +82,7 @@ export default abstract class Command {
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
-        promises[1] = requester<RESTGetApiTeamResult>(Routes.team(), {}, true).catch(() => null);
+        promises[1] = extension.rest.queueGet<RESTGetApiTeamResult>(Routes.team(), {}).catch(() => null);
       }
 
       const [resApps, resTeamApps] = await Promise.all(promises) as [VSUser, RESTGetApiTeamResult];
@@ -222,7 +221,7 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const res = await requester<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {}, true);
+    const res = await extension.rest.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
     if (!res?.team?.length) return;
 
     const mods = new Map(res.team.map(team => [team.modID, {

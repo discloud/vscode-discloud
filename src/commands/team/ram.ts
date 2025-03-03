@@ -4,7 +4,6 @@ import { ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import { requester } from "../../services/discloud";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { InputBox } from "../../util/Input";
@@ -39,10 +38,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), {
-      body: JSON.stringify({ ramMB }),
-      method: "PUT",
-    });
+    const res = await extension.rest.put<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), { body: { ramMB } });
     if (!res) return;
 
     if ("status" in res) {

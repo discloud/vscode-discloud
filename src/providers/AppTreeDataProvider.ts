@@ -1,20 +1,19 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
-import { requester } from "../services/discloud";
 import AppTreeItem from "../structures/AppTreeItem";
 import { compareBooleans, compareNumbers, getIconPath } from "../util";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
-  constructor() {
-    super("discloud-apps");
+  constructor(context: ExtensionContext) {
+    super(context, "discloud-apps");
   }
 
   getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
-  getChildren(element?: NonNullable<AppTreeItem>): ProviderResult<TreeItem[]> {
+  getChildren(element?: AppTreeItem): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
@@ -161,10 +160,10 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   async getStatus(appId: string = "all") {
-    const res = await requester<
+    const res = await extension.rest.queueGet<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
-    >(Routes.appStatus(appId), {}, true);
+      >(Routes.appStatus(appId), {});
 
     if (!res) return;
 

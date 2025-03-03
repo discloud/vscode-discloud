@@ -23,9 +23,9 @@ extension.on("error", async function (error: any) {
 
   const message = error.message ?? error;
 
-  if (error.responseBody && typeof error.responseBody === "object" && "button" in error.responseBody) {
-    const buttonLabel = error.responseBody.button.label;
-    const buttonUrl = error.responseBody.button.url;
+  if (error.body && typeof error.body === "object" && "button" in error.body) {
+    const buttonLabel = error.body.button.label;
+    const buttonUrl = error.body.button.url;
     const action = await window.showErrorMessage(message, buttonLabel);
     if (action === buttonLabel) await commands.executeCommand("vscode.open", buttonUrl);
     return;

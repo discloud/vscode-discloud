@@ -2,9 +2,9 @@ import { t } from "@vscode/l10n";
 import { type RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../../@types";
-import { requester } from "../../../services/discloud";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
+import extension from "../../../extension";
 
 export default class extends Command {
   constructor() {
@@ -28,7 +28,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id), { method: "DELETE" });
+    const res = await extension.rest.delete<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id));
     if (!res) return;
 
     if ("status" in res) {

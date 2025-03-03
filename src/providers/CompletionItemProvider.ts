@@ -1,13 +1,12 @@
 import { existsSync } from "fs";
 import type { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
-import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type TextDocument, type TextLine } from "vscode";
+import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
 import type { ProviderOptions } from "../@types";
-import extension from "../extension";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
-  constructor(options: ProviderOptions) {
-    super(options.path.toString());
+  constructor(context: ExtensionContext, options: ProviderOptions) {
+    super(context, options.path.toString());
 
     if (!this.schema) return;
 
@@ -49,7 +48,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       },
     });
 
-    extension.subscriptions.push(disposable);
+    this.context.subscriptions.push(disposable);
   }
 
   async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): Promise<CompletionItem[]> {

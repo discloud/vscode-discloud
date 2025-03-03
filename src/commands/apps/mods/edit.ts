@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { ModPermissionsBF, type RESTPutApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
-import { requester } from "../../../services/discloud";
+import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 
@@ -39,12 +39,11 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await requester<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
-      body: JSON.stringify({
+    const res = await extension.rest.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
+      body: {
         modID: mod.id,
         perms,
-      }),
-      method: "PUT",
+      },
     });
     if (!res) return;
 

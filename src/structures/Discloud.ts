@@ -4,22 +4,25 @@ import { existsSync, readdirSync } from "fs";
 import { extname, join, relative } from "path";
 import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
-import { logger } from "../extension";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
+import REST from "../services/discloud/REST";
+import { UserAgent } from "../services/discloud/UserAgent";
 import { NODE_MODULES_EXTENSIONS, removeFileExtension } from "../util";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
 export default class Discloud extends EventEmitter<Events> implements Disposable {
-  declare readonly appTree: AppTreeDataProvider;
   declare readonly context: ExtensionContext;
-  declare readonly customDomainTree: CustomDomainTreeDataProvider;
+  declare readonly logger: LogOutputChannel;
+  declare readonly rest: REST;
   declare readonly statusBar: DiscloudStatusBarItem;
+  declare readonly appTree: AppTreeDataProvider;
+  declare readonly customDomainTree: CustomDomainTreeDataProvider;
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
@@ -44,18 +47,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   get isDebug() {
     return Boolean(this.config.get<boolean>("debug"));
-  }
-
-  get logger() {
-    return logger;
-  }
-
-  get secrets() {
-    return this.context.secrets;
-  }
-
-  get subscriptions() {
-    return this.context.subscriptions;
   }
 
   get token() {
@@ -103,7 +94,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
       .concat("discloud", `${workspace.name}.zip`);
   }
 
-  debug(...args: Parameters<LogOutputChannel["info"]>) {
+  debug(...args: Parameters<LogOutputChannel["debug"]>) {
     this.emit("debug", ...args);
   }
 
@@ -244,16 +235,31 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     this.statusBar.reset();
   }
 
-  activate(context: ExtensionContext) {
+  async activate(context: ExtensionContext) {
     if (!context) return;
+
     Object.defineProperty(this, "context", { value: context });
+
+    Object.defineProperty(this, "logger", { value: this.getLogOutputChannel("Discloud") });
+
+    this.logger.info("Activate: begin");
+
+    const version = context.extension.packageJSON.version;
+
+    const userAgent = new UserAgent(version);
+
+    await this.loadEvents();
+
     Object.defineProperties(this, {
-      appTree: { value: new AppTreeDataProvider() },
-      customDomainTree: { value: new CustomDomainTreeDataProvider() },
-      subDomainTree: { value: new SubDomainTreeDataProvider() },
-      teamAppTree: { value: new TeamAppTreeDataProvider() },
-      userTree: { value: new UserTreeDataProvider() },
+      // @ts-expect-error ts(2345) `this`
+      rest: { value: new REST(this, { userAgent }) },
+      appTree: { value: new AppTreeDataProvider(context) },
+      customDomainTree: { value: new CustomDomainTreeDataProvider(context) },
+      subDomainTree: { value: new SubDomainTreeDataProvider(context) },
+      teamAppTree: { value: new TeamAppTreeDataProvider(context) },
+      userTree: { value: new UserTreeDataProvider(context) },
     });
+
     this.emit("activate", context);
   }
 
