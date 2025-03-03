@@ -64,22 +64,19 @@ export default class extends Command {
 
     let zipper;
     try {
-      zipper = new Zip(saveUri.fsPath);
-      zipper.appendUriList(found);
-      await zipper.finalize();
+      zipper = new Zip();
+      await zipper.appendUriList(found);
     } catch (error) {
       dConfig.dispose();
-      zipper?.destroy();
       throw error;
     }
 
     const form = new FormData();
     try {
-      form.append("file", await resolveFile(saveUri.fsPath, zipName));
-      if (!extension.isDebug) zipper.destroy();
+      form.append("file", await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
       dConfig.dispose();
-      if (!extension.isDebug) zipper.destroy();
+      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
       throw error;
     }
 
