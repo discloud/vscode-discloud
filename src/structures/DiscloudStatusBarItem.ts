@@ -1,6 +1,7 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
-import { type StatusBarItem, ThemeColor, workspace } from "vscode";
+import { ThemeColor, workspace } from "vscode";
+import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 import extension from "../extension";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
@@ -11,7 +12,7 @@ enum EMOJIS {
 }
 
 export default class DiscloudStatusBarItem extends BaseStatusBarItem {
-  constructor(data: Partial<Omit<StatusBarItem, "dispose" | "hide" | "show">>) {
+  constructor(data: Partial<StatusBarItemOptions>) {
     super(data);
 
     if (workspace.workspaceFolders?.length) {
@@ -33,7 +34,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     return extension.config.get<string>("token");
   }
 
-  reset(data: Partial<Omit<StatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">> = this.originalData) {
+  reset(data: Partial<StatusBarItemData> = this.originalData) {
     if (this.limited) return;
 
     super.reset(data);
