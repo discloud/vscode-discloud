@@ -1,24 +1,22 @@
 import { type StatusBarItem, window } from "vscode";
-import extension from "../extension";
-import { bindFunctions } from "../util";
+import { type CreateStatusBarItemOptions, type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 
 export default abstract class BaseStatusBarItem implements StatusBarItem {
-  protected readonly originalData: Omit<StatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">;
+  protected readonly originalData: StatusBarItemData;
   readonly data: StatusBarItem;
 
-  constructor(data: Partial<Omit<StatusBarItem, "dispose" | "hide" | "show">>) {
-    this.data = window.createStatusBarItem(data.alignment, data.priority);
-    extension.context.subscriptions.push(this.data);
-    bindFunctions(this.data);
+  constructor(data: Partial<StatusBarItemOptions>) {
+    const options = data.id !== undefined ? [data.id, data.alignment, data.priority] : [data.alignment, data.priority];
+    this.data = window.createStatusBarItem(...options as CreateStatusBarItemOptions);
     this.originalData = Object.assign(Object.create(this.data), this.data);
     this.set(data);
   }
 
-  reset(data: Partial<Omit<StatusBarItem, "alignment" | "dispose" | "id" | "hide" | "priority" | "show">> = this.originalData) {
+  reset(data: Partial<StatusBarItemData> = this.originalData) {
     this.set(data);
   }
 
-  set(data: Partial<StatusBarItem>) {
+  set(data: Partial<StatusBarItemData>) {
     if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;
     if (data.backgroundColor !== undefined) this.backgroundColor = data.backgroundColor;
     if (data.color !== undefined) this.color = data.color;
@@ -56,12 +54,6 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   set command(command) {
     this.data.command = command;
   }
-  get dispose() {
-    return this.data.dispose;
-  }
-  get hide() {
-    return this.data.hide;
-  }
   /** @readonly */
   get id() {
     return this.data.id;
@@ -76,9 +68,6 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   get priority() {
     return this.data.priority;
   }
-  get show() {
-    return this.data.show;
-  }
   get text() {
     return this.data.text;
   }
@@ -90,5 +79,20 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   }
   set tooltip(tooltip) {
     this.data.tooltip = tooltip;
+  }
+
+  dispose() {
+    if ("dispose" in this.originalData && typeof this.originalData.dispose === "function")
+      this.originalData.dispose();
+
+    this.data.dispose();
+  }
+
+  hide() {
+    this.data.hide();
+  }
+
+  show() {
+    this.data.show();
   }
 }

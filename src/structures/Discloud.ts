@@ -177,7 +177,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
             const taskData = <TaskData>{};
 
             await window.withProgress(command.data.progress, async (progress, token) => {
-              token.onCancellationRequested(() => this.resetStatusBar());
+              token.onCancellationRequested(() => this.statusBar.reset());
 
               taskData.progress = progress;
               taskData.token = token;
@@ -190,7 +190,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
         } catch (error) {
           this.emit("error", error);
         } finally {
-          this.resetStatusBar();
+          this.statusBar.reset();
         }
       });
 
@@ -229,10 +229,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     });
 
     this.context.subscriptions.push(this.statusBar);
-  }
-
-  async resetStatusBar() {
-    this.statusBar.reset();
   }
 
   async activate(context: ExtensionContext) {
