@@ -2,6 +2,7 @@ import { t } from "@vscode/l10n";
 import { readFileSync } from "fs";
 import type { JSONSchema7 } from "json-schema";
 import { JsonEditor } from "json-schema-library";
+import { parseEnv } from "util";
 import { type ExtensionContext, type TextDocument } from "vscode";
 import extension from "../extension";
 
@@ -30,21 +31,11 @@ export default class BaseLanguageProvider {
   }
 
   transformConfigToJSON(document: TextDocument) {
-    return this.#configToObj(document.getText());
+    return this.#processValues(parseEnv(document.getText()));
   }
 
   validateJsonSchema(data: Record<any, any>) {
     return this.draft.validate(data);
-  }
-
-  #configToObj(s: string) {
-    if (typeof s !== "string") return {};
-
-    return this.#processValues(Object.fromEntries(s
-      .replace(/\s*#.*/g, "")
-      .split(/[\r\n]+/)
-      .filter(Boolean)
-      .map(line => line.split("="))));
   }
 
   #processValues(obj: any) {
