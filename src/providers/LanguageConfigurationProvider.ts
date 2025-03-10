@@ -27,13 +27,16 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
-    for (const document of workspace.textDocuments) {
-      if (document.languageId === this.schema.$id!) {
-        this.checkDocument(document);
-      }
-    }
+    queueMicrotask(() => {
+      this.activate();
 
-    this.activate();
+      for (let i = 0; i < workspace.textDocuments.length; i++) {
+        const document = workspace.textDocuments[i];
+        if (document.languageId === this.schema.$id!) {
+          this.checkDocument(document);
+        }
+      }
+    });
 
     context.subscriptions.push(this.collection, disposableClose, disposableOpen);
   }
