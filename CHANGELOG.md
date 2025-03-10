@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.30
+
+- Otimização da inicialização da extensão
+
 ## 2.22.28
 
 - Correção do zip dos comandos de `upload`/`commit`
