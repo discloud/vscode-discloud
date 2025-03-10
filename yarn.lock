@@ -7,29 +7,29 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@discloudapp/api-types@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.7.0.tgz#ce519735351370e28ed842a49891a5a1eb5e1564"
-  integrity sha512-qanqT/gUA+6Ubh+bH/2GngI4Q/TQN2FKm9lSJqj6KfRdsM3+HMuG2HRLfKVbx8BdokZytEzl8ZcIIqgnGHsnNA==
+"@discloudapp/api-types@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-0.7.1.tgz#4c3f33978fdc4380bc7beac16d25d1bb766164ad"
+  integrity sha512-JHQDNrMZn8B5L5/fw3vO1v9vv1a5cJ+GVrjF3CRx2jGqRqox+1ZouWUKkv5r82ZhXjD1AXQ1e+7Yu+khHGjw+w==
   dependencies:
     tslib "^2.8.1"
 
-"@discloudapp/rest@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.11.0.tgz#088088356af85f894b5e0934893913ed98335143"
-  integrity sha512-4InE/dnojmq5yhK9JbhnAtV6ZBtFTg9FlOW9n7I2j9jzqZiiNktiuZQIopsEDW7mFduECJcxoXjy93LnSyYADQ==
+"@discloudapp/rest@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.11.2.tgz#19e7ec6d56a7d529b37d0564f433317e46b52d3a"
+  integrity sha512-i42KRGH+2liRwb+7ylSzEa+su4x7bAkPnXmr4agJrfsojZNahcjY7q30v/Un99cKpTnVQpSmrngh0rtaUyEGWg==
   dependencies:
-    "@discloudapp/api-types" "^0.7.0"
-    "@discloudapp/util" "^0.7.7"
+    "@discloudapp/api-types" "^0.7.1"
+    "@discloudapp/util" "^0.7.10"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
 
-"@discloudapp/util@^0.7.7":
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.7.7.tgz#95c4aa48893a80ab48033c4832ee608af8e0a5b6"
-  integrity sha512-lJTWG+bPlmPCyRPJQPISAarDn8bZNZaTx4Fw+l1bDV5U9o3CSYD3XegqRH30B7GUwCd2NSoyihfSA8a/n9I16w==
+"@discloudapp/util@^0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.7.10.tgz#da9c18ab72f05ed16353135762791c53a5878e20"
+  integrity sha512-3CsK70l4E4+NNXGYlzvQiSBMf+/ohLaLNsCg5pnX1yuNcRzRuE8yTYZb7RiF0syAvgUl39jJDNgPnTt6hpr5WQ==
   dependencies:
-    "@discloudapp/api-types" "^0.7.0"
+    "@discloudapp/api-types" "^0.7.1"
     glob "^11.0.1"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
@@ -665,14 +665,14 @@ diff@^5.2.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
   integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
 
-discloud.app@^0.12.9:
-  version "0.12.9"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.12.9.tgz#75e9eb2ca67ba77264aafd68a4ccc92cffcafc9c"
-  integrity sha512-iu6bx6cemPfr8Mbntig1znokBydUWzzX05q0LQ+j52g9T9oVTiDMdP7NGG0xdHM5nd/H29e/4JZYv2BB29sVTg==
+discloud.app@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.13.2.tgz#223bdb4f35cd5e1173ae9c0bbbb987f2c172b878"
+  integrity sha512-ktfQv3vXYflAixNbbehenjNyzYb5b1hcqFfcRei3JDnxFYDkXnzU8XJw/nxV+8zDHGj0fmss7DBHwIYNZSFhCA==
   dependencies:
-    "@discloudapp/api-types" "^0.7.0"
-    "@discloudapp/rest" "^0.11.0"
-    "@discloudapp/util" "^0.7.7"
+    "@discloudapp/api-types" "^0.7.1"
+    "@discloudapp/rest" "^0.11.2"
+    "@discloudapp/util" "^0.7.10"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
     zod "^3.24.2"
