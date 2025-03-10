@@ -1159,6 +1159,7 @@
         {
           "type": "tree",
           "id": "discloud-apps",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
           "when": "config.discloud.token && !discloudTokenUnauthorized"
@@ -1166,6 +1167,7 @@
         {
           "type": "tree",
           "id": "discloud-teams",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
           "when": "config.discloud.token && !discloudTokenUnauthorized"
@@ -1173,6 +1175,7 @@
         {
           "type": "tree",
           "id": "discloud-subdomains",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
           "when": "config.discloud.token && !discloudTokenUnauthorized"
@@ -1180,6 +1183,7 @@
         {
           "type": "tree",
           "id": "discloud-domains",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
           "when": "config.discloud.token && !discloudTokenUnauthorized"
@@ -1187,6 +1191,7 @@
         {
           "type": "tree",
           "id": "discloud-user",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.user.title%",
           "visibility": "collapsed"
         }
@@ -1269,6 +1274,6 @@
     "globals": "^16.0.0",
     "mocha": "^11.1.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0"
+    "typescript-eslint": "^8.26.1"
   }
 }
