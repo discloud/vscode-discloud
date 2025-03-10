@@ -1,4 +1,4 @@
-import { type ExtensionContext, type LogOutputChannel, type ProgressOptions, type TreeItem, type window } from "vscode";
+import { type ExtensionContext, type LogOutputChannel, type ProgressOptions, type StatusBarItem, type TreeItem, type window } from "vscode";
 import type AppTreeItem from "../structures/AppTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type VSUser from "../structures/VSUser";
@@ -14,6 +14,12 @@ type VscodeWindowType = typeof window
 type ProgressTask = Parameters<VscodeWindowType["withProgress"]>[1]
 
 type ProgressTaskParameters = Parameters<ProgressTask>
+
+export type CreateStatusBarItemOptions = Parameters<VscodeWindowType["createStatusBarItem"]>
+
+export type StatusBarItemOptions = Omit<StatusBarItem, "dispose" | "hide" | "show">
+
+export type StatusBarItemData = Omit<StatusBarItemOptions, "alignment" | "id" | "priority">
 
 export interface TaskData {
   progress: ProgressTaskParameters[0]
