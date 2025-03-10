@@ -6,7 +6,7 @@ const extension = new Discloud();
 export default extension;
 
 export async function activate(context: ExtensionContext) {
-  localize(context);
+  await localize(context);
   await extension.activate(context);
 }
 
