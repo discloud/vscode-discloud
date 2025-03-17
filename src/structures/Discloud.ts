@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
-import { extname, join, relative } from "path";
+import { extname, join, normalize, relative } from "path";
 import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -88,7 +88,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     ]
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
-        if (data !== undefined) acc.push(join(data));
+        if (data !== undefined) acc.push(normalize(data));
         return acc;
       }, [])
       .filter(Boolean)
