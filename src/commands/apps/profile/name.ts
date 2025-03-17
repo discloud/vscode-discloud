@@ -30,7 +30,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { name } });
+    const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { name } });
     if (!res) return;
 
     if ("status" in res) {

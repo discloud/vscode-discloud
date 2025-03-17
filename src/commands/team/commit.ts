@@ -61,7 +61,7 @@ export default class extends Command {
 
     task.progress.report({ increment: -1, message: item.appId });
 
-    const res = await extension.rest.put<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), { files });
+    const res = await extension.api.put<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), { files });
 
     if (!res) return;
 

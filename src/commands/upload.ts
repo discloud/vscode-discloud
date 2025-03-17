@@ -81,7 +81,7 @@ export default class extends Command {
 
     task.progress.report({ increment: -1, message: t("uploading") });
 
-    const res = await extension.rest.post<RESTPostApiUploadResult>(Routes.upload(), { files });
+    const res = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
 
     queueMicrotask(() => dConfig.dispose());
 

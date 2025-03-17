@@ -32,7 +32,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await extension.rest.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
+    const res = await extension.api.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
     if (!res) return;
 
     if (!res.backups) throw Error(t("no.backup.found"));

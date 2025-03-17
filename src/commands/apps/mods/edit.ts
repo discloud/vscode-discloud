@@ -39,7 +39,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
+    const res = await extension.api.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: {
         modID: mod.id,
         perms,

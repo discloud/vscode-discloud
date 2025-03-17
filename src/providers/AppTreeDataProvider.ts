@@ -160,10 +160,10 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   }
 
   async getStatus(appId: string = "all") {
-    const res = await extension.rest.queueGet<
+    const res = await extension.api.queueGet<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
-      >(Routes.appStatus(appId), {});
+    >(Routes.appStatus(appId), {});
 
     if (!res) return;
 

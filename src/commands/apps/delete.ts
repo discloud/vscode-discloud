@@ -25,7 +25,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.delete<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId));
+    const res = await extension.api.delete<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId));
     if (!res) return;
 
     if ("status" in res) {

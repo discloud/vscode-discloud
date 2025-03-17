@@ -22,7 +22,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await extension.rest.put<RESTPutApiAppStartResult>(Routes.teamStart(item.appId));
+    const res = await extension.api.put<RESTPutApiAppStartResult>(Routes.teamStart(item.appId));
     if (!res) return;
 
     if ("status" in res) {

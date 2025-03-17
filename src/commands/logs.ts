@@ -42,7 +42,7 @@ export default class extends Command {
       }
     }
 
-    const res = await extension.rest.get<RESTGetApiAppLogResult>(item.isApp
+    const res = await extension.api.get<RESTGetApiAppLogResult>(item.isApp
       ? Routes.appLogs(item.appId)
       : Routes.teamLogs(item.appId));
     if (!res) return;

@@ -18,9 +18,9 @@ import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
 export default class Discloud extends EventEmitter<Events> implements Disposable {
+  declare readonly api: REST;
   declare readonly context: ExtensionContext;
   declare readonly logger: LogOutputChannel;
-  declare readonly rest: REST;
   declare readonly statusBar: DiscloudStatusBarItem;
   declare readonly appTree: AppTreeDataProvider;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;

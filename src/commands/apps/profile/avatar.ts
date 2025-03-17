@@ -33,7 +33,7 @@ export default class extends Command {
 
     avatarURL = avatarURL.replace(/\s+/g, "");
 
-    const res = await extension.rest.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
+    const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
     if (!res) return;
 
     if ("status" in res) {

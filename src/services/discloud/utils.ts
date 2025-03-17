@@ -1,6 +1,6 @@
+import { discloud } from "discloud.app";
 import { decode } from "jsonwebtoken";
 import extension from "../../extension";
-import { discloud } from "discloud.app";
 
 export function tokenIsDiscloudJwt(token: string): boolean {
   const payload = decode(token, { json: true });
@@ -11,7 +11,7 @@ export async function tokenValidator(token: string, isWorkspace?: boolean) {
   try {
     if (tokenIsDiscloudJwt(token)) {
       if (extension.token === token) {
-        extension.rest.tokenIsValid = true;
+        extension.api.tokenIsValid = true;
         await extension.user.fetch(true);
       } else {
         await discloud.login(token);
@@ -19,7 +19,7 @@ export async function tokenValidator(token: string, isWorkspace?: boolean) {
       extension.emit("authorized", token, isWorkspace);
       return true;
     } else {
-      extension.rest.tokenIsValid = false;
+      extension.api.tokenIsValid = false;
       extension.emit("unauthorized");
       return false;
     }

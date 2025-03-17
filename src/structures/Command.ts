@@ -82,7 +82,7 @@ export default abstract class Command {
       }
 
       if (!teamApps.length && (options.startInTeamApps ? true : options.showOther)) {
-        promises[1] = extension.rest.queueGet<RESTGetApiTeamResult>(Routes.team(), {}).catch(() => null);
+        promises[1] = extension.api.queueGet<RESTGetApiTeamResult>(Routes.team(), {}).catch(() => null);
       }
 
       const [resApps, resTeamApps] = await Promise.all(promises) as [VSUser, RESTGetApiTeamResult];
@@ -221,7 +221,7 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const res = await extension.rest.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
+    const res = await extension.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
     if (!res?.team?.length) return;
 
     const mods = new Map(res.team.map(team => [team.modID, {

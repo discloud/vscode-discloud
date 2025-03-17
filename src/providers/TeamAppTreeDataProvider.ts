@@ -156,7 +156,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   async getApps() {
-    const res = await extension.rest.get<RESTGetApiTeamResult>("/team");
+    const res = await extension.api.get<RESTGetApiTeamResult>("/team");
 
     if (!res) return;
 
@@ -176,10 +176,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
   }
 
   async getStatus(appId: string = "all") {
-    const res = await extension.rest.queueGet<
+    const res = await extension.api.queueGet<
       | RESTGetApiAppStatusResult
       | RESTGetApiAppAllStatusResult
-      >(Routes.teamStatus(appId), {});
+    >(Routes.teamStatus(appId), {});
 
     if (!res) return;
 

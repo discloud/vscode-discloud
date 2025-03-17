@@ -22,7 +22,7 @@ export default class extends Command {
       item = picked.app;
     }
 
-    const res = await extension.rest.get<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
+    const res = await extension.api.get<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!res) return;
 
     if (!res.apps || !res.apps.terminal.big) throw Error(t("no.log.found"));

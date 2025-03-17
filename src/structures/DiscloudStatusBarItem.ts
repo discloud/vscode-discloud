@@ -39,7 +39,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     super.reset(data);
 
-    if (this.token && extension.rest.tokenIsValid) {
+    if (this.token && extension.api.tokenIsValid) {
       this.setDefault();
     } else {
       this.setLogin();

@@ -2,9 +2,9 @@ import { t } from "@vscode/l10n";
 import { ModPermissionsBF, type RESTPostApiAppTeamResult, Routes } from "discloud.app";
 import { ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
+import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
-import extension from "../../../extension";
 
 export default class extends Command {
   constructor() {
@@ -40,7 +40,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.post<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
+    const res = await extension.api.post<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: {
         modID,
         perms,

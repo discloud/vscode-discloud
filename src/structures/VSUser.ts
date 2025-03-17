@@ -19,7 +19,7 @@ export default class VSUser implements ApiVscodeUser {
   async fetch(isVS?: boolean) {
     const method = isVS ? "queueGet" : "get";
 
-    const res = await extension.rest[method]<RESTGetApiVscode>("/vscode", {});
+    const res = await extension.api[method]<RESTGetApiVscode>("/vscode", {});
 
     if (!res) return this;
 
@@ -33,7 +33,7 @@ export default class VSUser implements ApiVscodeUser {
   }
 
   async setLocale(locale: string) {
-    const res = await extension.rest.put<RESTPutApiLocaleResult>(Routes.locale(locale));
+    const res = await extension.api.put<RESTPutApiLocaleResult>(Routes.locale(locale));
     if (!res) return null;
 
     if ("locale" in res)

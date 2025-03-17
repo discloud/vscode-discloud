@@ -25,7 +25,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.put<RESTPutApiAppStartResult>(Routes.appStop(item.appId));
+    const res = await extension.api.put<RESTPutApiAppStartResult>(Routes.appStop(item.appId));
     if (!res) return;
 
     if ("status" in res) {

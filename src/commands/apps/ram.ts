@@ -40,7 +40,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
 
-    const res = await extension.rest.put<RESTPutApiAppRamResult>(Routes.appRam(item.appId), { body: { ramMB } });
+    const res = await extension.api.put<RESTPutApiAppRamResult>(Routes.appRam(item.appId), { body: { ramMB } });
     if (!res) return;
 
     if ("status" in res) {
