@@ -256,7 +256,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
     Object.defineProperties(this, {
       // @ts-expect-error ts(2345) `this`
-      rest: { value: new REST(this, { userAgent }) },
+      api: { value: new REST(this, { userAgent }) },
       appTree: { value: new AppTreeDataProvider(context) },
       customDomainTree: { value: new CustomDomainTreeDataProvider(context) },
       subDomainTree: { value: new SubDomainTreeDataProvider(context) },
