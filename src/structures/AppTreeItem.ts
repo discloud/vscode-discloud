@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp } from "discloud.app";
-import { type LogOutputChannel, TreeItemCollapsibleState, Uri } from "vscode";
+import { calculatePercentage, type ApiStatusApp } from "discloud.app";
+import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
 import extension from "../extension";
-import { calculatePercentage, getIconName, getIconPath } from "../util";
+import { getIconName, getIconPath } from "../util/utils";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 

@@ -1,6 +1,6 @@
 import { type AppType } from "../@enum";
 import { type AppChildTreeItemData } from "../@types";
-import { getIconPath } from "../util";
+import { getIconPath } from "../util/utils";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 
 export default class AppChildTreeItem extends BaseChildTreeItem {

@@ -4,7 +4,7 @@ import extension from "../extension";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenValidator } from "../services/discloud/utils";
-import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util";
+import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
 
 extension.on("activate", async function (context) {
   extension.loadStatusBar();

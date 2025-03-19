@@ -1,7 +1,7 @@
 import { window } from "vscode";
 import { clamp } from "./utils";
 
-export class InputBox {
+export default class InputBox {
   static async getInt(options?: IntInputOptions) {
     options ??= {};
 

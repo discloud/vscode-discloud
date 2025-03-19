@@ -4,7 +4,7 @@ import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsib
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
-import { compareBooleans, compareNumbers, getIconPath } from "../util";
+import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {

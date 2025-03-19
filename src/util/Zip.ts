@@ -3,7 +3,7 @@ import { existsSync } from "fs";
 import { FileType, type Uri, workspace } from "vscode";
 import extension from "../extension";
 
-export class Zip {
+export default class Zip {
   declare readonly zip: AdmZip;
 
   constructor(fileNameOrRawData?: string | Buffer, options?: Partial<AdmZip.InitOptions>) {
