@@ -22,8 +22,6 @@ export default class extends Command {
     const workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
-    const fileNames = await FileSystem.readSelectedPath(true);
-
     if (!item) {
       const picked = await this.pickAppOrTeamApp(task, { showOther: false });
       item = picked.app;
@@ -39,7 +37,6 @@ export default class extends Command {
     const zipName = `${workspace.name}.zip`;
 
     const fs = new FileSystem({
-      fileNames,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
     });
