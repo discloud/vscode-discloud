@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
-import { extname, join, normalize, relative } from "path";
+import { extname, join, normalize } from "path";
 import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -142,13 +142,14 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
   async loadCommands(dir = join(__dirname, "..", "commands")) {
     if (!existsSync(dir)) return;
 
-    const files = await readdir(dir, { withFileTypes: true, recursive: true });
+    const files = await readdir(dir, { recursive: true });
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (!file.isFile() || !NODE_MODULES_EXTENSIONS.has(extname(file.name))) continue;
 
-      const filePath = join(file.parentPath, file.name);
+      if (!NODE_MODULES_EXTENSIONS.has(extname(file))) continue;
+
+      const filePath = join(dir, file);
 
       let imported;
       try {
@@ -165,7 +166,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
         command = imported.default ?? imported;
       }
 
-      const commandName = removeFileExtension(join("discloud", relative(dir, filePath))).replace(/[/\\]+/g, ".");
+      const commandName = removeFileExtension(join("discloud", file)).replace(/[/\\]+/g, ".");
 
       if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
         this.debug(commandName, "❌");
@@ -213,12 +214,12 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
     const promises = [];
 
-    const files = await readdir(path, { withFileTypes: true, recursive: true });
+    const files = await readdir(path, { recursive: true });
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (file.isFile() && NODE_MODULES_EXTENSIONS.has(extname(file.name)))
-        promises.push(import(`${join(path, file.name)}`));
+      if (NODE_MODULES_EXTENSIONS.has(extname(file)))
+        promises.push(import(`${join(path, file)}`));
     }
 
     await Promise.all(promises);
