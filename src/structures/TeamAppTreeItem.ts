@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
-import { /* ApiStatusApp, */ type ApiStatusApp, type ApiTeamApps, type BaseApiApp, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
+import { /* ApiStatusApp, */ type ApiStatusApp, type ApiTeamApps, type BaseApiApp, calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
 import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
 import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";
 import extension from "../extension";
-import { calculatePercentage, getIconName, getIconPath } from "../util";
+import { getIconName, getIconPath } from "../util/utils";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 

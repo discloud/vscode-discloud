@@ -17,10 +17,6 @@ export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any
   }
 }
 
-export function calculatePercentage(value: string | number, major: string | number) {
-  return Number(value) / Number(major) * 100;
-}
-
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
     dark: Uri.file(extension.context.asAbsolutePath(join("resources", "dark", `${iconName}.${iconExt}`))),

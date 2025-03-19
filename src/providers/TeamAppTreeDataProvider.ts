@@ -3,7 +3,7 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAp
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import { compareBooleans, compareNumbers, getIconPath } from "../util";
+import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {

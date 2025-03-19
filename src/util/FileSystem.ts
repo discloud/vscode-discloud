@@ -11,7 +11,7 @@ export interface FileSystemOptions {
   ignoreList?: string[]
 }
 
-export class FileSystem {
+export default class FileSystem {
   declare readonly ignoreFile?: string;
   readonly ignoreList = new Set(ALL_BLOCKED_FILES);
   readonly patterns = new Set("**");
@@ -117,7 +117,6 @@ export class FileSystem {
     return Array.from(result);
   }
 
-
   static readSelectedPath(relative?: true): Promise<string[]>
   static readSelectedPath(relative: boolean): Promise<string[]>
   static async readSelectedPath(relative: boolean = true) {
@@ -127,5 +126,3 @@ export class FileSystem {
     return copied.split(/[\r\n]+/);
   }
 }
-
-export default FileSystem;

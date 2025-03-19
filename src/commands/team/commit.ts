@@ -5,7 +5,8 @@ import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { FileSystem, Zip } from "../../util";
+import FileSystem from "../../util/FileSystem";
+import Zip from "../../util/Zip";
 
 export default class extends Command {
   constructor() {

@@ -150,10 +150,10 @@ export default class REST extends EventEmitter {
     const url = new URL(this.baseURL + request.fullRoute);
     const formData = new FormData();
 
-    const headers = new Headers(Object.assign({}, request.headers, {
+    const headers = new Headers(Object.assign({}, {
       "api-token": this.token,
       "User-Agent": this.options.userAgent,
-    }));
+    }, request.headers));
 
     if (request.query) url.search = new URLSearchParams(request.query).toString();
 
