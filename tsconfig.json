@@ -6,7 +6,7 @@
     "target": "ESNext",
     "outDir": "out",
     "lib": ["ESNext"],
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "rootDir": "src",
     "strict": true /* enable all strict type-checking options */,
     "skipLibCheck": true
