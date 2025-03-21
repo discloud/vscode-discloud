@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, type RESTGetApiAppLogResult, Routes } from "discloud.app";
+import { DiscloudConfig, DiscloudConfigScopes, type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
@@ -20,17 +20,18 @@ export default class extends Command {
       const workspaceFolder = await extension.getWorkspaceFolder();
       if (workspaceFolder) {
         const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
-        queueMicrotask(() => dConfig.dispose());
 
-        if (dConfig.data.ID) {
-          if (extension.appTree.children.has(dConfig.data.ID)) {
+        const ID = dConfig.get(DiscloudConfigScopes.ID);
+
+        if (ID) {
+          if (extension.appTree.children.has(ID)) {
             item.isApp = true;
-            item.appId = dConfig.data.ID;
+            item.appId = ID;
           }
 
-          if (extension.teamAppTree.children.has(dConfig.data.ID)) {
+          if (extension.teamAppTree.children.has(ID)) {
             item.isApp = false;
-            item.appId = dConfig.data.ID;
+            item.appId = ID;
           }
         }
 

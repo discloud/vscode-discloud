@@ -30,10 +30,8 @@ export default class extends Command {
 
     const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
 
-    if (!dConfig.exists || dConfig.missingProps.length) {
-      dConfig.dispose();
+    if (!dConfig.validate(true))
       throw Error(t("invalid.discloud.config"));
-    }
 
     const zipName = `${workspace.name}.zip`;
 
@@ -43,31 +41,20 @@ export default class extends Command {
     });
 
     const found = await fs.findFiles(task.token);
-    if (!found.length) {
-      dConfig.dispose();
-      throw Error(t("files.missing"));
-    }
+    if (!found.length) throw Error(t("files.missing"));
 
     const main = Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!found.some(uri => uri.fsPath.endsWith(main))) {
-      dConfig.dispose();
+    if (!found.some(uri => uri.fsPath.endsWith(main)))
       throw Error([
         t("missing.discloud.config.main", { file: dConfig.data.MAIN }),
         t("readdiscloudconfigdocs"),
       ].join("\n"));
-    }
 
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
-    let zipper;
-    try {
-      zipper = new Zip();
-      await zipper.appendUriList(found);
-    } catch (error) {
-      dConfig.dispose();
-      throw error;
-    }
+    const zipper = new Zip();
+    await zipper.appendUriList(found);
 
     const saveUri = Uri.joinPath(workspaceFolder, zipName);
 
@@ -75,7 +62,6 @@ export default class extends Command {
     try {
       files.push(await resolveFile(zipper.getBuffer(), zipName));
     } catch (error) {
-      dConfig.dispose();
       if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
       throw error;
     }
@@ -83,8 +69,6 @@ export default class extends Command {
     task.progress.report({ increment: -1, message: t("uploading") });
 
     const res = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
-
-    queueMicrotask(() => dConfig.dispose());
 
     if (!res) return;
 

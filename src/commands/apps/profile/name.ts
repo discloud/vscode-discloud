@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { type BaseApiApp, DiscloudConfig, type RESTApiBaseResult, Routes } from "discloud.app";
+import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBaseResult, Routes } from "discloud.app";
 import { window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
@@ -43,9 +43,10 @@ export default class extends Command {
 
         if (workspaceFolder) {
           const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
-          queueMicrotask(() => dConfig.dispose());
 
-          if (dConfig.data.ID === item.appId) dConfig.update({ NAME: name });
+          const ID = dConfig.get(DiscloudConfigScopes.ID);
+
+          if (ID === item.appId) dConfig.update({ NAME: name });
         }
       }
     }

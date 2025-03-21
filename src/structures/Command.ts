@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, ModPermissionsBF, ModPermissionsFlags, type ModPermissionsResolvable, type RESTGetApiAppTeamResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
+import { DiscloudConfig, DiscloudConfigScopes, ModPermissionsBF, ModPermissionsFlags, type ModPermissionsResolvable, type RESTGetApiAppTeamResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
 import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
@@ -131,23 +131,24 @@ export default abstract class Command {
     const workspaceFolder = await extension.getWorkspaceFolder().then(f => f?.fsPath);
 
     const dConfig = new DiscloudConfig(workspaceFolder!);
-    queueMicrotask(() => dConfig.dispose());
+
+    const ID = dConfig.get(DiscloudConfigScopes.ID);
 
     let hasApp = false;
     let hasTeamApp = false;
 
-    if (dConfig.exists && dConfig.data.ID) {
-      hasApp = apps.some(app => app.description === dConfig.data.ID!);
-      hasTeamApp = teamApps.some(app => app.description === dConfig.data.ID);
+    if (ID) {
+      hasApp = apps.some(app => app.description === ID);
+      hasTeamApp = teamApps.some(app => app.description === ID);
 
       if (hasApp) {
-        apps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+        apps.sort(a => a.description === ID ? -1 : 1);
 
         apps[0].picked = true;
       }
 
       if (hasTeamApp) {
-        teamApps.sort(a => a.description === dConfig.data.ID ? -1 : 1);
+        teamApps.sort(a => a.description === ID ? -1 : 1);
 
         teamApps[0].picked = true;
       }
