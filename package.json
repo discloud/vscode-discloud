@@ -1261,7 +1261,7 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
+    "@eslint/js": "^9.23.0",
     "@types/adm-zip": "^0.5.7",
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.9",
@@ -1272,7 +1272,7 @@
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.23.0",
     "globals": "^16.0.0",
-    "mocha": "^11.1.0",
+    "mocha": "^11.2.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.27.0"
   }
