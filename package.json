@@ -1261,7 +1261,7 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
+    "@eslint/js": "^9.23.0",
     "@types/adm-zip": "^0.5.7",
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.9",
