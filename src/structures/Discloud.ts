@@ -152,26 +152,22 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
       if (!NODE_MODULES_EXTENSIONS.has(fileExt)) continue;
 
+      const commandName = join("discloud", file)
+        .slice(0, -fileExt.length)
+        .replace(/[/\\]+/g, ".");
+
       const filePath = join(dir, file);
 
       let imported;
-      try {
-        imported = await import(filePath);
-      } catch (error) {
+      try { imported = await import(filePath); } catch (error) {
+        this.debug(commandName, "❌");
         this.emit("error", error);
         continue;
       }
 
       let command: Command;
-      try {
-        command = new (imported.default ?? imported)(this);
-      } catch {
-        command = imported.default ?? imported;
-      }
-
-      const commandName = join("discloud", file)
-        .slice(0, -fileExt.length)
-        .replace(/[/\\]+/g, ".");
+      try { command = new (imported.default ?? imported)(this); }
+      catch { command = imported.default ?? imported; }
 
       if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
         this.debug(commandName, "❌");
