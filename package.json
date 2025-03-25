@@ -1245,13 +1245,14 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "yarn run compile && yarn --production",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --fix",
-    "pretest": "yarn run compile && yarn run test:lint",
+    "pretest": "yarn run compile && yarn run test:lint && yarn run test:ts",
     "test": "vscode-test",
-    "test:lint": "eslint src"
+    "test:lint": "eslint src",
+    "test:ts": "tsc --noEmit"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
