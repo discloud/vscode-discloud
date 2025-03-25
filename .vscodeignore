@@ -2,7 +2,7 @@
 .vscode/**
 .vscode-test/**
 # out/** # ignore case use esbuild
-node_modules/**
+# node_modules/**
 src/**
 .gitignore
 .yarnrc
