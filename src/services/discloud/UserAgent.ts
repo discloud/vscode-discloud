@@ -5,7 +5,7 @@ export class UserAgent {
     this.prefix ??= "vscode";
   }
 
-  #getUserAgent() {
+  #lazyGetUserAgent() {
     const osRelease = release().split?.(".").slice(0, 2).join(".") ?? release();
     return `${this.prefix}/${this.version} (${type()} ${osRelease}; ${platform()}; ${arch()})`;
   }
@@ -13,6 +13,6 @@ export class UserAgent {
   #userAgent!: string;
 
   toString() {
-    return this.#userAgent ??= this.#getUserAgent();
+    return this.#userAgent ??= this.#lazyGetUserAgent();
   }
 }

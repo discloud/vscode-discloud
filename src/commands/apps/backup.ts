@@ -6,6 +6,7 @@ import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import { ConfigKeys } from "../../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -39,7 +40,7 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.ok) throw Error(t("backup.request.failed"));
 
-    const configBackupDir = extension.config.get<string>("app.backup.dir") ?? "";
+    const configBackupDir = extension.config.get<string>(ConfigKeys.appBackupDir) ?? "";
     const backupDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configBackupDir) : workspaceFolder;
     const backupZipUri = Uri.joinPath(backupDirUri, `${res.backups.id}.zip`);
 

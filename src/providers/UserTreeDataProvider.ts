@@ -1,11 +1,14 @@
 import { type ExtensionContext } from "vscode";
 import UserTreeItem from "../structures/UserTreeItem";
 import type VSUser from "../structures/VSUser";
+import { TreeViewIds } from "../util/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeItem> {
+type Item = UserTreeItem
+
+export default class UserTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(context: ExtensionContext) {
-    super(context, "discloud-user");
+    super(context, TreeViewIds.discloudUser);
   }
 
   clear() {

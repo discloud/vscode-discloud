@@ -18,7 +18,6 @@ export default class extends Command {
       item = picked.app;
     }
 
-
     await env.clipboard.writeText(item.appId);
 
     window.showInformationMessage(t("copied.team.appid"));

@@ -7,6 +7,7 @@ import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
+import { ConfigKeys } from "../../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -40,7 +41,7 @@ export default class extends Command {
     const backup = await fetch(res.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
-    const configImportDir = extension.config.get<string>("team.import.dir") ?? "";
+    const configImportDir = extension.config.get<string>(ConfigKeys.teamImportDir) ?? "";
     const importDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configImportDir) : workspaceFolder;
     const importUri = Uri.joinPath(importDirUri, res.backups.id);
     const importZipUri = Uri.joinPath(importDirUri, `${res.backups.id}.zip`);

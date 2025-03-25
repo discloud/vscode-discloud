@@ -1,14 +1,15 @@
 import { t } from "@vscode/l10n";
-import { /* ApiStatusApp, */ type ApiStatusApp, type ApiTeamApps, type BaseApiApp, calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
+import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
 import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
 import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";
 import extension from "../extension";
+import { lazy } from "../util/lazy";
 import { getIconName, getIconPath } from "../util/utils";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
-const totalModPerms = ModPermissionsBF.All.toArray().length;
+const lazyAllModPermissions = lazy(() => ModPermissionsBF.All.toArray());
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
   declare iconName: string;
@@ -122,7 +123,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.permissions.set(<ModPermissionsResolvable>data.perms);
 
       this._addChild("perms", {
-        label: `${data.perms.length} / ${totalModPerms}`,
+        label: `${data.perms.length} / ${lazyAllModPermissions().length}`,
         description: t("permissions"),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,

@@ -2,12 +2,15 @@ import { type ExtensionContext } from "vscode";
 import { localize } from "./localize";
 import Discloud from "./structures/Discloud";
 
+export const BUILD_ROOT_PATH = __dirname;
+
 const extension = new Discloud();
 export default extension;
 
 export async function activate(context: ExtensionContext) {
   await localize(context);
-  await extension.activate(context);
+  extension.setContext(context);
+  await extension.activate();
 }
 
 // This method is called when your extension is deactivated

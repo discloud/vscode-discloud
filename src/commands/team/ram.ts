@@ -31,9 +31,8 @@ export default class extends Command {
       initial: item.data.ram,
       min,
       prompt: t("input.ram.prompt"),
+      required: true,
     });
-
-    if (!ramMB) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));

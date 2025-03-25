@@ -1,9 +1,11 @@
 import { dirname, join } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
 import extension from "../extension";
-import { ALL_BLOCKED_FILES } from "./constants";
+import { BLOCKED_FILES } from "./constants";
+import { lazy } from "./lazy";
 
-export const ALL_BLOCKED_FILES_IGNORE_PATTERN = `{${ALL_BLOCKED_FILES.join(",")}}`;
+const lazyDefaultBlockedFiles = lazy(() => Array.from(new Set(Object.values(BLOCKED_FILES).flat())));
+const lazyDefaultBlockedFilesPattern = lazy(() => `{${lazyDefaultBlockedFiles().join(",")}}`);
 
 export interface FileSystemOptions {
   fileNames?: string[]
@@ -13,7 +15,7 @@ export interface FileSystemOptions {
 
 export default class FileSystem {
   declare readonly ignoreFile?: string;
-  readonly ignoreList = new Set(ALL_BLOCKED_FILES);
+  readonly ignoreList = new Set<string>(lazyDefaultBlockedFiles());
   readonly patterns = new Set("**");
   readonly found: Uri[] = [];
 
@@ -86,7 +88,7 @@ export default class FileSystem {
   }
 
   static async findIgnoreFile(filename: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
-    if (!ignoreList) ignoreList = ALL_BLOCKED_FILES_IGNORE_PATTERN;
+    if (!ignoreList) ignoreList = lazyDefaultBlockedFilesPattern();
 
     if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
 
