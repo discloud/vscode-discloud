@@ -1245,7 +1245,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile && yarn --production",
+    "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --fix",
