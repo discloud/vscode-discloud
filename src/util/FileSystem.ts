@@ -2,7 +2,7 @@ import { dirname, join } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
 import extension from "../extension";
 import { BLOCKED_FILES } from "./constants";
-import { lazy } from "./lazy";
+import lazy from "./lazy";
 
 const lazyDefaultBlockedFiles = lazy(() => Array.from(new Set(Object.values(BLOCKED_FILES).flat())));
 const lazyDefaultBlockedFilesPattern = lazy(() => `{${lazyDefaultBlockedFiles().join(",")}}`);
