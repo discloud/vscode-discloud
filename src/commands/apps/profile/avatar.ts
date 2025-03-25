@@ -1,11 +1,10 @@
 import { t } from "@vscode/l10n";
 import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBaseResult, Routes } from "discloud.app";
-import { window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
-import { IMAGE_URL_REGEXP } from "../../../util/regexp";
+import InputBox from "../../../util/Input";
 
 export default class extends Command {
   constructor() {
@@ -18,20 +17,13 @@ export default class extends Command {
       item = picked.app;
     }
 
-    let avatarURL = await window.showInputBox({
+    const avatarURL = await InputBox.getExternalImageURL({
       prompt: t("input.avatar.prompt"),
-      validateInput(value) {
-        if (!IMAGE_URL_REGEXP.test(value))
-          return t("input.avatar.prompt");
-      },
+      required: true,
     });
-
-    if (!avatarURL) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
       throw Error(t("rejected.action"));
-
-    avatarURL = avatarURL.replace(/\s+/g, "");
 
     const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
     if (!res) return;

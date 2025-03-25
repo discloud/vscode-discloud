@@ -1,7 +1,6 @@
 import extension from "../../../extension";
 import Command from "../../../structures/Command";
-
-const configKey = "app.show.avatar.instead.status";
+import { ConfigKeys } from "../../../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -11,6 +10,8 @@ export default class extends Command {
   }
 
   async run() {
+    const configKey = ConfigKeys.appShowAvatarInsteadStatus;
+
     const inspect = extension.config.inspect<number>(configKey);
 
     const isGlobal = !inspect?.workspaceValue;

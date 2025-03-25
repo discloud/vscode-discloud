@@ -4,21 +4,24 @@ import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsib
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
+import { ConfigKeys, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeItem> {
+type Item = AppTreeItem
+
+export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(context: ExtensionContext) {
-    super(context, "discloud-apps");
+    super(context, TreeViewIds.discloudUserApps);
   }
 
-  getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
+  getChildren(element?: Item): ProviderResult<Item[]>;
   getChildren(element?: AppTreeItem): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
 
-    const sort = extension.config.get<string>("app.sort.by");
+    const sort = extension.config.get<string>(ConfigKeys.appSortBy);
 
     if (sort?.includes(".")) {
       switch (sort) {
@@ -60,7 +63,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
       }
     }
 
-    const sortOnlineFirst = extension.config.get<boolean>("app.sort.online");
+    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.appSortOnline);
 
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online, b.online));
 
@@ -90,7 +93,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
     }
   }
 
-  refresh(data?: AppTreeItem | AppTreeItem[] | null) {
+  refresh(data?: Item | Item[] | null) {
     commands.executeCommand("setContext", "discloudAppLength", this.children.has("x") ? 0 : this.children.size);
     super.refresh(data);
   }
@@ -206,11 +209,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<AppTreeIte
   init() {
     this.children.dispose();
 
-    const x = new TreeItem(t("no.app.found"));
+    const x = new TreeItem(t("no.app.found")) as Item;
     x.contextValue = "EmptyTreeItem";
     x.iconPath = getIconPath("x");
 
-    this.children.set("x", <AppTreeItem>x);
+    this.children.set("x", x);
 
     this.refresh();
   }

@@ -1,8 +1,9 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, DiscloudConfigScopes } from "discloud.app";
-import { ThemeColor, workspace } from "vscode";
+import { type ExtensionContext, StatusBarAlignment, ThemeColor, workspace } from "vscode";
 import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 import extension from "../extension";
+import { ConfigKeys } from "../util/constants";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {
@@ -12,8 +13,15 @@ enum EMOJIS {
 }
 
 export default class DiscloudStatusBarItem extends BaseStatusBarItem {
-  constructor(data: Partial<StatusBarItemOptions>) {
-    super(data);
+  static readonly #defaultOptions: Partial<StatusBarItemOptions> = {
+    alignment: StatusBarAlignment.Left,
+    priority: 40,
+    text: t("status.text"),
+    tooltip: t("status.tooltip"),
+  };
+
+  constructor(readonly context: ExtensionContext, data?: Partial<StatusBarItemOptions>) {
+    super(context, Object.assign({}, DiscloudStatusBarItem.#defaultOptions, data));
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -31,7 +39,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   }
 
   get token() {
-    return extension.config.get<string>("token");
+    return extension.config.get<string>(ConfigKeys.token);
   }
 
   reset(data: Partial<StatusBarItemData> = this.originalData) {
@@ -80,7 +88,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
       return this.setUpload();
     }
 
-    const behavior = extension.config.get<string>("status.bar.behavior");
+    const behavior = extension.config.get<string>(ConfigKeys.statusBarBehavior);
     const emoji = EMOJIS[<keyof typeof EMOJIS>behavior];
 
     this.text = `$(${emoji}) ${this.text}`;

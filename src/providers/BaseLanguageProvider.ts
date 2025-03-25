@@ -5,6 +5,9 @@ import { JsonEditor } from "json-schema-library";
 import { parseEnv } from "util";
 import { type ExtensionContext, type TextDocument } from "vscode";
 import extension from "../extension";
+import { DiscloudConfigScopes } from "discloud.app";
+
+const STRING_BOOLEAN = new Set(["false", "true"]);
 
 export default class BaseLanguageProvider {
   static readonly #schemas: Record<string, JSONSchema7> = {};
@@ -31,33 +34,24 @@ export default class BaseLanguageProvider {
   }
 
   transformConfigToJSON(document: TextDocument) {
-    return this.#processValues(parseEnv(document.getText()));
+    return this.#parseValues(parseEnv(document.getText()));
   }
 
   validateJsonSchema(data: Record<any, any>) {
     return this.draft.validate(data);
   }
 
-  #processValues(obj: any) {
-    if (!obj) return obj;
+  #parseValues(obj: any) {
+    if (typeof obj !== "object" || obj === null) return obj;
 
-    for (const key in obj) {
-      const value = obj[key];
+    let key = DiscloudConfigScopes.APT;
+    if (key in obj) obj[key] = obj[key].split(/\s*,\s*/g).filter(Boolean);
 
-      switch (key) {
-        case "APT":
-          obj[key] = value.split(/\s*,\s*/g).filter(Boolean);
-          continue;
-        case "AUTORESTART":
-          if (["true", "false"].includes(value))
-            obj[key] = value == "true";
-          continue;
-        case "RAM":
-          if (!isNaN(Number(value)))
-            obj[key] = Number(value);
-          continue;
-      }
-    }
+    key = DiscloudConfigScopes.AUTORESTART;
+    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == true;
+
+    key = DiscloudConfigScopes.RAM;
+    if (key in obj && !isNaN(obj[key])) obj[key] = Number(obj[key]);
 
     return obj;
   }

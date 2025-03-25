@@ -2,6 +2,7 @@ import { t } from "@vscode/l10n";
 import { RouteBases, type RouteLike } from "discloud.app";
 import { EventEmitter } from "events";
 import { window, workspace } from "vscode";
+import { ConfigKeys } from "../../util/constants";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./error";
 import { type InternalRequestData, type RequestData, type RequestOptions, type RESTEvents, type RESTOptions } from "./types";
@@ -27,7 +28,7 @@ export default class REST extends EventEmitter {
   }
 
   get token() {
-    return workspace.getConfiguration("discloud").get<string>("token");
+    return workspace.getConfiguration("discloud").get<string>(ConfigKeys.token);
   }
 
   constructor(private emitter: EventEmitter<RESTEvents>, options?: Partial<RESTOptions>) {

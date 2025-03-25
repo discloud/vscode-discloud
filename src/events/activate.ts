@@ -7,11 +7,6 @@ import { tokenValidator } from "../services/discloud/utils";
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
 
 extension.on("activate", async function (context) {
-  extension.loadStatusBar();
-  extension.statusBar.setLoading();
-
-  await extension.loadCommands();
-
   new CompletionItemProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
   new LanguageConfigurationProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
 

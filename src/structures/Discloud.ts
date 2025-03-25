@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 import { existsSync } from "fs";
 import { readdir } from "fs/promises";
 import { extname, join, normalize } from "path";
-import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, StatusBarAlignment, type Uri, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
@@ -12,8 +12,8 @@ import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
-import { NODE_MODULES_EXTENSIONS } from "../util/constants";
-import { removeFileExtension } from "../util/utils";
+import { ConfigKeys, NODE_MODULES_EXTENSIONS } from "../util/constants";
+import { joinWithBuildRoot } from "../util/path";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -48,11 +48,11 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
   }
 
   get isDebug() {
-    return Boolean(this.config.get<boolean>("debug"));
+    return Boolean(this.config.get<boolean>(ConfigKeys.debug));
   }
 
   get token() {
-    return this.config.get<string>("token");
+    return this.config.get<string>(ConfigKeys.token);
   }
 
   get workspaceAvailable() {
@@ -82,10 +82,10 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   get workspaceIgnoreList() {
     return [
-      "app.backup.dir",
-      "app.import.dir",
-      "team.backup.dir",
-      "team.import.dir",
+      ConfigKeys.appBackupDir,
+      ConfigKeys.appImportDir,
+      ConfigKeys.appBackupDir,
+      ConfigKeys.appImportDir,
     ]
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
@@ -140,7 +140,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return this.workspaceFolderUri;
   }
 
-  async loadCommands(dir = join(__dirname, "..", "commands")) {
+  async #loadCommands(dir = joinWithBuildRoot("commands")) {
     if (!existsSync(dir)) return;
 
     const files = await readdir(dir, { recursive: true });
@@ -148,7 +148,9 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      if (!NODE_MODULES_EXTENSIONS.has(extname(file))) continue;
+      const fileExt = extname(file);
+
+      if (!NODE_MODULES_EXTENSIONS.has(fileExt)) continue;
 
       const filePath = join(dir, file);
 
@@ -167,7 +169,9 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
         command = imported.default ?? imported;
       }
 
-      const commandName = removeFileExtension(join("discloud", file)).replace(/[/\\]+/g, ".");
+      const commandName = join("discloud", file)
+        .slice(0, -fileExt.length)
+        .replace(/[/\\]+/g, ".");
 
       if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
         this.debug(commandName, "❌");
@@ -207,64 +211,71 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
       this.debug(commandName, "✅");
     }
 
-    this.debug("Commands loaded:", this.commands.size);
+    this.debug("Commands %s loaded:", this.commands.size);
   }
 
-  async loadEvents(path = join(__dirname, "..", "events")) {
+  async #loadEvents(path = joinWithBuildRoot("events")) {
     if (!existsSync(path)) return;
 
     const promises = [];
 
     const files = await readdir(path, { recursive: true });
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (NODE_MODULES_EXTENSIONS.has(extname(file)))
-        promises.push(import(`${join(path, file)}`));
-    }
+    for (let i = 0; i < files.length; i++)
+      promises.push(import(`${join(path, files[i])}`));
 
     await Promise.all(promises);
 
     this.debug("Events loaded:", promises.length);
   }
 
-  loadStatusBar() {
-    Object.defineProperty(this, "statusBar", {
-      value: new DiscloudStatusBarItem({
-        alignment: StatusBarAlignment.Left,
-        priority: 40,
-        text: t("status.text"),
-        tooltip: t("status.tooltip"),
-      }),
-    });
-
-    this.context.subscriptions.push(this.statusBar);
+  setContext(context: ExtensionContext) {
+    Object.defineProperty(this, "context", { value: context });
   }
 
-  async activate(context: ExtensionContext) {
-    if (!context) return;
-
-    Object.defineProperty(this, "context", { value: context });
-
+  #loadLogger() {
     Object.defineProperty(this, "logger", { value: this.getLogOutputChannel("Discloud") });
+  }
 
-    this.logger.info("Activate: begin");
+  #loadStatusBar(context: ExtensionContext = this.context) {
+    Object.defineProperty(this, "statusBar", { value: new DiscloudStatusBarItem(context) });
+  }
 
-    const version = context.extension.packageJSON.version;
-
-    const userAgent = new UserAgent(version);
-
-    await this.loadEvents();
-
+  #loadTreeViews(context: ExtensionContext = this.context) {
     Object.defineProperties(this, {
-      // @ts-expect-error ts(2345) `this`
-      api: { value: new REST(this, { userAgent }) },
       appTree: { value: new AppTreeDataProvider(context) },
       customDomainTree: { value: new CustomDomainTreeDataProvider(context) },
       subDomainTree: { value: new SubDomainTreeDataProvider(context) },
       teamAppTree: { value: new TeamAppTreeDataProvider(context) },
       userTree: { value: new UserTreeDataProvider(context) },
     });
+  }
+
+  async activate(context: ExtensionContext = this.context) {
+    if (!this.context) this.setContext(context);
+
+    this.#loadLogger();
+
+    this.logger.info("Activate: begin");
+
+    this.#loadStatusBar();
+    this.statusBar.setLoading();
+
+    const version = context.extension.packageJSON.version;
+
+    const userAgent = new UserAgent(version);
+
+    Object.defineProperties(this, {
+      // @ts-expect-error ts(2345) `this`
+      api: { value: new REST(this, { userAgent }) },
+    });
+
+    await Promise.all([
+      this.#loadEvents(),
+      this.#loadCommands(),
+    ]);
+
+    this.#loadTreeViews();
 
     this.emit("activate", context);
   }

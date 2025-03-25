@@ -1,6 +1,7 @@
-import { join, parse } from "path";
+import { join } from "path";
 import { type TreeItem, Uri } from "vscode";
 import extension from "../extension";
+import { RESOURCES_DIR } from "./constants";
 
 export function bindFunctions<I extends Record<any, any>>(instance: I): void;
 export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
@@ -19,8 +20,8 @@ export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any
 
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
-    dark: Uri.file(extension.context.asAbsolutePath(join("resources", "dark", `${iconName}.${iconExt}`))),
-    light: Uri.file(extension.context.asAbsolutePath(join("resources", "light", `${iconName}.${iconExt}`))),
+    dark: Uri.file(extension.context.asAbsolutePath(join(RESOURCES_DIR, "dark", `${iconName}.${iconExt}`))),
+    light: Uri.file(extension.context.asAbsolutePath(join(RESOURCES_DIR, "light", `${iconName}.${iconExt}`))),
   };
 }
 
@@ -54,19 +55,36 @@ export function getIconName(data: any) {
   }
 }
 
-export function JSONparse<T extends any[] | Record<any, any>>(s: string) {
-  try {
-    return JSON.parse(s) as T;
-  } catch {
-    return null;
-  }
-}
-
-export function removeFileExtension(file: string) {
-  const parsed = parse(file);
-  return join(parsed.dir, parsed.name);
-}
-
 export function clamp(value: number, lowerLimit: number, upperLimit: number) {
   return Math.min(Math.max(value, lowerLimit), upperLimit);
+}
+
+type StringCamelify<S, Sep extends string> =
+  S extends `${infer P1}${Sep}${infer P2}${infer P3}`
+  ? `${P1}${Uppercase<P2>}${StringCamelify<P3, Sep>}`
+  : S;
+
+type Config<T, Sep extends string> =
+  T extends Array<infer U>
+  ? { [K in U as StringCamelify<string & K, Sep>]: K }
+  : T extends ReadonlyArray<infer U>
+  ? { [K in U as StringCamelify<string & K, Sep>]: K }
+  : T
+
+const defaultSeparator = "." as const;
+
+export function makeCamelizedPair<
+  T extends ReadonlyArray<string>,
+  Sep extends string = typeof defaultSeparator
+>(keys: T, sep: Sep = defaultSeparator as Sep): Config<T, Sep> {
+  const configObj: any = {};
+
+  if (!Array.isArray(keys)) return configObj;
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i] as string;
+    configObj[key.replace(RegExp(`[${sep}](\\w)`, "g"), (_, a) => a.toUpperCase())] = key;
+  }
+
+  return configObj;
 }

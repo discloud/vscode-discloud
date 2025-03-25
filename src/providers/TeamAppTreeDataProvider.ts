@@ -3,21 +3,24 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAp
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
+import { ConfigKeys, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAppTreeItem> {
+type Item = TeamAppTreeItem
+
+export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(context: ExtensionContext) {
-    super(context, "discloud-teams");
+    super(context, TreeViewIds.discloudTeamApps);
   }
 
-  getChildren(element?: TeamAppTreeItem): ProviderResult<TeamAppTreeItem[]>;
+  getChildren(element?: Item): ProviderResult<Item[]>;
   getChildren(element?: TeamAppTreeItem): ProviderResult<TreeItem[]> {
     if (element) return Array.from(element.children.values());
 
     const children = Array.from(this.children.values());
 
-    const sort = extension.config.get<string>("team.sort.by");
+    const sort = extension.config.get<string>(ConfigKeys.teamSortBy);
 
     if (sort?.includes(".")) {
       switch (sort) {
@@ -59,7 +62,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
       }
     }
 
-    const sortOnlineFirst = extension.config.get<boolean>("team.sort.online");
+    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.teamSortOnline);
 
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online!, b.online!));
 
@@ -89,7 +92,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     }
   }
 
-  refresh(data?: TeamAppTreeItem | TeamAppTreeItem[] | null) {
+  refresh(data?: Item | Item[] | null) {
     commands.executeCommand("setContext", "discloudTeamAppLength", this.children.has("x") ? 0 : this.children.size);
     super.refresh(data);
   }
@@ -224,7 +227,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<TeamAp
     x.contextValue = "EmptyTreeItem";
     x.iconPath = getIconPath("x");
 
-    this.children.set("x", <TeamAppTreeItem>x);
+    this.children.set("x", <Item>x);
 
     this.refresh();
   }

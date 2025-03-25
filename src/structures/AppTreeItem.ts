@@ -4,6 +4,7 @@ import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
 import extension from "../extension";
+import { ConfigKeys } from "../util/constants";
 import { getIconName, getIconPath } from "../util/utils";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
@@ -61,7 +62,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
-    const showAvatar = extension.config.get<string>("app.show.avatar.instead.status");
+    const showAvatar = extension.config.get<string>(ConfigKeys.appShowAvatarInsteadStatus);
 
     switch (showAvatar) {
       case "always": {

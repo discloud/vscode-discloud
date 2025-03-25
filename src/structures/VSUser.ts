@@ -19,7 +19,7 @@ export default class VSUser implements ApiVscodeUser {
   async fetch(isVS?: boolean) {
     const method = isVS ? "queueGet" : "get";
 
-    const res = await extension.api[method]<RESTGetApiVscode>("/vscode", {});
+    const res = await extension.api[method]<RESTGetApiVscode>("/vscode");
 
     if (!res) return this;
 
