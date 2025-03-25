@@ -1,9 +1,10 @@
+**/tsconfig.json
+**/*.ts
+.eslintrc.json
 .vscode/**
 .vscode-test/**
-src/**
+.vscode-test.*
 .yarnrc
+esbuild.mjs
+eslint.config.mjs
 vsc-extension-quickstart.md
-**/tsconfig.json
-**/.eslintrc.json
-**/*.ts
-**/.vscode-test.*
