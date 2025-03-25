@@ -1,8 +1,8 @@
 .github/**
 .vscode/**
 .vscode-test/**
-# out/** # ignore case use esbuild
-# node_modules/**
+# out/** # ignore case use bundle
+# node_modules/** # ignore case use bundle
 src/**
 .gitignore
 .yarnrc
