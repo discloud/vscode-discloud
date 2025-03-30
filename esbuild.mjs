@@ -11,7 +11,7 @@ async function main() {
     format: "cjs",
     minify: production,
     sourcemap: "inline",
-    sourcesContent: production,
+    sourcesContent: false,
     platform: "node",
     outfile: "out/extension.js",
     keepNames: !production,
