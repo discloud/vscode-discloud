@@ -1,12 +1,11 @@
 .github/**
 .vscode/**
 .vscode-test/**
-# out/** # ignore case use bundle
-# node_modules/** # ignore case use bundle
+node_modules/**
 src/**
 .gitignore
 .yarnrc
-esbuild.js
+esbuild.mjs
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs
