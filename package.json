@@ -34,7 +34,7 @@
     "onLanguage:discloudignore",
     "onStartupFinished",
     "workspaceContains:discloud.config",
-    "workspaceContains:discloudignore"
+    "workspaceContains:.discloudignore"
   ],
   "main": "out/extension.js",
   "l10n": "l10n",
