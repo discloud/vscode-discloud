@@ -7,6 +7,10 @@ import type AppTreeItem from "./AppTreeItem";
 import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
 
+export interface CommandConstructor {
+  new (...args: any[]): Command
+}
+
 export default abstract class Command {
   constructor(readonly data: CommandData = {}) { }
 

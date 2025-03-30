@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.37 - preview
+
+- Implantando pacote minificado com `esbuild`
+
 ## 2.22.32
 
 - Correção do `commit` que não commita todos os arquivos

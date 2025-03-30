@@ -3,7 +3,7 @@
   "displayName": "Discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "publisher": "discloud",
-  "version": "2.22.36",
+  "version": "2.22.37",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -1245,14 +1245,18 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "lint": "eslint src --fix",
-    "pretest": "yarn run compile && yarn run test:lint && yarn run test:ts",
-    "test": "vscode-test",
-    "test:lint": "eslint src",
-    "test:ts": "tsc --noEmit"
+    "vscode:prepublish": "yarn run package",
+    "compile": "yarn run check-types && yarn run lint && node esbuild.mjs",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.mjs --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "yarn run check-types && yarn run lint && node esbuild.mjs --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
@@ -1271,9 +1275,12 @@
     "@types/vscode": "^1.98.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.25.1",
+    "esbuild-plugin-version-injector": "^1.2.1",
     "eslint": "^9.23.0",
     "globals": "^16.0.0",
     "mocha": "^11.2.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0"
   }
