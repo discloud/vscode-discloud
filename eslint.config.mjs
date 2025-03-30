@@ -1,17 +1,21 @@
 import pluginJs from "@eslint/js";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Linter } from "eslint";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 import globals from "globals";
-import tseslint from "typescript-eslint";
 
-/** @type {Linter.Config[]} */
+/** @type {import("eslint").Linter.Config[]} */
 export default [
   { files: ["**/*.?(c|m)ts", "*.mjs"] },
   { ignores: ["**/node_modules/**", "out/**/*.?(c|m)js", "**/*.d.?(c|m)ts"] },
-  { languageOptions: { globals: globals.node } },
-  { languageOptions: { sourceType: "script" } },
+  {
+    languageOptions: {
+      globals: globals.node,
+      parser: tsParser,
+      sourceType: "script",
+    },
+  },
+  { plugins: { "@typescript-eslint": typescriptEslint } },
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
   {
     rules: {
       "@typescript-eslint/consistent-type-imports": ["warn", { fixStyle: "inline-type-imports" }],
