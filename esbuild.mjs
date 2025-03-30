@@ -38,7 +38,7 @@ const esbuildProblemMatcherPlugin = {
   setup(build) {
     const logPrefix = process.argv.includes("--watch") ? "watch" : "build";
 
-    build.onStart(() => console.log("[%s] build started", logPrefix));
+    build.onStart(() => console.log("[%s] started", logPrefix));
 
     build.onEnd(result => {
       for (let i = 0; i < result.errors.length; i++) {
@@ -50,7 +50,7 @@ const esbuildProblemMatcherPlugin = {
           console.error("    %s:%s:%s:", error.location.file, error.location.line, error.location.column);
       }
 
-      console.log("[%s] build finished", logPrefix);
+      console.log("[%s] finished", logPrefix);
     });
   },
 };
