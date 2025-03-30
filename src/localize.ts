@@ -5,10 +5,8 @@ import { join } from "path";
 import { env, type ExtensionContext } from "vscode";
 
 async function importJSON<T extends l10nJsonFormat>(path: string): Promise<T> {
-  try {
-    if (existsSync(path))
-      return JSON.parse(await readFile(path, "utf8"));
-  } catch { }
+  if (existsSync(path))
+    try { return JSON.parse(await readFile(path, "utf8")); } catch { }
 
   return <T>{};
 }
