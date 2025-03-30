@@ -11,11 +11,11 @@ async function main() {
     format: "cjs",
     minify: production,
     sourcemap: "inline",
-    sourcesContent: false,
+    sourcesContent: production,
     platform: "node",
     outfile: "out/extension.js",
     keepNames: !production,
-    logLevel: "silent",
+    logLevel: "warning",
     external: ["vscode"],
     plugins: [
       esbuildPluginVersionInjector(),

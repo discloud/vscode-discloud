@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import * as AdmZip from "adm-zip";
+import AdmZip from "adm-zip";
 import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync } from "fs";
 import { ProgressLocation, Uri, commands, window, workspace } from "vscode";

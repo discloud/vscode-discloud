@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
-import { existsSync } from "fs";
-import { readdir } from "fs/promises";
-import { extname, join, normalize } from "path";
-import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type Uri, window, workspace } from "vscode";
+import { normalize } from "path";
+import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type Uri, window, workspace } from "vscode";
 import { type Events, type TaskData } from "../@types";
+import { commandsRegister } from "../commands";
+import { loadEvents } from "../events";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
@@ -12,8 +12,7 @@ import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
-import { ConfigKeys, NODE_MODULES_EXTENSIONS } from "../util/constants";
-import { joinWithBuildRoot } from "../util/path";
+import { ConfigKeys } from "../util/constants";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -140,91 +139,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return this.workspaceFolderUri;
   }
 
-  async #loadCommands(dir = joinWithBuildRoot("commands")) {
-    if (!existsSync(dir)) return;
-
-    const files = await readdir(dir, { recursive: true });
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      const fileExt = extname(file);
-
-      if (!NODE_MODULES_EXTENSIONS.has(fileExt)) continue;
-
-      const commandName = join("discloud", file)
-        .slice(0, -fileExt.length)
-        .replace(/[/\\]+/g, ".");
-
-      const filePath = join(dir, file);
-
-      let imported;
-      try { imported = await import(filePath); } catch (error) {
-        this.debug(commandName, "❌");
-        this.emit("error", error);
-        continue;
-      }
-
-      let command: Command;
-      try { command = new (imported.default ?? imported)(this); }
-      catch { command = imported.default ?? imported; }
-
-      if (!command || typeof command !== "object" || !Reflect.has(command, "data") || !Reflect.has(command, "run")) {
-        this.debug(commandName, "❌");
-        continue;
-      }
-
-      const disposable = commands.registerCommand(commandName, async (...args) => {
-        if (!command.data.allowTokenless)
-          if (!this.hasToken) return;
-
-        try {
-          if (command.data.progress) {
-            const taskData = <TaskData>{};
-
-            await window.withProgress(command.data.progress, async (progress, token) => {
-              token.onCancellationRequested(() => this.statusBar.reset());
-
-              taskData.progress = progress;
-              taskData.token = token;
-
-              await command.run(taskData, ...args);
-            });
-          } else {
-            await command.run(null, ...args);
-          }
-        } catch (error) {
-          this.emit("error", error);
-        } finally {
-          this.statusBar.reset();
-        }
-      });
-
-      this.context.subscriptions.push(disposable);
-
-      this.commands.set(commandName, command);
-
-      this.debug(commandName, "✅");
-    }
-
-    this.debug("Commands %s loaded:", this.commands.size);
-  }
-
-  async #loadEvents(path = joinWithBuildRoot("events")) {
-    if (!existsSync(path)) return;
-
-    const promises = [];
-
-    const files = await readdir(path, { recursive: true });
-
-    for (let i = 0; i < files.length; i++)
-      promises.push(import(`${join(path, files[i])}`));
-
-    await Promise.all(promises);
-
-    this.debug("Events loaded:", promises.length);
-  }
-
   setContext(context: ExtensionContext) {
     Object.defineProperty(this, "context", { value: context });
   }
@@ -266,10 +180,8 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
       api: { value: new REST(this, { userAgent }) },
     });
 
-    await Promise.all([
-      this.#loadEvents(),
-      this.#loadCommands(),
-    ]);
+    await loadEvents(this);
+    await commandsRegister(this);
 
     this.#loadTreeViews();
 
