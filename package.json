@@ -32,7 +32,9 @@
   "activationEvents": [
     "onLanguage:discloud.config",
     "onLanguage:discloudignore",
-    "onStartupFinished"
+    "onStartupFinished",
+    "workspaceContains:discloud.config",
+    "workspaceContains:discloudignore"
   ],
   "main": "out/extension.js",
   "l10n": "l10n",
