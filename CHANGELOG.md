@@ -6,7 +6,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.22.37 - preview
+## 2.22.38
 
 - Implantando pacote minificado com `esbuild`
 
