@@ -37,9 +37,7 @@ async function main() {
     keepNames: !production,
     external: ["vscode"],
     logLevel: "silent",
-    plugins: [
-      esbuildProblemMatcherPlugin,
-    ],
+    plugins: [...watch ? [esbuildProblemMatcherPlugin] : []],
   });
 
   if (watch) {
