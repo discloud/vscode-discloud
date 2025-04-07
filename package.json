@@ -3,7 +3,7 @@
   "displayName": "Discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "publisher": "discloud",
-  "version": "2.22.39",
+  "version": "2.22.40",
   "engines": {
     "vscode": "^1.99.0"
   },
