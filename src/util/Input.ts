@@ -3,10 +3,10 @@ import { type InputBoxOptions, window } from "vscode";
 import { clamp } from "./utils";
 
 export default class InputBox {
-  static getExternalURL(options?: ExternalInputOptions): Promise<string | void>
-  static getExternalURL<Required extends true>(options: ExternalInputOptions<Required>): Promise<string>
-  static getExternalURL<Required extends boolean>(options?: ExternalInputOptions<Required>): Promise<string | void>
-  static async getExternalURL(options?: ExternalInputOptions) {
+  static getExternalURL(options?: ExternalURLInputOptions): Promise<string | void>
+  static getExternalURL<Required extends true>(options: ExternalURLInputOptions<Required>): Promise<string>
+  static getExternalURL<Required extends boolean>(options?: ExternalURLInputOptions<Required>): Promise<string | void>
+  static async getExternalURL(options?: ExternalURLInputOptions) {
     options ??= {};
 
     const url = await window.showInputBox({
@@ -16,7 +16,7 @@ export default class InputBox {
 
         let response;
         try {
-          response = await fetch(new URL(value));
+          response = await fetch(value);
         } catch {
           return options.prompt;
         }
@@ -33,10 +33,10 @@ export default class InputBox {
     if (options.required) throw Error(t("missing.input"));
   }
 
-  static getExternalImageURL(options?: ExternalImageInputOptions): Promise<string | void>
-  static getExternalImageURL<Required extends true>(options: ExternalImageInputOptions<Required>): Promise<string>
-  static getExternalImageURL<Required extends boolean>(options?: ExternalImageInputOptions<Required>): Promise<string | void>
-  static async getExternalImageURL(options?: ExternalImageInputOptions) {
+  static getExternalImageURL(options?: ExternalImageURLInputOptions): Promise<string | void>
+  static getExternalImageURL<Required extends true>(options: ExternalImageURLInputOptions<Required>): Promise<string>
+  static getExternalImageURL<Required extends boolean>(options?: ExternalImageURLInputOptions<Required>): Promise<string | void>
+  static async getExternalImageURL(options?: ExternalImageURLInputOptions) {
     options ??= {};
 
     return await InputBox.getExternalURL({
@@ -95,13 +95,13 @@ export default class InputBox {
 
 type ValidateInput = NonNullable<InputBoxOptions["validateInput"]>
 
-interface ExternalInputOptions<Required extends boolean = false> {
+interface ExternalURLInputOptions<Required extends boolean = false> {
   prompt?: string
   required?: Required
   validate?: (response: Response) => ReturnType<ValidateInput>
 }
 
-interface ExternalImageInputOptions<Required extends boolean = false> {
+interface ExternalImageURLInputOptions<Required extends boolean = false> {
   prompt?: string
   required?: Required
 }
