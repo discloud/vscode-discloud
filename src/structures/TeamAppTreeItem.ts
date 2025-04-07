@@ -30,6 +30,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   }
 
   dispose() {
+    extension.logOutputChannels.delete(this.appId);
+
     this.output.dispose();
 
     super.dispose();
