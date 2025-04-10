@@ -2,8 +2,6 @@ import { type ExtensionContext } from "vscode";
 import { localize } from "./localize";
 import Discloud from "./structures/Discloud";
 
-export const BUILD_ROOT_PATH = __dirname;
-
 const extension = new Discloud();
 export default extension;
 
