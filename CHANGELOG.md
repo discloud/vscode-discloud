@@ -6,9 +6,9 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.22.39
+## 2.22.41
 
-- Implantando pacote minificado com `esbuild`
+- Atualização de dependências
 
 ## 2.22.32
 
