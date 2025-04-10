@@ -14,20 +14,20 @@
   dependencies:
     tslib "^2.8.1"
 
-"@discloudapp/rest@^0.12.4":
-  version "0.12.4"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.12.4.tgz#0b2cfccaf1211b234c9fffc8916ab15b64196f40"
-  integrity sha512-fvfxZUCH/kz1sPQ9XPIRClxUfXq+7O3a/zbIULk3tqrudZTekfHeBao9xUhwOJeN821ba4oOQSdmLPi2WnvuEA==
+"@discloudapp/rest@^0.12.6":
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-0.12.6.tgz#bac8277260d0024c834089bbc1a7713db51d6ae2"
+  integrity sha512-VLKihlfp5nBNaUjoCCFjbaSqF6Hp+qaTaJdkbQoHlyEJOeo01qgJqGypj/kISHLSms1ftGIZalECeUat13a4rQ==
   dependencies:
     "@discloudapp/api-types" "^0.7.3"
-    "@discloudapp/util" "^0.9.1"
+    "@discloudapp/util" "^0.9.4"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
 
-"@discloudapp/util@^0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.9.1.tgz#78fad6175d38f6032af7028f2a473bf82dfd1894"
-  integrity sha512-iCiK1dCs9hzNpQSrJTl/C+cuNBQ0VWlRkdZCPZFA0ffwpdGsnPeCOjGG0bHrwuzuQxG1qa6LH2LsaxnbUFHY7w==
+"@discloudapp/util@^0.9.4":
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-0.9.4.tgz#88d35e7101211e9de01010a2b3449fbb287eacbe"
+  integrity sha512-1WVCYbpBj+WUrVYJCGn9s1Y2AbNKmPFTZxlnwIYbN0aNJiGIIk1ML6xk7/VwULWcnb5viDVyGp6XTp2k3wlU7w==
   dependencies:
     "@discloudapp/api-types" "^0.7.3"
     glob "^11.0.1"
@@ -752,6 +752,13 @@ chokidar@^3.5.3:
   optionalDependencies:
     fsevents "~2.3.2"
 
+chokidar@^4.0.1:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-4.0.3.tgz#7be37a4c03c9aee1ecfe862a4a23b2c70c205d30"
+  integrity sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==
+  dependencies:
+    readdirp "^4.0.1"
+
 cli-cursor@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/cli-cursor/-/cli-cursor-5.0.0.tgz#24a4831ecf5a6b01ddeb32fb71a4b2088b0dce38"
@@ -918,14 +925,14 @@ diff@^5.2.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
   integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
 
-discloud.app@^0.14.1:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.14.1.tgz#075bd9d86d3d3dd668ae41516f750d3d012940c5"
-  integrity sha512-B+7HwbZNr6ugW6dtVkNaNszDDH6XI9jrMSceRxYPzEiOo/cYYG1gs0uB3lz2ZF1fk4L3rj/prC7SDwrC79xlNQ==
+discloud.app@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-0.14.3.tgz#abe0a05d7a6fb47a03904c73b9455f5797d92014"
+  integrity sha512-RTqruog0is4L2SHrdv+ZXl+14f7XloXTVFujvtNQjlxoM9T+8lf673jsK7rsN7GpzS8ooJwNkGhAtH957OYdtQ==
   dependencies:
     "@discloudapp/api-types" "^0.7.3"
-    "@discloudapp/rest" "^0.12.4"
-    "@discloudapp/util" "^0.9.1"
+    "@discloudapp/rest" "^0.12.6"
+    "@discloudapp/util" "^0.9.4"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
     zod "^3.24.2"
@@ -2162,14 +2169,13 @@ mocha@^10.2.0:
     yargs-parser "^20.2.9"
     yargs-unparser "^2.0.0"
 
-mocha@^11.2.0:
-  version "11.2.0"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-11.2.0.tgz#98bff4e5f2ded10d3c2132dc34c04870f013d491"
-  integrity sha512-cF+pAB9LVjLMJthpPRBtBXZtpwflmyirJRYjeD0ajteFWeGp/vIzyDWzST1E7xKGEtCb6m/P0lIc+k4j/a0fVg==
+mocha@^11.2.2:
+  version "11.2.2"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-11.2.2.tgz#2dfefc9652de746389f5286888034239b6486231"
+  integrity sha512-VlSBxrPYHK4YNOEbFdkCxHQbZMoNzBkoPprqtZRW6311EUF/DlSxoycE2e/2NtRk4WKkIXzyrXDTrlikJMWgbw==
   dependencies:
-    ansi-colors "^4.1.3"
     browser-stdout "^1.3.1"
-    chokidar "^3.5.3"
+    chokidar "^4.0.1"
     debug "^4.3.5"
     diff "^5.2.0"
     escape-string-regexp "^4.0.0"
@@ -2180,6 +2186,7 @@ mocha@^11.2.0:
     log-symbols "^4.1.0"
     minimatch "^5.1.6"
     ms "^2.1.3"
+    picocolors "^1.1.1"
     serialize-javascript "^6.0.2"
     strip-json-comments "^3.1.1"
     supports-color "^8.1.1"
@@ -2407,6 +2414,11 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
+picocolors@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
+  integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
+
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
@@ -2488,6 +2500,11 @@ readable-stream@~2.3.6:
     safe-buffer "~5.1.1"
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
+
+readdirp@^4.0.1:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-4.1.2.tgz#eb85801435fbf2a7ee58f19e0921b068fc69948d"
+  integrity sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==
 
 readdirp@~3.6.0:
   version "3.6.0"
