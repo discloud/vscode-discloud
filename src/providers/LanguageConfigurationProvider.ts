@@ -62,7 +62,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     if (workspaceFolder) {
       if (workspaceFolder.fsPath !== dirname(document.uri.fsPath)) {
-        window.showErrorMessage(t("diagnostic.wrong.file.location"));
+        // @ts-expect-error ts(2339)
+        if (!document.uri._discloudDiscloudHasWrongLocationWarned) {
+          // @ts-expect-error ts(2339)
+          document.uri._discloudDiscloudHasWrongLocationWarned = true;
+          window.showErrorMessage(t("diagnostic.wrong.file.location"));
+        }
 
         diagnostics.push({
           message: t("diagnostic.wrong.file.location"),
@@ -121,7 +126,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
           message: error.message.replace("#/", ""),
           range: new Range(
             new Position(i, key.length + 1),
-            new Position(i, line.text.length),
+            new Position(i, lineText.length),
           ),
           severity: DiagnosticSeverity.Error,
         });
@@ -137,7 +142,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
                     message: t("diagnostic.main.not.exist"),
                     range: new Range(
                       new Position(i, key.length + 1),
-                      new Position(i, line.text.length),
+                      new Position(i, lineText.length),
                     ),
                     severity: DiagnosticSeverity.Error,
                   });
