@@ -1,5 +1,6 @@
 import { type ExtensionContext, type LogOutputChannel, type ProgressOptions, type StatusBarItem, type TreeItem, type window } from "vscode";
 import type AppTreeItem from "../structures/AppTreeItem";
+import type BaseChildTreeItem from "../structures/BaseChildTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import { type RateLimitData } from "./rest";
@@ -74,7 +75,7 @@ export interface TeamAppChildTreeItemData extends BaseChildTreeItemData {
   appId: string
   appType: number | null
   online: boolean | null
-  children?: TreeItem[]
+  children?: BaseChildTreeItem[]
   description?: string
   iconName?: string
   tooltip?: string
