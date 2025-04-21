@@ -1263,12 +1263,12 @@
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
-    "discloud.app": "^0.14.5",
+    "discloud.app": "^0.14.6",
     "json-schema-library": "^9.3.5",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.25.0",
     "@types/adm-zip": "^0.5.7",
     "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.9",
@@ -1280,7 +1280,7 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.25.2",
-    "eslint": "^9.24.0",
+    "eslint": "^9.25.0",
     "globals": "^16.0.0",
     "mocha": "^11.2.2",
     "npm-run-all": "^4.1.5",
