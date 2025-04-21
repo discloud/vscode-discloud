@@ -12,7 +12,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ## 2.22.43
 
-- Correção para [#714](issues/714)
+- Correção para [#714](#714)
 
 ## 2.22.41
 
