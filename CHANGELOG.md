@@ -6,6 +6,14 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.44
+
+- Correção de bug do discloud config parser
+
+## 2.22.43
+
+- Correção para [#714](issues/714)
+
 ## 2.22.41
 
 - Atualização de dependências
