@@ -1,9 +1,9 @@
 import { Routes } from "discloud.app";
-import { decode } from "jsonwebtoken";
+import { decodeJwt } from "jose";
 import extension from "../../extension";
 
 export function tokenIsDiscloudJwt(token: string): boolean {
-  const payload = decode(token, { json: true });
+  const payload = decodeJwt(token);
   return payload && "id" in payload && "key" in payload || false;
 }
 
