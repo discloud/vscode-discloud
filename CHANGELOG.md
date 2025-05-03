@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.47
+
+- Correção do parser do discloud config
+
 ## 2.22.45
 
 - Correção de bug de validação do token JWT
