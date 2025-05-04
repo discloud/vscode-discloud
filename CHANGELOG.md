@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.48
+
+- Correção definitiva do parser do discloud config
+- Correção da fila de requisições à API
+- Adicionado `webp` à lista de extensões de imagens permitidas em AVATAR
+
 ## 2.22.47
 
 - Correção do parser do discloud config
