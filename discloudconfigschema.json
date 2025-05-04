@@ -29,7 +29,7 @@
     "AVATAR": {
       "type": "string",
       "format": "uri",
-      "pattern": "^((s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png)([?]\\S*)?)?$"
+      "pattern": "^((s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png|webp)([?#]\\S*)?)?$"
     },
     "BUILD": {
       "type": "string"
