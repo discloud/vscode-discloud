@@ -9,13 +9,13 @@ export default class AsyncQueueRepository {
     readonly asyncQueue: AsyncQueue,
   ) { }
 
-  internalKey = Symbol("internal");
+  readonly #internalKey = Symbol("internal");
 
-  resolveKey(key?: AsyncQueueKey) {
-    return key ?? this.internalKey;
+  #resolveKey(key?: AsyncQueueKey) {
+    return key ?? this.#internalKey;
   }
 
-  resolveCached(key: AsyncQueueKey) {
+  #resolveCached(key: AsyncQueueKey) {
     let cached = this.#cache.get(key);
     if (cached) return cached;
     cached = [];
@@ -24,21 +24,21 @@ export default class AsyncQueueRepository {
   }
 
   add(key?: AsyncQueueKey) {
-    key = this.resolveKey(key);
-    const cached = this.resolveCached(key);
+    key = this.#resolveKey(key);
+    const cached = this.#resolveCached(key);
     const entity = new AsyncQueueEntity(key);
     cached.push(entity);
     return entity;
   }
 
   get(key?: AsyncQueueKey) {
-    key = this.resolveKey(key);
-    return this.resolveCached(key);
+    key = this.#resolveKey(key);
+    return this.#resolveCached(key);
   }
 
   shift(key?: AsyncQueueKey) {
-    key = this.resolveKey(key);
-    const cached = this.resolveCached(key);
+    key = this.#resolveKey(key);
+    const cached = this.#resolveCached(key);
     return cached.shift();
   }
 }
