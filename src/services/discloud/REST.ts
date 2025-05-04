@@ -2,6 +2,7 @@ import { t } from "@vscode/l10n";
 import { RouteBases, type RouteLike } from "discloud.app";
 import { EventEmitter } from "events";
 import { window, workspace } from "vscode";
+import AsyncQueue from "../../modules/async-queue";
 import { ConfigKeys } from "../../util/constants";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./error";
@@ -14,6 +15,7 @@ export default class REST extends EventEmitter {
   declare time: number;
   declare tokenIsValid: boolean;
   declare readonly options: Partial<RESTOptions>;
+  readonly #queue = new AsyncQueue();
 
   get baseURL() {
     return RouteBases.api;
@@ -83,11 +85,9 @@ export default class REST extends EventEmitter {
     const processKey = `${config.method ??= "GET"}.${pathname}`;
 
     if (inQueue) {
-      await this.#waitQueue(processKey);
+      await this.#queue.wait(processKey);
 
       if (this.limited) return null;
-
-      this.#queueProcesses.add(processKey);
     } else {
       if (this.#noQueueProcesses.length) {
         window.showErrorMessage(t("process.already.running", this.#noQueueProcesses.length));
@@ -111,8 +111,7 @@ export default class REST extends EventEmitter {
       throw Error(t("missing.connection"));
     } finally {
       if (inQueue) {
-        this.#queueProcesses.delete(processKey);
-        this.emit("#internal.resume", processKey);
+        this.#queue.shift(processKey);
       } else {
         this.#noQueueProcesses.shift();
       }
@@ -230,27 +229,5 @@ export default class REST extends EventEmitter {
     }, this.timeToReset);
   }
 
-  #noQueueProcesses: string[] = [];
-  #queueProcesses = new Set<string>();
-
-  async #waitQueue(key: string) {
-    while (this.#queueProcesses.has(key)) {
-      await new Promise((resolve) => {
-        const onResume = (k: string) => {
-          if (k === key) {
-            clearTimeout(timer);
-            this.removeListener("#internal.resume", onResume);
-            resolve(k);
-          }
-        };
-
-        const timer = setTimeout(() => {
-          this.removeListener("#internal.resume", onResume);
-          resolve(null);
-        }, 10000);
-
-        this.on("#internal.resume", onResume);
-      });
-    }
-  }
+  readonly #noQueueProcesses: string[] = [];
 }
