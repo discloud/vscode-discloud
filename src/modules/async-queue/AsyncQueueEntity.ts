@@ -11,7 +11,7 @@ export default class AsyncQueueEntity {
 
   declare readonly promise: Promise<void>;
 
-  use() {
+  resolve() {
     this.#resolve();
     return this;
   }

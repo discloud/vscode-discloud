@@ -7,15 +7,11 @@ export default class AsyncQueue {
   shift(key?: AsyncQueueKey) {
     const cached = this.#repository.get(key);
 
+    cached.shift();
+
     if (!cached.length) return;
 
-    if (cached.length === 1) {
-      cached.shift();
-      return;
-    }
-
-    cached.shift();
-    cached[0].use();
+    cached[0].resolve();
   }
 
   wait(key?: AsyncQueueKey) {
