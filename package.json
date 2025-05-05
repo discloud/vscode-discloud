@@ -1157,7 +1157,7 @@
       }
     ],
     "views": {
-      "discloud-activitybar": [
+      "discloudActivitybar": [
         {
           "type": "tree",
           "id": "discloudUserApps",
@@ -1202,7 +1202,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "discloud-activitybar",
+          "id": "discloudActivitybar",
           "title": "Discloud",
           "icon": "resources/icons/discloud_icon.svg"
         }
