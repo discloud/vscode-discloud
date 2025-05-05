@@ -1012,7 +1012,7 @@
       "explorer/context": [
         {
           "submenu": "discloudsub",
-          "group": "1_modification"
+          "group": "1_workspace"
         }
       ],
       "discloudsub": [
