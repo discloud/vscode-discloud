@@ -3,13 +3,12 @@ import AsyncQueueEntity from "./AsyncQueueEntity";
 import { type AsyncQueueKey } from "./types";
 
 export default class AsyncQueueRepository {
-  readonly #cache = new Map<AsyncQueueKey, AsyncQueueEntity[]>();
-
   constructor(
     readonly asyncQueue: AsyncQueue,
   ) { }
 
-  readonly #internalKey = Symbol("internal");
+  readonly #cache: Map<AsyncQueueKey, AsyncQueueEntity[]> = new Map();
+  readonly #internalKey: symbol = Symbol("internal");
 
   #resolveKey(key?: AsyncQueueKey) {
     return key ?? this.#internalKey;

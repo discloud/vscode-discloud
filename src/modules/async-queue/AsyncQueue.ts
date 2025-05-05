@@ -2,7 +2,7 @@ import AsyncQueueRepository from "./AsyncQueueRepository";
 import { type AsyncQueueKey } from "./types";
 
 export default class AsyncQueue {
-  readonly #repository = new AsyncQueueRepository(this);
+  readonly #repository: AsyncQueueRepository = new AsyncQueueRepository(this);;
 
   shift(key?: AsyncQueueKey) {
     const cached = this.#repository.get(key);
