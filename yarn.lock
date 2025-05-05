@@ -339,7 +339,12 @@
   resolved "https://registry.yarnpkg.com/@sagold/json-pointer/-/json-pointer-5.1.2.tgz#7f07884050fd2139eeb5d7423e917160ee7e0b8d"
   integrity sha512-+wAhJZBXa6MNxRScg6tkqEbChEHMgVZAhTHVJ60Y7sbtXtu9XA49KfUkdWlS2x78D6H9nryiKePiYozumauPfA==
 
-"@sagold/json-query@^6.1.3":
+"@sagold/json-pointer@^7.0.0":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@sagold/json-pointer/-/json-pointer-7.1.1.tgz#c29d0feee1bcd8b67b7224ef885e2793a1f7f034"
+  integrity sha512-m6BoBo42tsq0mTy1U53pXfVC5WH5s4DtG0VRhOoYaxy6x9ssZNLHez4dTYF+ghcS1Sf88Bi4BL1aTNhgyjBMqQ==
+
+"@sagold/json-query@^6.2.0":
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/@sagold/json-query/-/json-query-6.2.0.tgz#2204a0259ea10f36cd5cb0a1505078e6d751eecd"
   integrity sha512-7bOIdUE6eHeoWtFm8TvHQHfTVSZuCs+3RpOKmZCDBIOrxpvF/rNFTeuvIyjHva/RR0yVS3kQtr+9TW72LQEZjA==
@@ -2178,13 +2183,13 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-library@^9.3.5:
-  version "9.3.5"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-9.3.5.tgz#dd66002257a13572acd681854a023e1da0e86bfa"
-  integrity sha512-5eBDx7cbfs+RjylsVO+N36b0GOPtv78rfqgf2uON+uaHUIC62h63Y8pkV2ovKbaL4ZpQcHp21968x5nx/dFwqQ==
+json-schema-library@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-10.0.0.tgz#3e3306c10c431117a5c3202872c91c0b9eb335bf"
+  integrity sha512-hT18aoABvl007deN9lI4KPgw4RomuLAWR9sjo5UKDrgV4/U4OT+8CwojRBOQFmZCPbSzZk4lSeYuzW4PMcA/Lg==
   dependencies:
-    "@sagold/json-pointer" "^5.1.2"
-    "@sagold/json-query" "^6.1.3"
+    "@sagold/json-pointer" "^7.0.0"
+    "@sagold/json-query" "^6.2.0"
     deepmerge "^4.3.1"
     fast-copy "^3.0.2"
     fast-deep-equal "^3.1.3"
