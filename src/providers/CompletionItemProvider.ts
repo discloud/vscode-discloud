@@ -1,14 +1,11 @@
 import { existsSync } from "fs";
-import type { JSONSchema7, JSONSchema7Definition, JSONSchema7Type } from "json-schema";
+import { type JSONSchema7, type JSONSchema7Definition, type JSONSchema7Type } from "json-schema";
 import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
-import type { ProviderOptions } from "../@types";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
-  constructor(context: ExtensionContext, options: ProviderOptions) {
-    super(context, options.path.toString());
-
-    if (!this.schema) return;
+  constructor(context: ExtensionContext, schema: JSONSchema7) {
+    super(context, schema);
 
     const disposable = languages.registerCompletionItemProvider(this.schema.$id!, {
       provideCompletionItems: (document, position, _token, _context) => {
@@ -30,10 +27,10 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
         let schema = this.schema;
 
-        const maybeSchema = this.draft.getSchema({ data, pointer: key });
+        const maybeSchema = this.draft.getNode(key, data);
 
-        if (maybeSchema && maybeSchema.type !== "error")
-          schema = maybeSchema as JSONSchema7;
+        if (maybeSchema && maybeSchema.node)
+          schema = maybeSchema.node.schema;
 
         return this.parseSchema(schema, {
           document,

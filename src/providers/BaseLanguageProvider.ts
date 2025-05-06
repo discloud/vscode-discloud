@@ -1,36 +1,28 @@
-import { t } from "@vscode/l10n";
-import { readFileSync } from "fs";
+import { DiscloudConfigScopes } from "discloud.app";
+import { readFile } from "fs/promises";
 import type { JSONSchema7 } from "json-schema";
-import { JsonEditor } from "json-schema-library";
+import { compileSchema, type SchemaNode } from "json-schema-library";
 import { parseEnv } from "util";
 import { type ExtensionContext, type TextDocument } from "vscode";
-import extension from "../extension";
-import { DiscloudConfigScopes } from "discloud.app";
 
 const STRING_BOOLEAN = new Set(["false", "true"]);
 
 export default class BaseLanguageProvider {
   static readonly #schemas: Record<string, JSONSchema7> = {};
-  static readonly #drafts: Record<string, JsonEditor> = {};
-  declare readonly draft: JsonEditor;
-  declare readonly schema: JSONSchema7;
+  static readonly #drafts: Record<string, SchemaNode> = {};
+  declare readonly draft: SchemaNode;
   declare readonly scopes: string[];
 
-  constructor(readonly context: ExtensionContext, path: string) {
-    if (path) {
-      try {
-        this.schema = BaseLanguageProvider.#schemas[path]
-          ??= JSON.parse(readFileSync(context.asAbsolutePath(path), "utf8"));
-        this.draft = BaseLanguageProvider.#drafts[path] ??= new JsonEditor(this.schema);
-        this.scopes = Object.keys(this.schema.properties ?? {});
-      } catch (error: any) {
-        extension.logger.error(error);
-        return;
-      }
-    } else {
-      extension.logger.error(t("missing.{input}", { input: "path" }));
-      return;
-    }
+  static async getSchemaFromPath(path: string) {
+    return BaseLanguageProvider.#schemas[path] ??= JSON.parse(await readFile(path, "utf8"));
+  }
+
+  constructor(readonly context: ExtensionContext, readonly schema: JSONSchema7) {
+    this.scopes = Object.keys(this.schema.properties ?? {});
+
+    this.draft = schema.$id
+      ? BaseLanguageProvider.#drafts[schema.$id] ??= compileSchema(this.schema)
+      : compileSchema(this.schema);
   }
 
   transformConfigToJSON(document: TextDocument) {
@@ -48,7 +40,7 @@ export default class BaseLanguageProvider {
     if (key in obj) obj[key] = obj[key].split(/\s*,\s*/g).filter(Boolean);
 
     key = DiscloudConfigScopes.AUTORESTART;
-    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == true;
+    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
 
     key = DiscloudConfigScopes.RAM;
     if (key in obj && !isNaN(obj[key])) obj[key] = Number(obj[key]);

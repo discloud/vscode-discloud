@@ -1,17 +1,15 @@
 import { t } from "@vscode/l10n";
 import { existsSync } from "fs";
+import { type JSONSchema7 } from "json-schema";
 import { dirname, join } from "path";
 import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, type ExtensionContext, Position, Range, type TextDocument, languages, window, workspace } from "vscode";
-import { type ProviderOptions } from "../@types";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 export default class LanguageConfigurationProvider extends BaseLanguageProvider {
   declare readonly collection: DiagnosticCollection;
 
-  constructor(context: ExtensionContext, options: ProviderOptions) {
-    super(context, options.path.toString());
-
-    if (!this.schema) return;
+  constructor(context: ExtensionContext, schema: JSONSchema7) {
+    super(context, schema);
 
     this.collection = languages.createDiagnosticCollection(this.schema.$id);
 
@@ -22,7 +20,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     });
 
     const disposableClose = workspace.onDidCloseTextDocument((document) => {
-      if (document.languageId === this.schema.$id) {
+      if (this.collection.has(document.uri)) {
         this.collection.delete(document.uri);
       }
     });
@@ -32,7 +30,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
       for (let i = 0; i < workspace.textDocuments.length; i++) {
         const document = workspace.textDocuments[i];
-        if (document.languageId === this.schema.$id!) {
+        if (document.languageId === this.schema.$id) {
           this.checkDocument(document);
         }
       }
@@ -82,14 +80,14 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const data = this.transformConfigToJSON(document);
 
-    const errors = this.validateJsonSchema(data);
+    const result = this.validateJsonSchema(data);
 
-    for (let i = 0; i < errors.length; i++) {
-      const error = errors[i];
+    for (let i = 0; i < result.errors.length; i++) {
+      const error = result.errors[i];
 
       switch (error.code) {
         case "required-property-error":
-          errors.splice(i, 1);
+          result.errors.splice(i, 1);
 
           diagnostics.push({
             message: error.message.substring(0, error.message.lastIndexOf(` at \`${error.data.pointer}\``)),
@@ -113,14 +111,14 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       const keyAndValue = lineText.split("=");
       const [key, value] = keyAndValue;
 
-      const scopeSchema = this.draft.getSchema({ data, pointer: key });
+      const scopeSchema = this.draft.getNode(key, data);
 
-      if (!scopeSchema || scopeSchema.type === "error") continue;
+      if (!scopeSchema || scopeSchema.error) continue;
 
-      const errorIndex = errors.findIndex(e => e.data.pointer.includes(key));
+      const errorIndex = result.errors.findIndex(e => e.data.pointer.includes(key));
 
       if (errorIndex > -1) {
-        const error = errors.splice(errorIndex, 1)[0];
+        const error = result.errors.splice(errorIndex, 1)[0];
 
         diagnostics.push({
           message: error.message.replace("#/", ""),
@@ -132,10 +130,12 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         });
       }
 
-      switch (scopeSchema.type) {
+      if (!scopeSchema.node) continue;
+
+      switch (scopeSchema.node.schema.type) {
         case "string":
-          if (scopeSchema.format) {
-            switch (scopeSchema.format) {
+          if (scopeSchema.node.schema.format) {
+            switch (scopeSchema.node.schema.format) {
               case "uri-reference":
                 if (!existsSync(join(dirname(document.uri.fsPath), value))) {
                   diagnostics.push({

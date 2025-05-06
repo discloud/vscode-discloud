@@ -1,14 +1,23 @@
 import { type BaseApiApp } from "discloud.app";
 import { workspace } from "vscode";
 import extension from "../extension";
+import BaseLanguageProvider from "../providers/BaseLanguageProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenValidator } from "../services/discloud/utils";
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
 
 extension.on("activate", async function (context) {
-  new CompletionItemProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
-  new LanguageConfigurationProvider(context, { path: DISCLOUD_CONFIG_SCHEMA_FILE_NAME });
+  try {
+    const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
+
+    const schema = await BaseLanguageProvider.getSchemaFromPath(path);
+
+    new CompletionItemProvider(context, schema);
+    new LanguageConfigurationProvider(context, schema);
+  } catch (error: any) {
+    extension.logger.error(error);
+  }
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
