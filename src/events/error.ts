@@ -2,11 +2,15 @@ import { CancellationError, commands, version, window } from "vscode";
 import WarningError from "../errors/warning";
 import extension from "../extension";
 import DiscloudAPIError from "../services/discloud/error";
+import { t } from "@vscode/l10n";
 
 extension.on("error", async function (error: any) {
   if (!error) return;
 
-  if (error instanceof CancellationError) return;
+  if (error instanceof CancellationError) {
+    await window.showWarningMessage(t("action.cancelled"));
+    return;
+  }
 
   if (error instanceof WarningError) {
     await window.showWarningMessage(error.message);

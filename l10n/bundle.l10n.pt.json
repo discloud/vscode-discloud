@@ -1,4 +1,5 @@
 {
+  "action.cancelled": "Ação cancelada",
   "app.status.on": "Ligado",
   "app.status.ramKilled": "RAM insuficiente",
   "app.status.errorCode": "Erro de código",
@@ -8,6 +9,7 @@
   "action.title": "Tem certeza que quer fazer {action}?",
   "backup.request.failed": "Falha ao solicitar backup",
   "backup.success": "Backup feito com êxito!\n{dir}",
+  "cancelled": "Cancelado",
   "choose.app": "Escolha um app.",
   "choose.files": "Selecione os arquivos.",
   "choose.mod": "Escolha um MOD.",
