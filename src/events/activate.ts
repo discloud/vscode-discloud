@@ -9,7 +9,9 @@ import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
 
 extension.on("activate", async function (context) {
   try {
-    const schema = await BaseLanguageProvider.getSchemaFromPath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
+    const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
+
+    const schema = await BaseLanguageProvider.getSchemaFromPath(path);
 
     new CompletionItemProvider(context, schema);
     new LanguageConfigurationProvider(context, schema);
