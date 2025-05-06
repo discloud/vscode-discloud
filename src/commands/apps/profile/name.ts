@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBaseResult, Routes } from "discloud.app";
-import { window } from "vscode";
+import { CancellationError, window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
@@ -28,7 +28,7 @@ export default class extends Command {
     if (!name) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { name } });
     if (!res) return;

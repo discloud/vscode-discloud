@@ -129,17 +129,25 @@ function commandRegister(
       if (command.data.progress) {
         const taskData = <TaskData>{};
 
-        await window.withProgress(command.data.progress, async function (progress, token) {
-          token.onCancellationRequested(() => extension.statusBar.reset());
+        return await window.withProgress(command.data.progress, async function (progress, token) {
+          const cancellationPromise = new Promise(function (_, reject) {
+            token.onCancellationRequested(function () {
+              extension.statusBar.reset();
+              reject();
+            });
+          });
 
           taskData.progress = progress;
           taskData.token = token;
 
-          await command.run(taskData, ...args);
+          return await Promise.race([
+            cancellationPromise,
+            command.run(taskData, ...args),
+          ]);
         });
-      } else {
-        await command.run(null, ...args);
       }
+
+      return await command.run(null, ...args);
     } catch (error) {
       extension.emit("error", error);
     } finally {

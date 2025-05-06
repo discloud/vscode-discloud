@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation } from "vscode";
+import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
@@ -26,7 +26,7 @@ export default class extends Command {
     if (!mod) throw Error(t("missing.moderator"));
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.delete<RESTDeleteApiAppTeamResult>(Routes.appTeam(item.appId, mod.id));
     if (!res) return;

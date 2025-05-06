@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
-import { ProgressLocation, Uri, workspace } from "vscode";
+import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
@@ -28,7 +28,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     extension.statusBar.setCommitting();
 

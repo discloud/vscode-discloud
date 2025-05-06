@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { commands, window } from "vscode";
+import { CancellationError, commands, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import DiscloudAPIError from "../../services/discloud/error";
@@ -30,7 +30,7 @@ export default class extends Command {
     if (!locale) throw Error(t("missing.locale"));
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     try {
       const response = await extension.user.setLocale(locale);

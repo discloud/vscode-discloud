@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { ModPermissionsBF, type RESTPutApiAppTeamResult, Routes } from "discloud.app";
-import { ProgressLocation, type QuickPickItem, window } from "vscode";
+import { CancellationError, ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
 import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
@@ -37,7 +37,7 @@ export default class extends Command {
     if (!perms) throw Error(t("missing.input"));
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: {
