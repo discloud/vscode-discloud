@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.22.50
+
+- Melhorias na manipulação de ações rejeitadas
+
 ## 2.22.48
 
 - Correção definitiva do parser do discloud config
