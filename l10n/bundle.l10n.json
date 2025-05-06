@@ -33,6 +33,7 @@
   "diagnostic.wrong": "It's wrong!",
   "diagnostic.wrong.file.location": "This file needs to be in the project root. Move the file or open VSCode to the correct location.",
   "error": "Error",
+  "file.already.exists": "The file already exists",
   "files.checking": "Checking files...",
   "files.missing": "No files found.",
   "files.zipping": "Adding files to the ZIP...",

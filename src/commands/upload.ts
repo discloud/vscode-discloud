@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { ProgressLocation, Uri, workspace } from "vscode";
+import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
 import Command from "../structures/Command";
@@ -22,7 +22,7 @@ export default class extends Command {
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     extension.statusBar.setUploading();
 

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type RESTDeleteApiAppDeleteResult, Routes } from "discloud.app";
-import { ProgressLocation } from "vscode";
+import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
@@ -23,7 +23,7 @@ export default class extends Command {
     }
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.delete<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId));
     if (!res) return;

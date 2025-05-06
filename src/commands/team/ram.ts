@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppRamResult, Routes } from "discloud.app";
-import { ProgressLocation } from "vscode";
+import { CancellationError, ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
@@ -35,7 +35,7 @@ export default class extends Command {
     });
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.put<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), { body: { ramMB } });
     if (!res) return;

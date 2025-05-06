@@ -5,6 +5,7 @@ import extension from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 import InputBox from "../../../util/Input";
+import { CancellationError } from "vscode";
 
 export default class extends Command {
   constructor() {
@@ -23,7 +24,7 @@ export default class extends Command {
     });
 
     if (!await this.confirmAction())
-      throw Error(t("rejected.action"));
+      throw new CancellationError();
 
     const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
     if (!res) return;
