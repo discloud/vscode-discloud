@@ -13,7 +13,7 @@ const esbuildProblemMatcherPlugin = {
 
         console.error("✘ [ERROR] %s", error.text);
 
-        console.error("    %s:%s:%s:", location.file, location.line, location.column);
+        console.error("    %s:%s:%s:", error.location.file, error.location.line, error.location.column);
       }
 
       console.log("[watch] build finished");
