@@ -10,7 +10,7 @@ export default class AsyncQueueRepository {
   readonly #cache: Map<AsyncQueueKey, AsyncQueueEntity[]> = new Map();
   readonly #internalKey: symbol = Symbol("internal");
 
-  #resolveKey(key?: AsyncQueueKey) {
+  resolveKey(key?: AsyncQueueKey) {
     return key ?? this.#internalKey;
   }
 
@@ -22,21 +22,29 @@ export default class AsyncQueueRepository {
     return cached;
   }
 
-  add(key?: AsyncQueueKey) {
-    key = this.#resolveKey(key);
+  add(key: AsyncQueueKey) {
     const cached = this.#resolveCached(key);
     const entity = new AsyncQueueEntity(key);
     cached.push(entity);
     return entity;
   }
 
-  get(key?: AsyncQueueKey) {
-    key = this.#resolveKey(key);
-    return this.#resolveCached(key);
+  first(key: AsyncQueueKey) {
+    const cached = this.#resolveCached(key);
+    return cached.at(0);
   }
 
-  shift(key?: AsyncQueueKey) {
-    key = this.#resolveKey(key);
+  getSize(key: AsyncQueueKey) {
+    return this.#resolveCached(key).length;
+  }
+
+  resolve(key: AsyncQueueKey) {
+    const cached = this.#resolveCached(key);
+    cached.shift();
+    cached.at(0)?.resolve();
+  }
+
+  shift(key: AsyncQueueKey) {
     const cached = this.#resolveCached(key);
     return cached.shift();
   }

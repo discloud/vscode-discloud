@@ -2,24 +2,26 @@ import AsyncQueueRepository from "./AsyncQueueRepository";
 import { type AsyncQueueKey } from "./types";
 
 export default class AsyncQueue {
-  readonly #repository: AsyncQueueRepository = new AsyncQueueRepository(this);;
+  readonly #repository: AsyncQueueRepository = new AsyncQueueRepository(this);
+
+  #resolveKey(key?: AsyncQueueKey) {
+    return this.#repository.resolveKey(key);
+  }
 
   shift(key?: AsyncQueueKey) {
-    const cached = this.#repository.get(key);
+    key = this.#resolveKey(key);
 
-    if (!cached.length) return;
-
-    cached.shift();
-
-    cached.at(0)?.resolve();
+    this.#repository.resolve(key);
   }
 
   wait(key?: AsyncQueueKey) {
+    key = this.#resolveKey(key);
+
+    const size = this.#repository.getSize(key);
+
     const entity = this.#repository.add(key);
 
-    const cached = this.#repository.get(entity.key);
-
-    if (cached.length === 1) return Promise.resolve();
+    if (!size) return Promise.resolve();
 
     return entity.promise;
   }
