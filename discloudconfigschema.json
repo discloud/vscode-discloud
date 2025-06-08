@@ -72,6 +72,7 @@
       "default": "latest",
       "examples": [
         "latest",
+        "lts",
         "current",
         "suja",
         "x.x.x"
