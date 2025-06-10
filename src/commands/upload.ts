@@ -1,8 +1,11 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
+import { DiscloudConfig } from "discloud.app";
+import stripAnsi from "strip-ansi";
+import { CancellationError, ProgressLocation, Uri, window } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import SocketUploadClient from "../services/discloud/socket/upload/client";
+import { type SocketEventUploadData } from "../services/discloud/socket/upload/types";
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
@@ -33,8 +36,6 @@ export default class extends Command {
     if (!dConfig.validate(true))
       throw Error(t("invalid.discloud.config"));
 
-    const zipName = `${workspace.name}.zip`;
-
     const fs = new FileSystem({
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
@@ -54,35 +55,91 @@ export default class extends Command {
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
     const zipper = new Zip();
+
     await zipper.appendUriList(found);
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
+    const buffer = await zipper.getBuffer();
 
-    const files = [];
-    try {
-      files.push(await resolveFile(zipper.getBuffer(), zipName));
-    } catch (error) {
-      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
-      throw error;
-    }
+    await this.socketUpload(task, buffer);
+  }
 
-    task.progress.report({ increment: -1, message: t("uploading") });
+  async socketUpload(task: TaskData, buffer: Buffer) {
+    await new Promise<void>(r => {
+      const url = new URL(`${extension.api.baseURL}/ws/upload`);
 
-    const res = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
+      let connected = false;
 
-    if (!res) return;
+      const logger = window.createOutputChannel("Discloud Upload");
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+      function showLog(value: string) {
+        logger.appendLine(stripAnsi(value));
 
-      if ("app" in res && res.app) {
-        dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
-        await extension.appTree.fetch();
+        queueMicrotask(() => logger.show(true));
       }
 
-      if (res.logs) {
-        this.logger("app" in res && res.app ? res.app.id : "Discloud Upload Error", res.logs);
-      }
-    }
+      const ws = new SocketUploadClient(url, { headers: { "api-token": extension.api.token! } })
+        .on("connecting", () => {
+          task.progress.report({ increment: -1, message: t("socket.upload.connecting") });
+        })
+        .on("connect", async () => {
+          connected = true;
+
+          task.progress.report({ increment: -1, message: t("uploading") });
+
+          await ws.sendFile(buffer);
+        })
+        .on("upload", (data) => {
+          if (data.progress) {
+            task.progress.report({ increment: data.progress.bar });
+
+            if (data.progress.log) {
+              showLog(data.progress.log.replace(/[\r\n]+$/, ""));
+            }
+          }
+
+          if (data.message) {
+            this.showApiMessage(data);
+          }
+        })
+        .on("error", (error) => {
+          extension.logger.error(error);
+        })
+        .once("close", async (code, reason) => {
+          r();
+
+          ws.dispose();
+
+          if (!connected) {
+            if (code === 1008) return;
+            await window.showErrorMessage(t("socket.upload.connecting.fail"));
+            return;
+          }
+
+          const message = reason.toString();
+
+          if (!message) return logger.appendLine(t("done"));
+
+          let data!: SocketEventUploadData;
+          try {
+            data = JSON.parse(message);
+
+            if (data.progress) {
+              task.progress.report({ increment: data.progress.bar });
+
+              if (data.progress.log) {
+                showLog(data.progress.log.replace(/[\r\n]+$/, ""));
+              }
+            }
+
+            if (data.message) {
+              this.showApiMessage(data);
+            }
+          } catch { }
+        });
+
+      extension.context.subscriptions.push(logger, ws);
+
+      ws.connect();
+    });
   }
 }

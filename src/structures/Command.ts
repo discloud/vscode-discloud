@@ -1,5 +1,6 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, DiscloudConfigScopes, ModPermissionsBF, ModPermissionsFlags, type ModPermissionsResolvable, type RESTGetApiAppTeamResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
+import stripAnsi from "strip-ansi";
 import { type LogOutputChannel, type QuickPickItem, type Uri, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
 import extension from "../extension";
@@ -8,7 +9,7 @@ import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
 
 export interface CommandConstructor {
-  new (...args: any[]): Command
+  new(...args: any[]): Command
 }
 
 export default abstract class Command {
@@ -295,7 +296,7 @@ export default abstract class Command {
     if (typeof output === "string")
       output = extension.getLogOutputChannel(output);
 
-    output.info("\n" + log);
+    output.info("\n" + stripAnsi(log));
 
     if (show) queueMicrotask(() => output.show(false));
   }
@@ -335,7 +336,7 @@ interface ActionOptions {
 interface Data {
   status?: string
   statusCode?: number
-  message?: string
+  message?: string | null
 }
 
 interface AppPickerOptions {

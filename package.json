@@ -1265,7 +1265,9 @@
     "adm-zip": "^0.5.16",
     "discloud.app": "^0.14.12",
     "jose": "^6.0.11",
-    "json-schema-library": "^10.1.2"
+    "json-schema-library": "^10.1.2",
+    "strip-ansi": "^7.1.0",
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
@@ -1274,6 +1276,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
     "@vscode/test-cli": "^0.0.11",
