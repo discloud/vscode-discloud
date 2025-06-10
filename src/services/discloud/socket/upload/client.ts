@@ -126,9 +126,10 @@ export default class SocketUploadClient extends EventEmitter<SocketUploadEventsM
           })
           .on("message", (data) => {
             try {
-              const json = JSON.parse(data.toString());
+              const rawData = data.toString();
+              const payload = JSON.parse(rawData);
 
-              if (json.event) this.emit(json.event, json);
+              this.emit("upload", payload);
             } catch (error: any) {
               this.emit("error", error);
             }
@@ -148,8 +149,8 @@ export default class SocketUploadClient extends EventEmitter<SocketUploadEventsM
             this.ping = this._pong - this._ping;
           });
       } catch (error: any) {
-        reject(error);
         this.emit("error", error);
+        reject(error);
       }
     });
   }

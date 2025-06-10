@@ -510,6 +510,19 @@
             "default": true,
             "title": "%config.team.sort.online.title%",
             "markdownDescription": "%config.team.sort.online.description%"
+          },
+          "discloud.upload.strategy": {
+            "type": "string",
+            "default": "socket",
+            "enum": [
+              "rest",
+              "socket"
+            ],
+            "enumItemLabels": [
+              "%config.upload.strategy.rest.label%",
+              "%config.upload.strategy.socket.label%"
+            ],
+            "title": "%config.upload.strategy.title%"
           }
         }
       }

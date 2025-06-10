@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig } from "discloud.app";
+import { DiscloudConfig, resolveFile, type RESTPostApiUploadResult, Routes } from "discloud.app";
 import stripAnsi from "strip-ansi";
 import { CancellationError, ProgressLocation, Uri, window } from "vscode";
 import { type TaskData } from "../@types";
@@ -9,6 +9,10 @@ import { type SocketEventUploadData } from "../services/discloud/socket/upload/t
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
+import { ConfigKeys, UploadStrategy } from "../util/constants";
+
+type UploadStrategy = typeof UploadStrategy
+type UploadStrategies = UploadStrategy[keyof UploadStrategy]
 
 export default class extends Command {
   constructor() {
@@ -60,10 +64,37 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    await this.socketUpload(task, buffer);
+    const strategy = extension.config.get<UploadStrategies>(ConfigKeys.uploadStrategy, UploadStrategy.socket);
+
+    await this[strategy](task, buffer, dConfig);
   }
 
-  async socketUpload(task: TaskData, buffer: Buffer) {
+  async rest(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
+    task.progress.report({ increment: -1, message: t("uploading") });
+
+    const file = await resolveFile(buffer, "file.zip");
+
+    const files: File[] = [file];
+
+    const res = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
+
+    if (!res) return;
+
+    if ("status" in res) {
+      this.showApiMessage(res);
+
+      if ("app" in res && res.app) {
+        dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
+        await extension.appTree.fetch();
+      }
+
+      if (res.logs) {
+        this.logger("app" in res && res.app ? res.app.id : "Discloud Upload Error", res.logs);
+      }
+    }
+  }
+
+  async socket(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
     await new Promise<void>(r => {
       const url = new URL(`${extension.api.baseURL}/ws/upload`);
 
@@ -72,8 +103,7 @@ export default class extends Command {
       const logger = window.createOutputChannel("Discloud Upload");
 
       function showLog(value: string) {
-        logger.appendLine(stripAnsi(value));
-
+        logger.appendLine(stripAnsi(value.replace(/[\r\n]+$/, "")));
         queueMicrotask(() => logger.show(true));
       }
 
@@ -93,12 +123,21 @@ export default class extends Command {
             task.progress.report({ increment: data.progress.bar });
 
             if (data.progress.log) {
-              showLog(data.progress.log.replace(/[\r\n]+$/, ""));
+              showLog(data.progress.log);
             }
           }
 
           if (data.message) {
             this.showApiMessage(data);
+          }
+
+          if (data.app) {
+            dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
+            extension.appTree.fetch();
+          }
+
+          if (data.logs) {
+            showLog(data.logs);
           }
         })
         .on("error", (error) => {
@@ -127,7 +166,7 @@ export default class extends Command {
               task.progress.report({ increment: data.progress.bar });
 
               if (data.progress.log) {
-                showLog(data.progress.log.replace(/[\r\n]+$/, ""));
+                showLog(data.progress.log);
               }
             }
 

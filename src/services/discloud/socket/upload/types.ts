@@ -1,3 +1,4 @@
+import { type ApiUploadApp } from "discloud.app";
 import { type SocketEventsMap, type SocketOptions } from "../types";
 
 export interface SocketUploadEventsMap extends SocketEventsMap {
@@ -6,7 +7,8 @@ export interface SocketUploadEventsMap extends SocketEventsMap {
 }
 
 export interface SocketEventUploadData {
-  event: string
+  app?: ApiUploadApp
+  logs?: string
   message: string | null
   progress: SocketProgressData
   status: "ok" | "error"
