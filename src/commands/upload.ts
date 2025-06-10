@@ -7,7 +7,7 @@ import { socketUpload } from "../services/discloud/socket/upload/upload";
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
-import { ConfigKeys, UploadStrategy } from "../util/constants";
+import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -59,7 +59,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = extension.config.get(ConfigKeys.uploadStrategy, UploadStrategy.socket);
+    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
     await this[strategy](task, buffer, dConfig);
   }

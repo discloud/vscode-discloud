@@ -51,7 +51,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = "rest"; // extension.config.get(ConfigKeys.uploadStrategy, UploadStrategy.socket);
+    const strategy = "rest"; // extension.config.get(ConfigKeys.apiActionsStrategy, UploadStrategy.socket);
 
     await this[strategy](task, buffer, item);
   }

@@ -30,6 +30,7 @@ const CONFIG_KEYS = Object.freeze([
   "debug",
   "token",
   "users",
+  "api.actions.strategy",
   "app.backup.dir",
   "app.import.dir",
   "app.notification.status",
@@ -42,7 +43,6 @@ const CONFIG_KEYS = Object.freeze([
   "team.app.notification.status",
   "team.sort.by",
   "team.sort.online",
-  "upload.strategy",
 ] as const);
 
 const TREE_VIEW_IDS = Object.freeze([
@@ -64,7 +64,7 @@ const SORT_BY = Object.freeze([
   "started.desc",
 ] as const);
 
-const UPLOAD_STRATEGY = Object.freeze([
+const API_ACTIONS_STRATEGY = Object.freeze([
   "rest",
   "socket",
 ] as const);
@@ -75,4 +75,4 @@ export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
 
 export const SortBy = Object.freeze(makeCamelizedPair(SORT_BY));
 
-export const UploadStrategy = Object.freeze(makeCamelizedPair(UPLOAD_STRATEGY));
+export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));
