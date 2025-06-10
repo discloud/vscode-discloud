@@ -10,7 +10,7 @@ import SocketUploadClient from "./client";
 import { type SocketEventUploadData } from "./types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
     const isUserApp = app instanceof AppTreeItem;
 
     const url = new URL(`${extension.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
@@ -30,6 +30,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         connected = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
+
+        app.output.appendLine("");
 
         await ws.sendFile(buffer);
       })
@@ -81,7 +83,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
     extension.context.subscriptions.push(ws);
 
-    ws.connect();
+    ws.connect().catch(reject);
   });
 }
 
