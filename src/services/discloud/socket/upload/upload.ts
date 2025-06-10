@@ -22,7 +22,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     const ws = new SocketUploadClient(url, { headers: { "api-token": extension.api.token! } })
       .on("connecting", () => {
-        task.progress.report({ increment: -1, message: t("socket.upload.connecting") });
+        task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
       .on("connect", async () => {
         connected = true;
@@ -57,7 +57,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         if (!connected) {
           if (code === 1008) return;
-          await window.showErrorMessage(t("socket.upload.connecting.fail"));
+          await window.showErrorMessage(t("socket.connecting.fail"));
           return;
         }
 
