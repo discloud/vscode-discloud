@@ -1,5 +1,4 @@
 import AdmZip from "adm-zip";
-import { existsSync } from "fs";
 import { FileType, type Uri, workspace } from "vscode";
 import extension from "../extension";
 
@@ -16,25 +15,31 @@ export default class Zip {
     const zipped = new Set<string>();
 
     for (const uri of uriList) {
-      if (zipped.has(uri.fsPath) || !existsSync(uri.fsPath)) continue;
+      if (zipped.has(uri.fsPath)) continue;
 
       const name = workspace.asRelativePath(uri.fsPath, false);
       if (!name) continue;
 
       let stats;
-      try { stats = await workspace.fs.stat(uri); } catch { continue; }
+      try { stats = await workspace.fs.stat(uri); }
+      catch { continue; }
 
-      zipped.add(name);
+      if (stats.type !== FileType.File) continue;
 
-      if (stats.type === FileType.File)
-        this.zip.addLocalFile(uri.fsPath, void 0, name);
+      zipped.add(uri.fsPath);
+
+      const arrayBuffer = await workspace.fs.readFile(uri);
+
+      const buffer = Buffer.from(arrayBuffer);
+
+      this.zip.addFile(name, buffer);
     }
 
     extension.debug("Zip:", [...zipped]);
   }
 
   getBuffer() {
-    return this.zip.toBuffer();
+    return this.zip.toBufferPromise();
   }
 
   writeZip(targetFileName?: string) {
