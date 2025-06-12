@@ -42,7 +42,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         if (data.app) {
           dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
-          extension.appTree.fetch();
+          extension.appTree.addRawApp(data.app as any); // TODO: fix ApiUploadApp
         }
 
         if (data.logs) showLog(data.logs);
