@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { Routes } from "discloud.app";
-import stripAnsi from "strip-ansi";
+import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
@@ -18,7 +18,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     let connected = false;
 
     function showLog(value: string) {
-      app.output.append(stripAnsi(value));
+      app.output.append(stripVTControlCharacters(value));
       queueMicrotask(() => app.output.show(true));
     }
 

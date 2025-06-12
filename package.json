@@ -1280,7 +1280,6 @@
     "discloud.app": "^0.14.12",
     "jose": "^6.0.11",
     "json-schema-library": "^10.1.2",
-    "strip-ansi": "^7.1.0",
     "ws": "^8.18.2"
   },
   "devDependencies": {

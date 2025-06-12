@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { Routes, type DiscloudConfig } from "discloud.app";
-import stripAnsi from "strip-ansi";
+import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
@@ -16,7 +16,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
     const logger = window.createOutputChannel("Discloud Upload");
 
     function showLog(value: string) {
-      logger.appendLine(stripAnsi(value.replace(/[\r\n]+$/, "")));
+      logger.appendLine(stripVTControlCharacters(value.replace(/[\r\n]+$/, "")));
       queueMicrotask(() => logger.show(true));
     }
 
