@@ -1,0 +1,31 @@
+name: Sync Engine with Dependency
+
+on:
+  push:
+    paths:
+      - 'package.json'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Sync engine version
+        run: |
+          node scripts/syncPackageEngineWithDependency.mjs vscode @types/vscode
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add package.json
+          git diff --cached --quiet || git commit -m "chore: sync vscode engine version with dependency"
+          git push
