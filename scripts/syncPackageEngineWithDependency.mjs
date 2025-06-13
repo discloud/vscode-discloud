@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 
+const INDENTATION = 2;
 const PACKAGE_PATH = "package.json";
 
 const [, , engine, dependency] = process.argv;
@@ -31,7 +32,7 @@ for (const key in packageJSON) {
 if (!found) throw new Error(`Dependency '${dependency}' not found on '${PACKAGE_PATH}'`);
 
 if (updated) {
-  await writeFile(PACKAGE_PATH, JSON.stringify(packageJSON, null, 2), "utf8");
+  await writeFile(PACKAGE_PATH, JSON.stringify(packageJSON, null, INDENTATION), "utf8");
 
   console.log(`Engine '${engine}' has been updated to '${packageJSON.engines[engine]}'`);
 } else {
