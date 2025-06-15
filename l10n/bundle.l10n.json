@@ -131,6 +131,7 @@
   "see.also.your.n.apps": "See also your {n} apps",
   "see.also.your.team.apps": "See also the apps of their teams",
   "see.also.your.n.team.apps": "See also the {n} apps of their teams",
+  "socket.authentication.fail": "Failed to authenticate websocket connection...",
   "socket.connecting": "Connecting to websocket...",
   "socket.connecting.fail": "Failed to connect to websocket...",
   "status.text": "$(cloud) Discloud",

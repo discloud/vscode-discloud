@@ -18,7 +18,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     let connected = false;
 
     function showLog(value: string) {
-      app.output.append(stripVTControlCharacters(value));
+      app.output.append(stripVTControlCharacters(value).replace(/[\r\n]$/, ""));
       queueMicrotask(() => app.output.show(true));
     }
 
@@ -31,8 +31,6 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         task.progress.report({ increment: -1, message: t("committing") });
 
-        app.output.appendLine("");
-
         await ws.sendFile(buffer);
       })
       .on("upload", (data) => {
@@ -43,10 +41,6 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         }
 
         if (data.message) showApiMessage(data);
-
-        if (data.app) {
-          extension.appTree.fetch();
-        }
 
         if (data.logs) showLog(data.logs);
       })
@@ -59,8 +53,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         ws.dispose();
 
         if (!connected) {
-          if (code === 1008) return;
-          await window.showErrorMessage(t("socket.connecting.fail"));
+          await window.showErrorMessage(t(code === 1008 ? "socket.authentication.fail" : "socket.connecting.fail"));
           return;
         }
 

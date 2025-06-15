@@ -56,8 +56,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         ws.dispose();
 
         if (!connected) {
-          if (code === 1008) return;
-          await window.showErrorMessage(t("socket.connecting.fail"));
+          await window.showErrorMessage(t(code === 1008 ? "socket.authentication.fail" : "socket.connecting.fail"));
           return;
         }
 
