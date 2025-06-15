@@ -9,6 +9,7 @@ import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
+import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -53,7 +54,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = "rest"; // extension.config.get(ConfigKeys.apiActionsStrategy, UploadStrategy.socket);
+    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
     await this[strategy](task, buffer, picked.app);
   }
