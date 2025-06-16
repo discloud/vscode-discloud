@@ -1,9 +1,8 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
-import { type ClientRequestArgs } from "http";
 import { setTimeout as sleep } from "timers/promises";
 import { type Disposable } from "vscode";
-import WebSocket, { type ClientOptions } from "ws";
+import WebSocket from "ws";
 import extension from "../../../extension";
 import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
 import { type SocketEventsMap, type SocketOptions } from "./types";
@@ -81,6 +80,17 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
+  async sendBuffer(buffer: Buffer) {
+    if (!this.connected) await this.connect();
+
+    await new Promise<void>((resolve, reject) => {
+      this._socket!.send(buffer, (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  }
+
   async sendFile(buffer: Buffer) {
     if (buffer.length > MAX_UPLOAD_SIZE) throw Error(t("file.too.big", { value: "512MB" }));
 
@@ -116,7 +126,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
 
         this.emit("connecting");
 
-        const options: ClientOptions | ClientRequestArgs = {
+        const options: ConstructorParameters<typeof WebSocket>[2] = {
           headers: Object.assign({ "api-token": extension.api.token! },
             extension.api.options.userAgent ? { "User-Agent": extension.api.options.userAgent } : {},
             this._headers),
