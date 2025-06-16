@@ -7,7 +7,7 @@ import WebSocket, { type ClientOptions } from "ws";
 import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
 import { type SocketEventsMap, type SocketOptions } from "./types";
 
-export default class SocketClient<T extends Record<any, any> | void = void> extends EventEmitter<SocketEventsMap<T>> implements Disposable {
+export default class SocketClient<Data extends Record<any, any> = Record<any, any>> extends EventEmitter<SocketEventsMap<Data>> implements Disposable {
   constructor(protected wsURL: URL, options?: SocketOptions) {
     super({ captureRejections: true });
 
