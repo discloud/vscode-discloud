@@ -19,7 +19,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     let connected = false;
 
     function showLog(value: string) {
-      app.output.append(stripVTControlCharacters(value).replace(/[\r\n]$/, ""));
+      const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
+      for (const text of lines) app.output.info(text);
       queueMicrotask(() => app.output.show(true));
     }
 
