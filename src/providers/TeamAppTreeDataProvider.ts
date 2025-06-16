@@ -3,6 +3,7 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAp
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
+import TeamAppTypeTreeItemView from "../structures/TeamAppTypeTreeItemView";
 import { ConfigKeys, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -14,12 +15,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     super(context, TreeViewIds.discloudTeamApps);
   }
 
-  getChildren(element?: Item): ProviderResult<Item[]>;
-  getChildren(element?: TeamAppTreeItem): ProviderResult<TreeItem[]> {
-    if (element) return Array.from(element.children.values());
-
-    const children = Array.from(this.children.values());
-
+  protected _sort(children: TeamAppTreeItem[]) {
     const sort = extension.config.get<string>(ConfigKeys.teamSortBy);
 
     if (sort?.includes(".")) {
@@ -49,14 +45,14 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
           break;
 
         case "started.asc":
-          children.sort((a, b) => a.online
+          children.sort((a, b) => a.online || b.online
             ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
             : 0);
           break;
 
         case "started.desc":
-          children.sort((a, b) => a.online
-            ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
+          children.sort((a, b) => a.online || b.online
+            ? compareNumbers(Number(b.data.startedAtTimestamp), Number(a.data.startedAtTimestamp))
             : 0);
           break;
       }
@@ -65,6 +61,23 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.teamSortOnline);
 
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online!, b.online!));
+  }
+
+  getChildren(element?: Item): ProviderResult<Item[]>;
+  getChildren(element?: TeamAppTreeItem | TeamAppTypeTreeItemView): ProviderResult<TreeItem[]> {
+    if (element) {
+      if (element instanceof TeamAppTypeTreeItemView) {
+        const children = element.children.values().toArray();
+        this._sort(children);
+
+        return children;
+      }
+
+      return element.children.values().toArray();
+    }
+
+    const children = this.children.values().toArray();
+    this._sort(children);
 
     return children;
   }
@@ -75,9 +88,12 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     const apps = new Set(data.map(app => typeof app === "string" ? app : app.id));
 
     for (const key of this.children.keys()) {
-      if (!apps.has(key)) {
-        refresh = this.children.dispose(key);
-      }
+      if (apps.has(key)) continue;
+
+      const child = this.children.get(key);
+      if (!child) continue;
+
+      refresh = this.children.dispose(key);
     }
 
     if (refresh) this.refresh();
@@ -127,11 +143,13 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       if (returnBoolean) return false;
     } else {
-      this.children.set(data.id, new TeamAppTreeItem(Object.assign({
+      const child = new TeamAppTreeItem(Object.assign({
         collapsibleState: this.children.size ?
           TreeItemCollapsibleState.Collapsed :
           TreeItemCollapsibleState.Expanded,
-      }, data)));
+      }, data));
+
+      this.children.set(data.id, child);
 
       if (returnBoolean) {
         return true;

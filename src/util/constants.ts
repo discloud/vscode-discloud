@@ -33,6 +33,7 @@ const CONFIG_KEYS = Object.freeze([
   "app.backup.dir",
   "app.import.dir",
   "app.notification.status",
+  "app.separate.by.type",
   "app.show.avatar.instead.status",
   "app.sort.by",
   "app.sort.online",
