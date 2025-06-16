@@ -3,7 +3,6 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAp
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import TeamAppTypeTreeItemView from "../structures/TeamAppTypeTreeItemView";
 import { ConfigKeys, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -64,17 +63,8 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   getChildren(element?: Item): ProviderResult<Item[]>;
-  getChildren(element?: TeamAppTreeItem | TeamAppTypeTreeItemView): ProviderResult<TreeItem[]> {
-    if (element) {
-      if (element instanceof TeamAppTypeTreeItemView) {
-        const children = element.children.values().toArray();
-        this._sort(children);
-
-        return children;
-      }
-
-      return element.children.values().toArray();
-    }
+  getChildren(element?: TeamAppTreeItem): ProviderResult<TreeItem[]> {
+    if (element) return element.children.values().toArray();
 
     const children = this.children.values().toArray();
     this._sort(children);
