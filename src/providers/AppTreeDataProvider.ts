@@ -118,7 +118,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       const view = this._views.get(child.type);
       if (!view) continue;
 
-      view.children.delete(key);
+      view.dispose(key);
 
       if (!view.children.size) this._views.dispose(view.type);
     }
@@ -134,9 +134,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     const view = this._views.get(child.type);
 
     if (view) {
-      view.children.dispose(id);
-      if (!view.children.size)
-        this._views.dispose(view.type);
+      view.dispose(id);
+
+      if (!view.children.size) this._views.dispose(view.type);
     }
 
     this.children.dispose(id);
@@ -186,7 +186,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
 
       const child = new AppTreeItem(data);
 
-      this._getView(child.type).children.set(child.appId, child);
+      this._getView(child.type).set(child.appId, child);
 
       this.children.set(child.appId, child);
 
