@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.0
+
+- Implementado método de commit/upload por websocket  
+  Agora você pode acompanhar as etapas em tempo real  
+  Isso é opcional e você pode mudar em [`⚙️discloud.api.actions.strategy`](vscode://settings/discloud.api.actions.strategy)
+
 ## 2.22.50
 
 - Melhorias na manipulação de ações rejeitadas
