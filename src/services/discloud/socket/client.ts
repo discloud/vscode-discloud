@@ -1,44 +1,57 @@
+import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
+import { type ClientRequestArgs } from "http";
+import { setTimeout as sleep } from "timers/promises";
 import { type Disposable } from "vscode";
-import WebSocket from "ws";
-import extension from "../../../extension";
-import { type SocketEventsMap } from "./types";
+import WebSocket, { type ClientOptions } from "ws";
+import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
+import { type SocketEventsMap, type SocketOptions } from "./types";
 
-export default class SocketClient extends EventEmitter<SocketEventsMap> implements Disposable {
-  constructor(protected wsURL: URL) {
+export default class SocketClient<T extends Record<any, any> | void = void> extends EventEmitter<SocketEventsMap<T>> implements Disposable {
+  constructor(protected wsURL: URL, options?: SocketOptions) {
     super({ captureRejections: true });
+
+    if (options) {
+      if (options.connectingTimeout !== undefined)
+        this._connectingTimeout = options.connectingTimeout;
+
+      if (options.headers) this._headers = options.headers;
+    }
   }
 
-  protected _connectingTimeout = 10_000;
+  protected _headers: Record<string, string> = {};
+  protected _connectingTimeout: number | null = 10_000;
   declare protected _socket?: WebSocket;
   declare protected _ping: number;
   declare protected _pong: number;
   declare ping: number;
 
   get closed() {
-    if (!this._socket) return true;
-    return this._socket.readyState === this._socket.CLOSED;
+    return !this._socket || this._socket.readyState === this._socket.CLOSED;
   }
 
   get closing() {
-    if (!this._socket) return false;
-    return this._socket.readyState === this._socket.CLOSING;
+    return this._socket ? this._socket.readyState === this._socket.CLOSING : false;
   }
 
   get connected() {
-    if (!this._socket) return false;
-    return this._socket.readyState === this._socket.OPEN;
+    return this._socket ? this._socket.readyState === this._socket.OPEN : false;
   }
 
   get connecting() {
-    if (!this._socket) return false;
-    return this._socket.readyState === this._socket.CONNECTING;
+    return this._socket ? this._socket.readyState === this._socket.CONNECTING : false;
+  }
+
+  close() {
+    if (this._socket) {
+      this._socket.removeAllListeners().close();
+      delete this._socket;
+    }
   }
 
   dispose() {
-    this._socket?.removeAllListeners().close();
+    this.close();
     this.removeAllListeners();
-    delete this._socket;
   }
 
   async connect() {
@@ -49,9 +62,10 @@ export default class SocketClient extends EventEmitter<SocketEventsMap> implemen
   }
 
   async #waitConnect() {
-    await new Promise<void>((r) => {
-      if (this.connected) return r();
-      this.on("connect", r);
+    await new Promise<void>((resolve, reject) => {
+      if (this.connecting) return this.once("connect", resolve).once("close", reject);
+      if (this.connected) return resolve();
+      reject();
     });
   }
 
@@ -66,6 +80,31 @@ export default class SocketClient extends EventEmitter<SocketEventsMap> implemen
     });
   }
 
+  async sendFile(buffer: Buffer) {
+    if (buffer.length > MAX_UPLOAD_SIZE) throw Error(t("file.too.big", { value: "512MB" }));
+
+    const binaryLength = buffer.length;
+    const parts = Math.ceil(buffer.length / MAX_ZIP_BUFFER_PART);
+    const partSize = Math.ceil(binaryLength / parts);
+    const encoding = "base64";
+
+    for (let i = 0; i < parts; i++) {
+      const part = i + 1;
+      const startIndex = partSize * i;
+      const endIndex = partSize * part;
+      const file = buffer.subarray(startIndex, endIndex);
+
+      await this.sendJSON({
+        part,
+        parts,
+        encoding,
+        file: file.toString(encoding),
+      });
+
+      await sleep();
+    }
+  }
+
   #createWebSocket() {
     return new Promise<void>((resolve, reject) => {
       try {
@@ -76,10 +115,14 @@ export default class SocketClient extends EventEmitter<SocketEventsMap> implemen
 
         this.emit("connecting");
 
-        this._socket = new WebSocket(this.wsURL, {
-          headers: { "api-token": extension.api.token },
-          signal: AbortSignal.timeout(this._connectingTimeout),
-        })
+        const options: ClientOptions | ClientRequestArgs = {
+          headers: this._headers,
+          ...typeof this._connectingTimeout === "number"
+            ? { signal: AbortSignal.timeout(this._connectingTimeout) }
+            : {},
+        };
+
+        this._socket = new WebSocket(this.wsURL, options)
           .once("close", (code, reason) => {
             this.emit("close", code, reason);
           })
@@ -87,19 +130,14 @@ export default class SocketClient extends EventEmitter<SocketEventsMap> implemen
             this.emit("error", error);
           })
           .on("message", (data) => {
-            try {
-              const json = JSON.parse(data.toString());
-
-              if (json.event) this.emit(json.event, json);
-            } catch (error: any) {
-              this.emit("error", error);
-            }
+            try { this.emit("data", JSON.parse(data.toString())); }
+            catch { this.emit("message", data); }
           })
           .once("open", () => {
             this._ping = Date.now();
             this._socket!.ping();
-            resolve();
             this.emit("connect");
+            resolve();
           })
           .on("ping", () => {
             this._ping = Date.now();
@@ -110,8 +148,8 @@ export default class SocketClient extends EventEmitter<SocketEventsMap> implemen
             this.ping = this._pong - this._ping;
           });
       } catch (error: any) {
-        reject(error);
         this.emit("error", error);
+        reject(error);
       }
     });
   }

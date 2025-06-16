@@ -3,7 +3,7 @@ import { DiscloudConfig, resolveFile, type RESTPostApiUploadResult, Routes } fro
 import { CancellationError, ProgressLocation, Uri } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
-import { socketUpload } from "../services/discloud/socket/upload/upload";
+import { socketUpload } from "../services/discloud/socket/actions/upload";
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";

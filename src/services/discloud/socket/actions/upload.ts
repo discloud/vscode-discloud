@@ -4,14 +4,12 @@ import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
-import SocketUploadClient from "./client";
-import { type SocketEventUploadData } from "./types";
+import SocketClient from "../client";
+import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve) => {
     const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
-
-    let connected = false;
 
     const logger = window.createOutputChannel("Discloud Upload");
 
@@ -20,7 +18,9 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       queueMicrotask(() => logger.show(true));
     }
 
-    const ws = new SocketUploadClient(url, { headers: { "api-token": extension.api.token! } })
+    let connected = false;
+
+    const ws = new SocketClient<SocketEventUploadData>(url, { headers: { "api-token": extension.api.token! } })
       .on("connecting", () => {
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
@@ -31,7 +31,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         await ws.sendFile(buffer);
       })
-      .on("upload", (data) => {
+      .on("data", (data) => {
         if (data.progress) {
           task.progress.report({ increment: data.progress.bar });
 

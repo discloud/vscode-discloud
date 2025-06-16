@@ -6,8 +6,8 @@ import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
 import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
-import SocketUploadClient from "./client";
-import { type SocketEventUploadData } from "./types";
+import SocketClient from "../client";
+import { type SocketEventUploadData } from "../types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
@@ -16,15 +16,15 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
     const url = new URL(`${extension.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
 
-    let connected = false;
-
     function showLog(value: string) {
       const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
       for (const text of lines) app.output.info(text);
       queueMicrotask(() => app.output.show(true));
     }
 
-    const ws = new SocketUploadClient(url, { headers: { "api-token": extension.api.token! } })
+    let connected = false;
+
+    const ws = new SocketClient<SocketEventUploadData>(url, { headers: { "api-token": extension.api.token! } })
       .on("connecting", () => {
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
@@ -35,7 +35,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         await ws.sendFile(buffer);
       })
-      .on("upload", (data) => {
+      .on("data", (data) => {
         if (data.progress) {
           task.progress.report({ increment: data.progress.bar });
 

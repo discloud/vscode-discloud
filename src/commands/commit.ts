@@ -3,7 +3,7 @@ import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.ap
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
-import { socketCommit } from "../services/discloud/socket/upload/commit";
+import { socketCommit } from "../services/discloud/socket/actions/commit";
 import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
