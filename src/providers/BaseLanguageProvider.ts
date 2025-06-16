@@ -21,8 +21,8 @@ export default class BaseLanguageProvider {
     this.scopes = Object.keys(this.schema.properties ?? {});
 
     this.draft = schema.$id
-      ? BaseLanguageProvider.#drafts[schema.$id] ??= compileSchema(this.schema)
-      : compileSchema(this.schema);
+      ? BaseLanguageProvider.#drafts[schema.$id] ??= compileSchema(schema)
+      : compileSchema(schema);
   }
 
   transformConfigToJSON(document: TextDocument) {
