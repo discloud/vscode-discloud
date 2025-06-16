@@ -69,12 +69,10 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
           return;
         }
 
-        const message = reason.toString();
-
-        if (!message) return app.output.append(t("done"));
+        if (!reason.length) return app.output.append(t("done"));
 
         try {
-          const data: SocketEventUploadData = JSON.parse(message);
+          const data: SocketEventUploadData = JSON.parse(reason.toString());
 
           if (data.progress) {
             task.progress.report({ increment: data.progress.bar });

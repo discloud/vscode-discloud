@@ -60,12 +60,10 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
           return;
         }
 
-        const message = reason.toString();
-
-        if (!message) return logger.appendLine(t("done"));
+        if (!reason.length) return logger.appendLine(t("done"));
 
         try {
-          const data: SocketEventUploadData = JSON.parse(message);
+          const data: SocketEventUploadData = JSON.parse(reason.toString());
 
           if (data.progress) {
             task.progress.report({ increment: data.progress.bar });
