@@ -23,9 +23,14 @@ jobs:
           node scripts/syncPackageEngineWithDependency.mjs vscode @types/vscode
 
       - name: Commit if changed
+        id: commit
+        continue-on-error: true
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add package.json
-          git diff --cached --quiet || git commit -m "chore: sync vscode engine version with dependency"
-          git push
+          git commit -m "chore: sync vscode engine version with dependency"
+
+      - name: push
+        if: steps.commit.outcome != 'failure'
+        run: git push
