@@ -39,6 +39,7 @@ export default [
       "no-empty": "off",
       "no-redeclare": "off",
       "no-undef": "off",
+      "no-unreachable": "warn",
       "no-unused-private-class-members": "warn",
       "no-unused-vars": "off",
       "prefer-const": "warn",
