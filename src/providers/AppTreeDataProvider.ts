@@ -94,7 +94,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
 
     const separate = extension.config.get(ConfigKeys.appSeparateByType, true);
 
-    if (separate) return this._views.values().toArray().sort((a, b) => a.type - b.type);
+    if (separate) return this._views.values().toArray().sort((a, b) => a.children.size - b.children.size);
 
     const children = this.children.values().toArray();
     this._sort(children);
