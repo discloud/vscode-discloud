@@ -20,7 +20,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     let connected = false;
 
-    const ws = new SocketClient<SocketEventUploadData>(url, { headers: { "api-token": extension.api.token! } })
+    const ws = new SocketClient<SocketEventUploadData>(url)
       .on("connecting", () => {
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })

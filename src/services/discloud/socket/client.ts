@@ -4,6 +4,7 @@ import { type ClientRequestArgs } from "http";
 import { setTimeout as sleep } from "timers/promises";
 import { type Disposable } from "vscode";
 import WebSocket, { type ClientOptions } from "ws";
+import extension from "../../../extension";
 import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
 import { type SocketEventsMap, type SocketOptions } from "./types";
 
@@ -15,12 +16,12 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       if (options.connectingTimeout !== undefined)
         this._connectingTimeout = options.connectingTimeout;
 
-      if (options.headers) this._headers = options.headers;
+      if (options.headers) Object.assign(this._headers, options.headers);
     }
   }
 
-  protected _headers: Record<string, string> = {};
-  protected _connectingTimeout: number | null = 10_000;
+  protected readonly _headers: Record<string, string> = {};
+  protected readonly _connectingTimeout: number | null = 10_000;
   declare protected _socket?: WebSocket;
   declare protected _ping: number;
   declare protected _pong: number;
@@ -116,7 +117,9 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
         this.emit("connecting");
 
         const options: ClientOptions | ClientRequestArgs = {
-          headers: this._headers,
+          headers: Object.assign({ "api-token": extension.api.token! },
+            extension.api.options.userAgent ? { "User-Agent": extension.api.options.userAgent } : {},
+            this._headers),
           ...typeof this._connectingTimeout === "number"
             ? { signal: AbortSignal.timeout(this._connectingTimeout) }
             : {},
