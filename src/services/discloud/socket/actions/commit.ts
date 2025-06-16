@@ -6,11 +6,14 @@ import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
 import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
+import { MAX_UPLOAD_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
+    if (buffer.length > MAX_UPLOAD_SIZE) return reject(t("file.too.big", { value: "512MB" }));
+
     const isUserApp = app instanceof AppTreeItem;
     const appTree = isUserApp ? extension.appTree : extension.teamAppTree;
 

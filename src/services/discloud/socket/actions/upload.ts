@@ -4,11 +4,14 @@ import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
+import { MAX_UPLOAD_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
+    if (buffer.length > MAX_UPLOAD_SIZE) return reject(t("file.too.big", { value: "512MB" }));
+
     const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
 
     const logger = window.createOutputChannel("Discloud Upload");

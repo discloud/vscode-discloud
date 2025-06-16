@@ -1,10 +1,10 @@
-import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { setTimeout as sleep } from "timers/promises";
 import type vscode from "vscode";
 import WebSocket from "ws";
 import extension from "../../../extension";
 import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
+import BufferOverflowError from "./errors/BufferOverflow";
 import { type SocketEventsMap, type SocketOptions } from "./types";
 
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
@@ -108,7 +108,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   async sendFile(buffer: Buffer) {
-    if (buffer.length > MAX_UPLOAD_SIZE) throw Error(t("file.too.big", { value: "512MB" }));
+    if (buffer.length > MAX_UPLOAD_SIZE) throw new BufferOverflowError();
 
     const binaryLength = buffer.length;
     const parts = Math.ceil(buffer.length / MAX_ZIP_BUFFER_PART);
