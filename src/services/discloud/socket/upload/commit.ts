@@ -12,6 +12,7 @@ import { type SocketEventUploadData } from "./types";
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
     const isUserApp = app instanceof AppTreeItem;
+    const appTree = isUserApp ? extension.appTree : extension.teamAppTree;
 
     const url = new URL(`${extension.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
 
@@ -43,6 +44,16 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         if (data.message) showApiMessage(data);
 
         if (data.logs) showLog(data.logs);
+
+        if (data.statusCode !== 102) {
+          const isDone = data.statusCode === 200;
+          const isCodeError = !isDone;
+
+          appTree.editRawApp(app.appId, {
+            online: isDone,
+            exitCode: isCodeError ? 1 : 0,
+          });
+        }
       })
       .on("error", (error) => {
         extension.logger.error(error);
