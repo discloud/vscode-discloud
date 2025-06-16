@@ -1,13 +1,15 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { setTimeout as sleep } from "timers/promises";
-import { type Disposable } from "vscode";
+import type vscode from "vscode";
 import WebSocket from "ws";
 import extension from "../../../extension";
 import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
 import { type SocketEventsMap, type SocketOptions } from "./types";
 
-export default class SocketClient<Data extends Record<any, any> = Record<any, any>> extends EventEmitter<SocketEventsMap<Data>> implements Disposable {
+export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
+  extends EventEmitter<SocketEventsMap<Data>>
+  implements vscode.Disposable, Disposable {
   constructor(protected wsURL: URL, options?: SocketOptions) {
     super({ captureRejections: true });
 
@@ -15,12 +17,16 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       if (options.connectingTimeout !== undefined)
         this._connectingTimeout = options.connectingTimeout;
 
+      if (typeof options.disposeOnClose === "boolean")
+        this._disposeOnClose = options.disposeOnClose;
+
       if (options.headers) Object.assign(this._headers, options.headers);
     }
   }
 
-  protected readonly _headers: Record<string, string> = {};
   protected readonly _connectingTimeout: number | null = 10_000;
+  protected readonly _disposeOnClose: boolean = true;
+  protected readonly _headers: Record<string, string> = {};
   declare protected _socket?: WebSocket;
   declare protected _ping: number;
   declare protected _pong: number;
@@ -63,7 +69,17 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
 
   async #waitConnect() {
     await new Promise<void>((resolve, reject) => {
-      if (this.connecting) return this.once("connect", resolve).once("close", reject);
+      if (this.connecting) {
+        const onConnect = () => {
+          this.off("close", onClose);
+          resolve();
+        };
+        const onClose = () => {
+          this.off("connect", onConnect);
+          reject();
+        };
+        return this.once("connect", onConnect).once("close", onClose);
+      }
       if (this.connected) return resolve();
       reject();
     });
@@ -118,52 +134,51 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
 
   #createWebSocket() {
     return new Promise<void>((resolve, reject) => {
-      try {
-        if (this.connecting)
-          return this.#waitConnect().then(resolve).catch(reject);
+      if (this.connecting) return this.#waitConnect().then(resolve).catch(reject);
 
-        if (this.connected) return resolve();
+      if (this.connected) return resolve();
 
-        this.emit("connecting");
+      this.emit("connecting");
 
-        const options: ConstructorParameters<typeof WebSocket>[2] = {
-          headers: Object.assign({ "api-token": extension.api.token! },
-            extension.api.options.userAgent ? { "User-Agent": extension.api.options.userAgent } : {},
-            this._headers),
-          ...typeof this._connectingTimeout === "number"
-            ? { signal: AbortSignal.timeout(this._connectingTimeout) }
-            : {},
-        };
+      const options: ConstructorParameters<typeof WebSocket>[2] = {
+        headers: Object.assign({ "api-token": extension.api.token! },
+          extension.api.options.userAgent ? { "User-Agent": extension.api.options.userAgent } : {},
+          this._headers),
+        ...typeof this._connectingTimeout === "number"
+          ? { signal: AbortSignal.timeout(this._connectingTimeout) }
+          : {},
+      };
 
-        this._socket = new WebSocket(this.wsURL, options)
-          .once("close", (code, reason) => {
-            this.emit("close", code, reason);
-          })
-          .on("error", (error: any) => {
-            this.emit("error", error);
-          })
-          .on("message", (data) => {
-            try { this.emit("data", JSON.parse(data.toString())); }
-            catch { this.emit("message", data); }
-          })
-          .once("open", () => {
-            this._ping = Date.now();
-            this._socket!.ping();
-            this.emit("connect");
-            resolve();
-          })
-          .on("ping", () => {
-            this._ping = Date.now();
-            this._socket!.ping();
-          })
-          .on("pong", () => {
-            this._pong = Date.now();
-            this.ping = this._pong - this._ping;
-          });
-      } catch (error: any) {
-        this.emit("error", error);
-        reject(error);
-      }
+      this._socket = new WebSocket(this.wsURL, options)
+        .once("close", (code, reason) => {
+          this.emit("close", code, reason);
+          if (this._disposeOnClose) queueMicrotask(() => this.dispose());
+        })
+        .on("error", (error) => {
+          this.emit("error", error);
+        })
+        .on("message", (data) => {
+          try { this.emit("data", JSON.parse(data.toString())); }
+          catch { this.emit("message", data); }
+        })
+        .once("open", () => {
+          this._ping = Date.now();
+          this._socket!.ping();
+          this.emit("connect");
+          resolve();
+        })
+        .on("ping", () => {
+          this._ping = Date.now();
+          this._socket!.ping();
+        })
+        .on("pong", () => {
+          this._pong = Date.now();
+          this.ping = this._pong - this._ping;
+        });
     });
+  }
+
+  [Symbol.dispose]() {
+    this.dispose();
   }
 }

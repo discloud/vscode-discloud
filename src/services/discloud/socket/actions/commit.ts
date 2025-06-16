@@ -62,8 +62,6 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       .once("close", async (code, reason) => {
         resolve();
 
-        ws.dispose();
-
         if (!connected) {
           await window.showErrorMessage(t(code === 1008 ? "socket.authentication.fail" : "socket.connecting.fail"));
           return;

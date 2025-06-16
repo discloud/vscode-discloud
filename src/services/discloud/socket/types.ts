@@ -17,6 +17,10 @@ export interface SocketOptions {
    * @default 10_000
    */
   connectingTimeout?: number | null
+  /**
+   * @default true
+   */
+  disposeOnClose?: boolean
   headers?: Record<string, string>
 }
 
