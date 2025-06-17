@@ -1,11 +1,13 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, type RESTPostApiUploadResult, Routes, resolveFile } from "discloud.app";
-import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
+import { DiscloudConfig, resolveFile, type RESTPostApiUploadResult, Routes } from "discloud.app";
+import { CancellationError, ProgressLocation, Uri } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { socketUpload } from "../services/discloud/socket/actions/upload";
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
+import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -33,8 +35,6 @@ export default class extends Command {
     if (!dConfig.validate(true))
       throw Error(t("invalid.discloud.config"));
 
-    const zipName = `${workspace.name}.zip`;
-
     const fs = new FileSystem({
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
@@ -54,19 +54,22 @@ export default class extends Command {
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
     const zipper = new Zip();
+
     await zipper.appendUriList(found);
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
+    const buffer = await zipper.getBuffer();
 
-    const files = [];
-    try {
-      files.push(await resolveFile(zipper.getBuffer(), zipName));
-    } catch (error) {
-      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
-      throw error;
-    }
+    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
+    await this[strategy](task, buffer, dConfig);
+  }
+
+  async rest(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
     task.progress.report({ increment: -1, message: t("uploading") });
+
+    const file = await resolveFile(buffer, "file.zip");
+
+    const files: File[] = [file];
 
     const response = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
 
@@ -84,5 +87,9 @@ export default class extends Command {
         this.logger("app" in response && response.app ? response.app.id : "Discloud Upload Error", response.logs);
       }
     }
+  }
+
+  async socket(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
+    await socketUpload(task, buffer, dConfig);
   }
 }

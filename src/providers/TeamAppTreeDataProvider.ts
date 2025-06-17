@@ -3,7 +3,7 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAp
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import { ConfigKeys, TreeViewIds } from "../util/constants";
+import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
@@ -19,37 +19,37 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
     if (sort?.includes(".")) {
       switch (sort) {
-        case "id.asc":
+        case SortBy.idAsc:
           children.sort((a, b) => a.appId.localeCompare(b.appId));
           break;
 
-        case "id.desc":
+        case SortBy.idDesc:
           children.sort((a, b) => b.appId.localeCompare(a.appId));
           break;
 
-        case "memory.usage.asc":
+        case SortBy.memoryUsageAsc:
           children.sort((a, b) => compareNumbers(Number(a.data.memoryUsage), Number(b.data.memoryUsage)));
           break;
 
-        case "memory.usage.desc":
+        case SortBy.memoryUsageDesc:
           children.sort((a, b) => compareNumbers(Number(b.data.memoryUsage), Number(a.data.memoryUsage)));
           break;
 
-        case "name.asc":
+        case SortBy.nameAsc:
           children.sort((a, b) => `${a.data.name}`.localeCompare(`${b.data.name}`));
           break;
 
-        case "name.desc":
+        case SortBy.nameDesc:
           children.sort((a, b) => `${b.data.name}`.localeCompare(`${a.data.name}`));
           break;
 
-        case "started.asc":
+        case SortBy.startedAsc:
           children.sort((a, b) => a.online || b.online
             ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
             : 0);
           break;
 
-        case "started.desc":
+        case SortBy.startedDesc:
           children.sort((a, b) => a.online || b.online
             ? compareNumbers(Number(b.data.startedAtTimestamp), Number(a.data.startedAtTimestamp))
             : 0);

@@ -3,7 +3,7 @@
   "displayName": "Discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "publisher": "discloud",
-  "version": "2.22.50",
+  "version": "2.23.0",
   "engines": {
     "vscode": "^1.101.0"
   },
@@ -374,6 +374,20 @@
               }
             },
             "default": []
+          },
+          "discloud.api.actions.strategy": {
+            "type": "string",
+            "default": "socket",
+            "enum": [
+              "rest",
+              "socket"
+            ],
+            "enumItemLabels": [
+              "%config.api.actions.strategy.rest.label%",
+              "%config.api.actions.strategy.socket.label%"
+            ],
+            "title": "%config.api.actions.strategy.title%",
+            "markdownDescription": "%config.api.actions.strategy.description%"
           },
           "discloud.app.backup.dir": {
             "type": "string",
@@ -1262,7 +1276,8 @@
     "adm-zip": "^0.5.16",
     "discloud.app": "^0.14.12",
     "jose": "^6.0.11",
-    "json-schema-library": "^10.1.2"
+    "json-schema-library": "^10.1.2",
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
@@ -1271,6 +1286,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@types/vscode": "^1.101.0",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
     "@vscode/test-cli": "^0.0.11",

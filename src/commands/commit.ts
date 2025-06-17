@@ -1,11 +1,15 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
-import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
+import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import extension from "../extension";
+import { socketCommit } from "../services/discloud/socket/actions/commit";
+import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
+import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
+import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -33,8 +37,6 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: t("files.checking") });
 
-    const zipName = `${workspace.name}.zip`;
-
     const fs = new FileSystem({
       fileNames,
       ignoreFile: ".discloudignore",
@@ -46,38 +48,45 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
-
     const zipper = new Zip();
 
     await zipper.appendUriList(found);
 
-    const files = [];
-    try {
-      files.push(await resolveFile(zipper.getBuffer(), zipName));
-    } catch (error) {
-      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
-      throw error;
-    }
+    const buffer = await zipper.getBuffer();
 
+    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
+
+    await this[strategy](task, buffer, picked.app);
+  }
+
+  async rest(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
     task.progress.report({ increment: -1, message: t("committing") });
 
+    const file = await resolveFile(buffer, "file.zip");
+
+    const files: File[] = [file];
+
+    const isUserApp = app instanceof AppTreeItem;
+
     const response = await extension.api.put<RESTPutApiAppCommitResult>(
-      picked.isApp ? Routes.appCommit(picked.id) : Routes.teamCommit(picked.id),
+      isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId),
       { files },
     );
-
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      if (picked.isApp)
+      if (isUserApp)
         await extension.appTree.fetch();
       else
         await extension.teamAppTree.fetch();
 
-      if (response.logs) this.logger(picked.app.output ?? picked.id, response.logs);
+      if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
+  }
+
+  async socket(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
+    await socketCommit(task, buffer, app);
   }
 }

@@ -30,6 +30,7 @@ const CONFIG_KEYS = Object.freeze([
   "debug",
   "token",
   "users",
+  "api.actions.strategy",
   "app.backup.dir",
   "app.import.dir",
   "app.notification.status",
@@ -53,6 +54,26 @@ const TREE_VIEW_IDS = Object.freeze([
   "discloudUser",
 ] as const);
 
+const SORT_BY = Object.freeze([
+  "id.asc",
+  "id.desc",
+  "memory.usage.asc",
+  "memory.usage.desc",
+  "name.asc",
+  "name.desc",
+  "started.asc",
+  "started.desc",
+] as const);
+
+const API_ACTIONS_STRATEGY = Object.freeze([
+  "rest",
+  "socket",
+] as const);
+
 export const TreeViewIds = Object.freeze(makeCamelizedPair(TREE_VIEW_IDS));
 
 export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
+
+export const SortBy = Object.freeze(makeCamelizedPair(SORT_BY));
+
+export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));

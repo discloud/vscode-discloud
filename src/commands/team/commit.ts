@@ -1,12 +1,14 @@
 import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
-import { CancellationError, ProgressLocation, Uri, workspace } from "vscode";
+import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
+import { socketCommit } from "../../services/discloud/socket/actions/commit";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import FileSystem from "../../util/FileSystem";
 import Zip from "../../util/Zip";
+import { ApiActionsStrategy, ConfigKeys } from "../../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -29,8 +31,6 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: `${item.appId} - ${t("choose.files")}` });
 
-    const zipName = `${workspace.name}.zip`;
-
     const fs = new FileSystem({
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
@@ -41,23 +41,25 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: t("files.zipping") });
 
-    const saveUri = Uri.joinPath(workspaceFolder, zipName);
-
     const zipper = new Zip();
 
     await zipper.appendUriList(found);
 
-    const files = [];
-    try {
-      files.push(await resolveFile(zipper.getBuffer(), zipName));
-    } catch (error) {
-      if (extension.isDebug) await zipper.writeZip(saveUri.fsPath);
-      throw error;
-    }
+    const buffer = await zipper.getBuffer();
 
-    task.progress.report({ increment: -1, message: item.appId });
+    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
-    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.teamCommit(item.appId), { files });
+    await this[strategy](task, buffer, item);
+  }
+
+  async rest(task: TaskData, buffer: Buffer, app: TeamAppTreeItem) {
+    task.progress.report({ increment: -1, message: t("committing") });
+
+    const file = await resolveFile(buffer, "file.zip");
+
+    const files: File[] = [file];
+
+    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.teamCommit(app.appId), { files });
     if (!response) return;
 
     if ("status" in response) {
@@ -65,7 +67,11 @@ export default class extends Command {
 
       await extension.teamAppTree.fetch();
 
-      if (response.logs) this.logger(item.output ?? item.appId, response.logs);
+      if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
+  }
+
+  async socket(task: TaskData, buffer: Buffer, app: TeamAppTreeItem) {
+    await socketCommit(task, buffer, app);
   }
 }
