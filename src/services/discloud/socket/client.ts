@@ -178,8 +178,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  async *[Symbol.asyncIterator]() {
-    yield* on(this, "data", { close: ["close"] });
+  async *[Symbol.asyncIterator](): AsyncIterator<Data> {
+    for await (const [data] of on(this, "data", { close: ["close"] })) {
+      yield data;
+    }
   }
 
   [Symbol.dispose]() {
