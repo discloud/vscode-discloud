@@ -393,6 +393,11 @@
             "title": "%config.app.notification.status.title%",
             "markdownDescription": "%config.app.notification.status.description%"
           },
+          "discloud.app.separate.by.type": {
+            "type": "boolean",
+            "default": true,
+            "title": "%config.app.separate.by.type.title%"
+          },
           "discloud.app.show.avatar.instead.status": {
             "type": "string",
             "default": "when.online",
