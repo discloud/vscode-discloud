@@ -8,7 +8,7 @@ import type TeamAppTreeItem from "./TeamAppTreeItem";
 import type VSUser from "./VSUser";
 
 export interface CommandConstructor {
-  new (...args: any[]): Command
+  new(...args: any[]): Command
 }
 
 export default abstract class Command {
@@ -302,21 +302,11 @@ export default abstract class Command {
 
   showApiMessage(data: Data) {
     if ("status" in data) {
-      const status = t(`${data.status}`);
-
-      if (data.status === "ok") {
-        window.showInformationMessage(
-          `${status}`
-          + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-          + (data.message ? `: ${data.message}` : ""),
-        );
-      } else {
-        window.showWarningMessage(
-          `${status}`
-          + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-          + (data.message ? `: ${data.message}` : ""),
-        );
-      }
+      window.showWarningMessage(
+        t(`${data.status}`)
+        + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
+        + (data.message ? `: ${data.message}` : ""),
+      );
     }
   }
 }

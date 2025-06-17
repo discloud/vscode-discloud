@@ -44,6 +44,6 @@ export default class extends Command {
 
     await workspace.fs.writeFile(backupZipUri, Buffer.from(await backup.arrayBuffer()));
 
-    window.showInformationMessage(t("backup.success", { dir: backupZipUri.fsPath }));
+    await window.showInformationMessage(t("backup.success", { dir: backupZipUri.fsPath }));
   }
 }
