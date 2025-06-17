@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { Routes, type DiscloudConfig } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
-import { type TaskData } from "../../../../@types";
+import { type ApiVscodeApp, type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
 import { MAX_UPLOAD_SIZE } from "../../constants";
 import SocketClient from "../client";
@@ -45,7 +45,18 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         if (data.app) {
           dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
-          extension.appTree.addRawApp(data.app as any); // TODO: fix ApiUploadApp
+
+          const app: ApiVscodeApp = {
+            apts: dConfig.data.APT.split(/\s*,\s*/).filter(Boolean),
+            clusterName: "",
+            exitCode: data.statusCode === 200 ? 0 : 1,
+            online: data.statusCode === 200,
+            ramKilled: false,
+            syncGit: null,
+            ...data.app,
+          } as any;
+
+          extension.appTree.addRawApp(app); // TODO: fix ApiUploadApp
         }
 
         if (data.logs) showLog(data.logs);
