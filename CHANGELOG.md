@@ -8,6 +8,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ## 2.23.x
 
+- Substituído ação de atualizar status de vários apps por atualização individual de status do app
 - Adicionado separação de apps por tipo na visualização de apps
   Você pode desativar isso em [⚙️discloud.app.separate.by.type](vscode://settings/discloud.app.separate.by.type)
 
