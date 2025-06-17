@@ -6,14 +6,16 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.23.x
+## 2.23.1
 
 - Implementado método de commit/upload por websocket  
   Agora você pode acompanhar as etapas em tempo real  
   Isso é opcional e você pode mudar em [`⚙️discloud.api.actions.strategy`](vscode://settings/discloud.api.actions.strategy)
-- Substituído ação de atualizar status de vários apps por atualização individual de status do app
+
 - Adicionado separação de apps por tipo na visualização de apps
   Você pode desativar isso em [`⚙️discloud.app.separate.by.type`](vscode://settings/discloud.app.separate.by.type)
+
+- Substituído ação de atualizar status de vários apps por atualização individual de status do app
 
 ## 2.22.50
 
