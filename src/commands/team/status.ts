@@ -15,11 +15,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: TeamAppTreeItem) {
-    if (!item?.children.size) 
-      await extension.teamAppTree.fetch();
-
-    if (extension.teamAppTree.children.size)
-      await extension.teamAppTree.getStatus();
+  async run(_: TaskData, item: TeamAppTreeItem) {
+    await extension.teamAppTree.getStatus(item.appId);
   }
 }

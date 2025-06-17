@@ -1,9 +1,12 @@
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { type ExtensionContext, type ProviderResult, TreeItem, commands, window } from "vscode";
+import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
+import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
+import DisposableMap from "../structures/DisposableMap";
 import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -13,14 +16,21 @@ type Item = AppTreeItem
 export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(context: ExtensionContext) {
     super(context, TreeViewIds.discloudUserApps);
+
+    context.subscriptions.push(this._views);
   }
 
-  getChildren(element?: Item): ProviderResult<Item[]>;
-  getChildren(element?: AppTreeItem): ProviderResult<TreeItem[]> {
-    if (element) return Array.from(element.children.values());
+  protected readonly _views = new DisposableMap<AppType, AppTypeTreeItemView>();
 
-    const children = Array.from(this.children.values());
+  protected _getView(type: AppType) {
+    let view = this._views.get(type);
+    if (view) return view;
+    view = new AppTypeTreeItemView(type);
+    this._views.set(type, view);
+    return view;
+  }
 
+  protected _sort(children: Item[]) {
     const sort = extension.config.get<string>(ConfigKeys.appSortBy);
 
     if (sort?.includes(".")) {
@@ -66,6 +76,28 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.appSortOnline);
 
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online, b.online));
+  }
+
+  getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
+  getChildren(element?: AppTypeTreeItemView): ProviderResult<AppTypeTreeItemView[]>;
+  getChildren(element?: AppTreeItem | AppTypeTreeItemView): ProviderResult<TreeItem[]> {
+    if (element) {
+      if (element instanceof AppTypeTreeItemView) {
+        const children = element.children.values().toArray();
+        this._sort(children);
+
+        return children;
+      }
+
+      return element.children.values().toArray();
+    }
+
+    const separate = extension.config.get(ConfigKeys.appSeparateByType, true);
+
+    if (separate) return this._views.values().toArray().sort((a, b) => a.children.size - b.children.size);
+
+    const children = this.children.values().toArray();
+    this._sort(children);
 
     return children;
   }
@@ -76,21 +108,42 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     const apps = new Set(data.map(app => typeof app === "string" ? app : app.id));
 
     for (const key of this.children.keys()) {
-      if (!apps.has(key)) {
-        refresh = this.children.dispose(key);
-      }
+      if (apps.has(key)) continue;
+
+      const child = this.children.get(key);
+      if (!child) continue;
+
+      refresh = this.children.dispose(key);
+
+      const view = this._views.get(child.type);
+      if (!view) continue;
+
+      view.dispose(key);
+
+      if (!view.children.size) this._views.dispose(view.type);
     }
 
     if (refresh) this.refresh();
   }
 
   delete(id: string) {
-    if (this.children.dispose(id)) {
-      if (!this.children.size)
-        this.init();
+    const child = this.children.get(id);
 
-      this.refresh();
+    if (!child) return;
+
+    const view = this._views.get(child.type);
+
+    if (view) {
+      view.dispose(id);
+
+      if (!view.children.size) this._views.dispose(view.type);
     }
+
+    this.children.dispose(id);
+
+    if (!this.children.size) this.init();
+
+    this.refresh();
   }
 
   refresh(data?: Item | Item[] | null) {
@@ -131,11 +184,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     } else {
       this.children.dispose("x");
 
-      this.children.set(data.id, new AppTreeItem(Object.assign({
-        collapsibleState: this.children.size ?
-          TreeItemCollapsibleState.Collapsed :
-          TreeItemCollapsibleState.Expanded,
-      }, data)));
+      const child = new AppTreeItem(data);
+
+      this._getView(child.type).set(child.appId, child);
+
+      this.children.set(child.appId, child);
 
       if (returnBoolean) {
         return true;
@@ -162,23 +215,16 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     return false;
   }
 
-  async getStatus(appId: string = "all") {
-    const res = await extension.api.queueGet<
-      | RESTGetApiAppStatusResult
-      | RESTGetApiAppAllStatusResult
-    >(Routes.appStatus(appId), {});
+  async getStatus(appId: string) {
+    const response = await extension.api.queueGet<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
 
-    if (!res) return;
+    if (!response) return;
 
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
+    if (!response.apps) {
+      if ("statusCode" in response) {
+        switch (response.statusCode) {
           case 404:
-            if (appId === "all") {
-              this.init();
-            } else {
-              this.delete(appId);
-            }
+            this.delete(appId);
             break;
         }
       }
@@ -186,13 +232,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       return;
     }
 
-    if (Array.isArray(res.apps)) {
-      for (const app of res.apps) {
-        this.editRawApp(app.id, app);
-      }
-    } else {
-      this.editRawApp(appId, res.apps);
-    }
+    this.editRawApp(appId, response.apps);
   }
 
   async fetch() {
@@ -207,6 +247,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   init() {
+    this._views.dispose();
     this.children.dispose();
 
     const x = new TreeItem(t("no.app.found")) as Item;

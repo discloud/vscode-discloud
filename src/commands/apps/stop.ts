@@ -16,20 +16,15 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: AppTreeItem) {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const res = await extension.api.put<RESTPutApiAppStartResult>(Routes.appStop(item.appId));
-    if (!res) return;
+    const response = await extension.api.put<RESTPutApiAppStartResult>(Routes.appStop(item.appId));
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
       await extension.appTree.fetch();
     }

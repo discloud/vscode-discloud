@@ -71,20 +71,20 @@ export default class extends Command {
 
     const files: File[] = [file];
 
-    const res = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
+    const response = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
 
-    if (!res) return;
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
-      if ("app" in res && res.app) {
-        dConfig.update({ ID: res.app.id, AVATAR: res.app.avatarURL });
+      if ("app" in response && response.app) {
+        dConfig.update({ ID: response.app.id, AVATAR: response.app.avatarURL });
         await extension.appTree.fetch();
       }
 
-      if (res.logs) {
-        this.logger("app" in res && res.app ? res.app.id : "Discloud Upload Error", res.logs);
+      if (response.logs) {
+        this.logger("app" in response && response.app ? response.app.id : "Discloud Upload Error", response.logs);
       }
     }
   }

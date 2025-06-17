@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import Command from "../structures/Command";
 import { tokenIsDiscloudJwt, tokenValidator } from "../services/discloud/utils";
+import Command from "../structures/Command";
 
 export default class extends Command {
   constructor() {
@@ -25,6 +25,6 @@ export default class extends Command {
     if (!await tokenValidator(input))
       throw Error(t("invalid.token"));
 
-    window.showInformationMessage(t("valid.token"));
+    await window.showInformationMessage(t("valid.token"));
   }
 }

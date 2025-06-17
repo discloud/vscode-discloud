@@ -2,14 +2,14 @@ import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItem
 import DisposableMap from "./DisposableMap";
 
 export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem implements Disposable {
-  readonly children = new DisposableMap<string, T>();
-  declare readonly data: unknown;
-  readonly contextKey = "TreeItem";
-  contextValue = this.contextKey;
-
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
+    this.contextValue = this.contextKey;
   }
+
+  readonly children = new DisposableMap<string, T>();
+  declare readonly data: unknown;
+  readonly contextKey: string = "TreeItem";
 
   get contextJSON(): Record<any, any> {
     return {};

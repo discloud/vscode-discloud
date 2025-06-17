@@ -20,14 +20,9 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
+  async run(task: TaskData, item: AppTreeItem) {
     const workspaceFolder = await extension.getWorkspaceFolder();
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
-
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
 
     if (!await this.confirmAction())
       throw new CancellationError();
@@ -64,16 +59,16 @@ export default class extends Command {
 
     const files: File[] = [file];
 
-    const res = await extension.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(app.appId), { files });
+    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(item.appId), { files });
 
-    if (!res) return;
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
       await extension.appTree.fetch();
 
-      if (res.logs) this.logger(app.output ?? app.appId, res.logs);
+      if (response.logs) this.logger(item.output ?? item.appId, response.logs);
     }
   }
 

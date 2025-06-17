@@ -68,22 +68,21 @@ export default class extends Command {
 
     const isUserApp = app instanceof AppTreeItem;
 
-    const res = await extension.api.put<RESTPutApiAppCommitResult>(
+    const response = await extension.api.put<RESTPutApiAppCommitResult>(
       isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId),
       { files },
     );
+    if (!response) return;
 
-    if (!res) return;
-
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
       if (isUserApp)
         await extension.appTree.fetch();
       else
         await extension.teamAppTree.fetch();
 
-      if (res.logs) this.logger(app.output ?? app.appId, res.logs);
+      if (response.logs) this.logger(picked.app.output ?? picked.id, response.logs);
     }
   }
 

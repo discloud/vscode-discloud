@@ -46,6 +46,7 @@
   "config.app.import.dir.title": "Your app import directory",
   "config.app.notification.status.description": "Show notifications when apps status changes.\n\n(Default: activated)",
   "config.app.notification.status.title": "App status notifications",
+  "config.app.separate.by.type.title": "Separate apps by type",
   "config.app.show.avatar.instead.status.description": "Show app avatar instead status\n\n(Default: When online)",
   "config.app.show.avatar.instead.status.title": "Show app avatar instead status",
   "config.app.sort.by.description": "Change apps view ordering here.",
