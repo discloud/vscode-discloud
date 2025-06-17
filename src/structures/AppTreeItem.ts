@@ -53,10 +53,10 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     super._patch(data);
 
-    if (data.avatarURL !== undefined)
+    if (data.avatarURL)
       this.data.avatarURL = data.avatarURL = data.avatarURL.replace(/\s+/g, "");
 
-    if (data.name !== undefined)
+    if (data.name)
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
@@ -68,14 +68,14 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     switch (showAvatar) {
       case "always": {
-        if (this.data.avatarURL !== undefined)
+        if (this.data.avatarURL)
           this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
       }
 
       case "when.online": {
-        if (this.online && this.data.avatarURL !== undefined)
+        if (this.online && this.data.avatarURL)
           this.iconPath = Uri.parse(this.data.avatarURL);
 
         break;
@@ -84,12 +84,12 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if (data.memory !== undefined) {
+    if (data.memory) {
       const matched = data.memory.match(/[\d.]+/g) ?? [];
       data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if (data.startedAt !== undefined)
+    if (data.startedAt)
       data.startedAtTimestamp = new Date(data.startedAt).valueOf();
 
     this._addChild("status", {
@@ -98,35 +98,35 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       iconName: "container",
     });
 
-    if (data.memory !== undefined)
+    if (data.memory)
       this._addChild("memory", {
         label: data.memory,
         description: t("label.ram"),
         iconName: "ram",
       });
 
-    if (data.cpu !== undefined)
+    if (data.cpu)
       this._addChild("cpu", {
         label: data.cpu,
         description: t("label.cpu"),
         iconName: "cpu",
       });
 
-    if (data.ssd !== undefined)
+    if (data.ssd)
       this._addChild("ssd", {
         label: data.ssd,
         description: t("label.ssd"),
         iconName: "ssd",
       });
 
-    if (data.netIO !== undefined)
+    if (data.netIO)
       this._addChild("netIO", {
         label: `⬇${data.netIO.down} ⬆${data.netIO.up}`,
         description: t("network"),
         iconName: "network",
       });
 
-    if (data.last_restart !== undefined)
+    if (data.last_restart)
       this._addChild("last_restart", {
         label: data.last_restart,
         description: t("last.restart"),

@@ -57,7 +57,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     super._patch(data);
 
-    if (data.name !== undefined)
+    if (data.name)
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
@@ -65,12 +65,12 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
-    if (data.memory !== undefined) {
+    if (data.memory) {
       const matched = data.memory.match(/[\d.]+/g) ?? [];
       data.memoryUsage = calculatePercentage(matched[0]!, matched[1]);
     }
 
-    if (data.startedAt !== undefined)
+    if (data.startedAt)
       data.startedAtTimestamp = new Date(data.startedAt).valueOf();
 
     if (typeof this.online === "boolean")
@@ -81,31 +81,31 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if (data.memory !== undefined)
+    if (data.memory)
       this._addChild("memory", {
-        label: data.memory!,
+        label: data.memory,
         description: t("label.ram"),
         iconName: "ram",
         appId: this.appId,
       });
 
-    if (data.cpu !== undefined)
+    if (data.cpu)
       this._addChild("cpu", {
-        label: data.cpu!,
+        label: data.cpu,
         description: t("label.cpu"),
         iconName: "cpu",
         appId: this.appId,
       });
 
-    if (data.ssd !== undefined)
+    if (data.ssd)
       this._addChild("ssd", {
-        label: data.ssd!,
+        label: data.ssd,
         description: t("label.ssd"),
         iconName: "ssd",
         appId: this.appId,
       });
 
-    if (data.netIO !== undefined)
+    if (data.netIO)
       this._addChild("netIO", {
         label: `⬇${data.netIO.down} ⬆${data.netIO.up}`,
         description: t("network"),
@@ -113,9 +113,9 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         appId: this.appId,
       });
 
-    if (data.last_restart !== undefined)
+    if (data.last_restart)
       this._addChild("last_restart", {
-        label: data.last_restart!,
+        label: data.last_restart,
         description: t("last.restart"),
         iconName: "uptime",
         appId: this.appId,

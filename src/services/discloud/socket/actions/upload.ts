@@ -54,7 +54,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
             ramKilled: false,
             syncGit: null,
             ...data.app,
-          } as any;
+          };
 
           extension.appTree.addRawApp(app); // TODO: fix ApiUploadApp
         }

@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState } from "vscode";
+import { TreeItemCollapsibleState, Uri } from "vscode";
 import { type ApiVscodeUser, type UserTreeItemData } from "../@types";
 import BaseTreeItem from "./BaseTreeItem";
 import UserChildTreeItem from "./UserChildTreeItem";
@@ -21,10 +21,13 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
     if (!data) return this;
 
+    if (data.avatar) 
+      this.iconPath = Uri.parse(data.avatar);
+
     super._patch(data);
 
-    if (data.userName !== undefined)
-      this.label = data.userName + ` (${this.userID})`;
+    if (data.username)
+      this.label = data.username + ` (${this.userID})`;
 
     if (data.children instanceof Map) {
       for (const [id, child] of data.children) {
@@ -32,16 +35,16 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       }
     }
 
-    if (data.ramUsedMb !== undefined && data.totalRamMb !== undefined)
+    if (typeof data.ramUsedMb === "number" && typeof data.totalRamMb === "number")
       this._addChild("ram", {
         label: `${data.ramUsedMb}/${data.totalRamMb}`,
         description: t("label.available.ram"),
         userID: this.userID,
       });
 
-    if (data.plan !== undefined)
+    if (data.plan)
       this._addChild("plan", {
-        label: data.plan!,
+        label: data.plan,
         description: t("plan"),
         userID: this.userID,
       });
@@ -55,37 +58,37 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         userID: this.userID,
       });
 
-    if (data.locale !== undefined)
+    if (data.locale)
       this._addChild("locale", {
-        label: data.locale!,
+        label: data.locale,
         description: t("locale"),
         userID: this.userID,
       });
 
-    if (data.apps !== undefined)
+    if (data.apps)
       this._addChild("apps", {
-        label: `${data.apps?.length ?? 0}`,
+        label: `${data.apps.length}`,
         description: t("label.apps.amount"),
         userID: this.userID,
       });
 
-    if (data.appsTeam !== undefined)
+    if (data.appsTeam)
       this._addChild("team", {
-        label: `${data.appsTeam?.length ?? 0}`,
+        label: `${data.appsTeam.length}`,
         description: t("label.team.apps.amount"),
         userID: this.userID,
       });
 
-    if (data.customdomains !== undefined)
+    if (data.customdomains)
       this._addChild("domains", {
-        label: `${data.customdomains?.length ?? 0}`,
+        label: `${data.customdomains.length}`,
         description: t("label.domains.amount"),
         userID: this.userID,
       });
 
-    if (data.subdomains !== undefined)
+    if (data.subdomains)
       this._addChild("subdomains", {
-        label: `${data.subdomains?.length ?? 0}`,
+        label: `${data.subdomains.length}`,
         description: t("label.subdomains.amount"),
         userID: this.userID,
       });

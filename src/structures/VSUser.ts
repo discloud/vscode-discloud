@@ -8,13 +8,14 @@ export default class VSUser implements ApiVscodeUser {
   readonly appsTeam: string[] = [];
   readonly customdomains: string[] = [];
   readonly subdomains: string[] = [];
+  declare avatar: string | null;
   declare locale: string;
   declare readonly plan: string;
   declare readonly planDataEnd: string;
   declare readonly ramUsedMb: number;
   declare readonly totalRamMb: number;
   declare readonly userID: string;
-  declare readonly userName: string;
+  declare readonly username: string;
 
   async fetch(isVS?: boolean) {
     const method = isVS ? "queueGet" : "get";

@@ -7,6 +7,7 @@ export interface RESTGetApiVscode extends RESTApiBaseResult {
 
 export interface ApiVscodeUser {
   apps: string[]
+  avatar: string | null
   appsStatus: ApiVscodeApp[]
   appsTeam: string[]
   customdomains: string[]
@@ -16,7 +17,7 @@ export interface ApiVscodeUser {
   subdomains: string[]
   totalRamMb: number
   userID: string
-  userName: string
+  username: string | null
 }
 
 export interface ApiVscodeApp extends BaseApiApp {

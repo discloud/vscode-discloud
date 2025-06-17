@@ -8,7 +8,7 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   constructor(readonly context: ExtensionContext, data: Partial<StatusBarItemOptions>) {
     context.subscriptions.push(this);
 
-    const options = data.id !== undefined ? [data.id, data.alignment, data.priority] : [data.alignment, data.priority];
+    const options = data.id ? [data.id, data.alignment, data.priority] : [data.alignment, data.priority];
     this.data = window.createStatusBarItem(...options as CreateStatusBarItemOptions);
     this.originalData = Object.assign(Object.create(this.data), this.data);
     this.set(data);
