@@ -67,7 +67,7 @@ export default class extends Command {
 
       await extension.teamAppTree.fetch();
 
-      if (response.logs) this.logger(item.output ?? item.appId, response.logs);
+      if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
   }
 

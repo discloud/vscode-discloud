@@ -82,7 +82,7 @@ export default class extends Command {
       else
         await extension.teamAppTree.fetch();
 
-      if (response.logs) this.logger(picked.app.output ?? picked.id, response.logs);
+      if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
   }
 

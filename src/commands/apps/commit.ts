@@ -59,7 +59,7 @@ export default class extends Command {
 
     const files: File[] = [file];
 
-    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(item.appId), { files });
+    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(app.appId), { files });
 
     if (!response) return;
 
@@ -68,7 +68,7 @@ export default class extends Command {
 
       await extension.appTree.fetch();
 
-      if (response.logs) this.logger(item.output ?? item.appId, response.logs);
+      if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
   }
 
