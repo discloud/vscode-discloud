@@ -51,7 +51,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     this.context.subscriptions.push(disposable);
   }
 
-  checkDocument(document: TextDocument) {
+  async checkDocument(document: TextDocument) {
     if (document.languageId !== this.schema.$id) return;
 
     const diagnostics: Diagnostic[] = [];
@@ -64,7 +64,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         if (!document.uri._discloudDiscloudHasWrongLocationWarned) {
           // @ts-expect-error ts(2339)
           document.uri._discloudDiscloudHasWrongLocationWarned = true;
-          window.showErrorMessage(t("diagnostic.wrong.file.location"));
+          await window.showErrorMessage(t("diagnostic.wrong.file.location"));
         }
 
         diagnostics.push({

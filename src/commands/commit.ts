@@ -62,22 +62,22 @@ export default class extends Command {
 
     task.progress.report({ increment: -1, message: t("committing") });
 
-    const res = await extension.api.put<RESTPutApiAppCommitResult>(
+    const response = await extension.api.put<RESTPutApiAppCommitResult>(
       picked.isApp ? Routes.appCommit(picked.id) : Routes.teamCommit(picked.id),
       { files },
     );
 
-    if (!res) return;
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
       if (picked.isApp)
         await extension.appTree.fetch();
       else
         await extension.teamAppTree.fetch();
 
-      if (res.logs) this.logger(picked.app.output ?? picked.id, res.logs);
+      if (response.logs) this.logger(picked.app.output ?? picked.id, response.logs);
     }
   }
 }

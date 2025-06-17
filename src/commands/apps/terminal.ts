@@ -9,12 +9,7 @@ export default class extends Command {
     super();
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: AppTreeItem) {
     const terminal = window.createTerminal({
       env: { DISCLOUD_TOKEN: extension.token },
       iconPath: item.iconPath as Uri,

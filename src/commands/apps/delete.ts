@@ -16,22 +16,17 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: AppTreeItem) {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const res = await extension.api.delete<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId));
-    if (!res) return;
+    const response = await extension.api.delete<RESTDeleteApiAppDeleteResult>(Routes.appDelete(item.appId));
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
-      if (res.status === "ok") {
+      if (response.status === "ok") {
         extension.appTree.delete(item.appId);
       }
     }
