@@ -19,7 +19,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: TeamAppTreeItem) {
+  async run(task: TaskData, item: TeamAppTreeItem) {
     const workspaceAvailable = extension.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
     if (workspaceAvailable) workspaceFolder = await extension.getWorkspaceFolder();
@@ -28,23 +28,18 @@ export default class extends Command {
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false, startInTeamApps: true });
-      item = picked.app;
-    }
+    const response = await extension.api.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
+    if (!response) return;
 
-    const res = await extension.api.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
-    if (!res) return;
+    if (!response.backups) throw Error(t("no.backup.found"));
 
-    if (!res.backups) throw Error(t("no.backup.found"));
-
-    const backup = await fetch(res.backups.url);
+    const backup = await fetch(response.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
     const configImportDir = extension.config.get<string>(ConfigKeys.teamImportDir) ?? "";
     const importDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configImportDir) : workspaceFolder;
-    const importUri = Uri.joinPath(importDirUri, res.backups.id);
-    const importZipUri = Uri.joinPath(importDirUri, `${res.backups.id}.zip`);
+    const importUri = Uri.joinPath(importDirUri, response.backups.id);
+    const importZipUri = Uri.joinPath(importDirUri, `${response.backups.id}.zip`);
 
     if (!existsSync(importDirUri.fsPath))
       await workspace.fs.createDirectory(importDirUri);

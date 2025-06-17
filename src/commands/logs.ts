@@ -43,14 +43,15 @@ export default class extends Command {
       }
     }
 
-    const res = await extension.api.get<RESTGetApiAppLogResult>(item.isApp
+    const response = await extension.api.get<RESTGetApiAppLogResult>(item.isApp
       ? Routes.appLogs(item.appId)
       : Routes.teamLogs(item.appId));
-    if (!res) return;
 
-    if (!res.apps || !res.apps.terminal.big)
+    if (!response) return;
+
+    if (!response.apps || !response.apps.terminal.big)
       throw Error(t("no.log.found"));
 
-    this.logger(item.output ?? res.apps.id, res.apps.terminal.big);
+    this.logger(item.output ?? response.apps.id, response.apps.terminal.big);
   }
 }

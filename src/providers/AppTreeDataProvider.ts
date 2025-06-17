@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
+import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
@@ -162,23 +162,16 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     return false;
   }
 
-  async getStatus(appId: string = "all") {
-    const res = await extension.api.queueGet<
-      | RESTGetApiAppStatusResult
-      | RESTGetApiAppAllStatusResult
-    >(Routes.appStatus(appId), {});
+  async getStatus(appId: string) {
+    const response = await extension.api.queueGet<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
 
-    if (!res) return;
+    if (!response) return;
 
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
+    if (!response.apps) {
+      if ("statusCode" in response) {
+        switch (response.statusCode) {
           case 404:
-            if (appId === "all") {
-              this.init();
-            } else {
-              this.delete(appId);
-            }
+            this.delete(appId);
             break;
         }
       }
@@ -186,13 +179,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       return;
     }
 
-    if (Array.isArray(res.apps)) {
-      for (const app of res.apps) {
-        this.editRawApp(app.id, app);
-      }
-    } else {
-      this.editRawApp(appId, res.apps);
-    }
+    this.editRawApp(appId, response.apps);
   }
 
   async fetch() {

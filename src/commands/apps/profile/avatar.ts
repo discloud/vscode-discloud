@@ -12,12 +12,7 @@ export default class extends Command {
     super();
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: AppTreeItem) {
     const avatarURL = await InputBox.getExternalImageURL({
       prompt: t("input.avatar.prompt"),
       required: true,
@@ -26,13 +21,13 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const res = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
-    if (!res) return;
+    const response = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
 
-      if (res.status === "ok") {
+      if (response.status === "ok") {
         extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
         const workspaceFolder = await extension.getWorkspaceFolder();

@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppAllStatusResult, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
+import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
 import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
 import extension from "../extension";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
@@ -159,13 +159,13 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   async getApps() {
-    const res = await extension.api.get<RESTGetApiTeamResult>("/team");
+    const response = await extension.api.get<RESTGetApiTeamResult>("/team");
 
-    if (!res) return;
+    if (!response) return;
 
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
+    if (!response.apps) {
+      if ("statusCode" in response) {
+        switch (response.statusCode) {
           case 403:
             this.init();
             break;
@@ -175,26 +175,19 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       return;
     }
 
-    this.setRawApps(res.apps);
+    this.setRawApps(response.apps);
   }
 
-  async getStatus(appId: string = "all") {
-    const res = await extension.api.queueGet<
-      | RESTGetApiAppStatusResult
-      | RESTGetApiAppAllStatusResult
-    >(Routes.teamStatus(appId), {});
+  async getStatus(appId: string) {
+    const response = await extension.api.queueGet<RESTGetApiAppStatusResult>(Routes.teamStatus(appId));
 
-    if (!res) return;
+    if (!response) return;
 
-    if (!res.apps) {
-      if ("statusCode" in res) {
-        switch (res.statusCode) {
+    if (!response.apps) {
+      if ("statusCode" in response) {
+        switch (response.statusCode) {
           case 404:
-            if (appId === "all") {
-              this.children.dispose();
-            } else {
-              this.delete(appId);
-            }
+            this.delete(appId);
             break;
         }
       }
@@ -202,13 +195,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       return;
     }
 
-    if (Array.isArray(res.apps)) {
-      for (const app of res.apps) {
-        this.editRawApp(app.id, app);
-      }
-    } else {
-      this.editRawApp(appId, res.apps);
-    }
+    this.editRawApp(appId, response.apps);
   }
 
   async fetch() {

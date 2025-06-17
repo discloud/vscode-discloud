@@ -18,5 +18,5 @@ extension.on("teamAppUpdate", async function (oldApp, newApp) {
   }
 
   if (messageList.length)
-    window.showInformationMessage(messageList.join("\n"));
+    await window.showInformationMessage(messageList.join("\n"));
 });

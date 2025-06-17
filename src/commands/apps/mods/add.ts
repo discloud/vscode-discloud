@@ -16,12 +16,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item?: AppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(task, { showOther: false });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: AppTreeItem) {
     const modID = await window.showInputBox({
       prompt: t("input.mod.add.prompt"),
     });
@@ -40,16 +35,16 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const res = await extension.api.post<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
+    const response = await extension.api.post<RESTPostApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: {
         modID,
         perms,
       },
     });
-    if (!res) return;
+    if (!response) return;
 
-    if ("status" in res) {
-      this.showApiMessage(res);
+    if ("status" in response) {
+      this.showApiMessage(response);
     }
   }
 }
