@@ -113,19 +113,18 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     const binaryLength = buffer.length;
     const parts = Math.ceil(buffer.length / MAX_ZIP_BUFFER_PART);
     const partSize = Math.ceil(binaryLength / parts);
-    const encoding = "base64";
 
     for (let i = 0; i < parts; i++) {
       const part = i + 1;
       const startIndex = partSize * i;
       const endIndex = partSize * part;
-      const file = buffer.subarray(startIndex, endIndex);
+      const subbuffer = buffer.subarray(startIndex, endIndex);
+      const file = Array.from(subbuffer);
 
       await this.sendJSON({
         part,
         parts,
-        encoding,
-        file: file.toString(encoding),
+        file,
       });
 
       await sleep();
