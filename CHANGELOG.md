@@ -6,6 +6,11 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.x
+
+- Adicionado separação de apps por tipo na visualização de apps
+  Você pode desativar isso em [⚙️discloud.app.separate.by.type](vscode://settings/discloud.app.separate.by.type)
+
 ## 2.22.50
 
 - Melhorias na manipulação de ações rejeitadas
