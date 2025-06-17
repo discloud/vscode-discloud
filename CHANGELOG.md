@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.2
+
+- Corrigido bug que mostrava aplicação offline após upload, mesmo estando online
+
 ## 2.23.1
 
 - Implementado método de commit/upload por websocket  
