@@ -110,9 +110,8 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   async sendFile(buffer: Buffer) {
     if (buffer.length > MAX_UPLOAD_SIZE) throw new BufferOverflowError();
 
-    const binaryLength = buffer.length;
     const parts = Math.ceil(buffer.length / MAX_ZIP_BUFFER_PART);
-    const partSize = Math.ceil(binaryLength / parts);
+    const partSize = Math.ceil(buffer.length / parts);
 
     for (let i = 0; i < parts; i++) {
       const part = i + 1;
