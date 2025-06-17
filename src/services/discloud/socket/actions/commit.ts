@@ -93,21 +93,11 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
 function showApiMessage(data: Data) {
   if ("status" in data) {
-    const status = t(`${data.status}`);
-
-    if (data.status === "ok") {
-      window.showInformationMessage(
-        `${status}`
-        + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-        + (data.message ? `: ${data.message}` : ""),
-      );
-    } else {
-      window.showWarningMessage(
-        `${status}`
-        + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-        + (data.message ? `: ${data.message}` : ""),
-      );
-    }
+    window.showInformationMessage(
+      t(`${data.status}`)
+      + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
+      + (data.message ? `: ${data.message}` : ""),
+    );
   }
 }
 

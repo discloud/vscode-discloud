@@ -84,21 +84,11 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
 function showApiMessage(data: Data) {
   if ("status" in data) {
-    const status = t(`${data.status}`);
-
-    if (data.status === "ok") {
-      window.showInformationMessage(
-        `${status}`
-        + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-        + (data.message ? `: ${data.message}` : ""),
-      );
-    } else {
-      window.showWarningMessage(
-        `${status}`
-        + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
-        + (data.message ? `: ${data.message}` : ""),
-      );
-    }
+    window.showInformationMessage(
+      t(`${data.status}`)
+      + (typeof data.statusCode === "number" ? ` ${data.statusCode}` : "")
+      + (data.message ? `: ${data.message}` : ""),
+    );
   }
 }
 
