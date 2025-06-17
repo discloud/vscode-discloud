@@ -88,7 +88,7 @@
       {
         "command": "discloud.apps.import",
         "title": "%command.apps.import%",
-        "icon": "$(edit)"
+        "icon": "$(cloud-download)"
       },
       {
         "command": "discloud.apps.logs",
@@ -211,7 +211,7 @@
       {
         "command": "discloud.apps.status",
         "title": "%command.apps.status%",
-        "icon": "$(zap)"
+        "icon": "$(graph)"
       },
       {
         "command": "discloud.apps.stop",
@@ -335,7 +335,7 @@
       {
         "command": "discloud.team.status",
         "title": "%command.team.status%",
-        "icon": "$(zap)"
+        "icon": "$(graph)"
       },
       {
         "command": "discloud.team.stop",
@@ -866,7 +866,8 @@
         },
         {
           "command": "discloud.apps.status",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "group": "inline",
+          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.apps.stop",
@@ -932,6 +933,7 @@
         },
         {
           "command": "discloud.team.status",
+          "group": "inline",
           "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /^TreeItem/"
         },
         {
@@ -953,11 +955,6 @@
         {
           "command": "discloud.apps.refresh",
           "when": "view == discloudUserApps && !discloudTokenUnauthorized",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud.apps.status",
-          "when": "view == discloudUserApps && discloudAppLength && !discloudTokenUnauthorized",
           "group": "navigation"
         },
         {
@@ -989,11 +986,6 @@
         {
           "command": "discloud.team.refresh",
           "when": "view == discloudTeamApps",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud.team.status",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && !discloudTokenUnauthorized",
           "group": "navigation"
         },
         {

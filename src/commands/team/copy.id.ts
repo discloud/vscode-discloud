@@ -1,7 +1,6 @@
 import { t } from "@vscode/l10n";
 import { env, window } from "vscode";
 import { type TaskData } from "../../@types";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -12,14 +11,9 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item?: AppTreeItem | TeamAppTreeItem) {
-    if (!item) {
-      const picked = await this.pickAppOrTeamApp(null, { startInTeamApps: true });
-      item = picked.app;
-    }
-
+  async run(_: TaskData, item: TeamAppTreeItem) {
     await env.clipboard.writeText(item.appId);
 
-    window.showInformationMessage(t("copied.team.appid"));
+    await window.showInformationMessage(t("copied.team.appid"));
   }
 }

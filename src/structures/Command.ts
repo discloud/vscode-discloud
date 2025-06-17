@@ -226,15 +226,15 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const res = await extension.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
-    if (!res?.team?.length) return;
+    const response = await extension.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
+    if (!response?.team?.length) return;
 
-    const mods = new Map(res.team.map(team => [team.modID, {
+    const mods = new Map(response.team.map(team => [team.modID, {
       id: team.modID,
       perms: new Set(team.perms),
     }]));
 
-    const options = res.team.map(team => <QuickPickItem>{
+    const options = response.team.map(team => <QuickPickItem>{
       label: team.modID,
       description: team.perms.join(", "),
     });
