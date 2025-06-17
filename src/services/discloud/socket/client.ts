@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter, on } from "events";
 import { setTimeout as sleep } from "timers/promises";
 import type vscode from "vscode";
 import WebSocket from "ws";
@@ -176,6 +176,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
           this.ping = this._pong - this._ping;
         });
     });
+  }
+
+  async *[Symbol.asyncIterator]() {
+    yield* on(this, "data", { close: ["close"] });
   }
 
   [Symbol.dispose]() {
