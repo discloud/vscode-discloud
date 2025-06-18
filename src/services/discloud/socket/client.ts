@@ -117,14 +117,9 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       const part = i + 1;
       const startIndex = partSize * i;
       const endIndex = partSize * part;
-      const subbuffer = buffer.subarray(startIndex, endIndex);
-      const file = Array.from(subbuffer);
+      const file = buffer.subarray(startIndex, endIndex);
 
-      await this.sendJSON({
-        part,
-        parts,
-        file,
-      });
+      await this.sendJSON({ part, parts, file });
 
       await sleep();
     }
