@@ -9,6 +9,7 @@ if (!engine || !dependency) throw new Error("Use: node scripts/syncPackageEngine
 
 const encodedPackage = await readFile(PACKAGE_PATH, "utf8");
 
+/** @type {import("type-fest").PackageJson} */
 const packageJSON = JSON.parse(encodedPackage);
 
 const oldEngineVersion = packageJSON.engines?.[engine];
@@ -21,11 +22,10 @@ let found = false, updated = false;
 for (const key in packageJSON) {
   if (!packageJSONDependecyKeyRegexp.test(key)) continue;
   if (!(dependency in packageJSON[key])) continue;
-  if (oldEngineVersion !== packageJSON[key][dependency]) {
-    packageJSON.engines[engine] = packageJSON[key][dependency];
-    updated = true;
-  }
   found = true;
+  if (oldEngineVersion === packageJSON[key][dependency]) break;
+  packageJSON.engines[engine] = packageJSON[key][dependency];
+  updated = true;
   break;
 }
 
