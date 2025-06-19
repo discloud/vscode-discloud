@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.3
+
+- Correção no tamanho do chunk de upload por websocket para evitar fechamento inesperado
+- Adicionado mensagens de fechamento do websocket
+- Adicionado progressão no upload de arquivos
+
 ## 2.23.2
 
 - Corrigido bug que mostrava aplicação offline após upload, mesmo estando online
