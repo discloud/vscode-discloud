@@ -4,13 +4,13 @@ import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type ApiVscodeApp, type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
-import { MAX_UPLOAD_SIZE } from "../../constants";
+import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
-    if (buffer.length > MAX_UPLOAD_SIZE) return reject(t("file.too.big", { value: "512MB" }));
+    if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value: "512MB" }));
 
     const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
 
@@ -22,6 +22,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
     }
 
     let connected = false;
+    let uploading = false;
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .on("connecting", () => {
@@ -29,14 +30,21 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       })
       .on("connect", async () => {
         connected = true;
+        uploading = true;
 
         task.progress.report({ increment: -1, message: t("uploading") });
 
-        await ws.sendFile(buffer);
+        await ws.sendFile(buffer, (data) => {
+          task.progress.report({ increment: 100 / data.total });
+        });
+
+        task.progress.report({ increment: -1 });
+
+        uploading = false;
       })
       .on("data", (data) => {
         if (data.progress) {
-          task.progress.report({ increment: data.progress.bar });
+          if (!uploading) task.progress.report({ increment: data.progress.bar });
 
           if (data.progress.log) showLog(data.progress.log);
         }
@@ -72,16 +80,17 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
           return;
         }
 
+        if (code !== 1000) {
+          await window.showErrorMessage(t(`socket.close.${code}`));
+          return;
+        }
+
         if (!reason.length) return logger.appendLine(t("done"));
 
         try {
           const data: SocketEventUploadData = JSON.parse(reason.toString());
 
-          if (data.progress) {
-            task.progress.report({ increment: data.progress.bar });
-
-            if (data.progress.log) showLog(data.progress.log);
-          }
+          if (data.progress.log) showLog(data.progress.log);
 
           if (data.message) showApiMessage(data);
         } catch { }
@@ -89,7 +98,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     extension.context.subscriptions.push(logger, ws);
 
-    ws.connect();
+    ws.connect().catch(reject);
   });
 }
 

@@ -1,11 +1,10 @@
 import { EventEmitter, on } from "events";
-import { setTimeout as sleep } from "timers/promises";
 import type vscode from "vscode";
 import WebSocket from "ws";
 import extension from "../../../extension";
-import { MAX_UPLOAD_SIZE, MAX_ZIP_BUFFER_PART } from "../constants";
+import { MAX_CHUNK_SIZE, MAX_FILE_SIZE } from "../constants";
 import BufferOverflowError from "./errors/BufferOverflow";
-import { type SocketEventsMap, type SocketOptions } from "./types";
+import { type OnProgressCallback, type SocketEventsMap, type SocketOptions } from "./types";
 
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
   extends EventEmitter<SocketEventsMap<Data>>
@@ -107,21 +106,28 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  async sendFile(buffer: Buffer) {
-    if (buffer.length > MAX_UPLOAD_SIZE) throw new BufferOverflowError();
+  async sendFile(buffer: Buffer, onProgress?: OnProgressCallback) {
+    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError();
 
-    const parts = Math.ceil(buffer.length / MAX_ZIP_BUFFER_PART);
-    const partSize = Math.ceil(buffer.length / parts);
+    const total = Math.ceil(buffer.length / MAX_CHUNK_SIZE);
+    const chunkSize = Math.ceil(buffer.length / total);
 
-    for (let i = 0; i < parts; i++) {
-      const part = i + 1;
-      const startIndex = partSize * i;
-      const endIndex = partSize * part;
-      const file = buffer.subarray(startIndex, endIndex);
+    for (let i = 0; i < total;) {
+      const start = chunkSize * i;
+      const end = start + chunkSize;
+      const chunk = buffer.subarray(start, end);
+      const current = ++i;
 
-      await this.sendJSON({ part, parts, file });
+      await this.sendJSON({
+        current,
+        file: chunk, // TODO: replace for chunk in future
+        part: current, // TODO: replace for current in future
+        parts: total, // TODO: replace for total in future
+        pending: current < total,
+        total,
+      });
 
-      await sleep();
+      await onProgress?.({ current, total });
     }
   }
 
