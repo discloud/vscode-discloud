@@ -38,3 +38,10 @@ export interface SocketProgressData {
   bar: number
   log: string
 }
+
+export interface ProgressData {
+  current: number
+  total: number
+}
+
+export type OnProgressCallback = (data: ProgressData) => unknown | Promise<unknown>
