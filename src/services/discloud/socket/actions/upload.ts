@@ -14,10 +14,11 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
 
-    const logger = window.createOutputChannel("Discloud Upload");
+    const logger = window.createOutputChannel("Discloud Upload", { log: true });
 
     function showLog(value: string) {
-      logger.appendLine(stripVTControlCharacters(value.replace(/[\r\n]+$/, "")));
+      const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
+      for (const text of lines) logger.info(text);
       queueMicrotask(() => logger.show(true));
     }
 
@@ -32,6 +33,8 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         connected = true;
         uploading = true;
 
+        showLog("-".repeat(60));
+
         task.progress.report({ increment: -1, message: t("uploading") });
 
         await ws.sendFile(buffer, (data) => {
@@ -42,7 +45,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         uploading = false;
       })
-      .on("data", (data) => {
+      .on("data", async (data) => {
         if (data.progress) {
           if (!uploading) task.progress.report({ increment: data.progress.bar });
 
@@ -55,7 +58,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
           dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
 
           const app: ApiVscodeApp = {
-            apts: dConfig.data.APT.split(/\s*,\s*/).filter(Boolean),
+            apts: dConfig.data.APT as any,
             clusterName: "",
             exitCode: data.statusCode === 200 ? 0 : 1,
             online: data.statusCode === 200,
@@ -74,6 +77,8 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       })
       .once("close", async (code, reason) => {
         resolve();
+
+        setTimeout(() => logger.dispose(), 60_000);
 
         if (!connected) {
           await window.showErrorMessage(t(code === 1008 ? "socket.authentication.fail" : "socket.connecting.fail"));

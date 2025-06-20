@@ -119,10 +119,8 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       const current = ++i;
 
       await this.sendJSON({
+        chunk,
         current,
-        file: chunk, // TODO: replace for chunk in future
-        part: current, // TODO: replace for current in future
-        parts: total, // TODO: replace for total in future
         pending: current < total,
         total,
       });
