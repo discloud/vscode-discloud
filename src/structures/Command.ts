@@ -135,7 +135,7 @@ export default abstract class Command {
 
     const workspaceFolder = await extension.getWorkspaceFolder().then(f => f?.fsPath);
 
-    const dConfig = new DiscloudConfig(workspaceFolder!);
+    const dConfig = await DiscloudConfig.fromPath(workspaceFolder!);
 
     const ID = dConfig.get(DiscloudConfigScopes.ID);
 
