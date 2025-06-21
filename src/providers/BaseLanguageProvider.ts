@@ -45,6 +45,9 @@ export default class BaseLanguageProvider {
     key = DiscloudConfigScopes.RAM;
     if (key in obj && !isNaN(obj[key])) obj[key] = Number(obj[key]);
 
+    key = DiscloudConfigScopes.VLAN;
+    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
+
     return obj;
   }
 }
