@@ -31,7 +31,7 @@
       "format": "uri",
       "pattern": "^((s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png|webp)([?#]\\S*)?)?$"
     },
-    "BUILD": {
+    "HOSTNAME": {
       "type": "string"
     },
     "ID": {
@@ -58,6 +58,9 @@
     "START": {
       "type": "string"
     },
+    "STORAGE": {
+      "type": "string"
+    },
     "TYPE": {
       "type": "string",
       "default": "bot",
@@ -77,13 +80,15 @@
         "suja",
         "x.x.x"
       ]
+    },
+    "VLAN": {
+      "type": "boolean"
     }
   },
   "required": [
     "MAIN",
     "RAM",
-    "TYPE",
-    "VERSION"
+    "TYPE"
   ],
   "if": {
     "properties": {
@@ -120,9 +125,6 @@
           100
         ]
       }
-    },
-    "required": [
-      "NAME"
-    ]
+    }
   }
 }
