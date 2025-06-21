@@ -69,7 +69,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     if (!workspaceFolder) return this.setUpload();
 
-    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+    const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 
     const ID = dConfig.get(DiscloudConfigScopes.ID);
 

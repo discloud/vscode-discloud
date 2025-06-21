@@ -1274,7 +1274,7 @@
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
-    "discloud.app": "^1.0.1",
+    "discloud.app": "^1.0.2",
     "jose": "^6.0.11",
     "json-schema-library": "^10.1.2",
     "ws": "^8.18.2"

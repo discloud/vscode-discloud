@@ -30,7 +30,7 @@ export default class extends Command {
 
     task.progress.report({ increment: 30, message: t("files.checking") });
 
-    const dConfig = new DiscloudConfig(workspaceFolder.fsPath);
+    const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 
     if (!dConfig.validate(true))
       throw Error(t("invalid.discloud.config"));
@@ -43,11 +43,11 @@ export default class extends Command {
     const found = await fs.findFiles(task.token);
     if (!found.length) throw Error(t("files.missing"));
 
-    const main = Uri.parse(dConfig.data.MAIN).fsPath;
+    const main = dConfig.data.MAIN && Uri.parse(dConfig.data.MAIN).fsPath;
 
-    if (!found.some(uri => uri.fsPath.endsWith(main)))
+    if (!main || !found.some(uri => uri.fsPath.endsWith(main)))
       throw Error([
-        t("missing.discloud.config.main", { file: dConfig.data.MAIN }),
+        t("missing.discloud.config.main", { file: `${dConfig.data.MAIN}` }),
         t("readdiscloudconfigdocs"),
       ].join("\n"));
 
