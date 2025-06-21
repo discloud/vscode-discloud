@@ -130,12 +130,7 @@ function commandRegister(
         const taskData = <TaskData>{};
 
         return await window.withProgress(command.data.progress, async function (progress, token) {
-          const cancellationPromise = new Promise(function (_, reject) {
-            token.onCancellationRequested(function () {
-              extension.statusBar.reset();
-              reject();
-            });
-          });
+          const cancellationPromise = new Promise((_, reject) => token.onCancellationRequested(reject));
 
           taskData.progress = progress;
           taskData.token = token;
