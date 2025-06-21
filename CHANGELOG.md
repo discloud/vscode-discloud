@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.6
+
+- Correção do carregamento dos comandos de configuração para mostrar avatares
+- Correção na manipulação de configurações para atualizar a interface ao alterar as configurações
+- Correção no analisador do arquivo de configuração da Discloud para manipular a propriedade VLAN
+
 ## 2.23.3
 
 - Correção no tamanho do chunk de upload por websocket para evitar fechamento inesperado
