@@ -40,9 +40,9 @@ export async function commandsRegister(
   commandModuleRegister(extension, await import("./commands/apps/profile/name"), "apps/profile/name");
 
   // apps show avatar instead status
-  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/always"), "apps/profile/show.avatar.instead.status/always");
-  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/never"), "apps/profile/show.avatar.instead.status/never");
-  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/when.online"), "apps/profile/show.avatar.instead.status/when.online");
+  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/always"), "apps/show.avatar.instead.status/always");
+  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/never"), "apps/show.avatar.instead.status/never");
+  commandModuleRegister(extension, await import("./commands/apps/show.avatar.instead.status/when.online"), "apps/show.avatar.instead.status/when.online");
 
   // apps sort by
   commandModuleRegister(extension, await import("./commands/apps/sort/by/id.asc"), "apps/sort/by/id.asc");
