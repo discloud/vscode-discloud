@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.7
+
+- Correção do carregamento da status bar ao inicializar a extensão
+
 ## 2.23.6
 
 - Correção do carregamento dos comandos de configuração para mostrar avatares
