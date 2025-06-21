@@ -7,36 +7,36 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@discloudapp/api-types@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-1.0.0.tgz#108e0f78fe3d6e85ac2b33f9bae6655ca97a8643"
-  integrity sha512-uyuHLjIntfFfjHaF8YbB0VjVYCXvTmXHxbWwbvgRM588X2OfOLXFuFizJ9/dUSYylJaVVJLuSmut+2HxqZNR2A==
+"@discloudapp/api-types@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/api-types/-/api-types-1.0.1.tgz#e098d37fe7c4c688fd244b6190461e7975ac3122"
+  integrity sha512-7aGGFlz9hu9hfDSqphYJgexdjJGZDIQsEaaXHls+Q0ZEpN9I2HeprrpmeZiLhzyYCxT/gladpQAIDFNM26FwSg==
   dependencies:
     tslib "^2.8.1"
 
-"@discloudapp/rest@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-1.0.0.tgz#3419d82d716d3d6f4c32799d0ff163c928567c9f"
-  integrity sha512-FI9WLZ0flQXIzirXcN7iVGrM9aQIAvVxRksB32/gOI6YrxLoGn437E+onA27EK5MQMpMoMd1v88p/ImLBnzvWQ==
+"@discloudapp/rest@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-1.0.1.tgz#ff4abf8f81ae5020f968a22e2ecf5fa07d487693"
+  integrity sha512-8eTM32ZEeof4tBGkWnKX9TnUox1Xg94jn9IZsrFuw7t9P5T4pLCKcl5YnBgHrKYNvjLWzom1MuNMaoxTzNa4Jg==
   dependencies:
-    "@discloudapp/api-types" "^1.0.0"
-    "@discloudapp/util" "^1.0.0"
+    "@discloudapp/api-types" "^1.0.1"
+    "@discloudapp/util" "^1.0.1"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
 
-"@discloudapp/util@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-1.0.0.tgz#eab3a18ea1687b9c29b3fea0a09e2fe36568e683"
-  integrity sha512-4+DB9qcgkthzsUjILgYPQSDSyngN0gGOh3k3p/CIo+yr0DKe2oalCsXFAElje43AmXV8JGvyti04jRXuSOZ7aQ==
+"@discloudapp/util@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-1.0.1.tgz#4ee8a2349d0d0e560b847b4cd631694dd3e24bc8"
+  integrity sha512-BpW9q1YS/e/f9A+AhptD8mlwgjAkJxYEpKQIQYnk0JPg2ORNCh7G80U9qgodNtFaHpVSmN3exIouCLj7XufVkw==
   dependencies:
-    "@discloudapp/api-types" "^1.0.0"
+    "@discloudapp/api-types" "^1.0.1"
     file-type "^21.0.0"
     glob "^11.0.3"
     globify-gitignore "^1.0.3"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
     zod "^3.25.67"
-    zod-validation-error "^3.5.1"
+    zod-validation-error "^3.5.2"
 
 "@esbuild/aix-ppc64@0.25.5":
   version "0.25.5"
@@ -961,14 +961,14 @@ diff@^7.0.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-7.0.0.tgz#3fb34d387cd76d803f6eebea67b921dab0182a9a"
   integrity sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==
 
-discloud.app@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.0.0.tgz#6443d8b617dfb3036ec9219f7e0809d18f0d3215"
-  integrity sha512-bNhMOEeZvHdmGv8OLaar5qjuAv+iABuLSophima4zfgywOPkaCYMSo7ybA58HvObRlAhxBNuDndLw9C9ZkqA7w==
+discloud.app@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.0.1.tgz#974685608d0dfd7187b0e7632bd20cf3d94a3fad"
+  integrity sha512-SHSrYNZZaUZiKf7+A+nfpX20p9IxmU2eZNNUEpqOG4K5y/4Oy/ZTIGJUXN5EtblSyc2+wUfo9b53OQT6AF9biQ==
   dependencies:
-    "@discloudapp/api-types" "^1.0.0"
-    "@discloudapp/rest" "^1.0.0"
-    "@discloudapp/util" "^1.0.0"
+    "@discloudapp/api-types" "^1.0.1"
+    "@discloudapp/rest" "^1.0.1"
+    "@discloudapp/util" "^1.0.1"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
     zod "^3.25.67"
@@ -3302,10 +3302,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod-validation-error@^3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.5.1.tgz#5d6044a2ecad74202d155ca58e4fa0eebbe143bb"
-  integrity sha512-ozT8jy2nHaeKjaRIEThwgRXBwm16hAy0BaTRx1I2IY1xrezPegmlFmYKb5tcvYqZDQm0sfZtDr2IR7CdCJzTGw==
+zod-validation-error@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.5.2.tgz#5af463c1acd4662e6b2610a75260931dbcb43a56"
+  integrity sha512-mdi7YOLtram5dzJ5aDtm1AG9+mxRma1iaMrZdYIpFO7epdKBUwLHIxTF8CPDeCQ828zAXYtizrKlEJAtzgfgrw==
 
 zod@^3.25.67:
   version "3.25.67"
