@@ -1,14 +1,15 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { type ExtensionContext, type ProviderResult, TreeItem, commands, window } from "vscode";
+import { type ExtensionContext, type ProviderResult, type TreeItem, commands, window } from "vscode";
 import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";
 import extension from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
 import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
 import DisposableMap from "../structures/DisposableMap";
+import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
-import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
+import { compareBooleans, compareNumbers } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = AppTreeItem
@@ -205,9 +206,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      this.refresh(app);
-
       extension.emit("appUpdate", clone, app);
+
+      this.refresh(app);
 
       return true;
     }
@@ -250,11 +251,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     this._views.dispose();
     this.children.dispose();
 
-    const x = new TreeItem(t("no.app.found")) as Item;
-    x.contextValue = "EmptyTreeItem";
-    x.iconPath = getIconPath("x");
-
-    this.children.set("x", x);
+    this.children.set("x", new EmptyAppListTreeItem() as Item);
 
     this.refresh();
   }

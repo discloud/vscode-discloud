@@ -1,10 +1,11 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
-import { type ExtensionContext, type ProviderResult, TreeItem, TreeItemCollapsibleState, commands, window } from "vscode";
+import { type ExtensionContext, type ProviderResult, type TreeItem, commands, window } from "vscode";
 import extension from "../extension";
+import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
-import { compareBooleans, compareNumbers, getIconPath } from "../util/utils";
+import { compareBooleans, compareNumbers } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = TeamAppTreeItem
@@ -133,11 +134,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       if (returnBoolean) return false;
     } else {
-      const child = new TeamAppTreeItem(Object.assign({
-        collapsibleState: this.children.size ?
-          TreeItemCollapsibleState.Collapsed :
-          TreeItemCollapsibleState.Expanded,
-      }, data));
+      const child = new TeamAppTreeItem(data);
 
       this.children.set(data.id, child);
 
@@ -156,9 +153,9 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      this.refresh(app);
-
       extension.emit("teamAppUpdate", clone, app);
+
+      this.refresh(app);
 
       return true;
     }
@@ -218,11 +215,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   init() {
     this.children.dispose();
 
-    const x = new TreeItem(t("no.app.found"));
-    x.contextValue = "EmptyTreeItem";
-    x.iconPath = getIconPath("x");
-
-    this.children.set("x", <Item>x);
+    this.children.set("x", new EmptyAppListTreeItem() as Item);
 
     this.refresh();
   }
