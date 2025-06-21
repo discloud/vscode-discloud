@@ -26,13 +26,7 @@ export default class extends Command {
       "TYPE=bot",
       "MAIN=",
       `NAME=${workspace.name}`,
-      "AVATAR=",
       "RAM=100",
-      "AUTORESTART=false",
-      "VERSION=latest",
-      "APT=",
-      "BUILD=",
-      "START=",
     ].join("\n");
 
     await workspace.fs.writeFile(Uri.joinPath(workspaceFolder, DiscloudConfig.filename), Buffer.from(content, "utf8"));
