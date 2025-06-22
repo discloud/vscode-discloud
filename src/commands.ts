@@ -1,6 +1,5 @@
 /* eslint-disable no-duplicate-imports */
 import { commands, window } from "vscode";
-import { type TaskData } from "./@types";
 import type Command from "./structures/Command";
 import { type CommandConstructor } from "./structures/Command";
 import type Discloud from "./structures/Discloud";
@@ -127,17 +126,10 @@ function commandRegister(
 
     try {
       if (command.data.progress) {
-        const taskData = <TaskData>{};
-
         return await window.withProgress(command.data.progress, async function (progress, token) {
-          const cancellationPromise = new Promise((_, reject) => token.onCancellationRequested(reject));
-
-          taskData.progress = progress;
-          taskData.token = token;
-
           return await Promise.race([
-            cancellationPromise,
-            command.run(taskData, ...args),
+            new Promise((_, reject) => token.onCancellationRequested(reject)),
+            command.run({ progress, token }, ...args),
           ]);
         });
       }
