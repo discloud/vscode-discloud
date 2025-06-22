@@ -6,7 +6,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.23.7
+## 2.23.8
 
 - Correção do carregamento da status bar ao inicializar a extensão
 
