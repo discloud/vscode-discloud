@@ -82,6 +82,4 @@ extension.on("activate", async function (context) {
   extension.logger.info("Activate: done");
 
   await tokenValidator(extension.token!);
-
-  extension.statusBar.reset();
 });
