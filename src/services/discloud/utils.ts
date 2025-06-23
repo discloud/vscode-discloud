@@ -50,8 +50,7 @@ export async function tokenValidator(token: string) {
 
     switch (error.code) {
       case NETWORK_UNREACHABLE_CODE: return extension.emit("missingConnection"), null;
-      default:
-        return false;
+      default: return false;
     }
   }
 }
