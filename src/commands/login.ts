@@ -2,6 +2,8 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import { tokenIsDiscloudJwt, tokenValidator } from "../services/discloud/utils";
 import Command from "../structures/Command";
+import extension from "../extension";
+import { ConfigKeys } from "../util/constants";
 
 export default class extends Command {
   constructor() {
@@ -22,8 +24,13 @@ export default class extends Command {
 
     if (!input) throw Error(t("invalid.input"));
 
-    if (!await tokenValidator(input))
-      throw Error(t("invalid.token"));
+    const authorization = await tokenValidator(input);
+
+    if (typeof authorization !== "boolean") return;
+
+    if (!authorization) throw Error(t("invalid.token"));
+
+    await extension.config.update(ConfigKeys.token, input, true);
 
     await window.showInformationMessage(t("valid.token"));
   }

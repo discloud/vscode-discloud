@@ -5,7 +5,7 @@ import { window, workspace } from "vscode";
 import AsyncQueue from "../../modules/async-queue";
 import { ConfigKeys } from "../../util/constants";
 import { RequestMethod } from "./enum";
-import DiscloudAPIError from "./error";
+import DiscloudAPIError from "./errors/api";
 import { type InternalRequestData, type RequestData, type RequestOptions, type RESTEvents, type RESTOptions } from "./types";
 
 export default class REST extends EventEmitter {
@@ -126,7 +126,6 @@ export default class REST extends EventEmitter {
         case 401:
           this.tokenIsValid = false;
           this.emitter.emit("unauthorized");
-          this.emitter.emit("debug", `${pathname} ${responseBody}`);
           break;
       }
 

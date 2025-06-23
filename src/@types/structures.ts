@@ -92,7 +92,7 @@ export interface UserTreeItemData extends BaseTreeItemData {
 export interface Events {
   activate: [context: ExtensionContext]
   appUpdate: [oldApp: AppTreeItem, newApp: AppTreeItem]
-  authorized: [token: string, isWorkspace?: boolean]
+  authorized: []
   debug: Parameters<LogOutputChannel["debug"]>
   error: [error: Error | unknown]
   missingConnection: []

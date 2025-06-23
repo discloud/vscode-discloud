@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { CancellationError, commands, window } from "vscode";
 import { type TaskData } from "../../@types";
 import extension from "../../extension";
-import DiscloudAPIError from "../../services/discloud/error";
+import DiscloudAPIError from "../../services/discloud/errors/api";
 import Command from "../../structures/Command";
 
 export default class extends Command {
