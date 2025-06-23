@@ -80,4 +80,6 @@ extension.on("activate", async function (context) {
   extension.logger.info("Activate: done");
 
   if (extension.token) await tokenValidator(extension.token);
+
+  extension.statusBar.reset();
 });
