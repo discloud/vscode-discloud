@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.23.11
+
+- Correção da status bar
+
 ## 2.23.10
 
 - Correção do validador de autenticação
