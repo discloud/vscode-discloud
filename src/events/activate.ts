@@ -20,10 +20,8 @@ extension.on("activate", async function (context) {
 
   const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
-      const isWorkspace = event.affectsConfiguration("discloud.token", extension.workspaceFolderUri);
-
       if (extension.token) {
-        tokenValidator(extension.token, isWorkspace);
+        tokenValidator(extension.token);
       } else {
         extension.emit("missingToken");
       }
@@ -81,5 +79,5 @@ extension.on("activate", async function (context) {
 
   extension.logger.info("Activate: done");
 
-  await tokenValidator(extension.token!);
+  if (extension.token) await tokenValidator(extension.token);
 });

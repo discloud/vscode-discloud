@@ -1,8 +1,8 @@
+import { t } from "@vscode/l10n";
 import { CancellationError, commands, version, window } from "vscode";
 import WarningError from "../errors/warning";
 import extension from "../extension";
-import DiscloudAPIError from "../services/discloud/error";
-import { t } from "@vscode/l10n";
+import DiscloudAPIError from "../services/discloud/errors/api";
 
 extension.on("error", async function (error: any) {
   if (!error) return;
