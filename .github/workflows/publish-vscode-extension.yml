@@ -21,6 +21,7 @@ jobs:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           yarn: true
           preRelease: ${{ github.event.release.prerelease }}
+
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v2
         with:
@@ -29,3 +30,12 @@ jobs:
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           yarn: true
           preRelease: ${{ github.event.release.prerelease }}
+
+      - name: Upload .vsix to release
+        if: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          tag_name: ${{ github.ref_name }}
