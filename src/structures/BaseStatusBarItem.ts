@@ -10,7 +10,17 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
 
     const options = data.id ? [data.id, data.alignment, data.priority] : [data.alignment, data.priority];
     this.data = window.createStatusBarItem(...options as CreateStatusBarItemOptions);
-    this.originalData = Object.assign(Object.create(this.data), this.data);
+
+    this.originalData = {
+      accessibilityInformation: this.data.accessibilityInformation,
+      backgroundColor: this.data.backgroundColor,
+      color: this.data.color,
+      command: this.data.command,
+      name: this.data.name,
+      text: this.data.text,
+      tooltip: this.data.tooltip,
+    };
+
     this.set(data);
   }
 
@@ -84,9 +94,6 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   }
 
   dispose() {
-    if ("dispose" in this.originalData && typeof this.originalData.dispose === "function")
-      this.originalData.dispose();
-
     this.data.dispose();
   }
 
