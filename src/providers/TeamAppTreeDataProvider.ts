@@ -18,48 +18,53 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   protected _sort(children: TeamAppTreeItem[]) {
     const sort = extension.config.get<string>(ConfigKeys.teamSortBy);
 
-    if (sort?.includes(".")) {
-      switch (sort) {
-        case SortBy.idAsc:
-          children.sort((a, b) => a.appId.localeCompare(b.appId));
-          break;
+    if (!sort) return this._sortOnline(children);
 
-        case SortBy.idDesc:
-          children.sort((a, b) => b.appId.localeCompare(a.appId));
-          break;
+    switch (sort) {
+      case SortBy.none: break;
 
-        case SortBy.memoryUsageAsc:
-          children.sort((a, b) => compareNumbers(Number(a.data.memoryUsage), Number(b.data.memoryUsage)));
-          break;
+      case SortBy.idAsc:
+        children.sort((a, b) => a.appId.localeCompare(b.appId));
+        break;
 
-        case SortBy.memoryUsageDesc:
-          children.sort((a, b) => compareNumbers(Number(b.data.memoryUsage), Number(a.data.memoryUsage)));
-          break;
+      case SortBy.idDesc:
+        children.sort((a, b) => b.appId.localeCompare(a.appId));
+        break;
 
-        case SortBy.nameAsc:
-          children.sort((a, b) => `${a.data.name}`.localeCompare(`${b.data.name}`));
-          break;
+      case SortBy.memoryUsageAsc:
+        children.sort((a, b) => compareNumbers(Number(a.data.memoryUsage), Number(b.data.memoryUsage)));
+        break;
 
-        case SortBy.nameDesc:
-          children.sort((a, b) => `${b.data.name}`.localeCompare(`${a.data.name}`));
-          break;
+      case SortBy.memoryUsageDesc:
+        children.sort((a, b) => compareNumbers(Number(b.data.memoryUsage), Number(a.data.memoryUsage)));
+        break;
 
-        case SortBy.startedAsc:
-          children.sort((a, b) => a.online || b.online
-            ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
-            : 0);
-          break;
+      case SortBy.nameAsc:
+        children.sort((a, b) => `${a.data.name}`.localeCompare(`${b.data.name}`));
+        break;
 
-        case SortBy.startedDesc:
-          children.sort((a, b) => a.online || b.online
-            ? compareNumbers(Number(b.data.startedAtTimestamp), Number(a.data.startedAtTimestamp))
-            : 0);
-          break;
-      }
+      case SortBy.nameDesc:
+        children.sort((a, b) => `${b.data.name}`.localeCompare(`${a.data.name}`));
+        break;
+
+      case SortBy.startedAsc:
+        children.sort((a, b) => a.online || b.online
+          ? compareNumbers(Number(a.data.startedAtTimestamp), Number(b.data.startedAtTimestamp))
+          : 0);
+        break;
+
+      case SortBy.startedDesc:
+        children.sort((a, b) => a.online || b.online
+          ? compareNumbers(Number(b.data.startedAtTimestamp), Number(a.data.startedAtTimestamp))
+          : 0);
+        break;
     }
 
-    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.teamSortOnline);
+    this._sortOnline(children);
+  }
 
+  protected _sortOnline(children: Item[]) {
+    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.appSortOnline);
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online!, b.online!));
   }
 

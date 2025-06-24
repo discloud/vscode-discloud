@@ -61,6 +61,7 @@ const SORT_BY = Object.freeze([
   "memory.usage.desc",
   "name.asc",
   "name.desc",
+  "none",
   "started.asc",
   "started.desc",
 ] as const);
