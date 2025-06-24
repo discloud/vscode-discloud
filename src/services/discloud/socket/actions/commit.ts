@@ -41,9 +41,11 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       queueMicrotask(() => app.output.show(true));
     }
 
-    let authenticated = false;
-    let connected = false;
-    let uploading = false;
+    const status = {
+      authenticated: false,
+      connected: false,
+      uploading: false,
+    };
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .once("close", async (code, reason) => {
@@ -51,7 +53,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         resolve();
 
-        if (!connected || !authenticated) return;
+        if (!status.connected || !status.authenticated) return;
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
@@ -70,7 +72,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       })
       .on("connected", async () => {
         debug("connected");
-        authenticated = connected = uploading = true;
+        status.authenticated = status.connected = status.uploading = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
 
@@ -81,7 +83,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         task.progress.report({ increment: -1 });
 
-        uploading = false;
+        status.uploading = false;
       })
       .on("connecting", () => {
         debug("connecting");
@@ -95,7 +97,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         debug("data received with status %s %o", data.status, data.statusCode);
 
         if (data.progress) {
-          if (!uploading) task.progress.report({ increment: data.progress.bar });
+          if (!status.uploading) task.progress.report({ increment: data.progress.bar });
 
           if (data.progress.log) showLog(data.progress.log);
         }

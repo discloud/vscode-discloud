@@ -38,9 +38,11 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       queueMicrotask(() => logger.show(true));
     }
 
-    let authenticated = false;
-    let connected = false;
-    let uploading = false;
+    const status = {
+      authenticated: false,
+      connected: false,
+      uploading: false,
+    };
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .once("close", async (code, reason) => {
@@ -50,7 +52,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         setTimeout(() => logger.dispose(), 60_000);
 
-        if (!connected || !authenticated) return;
+        if (!status.connected || !status.authenticated) return;
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
@@ -78,7 +80,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       })
       .on("connected", async () => {
         debug("connected");
-        authenticated = connected = uploading = true;
+        status.authenticated = status.connected = status.uploading = true;
 
         showLog("-".repeat(60));
 
@@ -91,13 +93,13 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         task.progress.report({ increment: -1 });
 
-        uploading = false;
+        status.uploading = false;
       })
       .on("data", async (data) => {
         debug("data received with status %s %o", data.status, data.statusCode);
 
         if (data.progress) {
-          if (!uploading) task.progress.report({ increment: data.progress.bar });
+          if (!status.uploading) task.progress.report({ increment: data.progress.bar });
 
           if (data.progress.log) showLog(data.progress.log);
         }
