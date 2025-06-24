@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import type vscode from "vscode";
 import WebSocket from "ws";
 import extension from "../../../extension";
-import { MAX_CHUNK_SIZE, MAX_FILE_SIZE } from "../constants";
+import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import BufferOverflowError from "./errors/BufferOverflow";
 import { type OnProgressCallback, type SocketEventsMap, type SocketOptions } from "./types";
 
@@ -13,6 +13,9 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     super({ captureRejections: true });
 
     if (options) {
+      if (options.chunkSize !== undefined)
+        this._chunkSize = options.chunkSize;
+
       if (options.connectingTimeout !== undefined)
         this._connectingTimeout = options.connectingTimeout;
 
@@ -23,6 +26,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     }
   }
 
+  protected _chunkSize: number = DEFAULT_CHUNK_SIZE;
   protected readonly _connectingTimeout: number | null = 10_000;
   protected readonly _disposeOnClose: boolean = true;
   protected readonly _headers: Record<string, string> = {};
@@ -55,8 +59,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   dispose() {
-    this.close();
-    this.removeAllListeners();
+    this[Symbol.dispose]();
   }
 
   async connect() {
@@ -69,15 +72,15 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   async #waitConnect() {
     await new Promise<void>((resolve, reject) => {
       if (this.connecting) {
-        const onConnect = () => {
+        const onConnected = () => {
           this.off("close", onClose);
           resolve();
         };
         const onClose = () => {
-          this.off("connect", onConnect);
+          this.off("connected", onConnected);
           reject();
         };
-        return this.once("connect", onConnect).once("close", onClose);
+        return this.once("connected", onConnected).once("close", onClose);
       }
       if (this.connected) return resolve();
       reject();
@@ -95,21 +98,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  async sendBuffer(buffer: Buffer) {
-    if (!this.connected) await this.connect();
+  async sendBuffer(buffer: Buffer, onProgress?: OnProgressCallback) {
+    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError(MAX_FILE_SIZE);
 
-    await new Promise<void>((resolve, reject) => {
-      this._socket!.send(buffer, (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-    });
-  }
-
-  async sendFile(buffer: Buffer, onProgress?: OnProgressCallback) {
-    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError();
-
-    const total = Math.ceil(buffer.length / MAX_CHUNK_SIZE);
+    const total = Math.ceil(buffer.length / this._chunkSize);
     const chunkSize = Math.ceil(buffer.length / total);
 
     for (let i = 0; i < total;) {
@@ -117,13 +109,9 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       const end = start + chunkSize;
       const chunk = buffer.subarray(start, end);
       const current = ++i;
+      const pending = current < total;
 
-      await this.sendJSON({
-        chunk,
-        current,
-        pending: current < total,
-        total,
-      });
+      await this.sendJSON({ chunk, current, pending, total });
 
       await onProgress?.({ current, total });
     }
@@ -146,22 +134,52 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
           : {},
       };
 
+      const status = {
+        connected: false,
+        error: undefined as any,
+      };
+
       this._socket = new WebSocket(this.wsURL, options)
         .once("close", (code, reason) => {
-          this.emit("close", code, reason);
           if (this._disposeOnClose) queueMicrotask(() => this.dispose());
+
+          switch (code) {
+            case SOCKET_UNAUTHORIZED_CODE:
+              return this.emit("unauthorized");
+          }
+
+          if (!status.connected) return this.emit("connectionFailed");
+
+          status.connected = false;
+
+          if (status.error) {
+            const error = status.error;
+            delete status.error;
+
+            switch (error.code) {
+              case NETWORK_UNREACHABLE_CODE:
+                return this.emit("connectionFailed");
+            }
+          }
+
+          this.emit("close", code, reason);
         })
         .on("error", (error) => {
-          this.emit("error", error);
+          this.emit("error", status.error = error);
         })
         .on("message", (data) => {
           try { this.emit("data", JSON.parse(data.toString())); }
           catch { this.emit("message", data); }
         })
         .once("open", () => {
+          status.connected = true;
+          status.error = null;
+
           this._ping = Date.now();
           this._socket!.ping();
-          this.emit("connect");
+
+          this.emit("connected");
+
           resolve();
         })
         .on("ping", () => {
@@ -176,6 +194,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   [Symbol.dispose]() {
-    this.dispose();
+    this.close();
+    this.removeAllListeners();
   }
 }

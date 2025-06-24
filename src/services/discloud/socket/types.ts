@@ -1,16 +1,26 @@
-import { type ApiUploadApp } from "discloud.app";
-import { type RawData } from "ws";
+import type { ApiUploadApp } from "discloud.app";
+import type { RawData } from "ws";
 
 export interface SocketEventsMap<Data extends Record<any, any> = Record<any, any>> {
-  connecting: []
-  connect: []
   close: [code: number, reason: Buffer]
+  connected: []
+  connecting: []
+  connectionFailed: []
   data: [data: Data]
   error: [error: Error]
   message: [data: RawData]
+  unauthorized: []
 }
 
 export interface SocketOptions {
+  /**
+   * Set the buffer chunk size per message
+   * 
+   * Note that very large chunks may cause unexpected closure
+   * 
+   * @default 262_144 (256KB)
+   */
+  chunkSize?: number
   /**
    * Connecting timeout in milliseconds
    * 

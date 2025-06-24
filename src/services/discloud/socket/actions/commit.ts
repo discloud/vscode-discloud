@@ -1,4 +1,5 @@
 import { t } from "@vscode/l10n";
+import bytes from "bytes";
 import { Routes } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
@@ -9,7 +10,6 @@ import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
-import bytes from "bytes";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
@@ -44,14 +44,14 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
-      .on("connect", async () => {
+      .on("connected", async () => {
         debug("connected");
         connected = true;
         uploading = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
 
-        await ws.sendFile(buffer, (data) => {
+        await ws.sendBuffer(buffer, (data) => {
           debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });

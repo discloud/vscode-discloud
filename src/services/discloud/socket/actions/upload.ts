@@ -41,7 +41,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
-      .on("connect", async () => {
+      .on("connected", async () => {
         debug("connected");
         connected = true;
         uploading = true;
@@ -50,7 +50,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         task.progress.report({ increment: -1, message: t("uploading") });
 
-        await ws.sendFile(buffer, (data) => {
+        await ws.sendBuffer(buffer, (data) => {
           debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
