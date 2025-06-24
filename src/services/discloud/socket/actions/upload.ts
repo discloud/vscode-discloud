@@ -1,4 +1,5 @@
 import { t } from "@vscode/l10n";
+import bytes from "bytes";
 import { Routes, type DiscloudConfig } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
@@ -10,7 +11,17 @@ import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
-    if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value: "512MB" }));
+    const debugCode = Date.now();
+
+    function debug(message: string, ...args: unknown[]) {
+      extension.debug(`%o ${message}`, debugCode, ...args);
+    }
+
+    const value = `${bytes(buffer.length)}`;
+
+    debug("File size: %s", value);
+
+    if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value }));
 
     const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
 
@@ -27,9 +38,11 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .on("connecting", () => {
+        debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
       .on("connect", async () => {
+        debug("connected");
         connected = true;
         uploading = true;
 
@@ -38,6 +51,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         task.progress.report({ increment: -1, message: t("uploading") });
 
         await ws.sendFile(buffer, (data) => {
+          debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
 
@@ -46,6 +60,8 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         uploading = false;
       })
       .on("data", async (data) => {
+        debug("data received with status %s %o", data.status, data.statusCode);
+
         if (data.progress) {
           if (!uploading) task.progress.report({ increment: data.progress.bar });
 
@@ -73,9 +89,12 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         if (data.logs) showLog(data.logs);
       })
       .on("error", (error) => {
+        debug("error", error.message);
         extension.logger.error(error);
       })
       .once("close", async (code, reason) => {
+        debug("close", code);
+
         resolve();
 
         setTimeout(() => logger.dispose(), 60_000);

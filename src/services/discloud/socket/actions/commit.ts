@@ -9,10 +9,21 @@ import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
+import bytes from "bytes";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
-    if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value: "512MB" }));
+    const debugCode = Date.now();
+
+    function debug(message: string, ...args: unknown[]) {
+      extension.debug(`%o ${message}`, debugCode, ...args);
+    }
+
+    const value = `${bytes(buffer.length)}`;
+
+    debug("File size: %s", value);
+
+    if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value }));
 
     const isUserApp = app instanceof AppTreeItem;
     const appTree = isUserApp ? extension.appTree : extension.teamAppTree;
@@ -30,15 +41,18 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .on("connecting", () => {
+        debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
       .on("connect", async () => {
+        debug("connected");
         connected = true;
         uploading = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
 
         await ws.sendFile(buffer, (data) => {
+          debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
 
@@ -47,6 +61,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         uploading = false;
       })
       .on("data", (data) => {
+        debug("data received with status %s %o", data.status, data.statusCode);
+
         if (data.progress) {
           if (!uploading) task.progress.report({ increment: data.progress.bar });
 
@@ -68,9 +84,12 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         }
       })
       .on("error", (error) => {
+        debug("error", error.message);
         extension.logger.error(error);
       })
       .once("close", async (code, reason) => {
+        debug("close", code);
+
         resolve();
 
         if (!connected) {

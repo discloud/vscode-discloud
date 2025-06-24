@@ -1274,6 +1274,7 @@
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
+    "bytes": "^3.1.2",
     "discloud.app": "^1.0.5",
     "jose": "^6.0.11",
     "json-schema-library": "^10.1.2",
@@ -1282,6 +1283,7 @@
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@types/adm-zip": "^0.5.7",
+    "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@types/vscode": "^1.101.0",
