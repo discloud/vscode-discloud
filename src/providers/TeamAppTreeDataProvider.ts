@@ -64,7 +64,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   protected _sortOnline(children: Item[]) {
-    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.appSortOnline);
+    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.teamSortOnline);
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online!, b.online!));
   }
 
