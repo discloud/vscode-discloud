@@ -6,7 +6,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.23.14
+## 2.23.15
 
 - Melhorias no gerenciamento do socket
 
