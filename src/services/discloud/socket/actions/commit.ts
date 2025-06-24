@@ -41,28 +41,36 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       queueMicrotask(() => app.output.show(true));
     }
 
+    let authenticated = false;
     let connected = false;
     let uploading = false;
 
     const ws = new SocketClient<SocketEventUploadData>(url)
-      .on("connecting", () => {
-        debug("connecting");
-        task.progress.report({ increment: -1, message: t("socket.connecting") });
-      })
-      .on("connectionFailed", async () => {
-        debug(t("socket.connecting.fail"));
+      .once("close", async (code, reason) => {
+        debug("close", code);
+
         resolve();
-        await window.showErrorMessage(t("socket.connecting.fail"));
-      })
-      .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
-        resolve();
-        await window.showErrorMessage(t("socket.authentication.fail"));
+
+        if (!connected || !authenticated) return;
+
+        if (code !== 1000) {
+          await window.showErrorMessage(t(`socket.close.${code}`));
+          return;
+        }
+
+        if (!reason.length) return app.output.append(t("done"));
+
+        try {
+          const data: SocketEventUploadData = JSON.parse(reason.toString());
+
+          if (data.progress.log) showLog(data.progress.log);
+
+          if (data.message) showApiMessage(data);
+        } catch { }
       })
       .on("connected", async () => {
         debug("connected");
-        connected = true;
-        uploading = true;
+        authenticated = connected = uploading = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
 
@@ -74,6 +82,14 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         task.progress.report({ increment: -1 });
 
         uploading = false;
+      })
+      .on("connecting", () => {
+        debug("connecting");
+        task.progress.report({ increment: -1, message: t("socket.connecting") });
+      })
+      .on("connectionFailed", async () => {
+        debug(t("socket.connecting.fail"));
+        await window.showErrorMessage(t("socket.connecting.fail"));
       })
       .on("data", (data) => {
         debug("data received with status %s %o", data.status, data.statusCode);
@@ -102,27 +118,9 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         debug("error", error.message);
         showError(error);
       })
-      .once("close", async (code, reason) => {
-        debug("close", code);
-
-        resolve();
-
-        if (!connected) return;
-
-        if (code !== 1000) {
-          await window.showErrorMessage(t(`socket.close.${code}`));
-          return;
-        }
-
-        if (!reason.length) return app.output.append(t("done"));
-
-        try {
-          const data: SocketEventUploadData = JSON.parse(reason.toString());
-
-          if (data.progress.log) showLog(data.progress.log);
-
-          if (data.message) showApiMessage(data);
-        } catch { }
+      .on("unauthorized", async () => {
+        debug(t("socket.authentication.fail"));
+        await window.showErrorMessage(t("socket.authentication.fail"));
       });
 
     extension.context.subscriptions.push(ws);

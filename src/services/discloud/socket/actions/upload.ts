@@ -38,10 +38,35 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       queueMicrotask(() => logger.show(true));
     }
 
+    let authenticated = false;
     let connected = false;
     let uploading = false;
 
     const ws = new SocketClient<SocketEventUploadData>(url)
+      .once("close", async (code, reason) => {
+        debug("close", code);
+
+        resolve();
+
+        setTimeout(() => logger.dispose(), 60_000);
+
+        if (!connected || !authenticated) return;
+
+        if (code !== 1000) {
+          await window.showErrorMessage(t(`socket.close.${code}`));
+          return;
+        }
+
+        if (!reason.length) return logger.appendLine(t("done"));
+
+        try {
+          const data: SocketEventUploadData = JSON.parse(reason.toString());
+
+          if (data.progress.log) showLog(data.progress.log);
+
+          if (data.message) showApiMessage(data);
+        } catch { }
+      })
       .on("connecting", () => {
         debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
@@ -51,15 +76,9 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         resolve();
         await window.showErrorMessage(t("socket.connecting.fail"));
       })
-      .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
-        resolve();
-        await window.showErrorMessage(t("socket.authentication.fail"));
-      })
       .on("connected", async () => {
         debug("connected");
-        connected = true;
-        uploading = true;
+        authenticated = connected = uploading = true;
 
         showLog("-".repeat(60));
 
@@ -107,29 +126,10 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         debug("error", error.message);
         showError(error);
       })
-      .once("close", async (code, reason) => {
-        debug("close", code);
-
+      .on("unauthorized", async () => {
+        debug(t("socket.authentication.fail"));
         resolve();
-
-        setTimeout(() => logger.dispose(), 60_000);
-
-        if (!connected) return;
-
-        if (code !== 1000) {
-          await window.showErrorMessage(t(`socket.close.${code}`));
-          return;
-        }
-
-        if (!reason.length) return logger.appendLine(t("done"));
-
-        try {
-          const data: SocketEventUploadData = JSON.parse(reason.toString());
-
-          if (data.progress.log) showLog(data.progress.log);
-
-          if (data.message) showApiMessage(data);
-        } catch { }
+        await window.showErrorMessage(t("socket.authentication.fail"));
       });
 
     extension.context.subscriptions.push(logger, ws);

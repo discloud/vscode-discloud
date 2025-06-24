@@ -141,6 +141,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
 
       this._socket = new WebSocket(this.wsURL, options)
         .once("close", (code, reason) => {
+          queueMicrotask(() => this.emit("close", code, reason));
           if (this._disposeOnClose) queueMicrotask(() => this.dispose());
 
           switch (code) {
@@ -161,8 +162,6 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
                 return this.emit("connectionFailed");
             }
           }
-
-          this.emit("close", code, reason);
         })
         .on("error", (error) => {
           this.emit("error", status.error = error);
