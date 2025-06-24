@@ -4,7 +4,7 @@ import WebSocket from "ws";
 import extension from "../../../extension";
 import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import BufferOverflowError from "./errors/BufferOverflow";
-import { type OnProgressCallback, type SocketEventsMap, type SocketOptions } from "./types";
+import { type OnProgressCallback, type ProgressData, type SocketEventsMap, type SocketOptions } from "./types";
 
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
   extends EventEmitter<SocketEventsMap<Data>>
@@ -87,7 +87,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  async sendJSON(value: Record<string, unknown>): Promise<void> {
+  async sendJSON(value: Record<any, any> | any[]): Promise<void> {
     if (!this.connected) await this.connect();
 
     await new Promise<void>((resolve, reject) => {
@@ -105,15 +105,17 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     const chunkSize = Math.ceil(buffer.length / total);
 
     for (let i = 0; i < total;) {
-      const start = chunkSize * i;
-      const end = start + chunkSize;
-      const chunk = buffer.subarray(start, end);
+      const offset = chunkSize * i;
+      const end = offset + chunkSize;
+      const chunk = buffer.subarray(offset, end);
       const current = ++i;
       const pending = current < total;
 
-      await this.sendJSON({ chunk, current, pending, total });
+      const value: ProgressData = { chunk, current, offset, pending, total };
 
-      await onProgress?.({ current, total });
+      await this.sendJSON(value);
+
+      await onProgress?.(value);
     }
   }
 

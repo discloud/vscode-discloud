@@ -50,7 +50,10 @@ export interface SocketProgressData {
 }
 
 export interface ProgressData {
+  chunk: Buffer
   current: number
+  offset: number
+  pending: boolean
   total: number
 }
 
