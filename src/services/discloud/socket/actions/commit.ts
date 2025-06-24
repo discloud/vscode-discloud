@@ -36,6 +36,11 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       queueMicrotask(() => app.output.show(true));
     }
 
+    function showError(error: Error) {
+      app.output.error(error);
+      queueMicrotask(() => app.output.show(true));
+    }
+
     let connected = false;
     let uploading = false;
 
@@ -43,6 +48,16 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       .on("connecting", () => {
         debug("connecting");
         task.progress.report({ increment: -1, message: t("socket.connecting") });
+      })
+      .on("connectionFailed", async () => {
+        debug(t("socket.connecting.fail"));
+        resolve();
+        await window.showErrorMessage(t("socket.connecting.fail"));
+      })
+      .on("unauthorized", async () => {
+        debug(t("socket.authentication.fail"));
+        resolve();
+        await window.showErrorMessage(t("socket.authentication.fail"));
       })
       .on("connected", async () => {
         debug("connected");
@@ -85,17 +100,14 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       })
       .on("error", (error) => {
         debug("error", error.message);
-        extension.logger.error(error);
+        showError(error);
       })
       .once("close", async (code, reason) => {
         debug("close", code);
 
         resolve();
 
-        if (!connected) {
-          await window.showErrorMessage(t(code === 1008 ? "socket.authentication.fail" : "socket.connecting.fail"));
-          return;
-        }
+        if (!connected) return;
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
