@@ -20,7 +20,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = await extension.getWorkspaceFolder();
+    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())

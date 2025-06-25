@@ -65,7 +65,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   async setDefault() {
     if (this.limited) return;
 
-    const workspaceFolder = await extension.getWorkspaceFolder();
+    const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false });
 
     if (!workspaceFolder) return this.setUpload();
 

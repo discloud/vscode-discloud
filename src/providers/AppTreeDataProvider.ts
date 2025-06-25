@@ -8,7 +8,7 @@ import AppTreeItem from "../structures/AppTreeItem";
 import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
-import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
+import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
@@ -19,6 +19,11 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     super(context, TreeViewIds.discloudUserApps);
 
     context.subscriptions.push(this._views);
+  }
+
+  get size() {
+    if (this.children.has(EMPTY_TREE_ITEM_ID)) return 0;
+    return this.children.size;
   }
 
   protected readonly _views = new DisposableMap<AppType, AppTypeTreeItemView>();
@@ -153,7 +158,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   refresh(data?: Item | Item[] | null) {
-    commands.executeCommand("setContext", "discloudAppLength", this.children.has("x") ? 0 : this.children.size);
+    commands.executeCommand("setContext", "discloudAppLength", this.size);
     super.refresh(data);
   }
 
@@ -188,7 +193,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
 
       if (returnBoolean) return false;
     } else {
-      this.children.dispose("x");
+      this.children.dispose(EMPTY_TREE_ITEM_ID);
 
       const child = new AppTreeItem(data);
 
@@ -256,7 +261,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     this._views.dispose();
     this.children.dispose();
 
-    this.children.set("x", new EmptyAppListTreeItem() as Item);
+    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem() as Item);
 
     this.refresh();
   }

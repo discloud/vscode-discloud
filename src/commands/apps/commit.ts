@@ -21,8 +21,10 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem) {
+
+    console.log(await FileSystem.readSelectedPath(false));
     const workspaceFolder = await extension.getWorkspaceFolder();
-    if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
+    if (!workspaceFolder || workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
       throw new CancellationError();

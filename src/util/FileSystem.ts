@@ -1,6 +1,5 @@
 import { dirname, join } from "path";
 import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
-import extension from "../extension";
 import { BLOCKED_FILES } from "./constants";
 import lazy from "./lazy";
 
@@ -8,6 +7,7 @@ const lazyDefaultBlockedFiles = lazy(() => Array.from(new Set(Object.values(BLOC
 const lazyDefaultBlockedFilesPattern = lazy(() => `{${lazyDefaultBlockedFiles().join(",")}}`);
 
 export interface FileSystemOptions {
+  cwd?: string
   fileNames?: string[]
   ignoreFile?: string
   ignoreList?: string[]
@@ -124,7 +124,6 @@ export default class FileSystem {
   static async readSelectedPath(relative: boolean = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
-    extension.debug("File names:", copied);
     return copied.split(/[\r\n]+/);
   }
 }

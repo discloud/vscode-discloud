@@ -17,8 +17,8 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly userID: string;
   declare readonly username: string;
 
-  async fetch(isVS?: boolean) {
-    const method = isVS ? "queueGet" : "get";
+  async fetch(isInternal?: boolean) {
+    const method = isInternal ? "queueGet" : "get";
 
     const response = await extension.api[method]<RESTGetApiVscode>("/vscode");
 
