@@ -38,6 +38,13 @@
     zod "^3.25.67"
     zod-validation-error "^3.5.2"
 
+"@discloudapp/ws@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@discloudapp/ws/-/ws-0.1.0.tgz#2d450d396004a1bdef1c2bb9ba39a9ca3d6036b0"
+  integrity sha512-I44KRv7Su+YkCnLVhN38bgktP8UOS8osNnakHxGTtJXAiNlMZSeOmKH3EpY835EQsmomp+h27TBXZG/Ze7OE6g==
+  dependencies:
+    ws "^8.18.2"
+
 "@esbuild/aix-ppc64@0.25.5":
   version "0.25.5"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.5.tgz#4e0f91776c2b340e75558f60552195f6fad09f18"

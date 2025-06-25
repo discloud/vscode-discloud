@@ -1,3 +1,4 @@
+import { SocketClient, type SocketEventUploadData } from "@discloudapp/ws";
 import { t } from "@vscode/l10n";
 import bytes from "bytes";
 import { Routes, type DiscloudConfig } from "discloud.app";
@@ -6,8 +7,6 @@ import { window } from "vscode";
 import { type ApiVscodeApp, type TaskData } from "../../../../@types";
 import extension from "../../../../extension";
 import { MAX_FILE_SIZE } from "../../constants";
-import SocketClient from "../client";
-import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
@@ -44,15 +43,20 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
       uploading: false,
     };
 
-    const ws = new SocketClient<SocketEventUploadData>(url)
+    const socket = new SocketClient<SocketEventUploadData>(url, {
+      headers: {
+        "api-token": extension.token!,
+        ...extension.api.options.userAgent ? { "User-Agent": `${extension.api.options.userAgent}` } : {},
+      },
+    })
       .once("close", async (code, reason) => {
         debug("close", code);
 
         resolve();
 
-        setTimeout(() => logger.dispose(), 60_000);
-
         if (!status.connected || !status.authenticated) return;
+
+        setTimeout(() => logger.dispose(), 60_000);
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
@@ -74,9 +78,12 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
       .on("connectionFailed", async () => {
-        debug(t("socket.connecting.fail"));
         resolve();
-        await window.showErrorMessage(t("socket.connecting.fail"));
+        const message = t("socket.connecting.fail");
+        debug(message);
+        showLog(message);
+        await window.showErrorMessage(message);
+        setTimeout(() => logger.dispose(), 60_000);
       })
       .on("connected", async () => {
         debug("connected");
@@ -86,7 +93,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         task.progress.report({ increment: -1, message: t("uploading") });
 
-        await ws.sendBuffer(buffer, (data) => {
+        await socket.sendBuffer(buffer, (data) => {
           debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
@@ -110,7 +117,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
           dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
 
           const app: ApiVscodeApp = {
-            apts: dConfig.data.APT as any,
+            apts: dConfig.data.APT ?? [],
             clusterName: "",
             exitCode: data.statusCode === 200 ? 0 : 1,
             online: data.statusCode === 200,
@@ -129,14 +136,17 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         showError(error);
       })
       .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
         resolve();
-        await window.showErrorMessage(t("socket.authentication.fail"));
+        const message = t("socket.authentication.fail");
+        debug(message);
+        showLog(message);
+        await window.showErrorMessage(message);
+        setTimeout(() => logger.dispose(), 60_000);
       });
 
-    extension.context.subscriptions.push(logger, ws);
+    extension.context.subscriptions.push(logger, socket);
 
-    ws.connect().catch(reject);
+    socket.connect().catch(reject);
   });
 }
 

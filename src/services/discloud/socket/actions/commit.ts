@@ -1,3 +1,4 @@
+import { SocketClient, type SocketEventUploadData } from "@discloudapp/ws";
 import { t } from "@vscode/l10n";
 import bytes from "bytes";
 import { Routes } from "discloud.app";
@@ -8,12 +9,10 @@ import extension from "../../../../extension";
 import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
-import SocketClient from "../client";
-import { type SocketEventUploadData } from "../types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
-    const debugCode = Date.now();
+    const debugCode = app.appId;
 
     function debug(message: string, ...args: unknown[]) {
       extension.debug(`%o ${message}`, debugCode, ...args);
@@ -47,7 +46,12 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
       uploading: false,
     };
 
-    const ws = new SocketClient<SocketEventUploadData>(url)
+    const socket = new SocketClient<SocketEventUploadData>(url, {
+      headers: {
+        "api-token": extension.token!,
+        ...extension.api.options.userAgent ? { "User-Agent": `${extension.api.options.userAgent}` } : {},
+      },
+    })
       .once("close", async (code, reason) => {
         debug("close", code);
 
@@ -76,7 +80,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         task.progress.report({ increment: -1, message: t("committing") });
 
-        await ws.sendBuffer(buffer, (data) => {
+        await socket.sendBuffer(buffer, (data) => {
           debug("progress received %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
@@ -90,8 +94,11 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
       .on("connectionFailed", async () => {
-        debug(t("socket.connecting.fail"));
-        await window.showErrorMessage(t("socket.connecting.fail"));
+        resolve();
+        const message = t("socket.connecting.fail");
+        debug(message);
+        showLog(message);
+        await window.showErrorMessage(message);
       })
       .on("data", (data) => {
         debug("data received with status %s %o", data.status, data.statusCode);
@@ -105,6 +112,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         if (data.message) showApiMessage(data);
 
         if (data.logs) showLog(data.logs);
+
+        if (status.uploading) return;
 
         if (data.statusCode !== 102) {
           const isDone = data.statusCode === 200;
@@ -121,13 +130,16 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         showError(error);
       })
       .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
-        await window.showErrorMessage(t("socket.authentication.fail"));
+        resolve();
+        const message = t("socket.authentication.fail");
+        debug(message);
+        showLog(message);
+        await window.showErrorMessage(message);
       });
 
-    extension.context.subscriptions.push(ws);
+    extension.context.subscriptions.push(socket);
 
-    ws.connect().catch(reject);
+    socket.connect().catch(reject);
   });
 }
 
