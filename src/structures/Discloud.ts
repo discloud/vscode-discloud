@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type QuickPickItem, Uri, window, workspace } from "vscode";
+import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, Uri, window, workspace } from "vscode";
 import { type Events, type GetWorkspaceFolderOptions, type TaskData } from "../@types";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
@@ -136,19 +136,11 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     }
 
     if (options.fallbackUserChoice) {
-      const items = folders.map<QuickPickItem>((folder) => ({
-        label: folder.name,
-        description: folder.uri.fsPath,
-      }));
-
-      const picked = await window.showQuickPick(items, {
-        canPickMany: false,
-        ignoreFocusOut: false,
-      }, options.token);
+      const picked = await window.showWorkspaceFolderPick();
 
       if (!picked) return;
 
-      return folders.find((folder) => folder.name === picked.label);
+      return picked.uri;
     }
   }
 
