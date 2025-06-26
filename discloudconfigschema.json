@@ -29,7 +29,7 @@
     "AVATAR": {
       "type": "string",
       "format": "uri",
-      "pattern": "^((s?ftp|https?):[/]{2}\\S+[.](gif|jpe?g|png|webp)([?#]\\S*)?)?$"
+      "pattern": "^(https?:[/]{2}\\S+\\.(gif|jpe?g|png|webp)([?#]\\S*)?)?$"
     },
     "HOSTNAME": {
       "type": "string"
@@ -86,9 +86,7 @@
     }
   },
   "required": [
-    "MAIN",
-    "RAM",
-    "TYPE"
+    "MAIN"
   ],
   "if": {
     "properties": {
@@ -113,18 +111,5 @@
     "required": [
       "ID"
     ]
-  },
-  "else": {
-    "properties": {
-      "NAME": {
-        "minLength": 1
-      },
-      "RAM": {
-        "minimum": 100,
-        "examples": [
-          100
-        ]
-      }
-    }
   }
 }
