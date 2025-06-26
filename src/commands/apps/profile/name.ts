@@ -34,7 +34,7 @@ export default class extends Command {
       if (response.status === "ok") {
         extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, name });
 
-        const workspaceFolder = await extension.getWorkspaceFolder();
+        const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false });
 
         if (workspaceFolder) {
           const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);

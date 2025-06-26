@@ -36,6 +36,7 @@ export default class extends Command {
       throw Error(t("invalid.discloud.config"));
 
     const fs = new FileSystem({
+      cwd: workspaceFolder.fsPath,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
     });

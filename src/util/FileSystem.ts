@@ -66,6 +66,11 @@ export default class FileSystem {
     this.found = await Promise.all(promises)
       .then(values => values.flat());
 
+    if (this.options.cwd) {
+      // @ts-expect-error ts(2540)
+      this.found = this.found.filter((value) => value.fsPath.startsWith(this.options.cwd!));
+    }
+
     return this.found;
   }
 

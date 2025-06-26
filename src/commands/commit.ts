@@ -39,6 +39,7 @@ export default class extends Command {
     task.progress.report({ increment: 30, message: t("files.checking") });
 
     const fs = new FileSystem({
+      cwd: workspaceFolder.fsPath,
       fileNames,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
