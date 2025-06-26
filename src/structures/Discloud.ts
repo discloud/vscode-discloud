@@ -116,8 +116,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return output;
   }
 
-  getWorkspaceFolder(options?: GetWorkspaceFolderOptions): Promise<Uri | undefined>
-  async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null) {
+  async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
     if (options?.uri instanceof Uri)
       return workspace.getWorkspaceFolder(options.uri)?.uri ?? this.getWorkspaceFolder(options);
 
