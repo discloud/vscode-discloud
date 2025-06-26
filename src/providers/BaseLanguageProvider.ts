@@ -36,6 +36,9 @@ export default class BaseLanguageProvider {
   #parseValues(obj: any) {
     if (typeof obj !== "object" || obj === null) return obj;
 
+    for (const key in obj)
+      if (!obj[key]) delete obj[key];
+
     let key = DiscloudConfigScopes.APT;
     if (key in obj) obj[key] = obj[key].split(/\s*,\s*/g).filter(Boolean);
 
@@ -43,7 +46,7 @@ export default class BaseLanguageProvider {
     if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
 
     key = DiscloudConfigScopes.RAM;
-    if (key in obj && !isNaN(obj[key])) obj[key] = Number(obj[key]);
+    if (key in obj && obj[key]) obj[key] = Number(obj[key]);
 
     key = DiscloudConfigScopes.VLAN;
     if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
