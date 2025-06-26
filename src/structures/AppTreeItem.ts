@@ -10,11 +10,6 @@ import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
-  declare iconName: string;
-  declare readonly appId: string;
-  declare readonly type: AppType;
-  declare readonly output: LogOutputChannel;
-
   constructor(public readonly data: Partial<AppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
 
@@ -24,9 +19,16 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.type = data.type;
 
-    this.output = extension.getLogOutputChannel(this.appId);
-
     this._patch(data);
+  }
+
+  declare iconName: string;
+  declare readonly appId: string;
+  declare readonly type: AppType;
+
+  #output!: LogOutputChannel;
+  get output() {
+    return this.#output ??= extension.getLogOutputChannel(this.appId);
   }
 
   dispose() {
