@@ -118,16 +118,16 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   getWorkspaceFolder(options?: GetWorkspaceFolderOptions): Promise<Uri | undefined>
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null) {
-    options ??= {};
-    options.allowReadSelectedPath ??= true;
-    options.fallbackUserChoice ??= true;
-
-    if (options.uri instanceof Uri)
+    if (options?.uri instanceof Uri)
       return workspace.getWorkspaceFolder(options.uri)?.uri ?? this.getWorkspaceFolder(options);
 
     const folders = workspace.workspaceFolders;
     if (!folders?.length) return;
-    if (folders.length < 2) return folders[0];
+    if (folders.length === 1) return folders[0].uri;
+
+    options ??= {};
+    options.allowReadSelectedPath ??= true;
+    options.fallbackUserChoice ??= true;
 
     if (options.allowReadSelectedPath) {
       const [filePath] = await FileSystem.readSelectedPath(false);
@@ -137,9 +137,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
     if (options.fallbackUserChoice) {
       const picked = await window.showWorkspaceFolderPick();
-
       if (!picked) return;
-
       return picked.uri;
     }
   }
