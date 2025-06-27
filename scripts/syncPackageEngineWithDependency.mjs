@@ -12,15 +12,15 @@ const encodedPackage = await readFile(PACKAGE_PATH, "utf8");
 /** @type {import("type-fest").PackageJson} */
 const packageJSON = JSON.parse(encodedPackage);
 
-const oldEngineVersion = packageJSON.engines?.[engine];
+packageJSON.engines ??= {};
 
-if (oldEngineVersion === undefined) throw new Error(`Engine '${engine}' not found on '${PACKAGE_PATH}'`);
+const oldEngineVersion = packageJSON.engines[engine];
 
-const packageJSONDependecyKeyRegexp = /^(dependencies|\w+Dependencies)$/;
+const packageJSONDependencyKeyRegexp = /^(dependencies|\w+Dependencies)$/;
 
 let found = false, updated = false;
 for (const key in packageJSON) {
-  if (!packageJSONDependecyKeyRegexp.test(key)) continue;
+  if (!packageJSONDependencyKeyRegexp.test(key)) continue;
   if (!(dependency in packageJSON[key])) continue;
   found = true;
   if (oldEngineVersion === packageJSON[key][dependency]) break;
