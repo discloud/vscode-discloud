@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.24.1
+
+- Correção na manipulação da status bar com multi workspaces
+
 ## 2.24.0
 
 - Suporte a multi workspaces adicionado
