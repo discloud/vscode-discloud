@@ -6,6 +6,13 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.24.0
+
+- Suporte a multi workspaces adicionado
+- Mudanças no arquivo de configurações da discloud
+  As propriedades NAME, RAM, TYPE e VERSION agora são opicionais
+  A única propriedade obrigatória é MAIN, para especificar o arquivo principal do app
+
 ## 2.23.15
 
 - Melhorias no gerenciamento do socket
