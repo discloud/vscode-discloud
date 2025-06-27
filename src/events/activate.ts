@@ -18,7 +18,7 @@ extension.on("activate", async function (context) {
     extension.logger.error(error);
   }
 
-  const disposableConfiguration = workspace.onDidChangeConfiguration(event => {
+  const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.token")) {
       if (extension.token) {
         tokenValidator(extension.token);
@@ -64,18 +64,7 @@ extension.on("activate", async function (context) {
     }
   });
 
-  const disposableWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
-    if (extension.workspaceAvailable) {
-      extension.statusBar.show();
-    } else {
-      extension.statusBar.hide();
-    }
-  });
-
-  context.subscriptions.push(
-    disposableConfiguration,
-    disposableWorkspaceFolders,
-  );
+  context.subscriptions.push(disposableChangeConfiguration);
 
   extension.logger.info("Activate: done");
 

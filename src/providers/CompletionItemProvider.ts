@@ -7,6 +7,10 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
     super(context, schema);
 
+    const assignSymbol = "=";
+    const comment = "# https://docs.discloudbot.com/discloud.config";
+    const commentPattern = /\s*#.*$/;
+
     const disposable = languages.registerCompletionItemProvider(this.schema.$id!, {
       provideCompletionItems: (document, position, _token, _context) => {
         if (!this.schema.properties) return [];
@@ -14,13 +18,13 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
         if (!position.character) {
           return this.scopes
             .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
-            .concat(new CompletionItem("# https://docs.discloudbot.com/discloud.config", CompletionItemKind.Reference));
+            .concat(new CompletionItem(comment, CompletionItemKind.Reference));
         }
 
         const line = document.lineAt(position);
-        const text = line.text.replace(/\s*#.*/, "");
-        const [key, value] = text.substring(0, position.character).split("=");
-        const [_, fullValue] = text.split("=");
+        const text = line.text.replace(commentPattern, "");
+        const [key, value] = text.substring(0, position.character).split(assignSymbol);
+        const [_, fullValue] = text.split(assignSymbol);
         const startValueIndex = key.length + 1;
 
         const data = this.transformConfigToJSON(document);
@@ -230,11 +234,8 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 }
 
 async function safeReadDirectory(uri: Uri) {
-  try {
-    return await workspace.fs.readDirectory(uri);
-  } catch {
-    return [];
-  }
+  try { return await workspace.fs.readDirectory(uri); }
+  catch { return []; }
 }
 
 const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {

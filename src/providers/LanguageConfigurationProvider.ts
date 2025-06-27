@@ -13,21 +13,21 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     this.collection = languages.createDiagnosticCollection(this.schema.$id);
 
+    const disposableChange = workspace.onDidChangeTextDocument((event) => {
+      if (event.document.languageId === this.schema.$id) {
+        this.checkDocument(event.document);
+      }
+    });
+
+    const disposableClose = workspace.onDidCloseTextDocument((document) => this.collection.delete(document.uri));
+
     const disposableOpen = workspace.onDidOpenTextDocument((document) => {
       if (document.languageId === this.schema.$id) {
         this.checkDocument(document);
       }
     });
 
-    const disposableClose = workspace.onDidCloseTextDocument((document) => {
-      if (this.collection.has(document.uri)) {
-        this.collection.delete(document.uri);
-      }
-    });
-
     queueMicrotask(() => {
-      this.activate();
-
       for (let i = 0; i < workspace.textDocuments.length; i++) {
         const document = workspace.textDocuments[i];
         if (document.languageId === this.schema.$id) {
@@ -36,19 +36,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
-    context.subscriptions.push(this.collection, disposableClose, disposableOpen);
-  }
-
-  activate() {
-    const disposable = workspace.onDidChangeTextDocument((event) => {
-      if (event.document.languageId === this.schema.$id) {
-        for (const _ of event.contentChanges) {
-          this.checkDocument(event.document);
-        }
-      }
-    });
-
-    this.context.subscriptions.push(disposable);
+    context.subscriptions.push(this.collection, disposableChange, disposableClose, disposableOpen);
   }
 
   async checkDocument(document: TextDocument) {
