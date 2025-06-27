@@ -68,8 +68,8 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return [
       ConfigKeys.appBackupDir,
       ConfigKeys.appImportDir,
-      ConfigKeys.appBackupDir,
-      ConfigKeys.appImportDir,
+      ConfigKeys.teamBackupDir,
+      ConfigKeys.teamImportDir,
     ]
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
@@ -117,22 +117,26 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
-    if (options?.uri instanceof Uri)
-      return workspace.getWorkspaceFolder(options.uri)?.uri ?? this.getWorkspaceFolder(options);
+    options ??= {};
+
+    if (options.uri instanceof Uri) {
+      const folder = workspace.getWorkspaceFolder(options.uri);
+      if (folder) return folder.uri;
+    }
 
     const folders = workspace.workspaceFolders;
     if (!folders?.length) return;
     if (folders.length === 1) return folders[0].uri;
 
-    options ??= {};
     options.allowReadSelectedPath ??= true;
-    options.fallbackUserChoice ??= true;
 
     if (options.allowReadSelectedPath) {
       const [filePath] = await FileSystem.readSelectedPath(false);
       if (filePath && filePath !== ".")
         return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
     }
+
+    options.fallbackUserChoice ??= true;
 
     if (options.fallbackUserChoice) {
       const picked = await window.showWorkspaceFolderPick();
