@@ -9,6 +9,7 @@ import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import FileSystem from "../util/FileSystem";
 import Zip from "../util/Zip";
+import { pickApp } from "../util/apps";
 import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
 
 export default class extends Command {
@@ -22,7 +23,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = await extension.getWorkspaceFolder();
+    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const fileNames = await FileSystem.readSelectedPath(true);
@@ -32,12 +33,13 @@ export default class extends Command {
 
     extension.statusBar.setCommitting();
 
-    const picked = await this.pickAppOrTeamApp(task, { showOther: true });
-    if (!picked.id) throw Error(t("missing.appid"));
+    const item = await pickApp({ token: task.token });
+    if (!item) throw Error(t("missing.appid"));
 
     task.progress.report({ increment: 30, message: t("files.checking") });
 
     const fs = new FileSystem({
+      cwd: workspaceFolder.fsPath,
       fileNames,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
@@ -56,7 +58,7 @@ export default class extends Command {
 
     const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
-    await this[strategy](task, buffer, picked.app);
+    await this[strategy](task, buffer, item);
   }
 
   async rest(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {

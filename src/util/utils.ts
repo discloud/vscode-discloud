@@ -3,21 +3,6 @@ import { type TreeItem, Uri } from "vscode";
 import extension from "../extension";
 import { RESOURCES_DIR } from "./constants";
 
-export function bindFunctions<I extends Record<any, any>>(instance: I): void;
-export function bindFunctions<I extends Record<any, any>, B extends I | unknown>(instance: I, bind: B): void;
-export function bindFunctions(instance: Record<any, any>, bind?: Record<any, any>) {
-  if (!instance) return;
-
-  bind ??= instance;
-
-  for (const propertyName of Object.getOwnPropertyNames(Object.getPrototypeOf(instance))) {
-    try {
-      if (typeof instance[propertyName] === "function")
-        bind[propertyName] = instance[propertyName].bind(bind);
-    } catch { }
-  }
-}
-
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
     dark: Uri.file(extension.context.asAbsolutePath(join(RESOURCES_DIR, "dark", `${iconName}.${iconExt}`))),

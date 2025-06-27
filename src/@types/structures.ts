@@ -1,9 +1,18 @@
-import { type ExtensionContext, type LogOutputChannel, type ProgressOptions, type StatusBarItem, type TreeItem, type window } from "vscode";
+import type { CancellationToken, ExtensionContext, LogOutputChannel, ProgressOptions, StatusBarItem, TreeItem, Uri, window } from "vscode";
 import type AppTreeItem from "../structures/AppTreeItem";
 import type BaseChildTreeItem from "../structures/BaseChildTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type VSUser from "../structures/VSUser";
-import { type RateLimitData } from "./rest";
+import type { RateLimitData } from "./rest";
+
+export interface GetWorkspaceFolderOptions {
+  /** @default true */
+  allowReadSelectedPath?: boolean
+  /** @default true */
+  fallbackUserChoice?: boolean
+  token?: CancellationToken
+  uri?: Uri
+}
 
 export interface CommandData {
   allowTokenless?: boolean
@@ -22,8 +31,10 @@ export type StatusBarItemOptions = Omit<StatusBarItem, "dispose" | "hide" | "sho
 
 export type StatusBarItemData = Omit<StatusBarItemOptions, "alignment" | "id" | "priority">
 
+export type VscodeProgressReporter = ProgressTaskParameters[0]
+
 export interface TaskData {
-  progress: ProgressTaskParameters[0]
+  progress: VscodeProgressReporter
   token: ProgressTaskParameters[1]
 }
 

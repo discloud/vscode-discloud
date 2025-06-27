@@ -12,11 +12,6 @@ import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 const lazyAllModPermissions = lazy(() => ModPermissionsBF.All.toArray());
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  declare iconName: string;
-  declare readonly appId: string;
-  declare readonly output: LogOutputChannel;
-  readonly permissions = new ModPermissionsBF();
-
   constructor(readonly data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
@@ -24,9 +19,16 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
     this.appId = data.appId ??= data.id;
 
-    this.output = extension.getLogOutputChannel(this.appId);
-
     this._patch(data);
+  }
+
+  declare iconName: string;
+  declare readonly appId: string;
+  readonly permissions = new ModPermissionsBF();
+
+  #output!: LogOutputChannel;
+  get output() {
+    return this.#output ??= extension.getLogOutputChannel(this.appId);
   }
 
   dispose() {

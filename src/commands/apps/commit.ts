@@ -21,7 +21,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem) {
-    const workspaceFolder = await extension.getWorkspaceFolder();
+    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
@@ -32,6 +32,7 @@ export default class extends Command {
     task.progress.report({ increment: 30, message: `${item.appId} - ${t("choose.files")}` });
 
     const fs = new FileSystem({
+      cwd: workspaceFolder.fsPath,
       ignoreFile: ".discloudignore",
       ignoreList: extension.workspaceIgnoreList,
     });

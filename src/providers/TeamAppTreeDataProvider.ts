@@ -4,7 +4,7 @@ import { type ExtensionContext, type ProviderResult, type TreeItem, commands, wi
 import extension from "../extension";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import { ConfigKeys, SortBy, TreeViewIds } from "../util/constants";
+import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
 import { compareBooleans, compareNumbers } from "../util/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
@@ -13,6 +13,11 @@ type Item = TeamAppTreeItem
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(context: ExtensionContext) {
     super(context, TreeViewIds.discloudTeamApps);
+  }
+
+  get size() {
+    if (this.children.has(EMPTY_TREE_ITEM_ID)) return 0;
+    return this.children.size;
   }
 
   protected _sort(children: TeamAppTreeItem[]) {
@@ -105,7 +110,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   refresh(data?: Item | Item[] | null) {
-    commands.executeCommand("setContext", "discloudTeamAppLength", this.children.has("x") ? 0 : this.children.size);
+    commands.executeCommand("setContext", "discloudTeamAppLength", this.size);
     super.refresh(data);
   }
 
@@ -168,8 +173,10 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     return false;
   }
 
-  async getApps() {
-    const response = await extension.api.get<RESTGetApiTeamResult>("/team");
+  async getApps(isInternal?: boolean) {
+    const method = isInternal ? "queueGet" : "get";
+
+    const response = await extension.api[method]<RESTGetApiTeamResult>("/team");
 
     if (!response) return;
 
@@ -208,19 +215,19 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     this.editRawApp(appId, response.apps);
   }
 
-  async fetch() {
+  async fetch(isInternal?: boolean) {
     await window.withProgress({
       location: { viewId: this.viewId },
       title: t("refreshing"),
     }, async () => {
-      await this.getApps();
+      await this.getApps(isInternal);
     });
   }
 
   init() {
     this.children.dispose();
 
-    this.children.set("x", new EmptyAppListTreeItem() as Item);
+    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem() as Item);
 
     this.refresh();
   }

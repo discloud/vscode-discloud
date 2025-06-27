@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type Uri, window, workspace } from "vscode";
-import { type Events, type TaskData } from "../@types";
+import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, Uri, window, workspace } from "vscode";
+import { type Events, type GetWorkspaceFolderOptions, type TaskData } from "../@types";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import AppTreeDataProvider from "../providers/AppTreeDataProvider";
@@ -13,6 +13,7 @@ import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
 import { ConfigKeys } from "../util/constants";
+import FileSystem from "../util/FileSystem";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
@@ -50,33 +51,17 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return Boolean(this.config.get<boolean>(ConfigKeys.debug));
   }
 
+  get singleWorkspaceFolder() {
+    const folders = workspace.workspaceFolders;
+    if (folders?.length === 1) return folders[0].uri;
+  }
+
   get token() {
     return this.config.get<string>(ConfigKeys.token);
   }
 
   get workspaceAvailable() {
     return Boolean(workspace.workspaceFolders?.length);
-  }
-
-  get workspaceFolderUri() {
-    const folders = workspace.workspaceFolders;
-
-    if (!folders?.length) return;
-
-    if (folders.length > 1) {
-      const name = workspace.name;
-
-      if (name) return folders
-        .find(wf => name === wf.name || name.startsWith(wf.name) || name.endsWith(wf.name))?.uri ?? folders[0].uri;
-
-      return folders[0].uri;
-    }
-
-    return folders[0].uri;
-  }
-
-  get workspaceFolder() {
-    return this.workspaceFolderUri?.fsPath;
   }
 
   get workspaceIgnoreList() {
@@ -131,12 +116,29 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return output;
   }
 
-  getWorkspaceFolder(uri?: Uri): Promise<Uri | undefined>
-  async getWorkspaceFolder(uri?: Uri) {
-    if (uri) return workspace.getWorkspaceFolder(uri)?.uri ?? this.getWorkspaceFolder();
-    const [workspaceFile] = await workspace.findFiles("*", null, 1);
-    if (workspaceFile) return workspace.getWorkspaceFolder(workspaceFile)?.uri ?? this.workspaceFolderUri;
-    return this.workspaceFolderUri;
+  async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
+    if (options?.uri instanceof Uri)
+      return workspace.getWorkspaceFolder(options.uri)?.uri ?? this.getWorkspaceFolder(options);
+
+    const folders = workspace.workspaceFolders;
+    if (!folders?.length) return;
+    if (folders.length === 1) return folders[0].uri;
+
+    options ??= {};
+    options.allowReadSelectedPath ??= true;
+    options.fallbackUserChoice ??= true;
+
+    if (options.allowReadSelectedPath) {
+      const [filePath] = await FileSystem.readSelectedPath(false);
+      if (filePath && filePath !== ".")
+        return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
+    }
+
+    if (options.fallbackUserChoice) {
+      const picked = await window.showWorkspaceFolderPick();
+      if (!picked) return;
+      return picked.uri;
+    }
   }
 
   setContext(context: ExtensionContext) {

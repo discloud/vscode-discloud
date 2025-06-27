@@ -1,5 +1,6 @@
 import { t } from "@vscode/l10n";
 import { TreeItem } from "vscode";
+import { EMPTY_TREE_ITEM_ID } from "../util/constants";
 import { getIconPath } from "../util/utils";
 
 export default class EmptyAppListTreeItem extends TreeItem {
@@ -8,5 +9,5 @@ export default class EmptyAppListTreeItem extends TreeItem {
   }
 
   contextValue = "EmptyTreeItem";
-  iconPath = getIconPath("x");
+  iconPath = getIconPath(EMPTY_TREE_ITEM_ID);
 }

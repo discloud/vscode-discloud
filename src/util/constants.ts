@@ -6,6 +6,8 @@ export const RESOURCES_DIR = "resources";
 
 export const NODE_MODULES_EXTENSIONS = Object.freeze(new Set<string>([".cjs", ".js", ".mjs"]));
 
+export const EMPTY_TREE_ITEM_ID = "x" as const;
+
 export const BLOCKED_FILES = Object.freeze({
   common: [".cache", ".git", ".vscode"],
   go: [],

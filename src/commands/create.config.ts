@@ -13,7 +13,7 @@ export default class extends Command {
   }
 
   async run() {
-    const workspaceFolder = await extension.getWorkspaceFolder();
+    const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const findConfig = await workspace.findFiles(DiscloudConfig.filename);
@@ -23,10 +23,8 @@ export default class extends Command {
     const content = [
       "# https://docs.discloudbot.com/discloud.config",
       "ID=",
-      "TYPE=bot",
       "MAIN=",
       `NAME=${workspace.name}`,
-      "RAM=100",
     ].join("\n");
 
     await workspace.fs.writeFile(Uri.joinPath(workspaceFolder, DiscloudConfig.filename), Buffer.from(content, "utf8"));
