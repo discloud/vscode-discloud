@@ -27,6 +27,8 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     });
 
+    context.subscriptions.push(this.collection, disposableChange, disposableClose, disposableOpen);
+
     queueMicrotask(() => {
       for (let i = 0; i < workspace.textDocuments.length; i++) {
         const document = workspace.textDocuments[i];
@@ -35,8 +37,6 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         }
       }
     });
-
-    context.subscriptions.push(this.collection, disposableChange, disposableClose, disposableOpen);
   }
 
   async checkDocument(document: TextDocument) {

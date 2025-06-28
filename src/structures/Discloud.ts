@@ -19,23 +19,22 @@ import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
 import VSUser from "./VSUser";
 
 export default class Discloud extends EventEmitter<Events> implements Disposable {
+  constructor() {
+    super({ captureRejections: true });
+  }
+
   declare readonly api: REST;
   declare readonly context: ExtensionContext;
-  declare readonly logger: LogOutputChannel;
   declare readonly statusBar: DiscloudStatusBarItem;
   declare readonly appTree: AppTreeDataProvider;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
-  readonly outputChannels = new Map<string, OutputChannel>();
-  readonly logOutputChannels = new Map<string, LogOutputChannel>();
   readonly commands = new Map<string, Command>();
+  readonly logOutputChannels = new Map<string, LogOutputChannel>();
+  readonly outputChannels = new Map<string, OutputChannel>();
   readonly user = new VSUser();
-
-  constructor() {
-    super({ captureRejections: true });
-  }
 
   get config() {
     return workspace.getConfiguration("discloud");
@@ -49,6 +48,10 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   get isDebug() {
     return Boolean(this.config.get<boolean>(ConfigKeys.debug));
+  }
+
+  get logger() {
+    return this.getLogOutputChannel("Discloud");
   }
 
   get singleWorkspaceFolder() {
@@ -98,22 +101,27 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return uris?.at(0);
   }
 
-  getLogOutputChannel(name: string) {
-    let output = this.logOutputChannels.get(name);
-    if (output) return output;
-    output = window.createOutputChannel(name, { log: true });
+  protected _createLogOutputChannel(name: string) {
+    const output = window.createOutputChannel(name, { log: true });
     this.context.subscriptions.push(output);
     this.logOutputChannels.set(name, output);
     return output;
   }
 
-  getOutputChannel(name: string, languageId?: string) {
-    let output = this.outputChannels.get(`${name}${languageId}`);
-    if (output) return output;
-    output = window.createOutputChannel(name, languageId);
+  getLogOutputChannel(name: string) {
+    return this.logOutputChannels.get(name) ?? this._createLogOutputChannel(name);
+  }
+
+  protected _createOutputChannel(key: string) {
+    const output = window.createOutputChannel(key);
     this.context.subscriptions.push(output);
-    this.outputChannels.set(`${name}${languageId}`, output);
+    this.outputChannels.set(key, output);
     return output;
+  }
+
+  getOutputChannel(name: string, languageId?: string) {
+    const key = `${name}${languageId}`;
+    return this.outputChannels.get(key) ?? this._createOutputChannel(key);
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
@@ -149,10 +157,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     Object.defineProperty(this, "context", { value: context });
   }
 
-  #loadLogger() {
-    Object.defineProperty(this, "logger", { value: this.getLogOutputChannel("Discloud") });
-  }
-
   #loadStatusBar(context: ExtensionContext = this.context) {
     Object.defineProperty(this, "statusBar", { value: new DiscloudStatusBarItem(context) });
   }
@@ -169,8 +173,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   async activate(context: ExtensionContext = this.context) {
     if (!this.context) this.setContext(context);
-
-    this.#loadLogger();
 
     this.logger.info("Activate: begin");
 
@@ -196,8 +198,8 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   dispose() {
     this.removeAllListeners();
-    this.outputChannels.clear();
-    this.logOutputChannels.clear();
     this.commands.clear();
+    this.logOutputChannels.clear();
+    this.outputChannels.clear();
   }
 }

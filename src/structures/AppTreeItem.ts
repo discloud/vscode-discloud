@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { calculatePercentage, type ApiStatusApp } from "discloud.app";
-import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
+import { TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
 import extension from "../extension";
@@ -26,9 +26,8 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare readonly appId: string;
   declare readonly type: AppType;
 
-  #output!: LogOutputChannel;
   get output() {
-    return this.#output ??= extension.getLogOutputChannel(this.appId);
+    return extension.getLogOutputChannel(this.appId);
   }
 
   dispose() {

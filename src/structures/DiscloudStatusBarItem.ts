@@ -78,17 +78,22 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
   protected _status!: Status;
 
-  #maybeLimitedMessage!: string;
-  get #limitedMessage() {
-    return this.#maybeLimitedMessage ??= t("status.text.ratelimited");
-  }
+  #_limitedMessage!: string;
+  get #limitedMessage() { return this.#_limitedMessage ??= t("status.text.ratelimited"); }
+
+  #_loadingMessage!: string;
+  get #loadingMessage() { return this.#_loadingMessage ??= t("status.text.loading"); }
+
+  #_loginMessage!: string;
+  get #loginMessage() { return this.#_loginMessage ??= t("status.text.login"); }
 
   get limited() {
     return this.text === this.#limitedMessage;
   }
 
+  #loading = "$(loading~spin)";
   get loading() {
-    return this.data.text.includes("$(loading~spin)");
+    return this.data.text.includes(this.#loading);
   }
 
   get token() {
@@ -205,7 +210,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = t("status.text.loading");
+    this.text = this.#loadingMessage;
     this.tooltip = undefined;
   }
 
@@ -213,7 +218,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.login";
-    this.text = t("status.text.login");
+    this.text = this.#loginMessage;
     this.tooltip = t("status.tooltip.login");
   }
 
