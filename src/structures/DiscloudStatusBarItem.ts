@@ -5,6 +5,7 @@ import { type ExtensionContext, StatusBarAlignment, ThemeColor, type Uri, window
 import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 import extension from "../extension";
 import { ConfigKeys } from "../util/constants";
+import lazy from "../util/lazy";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {
@@ -18,6 +19,17 @@ enum Status {
   Acting,
   Limited,
 }
+
+const lazyCommittingMessage = lazy(() => t("status.text.committing"));
+const lazyLimitedMessage = lazy(() => t("status.text.ratelimited"));
+const lazyLimitedTooltip = lazy(() => t("status.tooltip.ratelimited"));
+const lazyLoadingMessage = lazy(() => t("status.text.loading"));
+const lazyLoginMessage = lazy(() => t("status.text.login"));
+const lazyLoginTooltip = lazy(() => t("status.tooltip.login"));
+const lazyUploadMessage = lazy(() => t("status.text.upload"));
+const lazyUploadTooltip = lazy(() => t("status.tooltip.upload"));
+const lazyUploadingMessage = lazy(() => t("status.text.uploading"));
+const lazyWarningBackgroundColor = lazy(() => new ThemeColor("statusBarItem.warningBackground"));
 
 export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   static readonly #defaultOptions: Partial<StatusBarItemOptions> = {
@@ -78,17 +90,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
   protected _status!: Status;
 
-  #_limitedMessage!: string;
-  get #limitedMessage() { return this.#_limitedMessage ??= t("status.text.ratelimited"); }
-
-  #_loadingMessage!: string;
-  get #loadingMessage() { return this.#_loadingMessage ??= t("status.text.loading"); }
-
-  #_loginMessage!: string;
-  get #loginMessage() { return this.#_loginMessage ??= t("status.text.login"); }
-
   get limited() {
-    return this.text === this.#limitedMessage;
+    return this.text === lazyLimitedMessage();
   }
 
   #loading = "$(loading~spin)";
@@ -120,7 +123,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = t("status.text.committing");
+    this.text = lazyCommittingMessage();
     this.tooltip = undefined;
   }
 
@@ -210,7 +213,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = this.#loadingMessage;
+    this.text = lazyLoadingMessage();
     this.tooltip = undefined;
   }
 
@@ -218,8 +221,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.login";
-    this.text = this.#loginMessage;
-    this.tooltip = t("status.tooltip.login");
+    this.text = lazyLoginMessage();
+    this.tooltip = lazyLoginTooltip();
   }
 
   setRateLimited(limited?: boolean) {
@@ -227,9 +230,9 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
       if (limited) {
         this._status = Status.Limited;
         this.command = undefined;
-        this.backgroundColor = new ThemeColor("statusBarItem.warningBackground");
-        this.text = this.#limitedMessage;
-        this.tooltip = t("status.tooltip.ratelimited");
+        this.backgroundColor = lazyWarningBackgroundColor();
+        this.text = lazyLimitedMessage();
+        this.tooltip = lazyLimitedTooltip();
       } else {
         this.text = this.originalData.text;
         this.reset();
@@ -249,8 +252,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.upload";
-    this.text = t("status.text.upload");
-    this.tooltip = t("status.tooltip.upload");
+    this.text = lazyUploadMessage();
+    this.tooltip = lazyUploadTooltip();
   }
 
   setUploading() {
@@ -259,7 +262,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = t("status.text.uploading");
+    this.text = lazyUploadingMessage();
     this.tooltip = undefined;
   }
 }
