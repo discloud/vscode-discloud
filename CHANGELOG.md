@@ -6,6 +6,12 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.24.2
+
+- Melhorias de desempenho no provedor de linguagem do arquivo de configuração da discloud
+- Melhorias no gerenciamento do socket
+- Agora vai mostrar o ID do app na saída `Discloud` quando estiver fazendo commit no nível `debug`
+
 ## 2.24.1
 
 - Correção na manipulação da status bar com multi workspaces
