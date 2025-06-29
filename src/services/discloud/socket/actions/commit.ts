@@ -13,10 +13,10 @@ import { type SocketEventUploadData } from "../types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
-    const debugCode = Date.now();
+    const debugCode = app.appId;
 
     function debug(message: string, ...args: unknown[]) {
-      extension.debug(`%o ${message}`, debugCode, ...args);
+      extension.debug(`%s ${message}`, debugCode, ...args);
     }
 
     const value = `${bytes(buffer.length)}`;
