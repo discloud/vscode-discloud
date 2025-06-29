@@ -8,6 +8,7 @@ import extension from "../../../../extension";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { type SocketEventUploadData } from "../types";
+import { SocketEvents } from "../enum/events";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
@@ -39,55 +40,38 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
     }
 
     const status = {
-      authenticated: false,
-      connected: false,
       uploading: false,
     };
 
     const ws = new SocketClient<SocketEventUploadData>(url)
-      .once("close", async (code, reason) => {
-        debug("close", code);
+      .once(SocketEvents.close, async (code, _reason) => {
+        debug(SocketEvents.close, code);
 
         resolve();
 
         setTimeout(() => logger.dispose(), 60_000);
-
-        if (!status.connected || !status.authenticated) return;
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
           return;
         }
 
-        if (!reason.length) return logger.appendLine(t("done"));
-
-        try {
-          const data: SocketEventUploadData = JSON.parse(reason.toString());
-
-          if (data.progress.log) showLog(data.progress.log);
-
-          if (data.message) showApiMessage(data);
-        } catch { }
+        return logger.appendLine(t("done"));
       })
-      .on("connecting", () => {
-        debug("connecting");
+      .on(SocketEvents.connecting, () => {
+        debug(SocketEvents.connecting);
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
-      .on("connectionFailed", async () => {
-        debug(t("socket.connecting.fail"));
-        resolve();
-        await window.showErrorMessage(t("socket.connecting.fail"));
-      })
-      .on("connected", async () => {
-        debug("connected");
-        status.authenticated = status.connected = status.uploading = true;
+      .on(SocketEvents.connected, async () => {
+        debug(SocketEvents.connected);
+        status.uploading = true;
 
         showLog("-".repeat(60));
 
         task.progress.report({ increment: -1, message: t("uploading") });
 
         await ws.sendBuffer(buffer, (data) => {
-          debug("progress received %o/%o", data.current, data.total);
+          debug("send progress %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
 
@@ -95,11 +79,11 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         status.uploading = false;
       })
-      .on("data", async (data) => {
-        debug("data received with status %s %o", data.status, data.statusCode);
+      .on(SocketEvents.data, async (data) => {
+        debug(SocketEvents.connected, data.status, data.statusCode);
 
         if (data.progress) {
-          if (!status.uploading) task.progress.report({ increment: data.progress.bar });
+          // if (!status.uploading) task.progress.report({ increment: data.progress.bar });
 
           if (data.progress.log) showLog(data.progress.log);
         }
@@ -124,14 +108,9 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         if (data.logs) showLog(data.logs);
       })
-      .on("error", (error) => {
-        debug("error", error.message);
+      .on(SocketEvents.error, (error) => {
+        debug(SocketEvents.error, error.message);
         showError(error);
-      })
-      .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
-        resolve();
-        await window.showErrorMessage(t("socket.authentication.fail"));
       });
 
     extension.context.subscriptions.push(logger, ws);

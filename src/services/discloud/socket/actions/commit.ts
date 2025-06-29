@@ -9,6 +9,7 @@ import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
+import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
 
 export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
@@ -42,18 +43,14 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     }
 
     const status = {
-      authenticated: false,
-      connected: false,
       uploading: false,
     };
 
     const ws = new SocketClient<SocketEventUploadData>(url)
-      .once("close", async (code, reason) => {
-        debug("close", code);
+      .once(SocketEvents.close, async (code, reason) => {
+        debug(SocketEvents.close, code);
 
         resolve();
-
-        if (!status.connected || !status.authenticated) return;
 
         if (code !== 1000) {
           await window.showErrorMessage(t(`socket.close.${code}`));
@@ -70,14 +67,14 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
           if (data.message) showApiMessage(data);
         } catch { }
       })
-      .on("connected", async () => {
-        debug("connected");
-        status.authenticated = status.connected = status.uploading = true;
+      .on(SocketEvents.connected, async () => {
+        debug(SocketEvents.connected);
+        status.uploading = true;
 
         task.progress.report({ increment: -1, message: t("committing") });
 
         await ws.sendBuffer(buffer, (data) => {
-          debug("progress received %o/%o", data.current, data.total);
+          debug("send progress %o/%o", data.current, data.total);
           task.progress.report({ increment: 100 / data.total });
         });
 
@@ -85,19 +82,15 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         status.uploading = false;
       })
-      .on("connecting", () => {
-        debug("connecting");
+      .on(SocketEvents.connecting, () => {
+        debug(SocketEvents.connecting);
         task.progress.report({ increment: -1, message: t("socket.connecting") });
       })
-      .on("connectionFailed", async () => {
-        debug(t("socket.connecting.fail"));
-        await window.showErrorMessage(t("socket.connecting.fail"));
-      })
-      .on("data", (data) => {
+      .on(SocketEvents.data, (data) => {
         debug("data received with status %s %o", data.status, data.statusCode);
 
         if (data.progress) {
-          if (!status.uploading) task.progress.report({ increment: data.progress.bar });
+          // if (!status.uploading) task.progress.report({ increment: data.progress.bar });
 
           if (data.progress.log) showLog(data.progress.log);
         }
@@ -116,13 +109,9 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
           });
         }
       })
-      .on("error", (error) => {
-        debug("error", error.message);
+      .on(SocketEvents.error, (error) => {
+        debug(SocketEvents.error, error.message);
         showError(error);
-      })
-      .on("unauthorized", async () => {
-        debug(t("socket.authentication.fail"));
-        await window.showErrorMessage(t("socket.authentication.fail"));
       });
 
     extension.context.subscriptions.push(ws);

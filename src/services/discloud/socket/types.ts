@@ -5,11 +5,9 @@ export interface SocketEventsMap<Data extends Record<any, any> = Record<any, any
   close: [code: number, reason: Buffer]
   connected: []
   connecting: []
-  connectionFailed: []
   data: [data: Data]
   error: [error: Error]
   message: [data: RawData]
-  unauthorized: []
 }
 
 export interface SocketOptions {
@@ -27,10 +25,6 @@ export interface SocketOptions {
    * @default 10_000
    */
   connectingTimeout?: number | null
-  /**
-   * @default true
-   */
-  disposeOnClose?: boolean
   headers?: Record<string, string>
 }
 

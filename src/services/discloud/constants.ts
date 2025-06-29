@@ -17,4 +17,6 @@ export const NETWORK_UNREACHABLE_ERRNO = -3008 as const;
 
 export const NETWORK_UNREACHABLE_CODE = "ENOTFOUND" as const;
 
+export const SOCKET_ABNORMAL_CLOSURE = 1006 as const;
+
 export const SOCKET_UNAUTHORIZED_CODE = 3000 as const;
