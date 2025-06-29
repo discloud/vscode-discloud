@@ -1,55 +1,70 @@
 import { existsSync } from "fs";
 import { type JSONSchema7, type JSONSchema7Definition, type JSONSchema7Type } from "json-schema";
-import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
+import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type CancellationToken, type CompletionContext, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
 import BaseLanguageProvider from "./BaseLanguageProvider";
+
+const assignSymbol = "=";
+const comment = "# https://docs.discloudbot.com/discloud.config";
+const commentPattern = /\s*#.*$/;
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
     super(context, schema);
 
-    const assignSymbol = "=";
-    const comment = "# https://docs.discloudbot.com/discloud.config";
-    const commentPattern = /\s*#.*$/;
 
-    const disposable = languages.registerCompletionItemProvider(this.schema.$id!, {
-      provideCompletionItems: (document, position, _token, _context) => {
-        if (!this.schema.properties) return [];
-
-        if (!position.character) {
-          return this.scopes
-            .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
-            .concat(new CompletionItem(comment, CompletionItemKind.Reference));
-        }
-
-        const line = document.lineAt(position);
-        const text = line.text.replace(commentPattern, "");
-        const [key, value] = text.substring(0, position.character).split(assignSymbol);
-        const [_, fullValue] = text.split(assignSymbol);
-        const startValueIndex = key.length + 1;
-
-        const data = this.transformConfigToJSON(document);
-
-        let schema = this.schema;
-
-        const maybeSchema = this.draft.getNode(key, data);
-
-        if (maybeSchema && maybeSchema.node)
-          schema = maybeSchema.node.schema;
-
-        return this.parseSchema(schema, {
-          document,
-          line,
-          position,
-          text,
-          key,
-          value,
-          fullValue,
-          startValueIndex,
-        });
+    const disposable = languages.registerCompletionItemProvider({
+      language: this.schema.$id,
+      pattern: `**/${this.schema.$id}`,
+      scheme: "file",
+    }, {
+      provideCompletionItems: (document, position, token, _context) => {
+        return Promise.race([
+          new Promise<any>((_, reject) => token.onCancellationRequested(reject)),
+          this.provideCompletionItems(document, position, token, _context),
+        ]).catch(() => []);
       },
-    });
+    }, "\n", assignSymbol, "/");
 
     this.context.subscriptions.push(disposable);
+  }
+
+  provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext) {
+    if (!this.schema.properties) return [];
+
+    if (!position.character) {
+      return this.scopes
+        .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
+        .concat(new CompletionItem(comment, CompletionItemKind.Reference));
+    }
+
+    const line = document.lineAt(position);
+    const text = line.text.replace(commentPattern, "");
+    const [key, value] = text.substring(0, position.character).split(assignSymbol);
+
+    if (typeof value !== "string") return [];
+
+    const [_, fullValue] = text.split(assignSymbol);
+    const startValueIndex = key.length + 1;
+
+    const data = this.transformConfigToJSON(document);
+
+    let schema = this.schema;
+
+    const maybeSchema = this.draft.getNode(key, data);
+
+    if (maybeSchema && maybeSchema.node)
+      schema = maybeSchema.node.schema;
+
+    return this.parseSchema(schema, {
+      document,
+      line,
+      position,
+      text,
+      key,
+      value,
+      fullValue,
+      startValueIndex,
+    });
   }
 
   async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): Promise<CompletionItem[]> {
@@ -187,6 +202,8 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (typeof schema.format === "string") {
       switch (schema.format) {
         case "uri-reference":
+          if (typeof options.value !== "string") break;
+
           const startIndex = options.value.lastIndexOf("/") + 1;
           const endIndex = Math.max(options.fullValue.indexOf("/", startIndex), 0) || options.fullValue.length;
           const fullRangedIndex = options.line.text.length;

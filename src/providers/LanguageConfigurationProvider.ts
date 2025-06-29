@@ -5,6 +5,9 @@ import { dirname, join } from "path";
 import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, type ExtensionContext, Position, Range, type TextDocument, languages, window, workspace } from "vscode";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
+const assignSymbol = "=";
+const commentPattern = /\s*#.*$/;
+
 export default class LanguageConfigurationProvider extends BaseLanguageProvider {
   declare readonly collection: DiagnosticCollection;
 
@@ -44,10 +47,10 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const diagnostics: Diagnostic[] = [];
 
-    const workspaceFolder = workspace.getWorkspaceFolder(document.uri)?.uri;
+    const workspaceFolder = workspace.getWorkspaceFolder(document.uri);
 
     if (workspaceFolder) {
-      if (workspaceFolder.fsPath !== dirname(document.uri.fsPath)) {
+      if (workspaceFolder.uri.fsPath !== dirname(document.uri.fsPath)) {
         // @ts-expect-error ts(2339)
         if (!document.uri._discloudDiscloudHasWrongLocationWarned) {
           // @ts-expect-error ts(2339)
@@ -92,12 +95,14 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     for (let i = 0; i < document.lineCount; i++) {
       const line = document.lineAt(i);
 
-      const lineText = line.text.replace(/\s*#.*/, "");
+      const lineText = line.text.replace(commentPattern, "");
 
       if (!lineText) continue;
 
-      const keyAndValue = lineText.split("=");
+      const keyAndValue = lineText.split(assignSymbol);
       const [key, value] = keyAndValue;
+
+      if (typeof value !== "string") continue;
 
       const scopeSchema = this.draft.getNode(key, data);
 
