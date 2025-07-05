@@ -88,28 +88,35 @@
   "required": [
     "MAIN"
   ],
-  "if": {
-    "properties": {
-      "TYPE": {
-        "const": "site"
-      }
-    }
-  },
-  "then": {
-    "properties": {
-      "ID": {
-        "minLength": 1
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "TYPE": {
+            "const": "site"
+          }
+        },
+        "required": [
+          "TYPE"
+        ]
       },
-      "RAM": {
-        "minimum": 512,
-        "default": 512,
-        "examples": [
-          512
+      "then": {
+        "properties": {
+          "ID": {
+            "minLength": 1
+          },
+          "RAM": {
+            "minimum": 512,
+            "default": 512,
+            "examples": [
+              512
+            ]
+          }
+        },
+        "required": [
+          "ID"
         ]
       }
-    },
-    "required": [
-      "ID"
-    ]
-  }
+    }
+  ]
 }
