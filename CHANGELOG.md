@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.24.3
+
+- Corrigido um bug no servidor de linguagem que fazia com que o `ID` fosse obrigatório sem o `TYPE` definido
+
 ## 2.24.2
 
 - Melhorias de desempenho no provedor de linguagem do arquivo de configuração da discloud
