@@ -1292,7 +1292,7 @@
     "@typescript-eslint/parser": "^8.36.0",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
-    "esbuild": "^0.25.5",
+    "esbuild": "^0.25.6",
     "eslint": "^9.30.1",
     "globals": "^16.3.0",
     "mocha": "^11.7.1",
