@@ -1,6 +1,6 @@
 import core from "../../../extension";
 import Command from "../../../structures/Command";
-import { ConfigKeys } from "../../../util/constants";
+import { ConfigKeys } from "../../../utils/constants";
 
 export default class extends Command {
   constructor() {

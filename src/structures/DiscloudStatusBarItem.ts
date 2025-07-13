@@ -4,8 +4,8 @@ import { setTimeout as sleep } from "timers/promises";
 import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
 import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 import type ExtensionCore from "../core/extension";
-import { ConfigKeys } from "../util/constants";
-import lazy from "../util/lazy";
+import { ConfigKeys } from "../utils/constants";
+import lazy from "../utils/lazy";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
 enum EMOJIS {

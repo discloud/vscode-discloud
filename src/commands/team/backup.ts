@@ -6,7 +6,7 @@ import { type TaskData } from "../../@types";
 import core from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
-import { ConfigKeys } from "../../util/constants";
+import { ConfigKeys } from "../../utils/constants";
 
 export default class extends Command {
   constructor() {

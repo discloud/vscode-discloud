@@ -1,5 +1,5 @@
 import type vscode from "vscode";
-import { SecretKeys } from "../../util/constants";
+import { SecretKeys } from "../../utils/constants";
 
 export default class SecretStorage implements vscode.SecretStorage, vscode.Disposable {
   constructor(protected readonly secrets: vscode.SecretStorage) {

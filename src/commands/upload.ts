@@ -5,9 +5,9 @@ import { type TaskData } from "../@types";
 import core from "../extension";
 import { socketUpload } from "../services/discloud/socket/actions/upload";
 import Command from "../structures/Command";
-import FileSystem from "../util/FileSystem";
-import Zip from "../util/Zip";
-import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
+import FileSystem from "../utils/FileSystem";
+import Zip from "../utils/Zip";
+import { ApiActionsStrategy, ConfigKeys } from "../utils/constants";
 
 export default class extends Command {
   constructor() {

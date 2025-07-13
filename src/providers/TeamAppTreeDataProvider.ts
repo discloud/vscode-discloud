@@ -4,8 +4,8 @@ import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import type ExtensionCore from "../core/extension";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
-import { compareBooleans, compareNumbers } from "../util/utils";
+import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../utils/constants";
+import { compareBooleans, compareNumbers } from "../utils/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = TeamAppTreeItem

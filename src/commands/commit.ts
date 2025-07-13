@@ -7,10 +7,10 @@ import { socketCommit } from "../services/discloud/socket/actions/commit";
 import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import FileSystem from "../util/FileSystem";
-import Zip from "../util/Zip";
-import { pickApp } from "../util/apps";
-import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
+import FileSystem from "../utils/FileSystem";
+import Zip from "../utils/Zip";
+import { pickApp } from "../utils/apps";
+import { ApiActionsStrategy, ConfigKeys } from "../utils/constants";
 
 export default class extends Command {
   constructor() {

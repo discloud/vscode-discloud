@@ -8,8 +8,8 @@ import AppTreeItem from "../structures/AppTreeItem";
 import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
-import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
-import { compareBooleans, compareNumbers } from "../util/utils";
+import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../utils/constants";
+import { compareBooleans, compareNumbers } from "../utils/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = AppTreeItem

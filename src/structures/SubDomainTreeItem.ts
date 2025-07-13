@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
 import { type SubDomainTreeItemData } from "../@types";
 import core from "../extension";
-import { getIconName, getIconPath } from "../util/utils";
+import { getIconName, getIconPath } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class SubDomainTreeItem extends BaseTreeItem<any> {

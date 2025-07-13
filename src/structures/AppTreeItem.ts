@@ -4,8 +4,8 @@ import { TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
 import core from "../extension";
-import { ConfigKeys } from "../util/constants";
-import { getIconName, getIconPath } from "../util/utils";
+import { ConfigKeys } from "../utils/constants";
+import { getIconName, getIconPath } from "../utils/utils";
 import AppChildTreeItem from "./AppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 

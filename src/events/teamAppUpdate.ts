@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import core from "../extension";
-import { ConfigKeys } from "../util/constants";
+import { ConfigKeys } from "../utils/constants";
 
 core.on("teamAppUpdate", async function (oldApp, newApp) {
   if (!core.config.get<boolean>(ConfigKeys.teamAppNotificationStatus)) return;

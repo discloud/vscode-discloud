@@ -16,8 +16,8 @@ import { UserAgent } from "../services/discloud/UserAgent";
 import type Command from "../structures/Command";
 import DiscloudStatusBarItem from "../structures/DiscloudStatusBarItem";
 import VSUser from "../structures/VSUser";
-import { ConfigKeys } from "../util/constants";
-import FileSystem from "../util/FileSystem";
+import { ConfigKeys } from "../utils/constants";
+import FileSystem from "../utils/FileSystem";
 
 export default class ExtensionCore extends EventEmitter<Events> implements Disposable {
   constructor() {

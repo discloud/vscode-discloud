@@ -4,7 +4,7 @@ import BaseLanguageProvider from "../providers/BaseLanguageProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenValidator } from "../services/discloud/utils";
-import { ConfigKeys, DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
+import { ConfigKeys, DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../utils/constants";
 
 core.on("activate", async function (context) {
   try {

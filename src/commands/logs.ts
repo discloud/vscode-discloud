@@ -6,7 +6,7 @@ import core from "../extension";
 import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import { pickApp } from "../util/apps";
+import { pickApp } from "../utils/apps";
 
 export default class extends Command {
   constructor() {

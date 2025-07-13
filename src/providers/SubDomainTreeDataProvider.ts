@@ -1,6 +1,6 @@
 import { type ExtensionContext } from "vscode";
 import SubDomainTreeItem from "../structures/SubDomainTreeItem";
-import { TreeViewIds } from "../util/constants";
+import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = SubDomainTreeItem
