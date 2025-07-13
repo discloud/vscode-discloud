@@ -1181,7 +1181,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
-          "when": "discloudAuthorized"
+          "when": "!discloudUnauthorized"
         },
         {
           "type": "tree",
@@ -1189,7 +1189,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "!discloudUnauthorized"
         },
         {
           "type": "tree",
@@ -1197,7 +1197,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "!discloudUnauthorized"
         },
         {
           "type": "tree",
@@ -1205,7 +1205,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "!discloudUnauthorized"
         },
         {
           "type": "tree",
@@ -1229,12 +1229,12 @@
       {
         "view": "discloudUserApps",
         "contents": "%welcome%",
-        "when": "discloudAuthorized"
+        "when": "!discloudAuthorized && !discloudUnauthorized"
       },
       {
         "view": "discloudUser",
         "contents": "%welcome.token.missing%",
-        "when": "!discloudAuthorized"
+        "when": "!discloudAuthorized && !discloudUnauthorized"
       },
       {
         "view": "discloudUser",

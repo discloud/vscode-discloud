@@ -8,6 +8,8 @@ core.on("missingToken", async function () {
     commands.executeCommand("setContext", "discloudUnauthorized", false),
   ]);
 
+  core.api.authorized = false;
+
   core.userTree.clear();
   core.statusBar.setLogin();
 
