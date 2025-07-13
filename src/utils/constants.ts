@@ -73,6 +73,10 @@ const API_ACTIONS_STRATEGY = Object.freeze([
   "socket",
 ] as const);
 
+const SECRET_KEYS = Object.freeze([
+  "token",
+] as const);
+
 export const TreeViewIds = Object.freeze(makeCamelizedPair(TREE_VIEW_IDS));
 
 export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
@@ -80,3 +84,5 @@ export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
 export const SortBy = Object.freeze(makeCamelizedPair(SORT_BY));
 
 export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));
+
+export const SecretKeys = Object.freeze(makeCamelizedPair(SECRET_KEYS));

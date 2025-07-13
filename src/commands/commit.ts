@@ -2,15 +2,15 @@ import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
-import extension from "../extension";
+import core from "../extension";
 import { socketCommit } from "../services/discloud/socket/actions/commit";
 import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
-import FileSystem from "../util/FileSystem";
-import Zip from "../util/Zip";
-import { pickApp } from "../util/apps";
-import { ApiActionsStrategy, ConfigKeys } from "../util/constants";
+import FileSystem from "../utils/FileSystem";
+import Zip from "../utils/Zip";
+import { pickApp } from "../utils/apps";
+import { ApiActionsStrategy, ConfigKeys } from "../utils/constants";
 
 export default class extends Command {
   constructor() {
@@ -23,7 +23,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
+    const workspaceFolder = await core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const fileNames = await FileSystem.readSelectedPath(true);
@@ -31,7 +31,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    extension.statusBar.setCommitting();
+    core.statusBar.setCommitting();
 
     const item = await pickApp({ token: task.token });
     if (!item) throw Error(t("missing.appid"));
@@ -42,7 +42,7 @@ export default class extends Command {
       cwd: workspaceFolder.fsPath,
       fileNames,
       ignoreFile: ".discloudignore",
-      ignoreList: extension.workspaceIgnoreList,
+      ignoreList: core.workspaceIgnoreList,
     });
 
     const found = await fs.findFiles(task.token);
@@ -56,7 +56,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
+    const strategy = core.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
     await this[strategy](task, buffer, item);
   }
@@ -70,7 +70,7 @@ export default class extends Command {
 
     const isUserApp = app instanceof AppTreeItem;
 
-    const response = await extension.api.put<RESTPutApiAppCommitResult>(
+    const response = await core.api.put<RESTPutApiAppCommitResult>(
       isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId),
       { files },
     );
@@ -80,9 +80,9 @@ export default class extends Command {
       this.showApiMessage(response);
 
       if (isUserApp)
-        await extension.appTree.fetch();
+        await core.appTree.fetch();
       else
-        await extension.teamAppTree.fetch();
+        await core.teamAppTree.fetch();
 
       if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }

@@ -1,5 +1,5 @@
-import extension from "../extension";
+import core from "../extension";
 
-extension.on("missingConnection", async function () {
-  extension.statusBar.reset();
+core.on("missingConnection", async function () {
+  core.statusBar.reset();
 });

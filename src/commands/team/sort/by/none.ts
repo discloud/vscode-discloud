@@ -1,6 +1,6 @@
-import extension from "../../../../extension";
+import core from "../../../../extension";
 import Command from "../../../../structures/Command";
-import { ConfigKeys } from "../../../../util/constants";
+import { ConfigKeys } from "../../../../utils/constants";
 
 export default class extends Command {
   constructor() {
@@ -12,10 +12,10 @@ export default class extends Command {
   async run() {
     const configKey = ConfigKeys.teamSortBy;
 
-    const inspect = extension.config.inspect<number>(configKey);
+    const inspect = core.config.inspect<number>(configKey);
 
     const isGlobal = !inspect?.workspaceValue;
 
-    extension.config.update(configKey, "none", isGlobal);
+    core.config.update(configKey, "none", isGlobal);
   }
 }

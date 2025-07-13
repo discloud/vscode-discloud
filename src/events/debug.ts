@@ -1,7 +1,7 @@
 import { format } from "util";
-import extension from "../extension";
+import core from "../extension";
 
-extension.on("debug", async function (message, ...args) {
-  if (extension.isDebug) extension.logger.appendLine(format(message, ...args));
-  else extension.logger.debug(format(message, ...args));
+core.on("debug", async function (message, ...args) {
+  if (core.isDebug) core.logger.appendLine(format(message, ...args));
+  else core.logger.debug(format(message, ...args));
 });

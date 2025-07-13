@@ -1,6 +1,6 @@
 import { type ExtensionContext } from "vscode";
 import CustomDomainTreeItem from "../structures/CustomDomainTreeItem";
-import { TreeViewIds } from "../util/constants";
+import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = CustomDomainTreeItem;

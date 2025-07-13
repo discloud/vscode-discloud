@@ -1,6 +1,6 @@
 import { type Uri, window } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
@@ -11,12 +11,12 @@ export default class extends Command {
 
   async run(_: TaskData, item: AppTreeItem) {
     const terminal = window.createTerminal({
-      env: { DISCLOUD_TOKEN: extension.token },
+      env: { DISCLOUD_TOKEN: await core.secrets.getToken() },
       iconPath: item.iconPath as Uri,
       name: typeof item.label === "string" ? item.label : item.appId,
     });
 
-    extension.context.subscriptions.push(terminal);
+    core.context.subscriptions.push(terminal);
 
     terminal.show();
 

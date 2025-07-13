@@ -1,6 +1,5 @@
 import AdmZip from "adm-zip";
 import { FileType, type Uri, workspace } from "vscode";
-import extension from "../extension";
 
 export default class Zip {
   declare readonly zip: AdmZip;
@@ -34,8 +33,6 @@ export default class Zip {
 
       this.zip.addFile(name, buffer);
     }
-
-    extension.debug("Zip:", [...zipped]);
   }
 
   getBuffer() {

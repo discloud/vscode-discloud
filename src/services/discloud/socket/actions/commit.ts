@@ -4,7 +4,7 @@ import { Routes } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
-import extension from "../../../../extension";
+import core from "../../../../extension";
 import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
@@ -17,7 +17,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     const debugCode = app.appId;
 
     function debug(message: string, ...args: unknown[]) {
-      extension.debug(`%s ${message}`, debugCode, ...args);
+      core.debug(`%s ${message}`, debugCode, ...args);
     }
 
     const value = `${bytes(buffer.length)}`;
@@ -27,9 +27,9 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
     if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value }));
 
     const isUserApp = app instanceof AppTreeItem;
-    const appTree = isUserApp ? extension.appTree : extension.teamAppTree;
+    const appTree = isUserApp ? core.appTree : core.teamAppTree;
 
-    const url = new URL(`${extension.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
+    const url = new URL(`${core.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
 
     function showLog(value: string) {
       const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
@@ -114,7 +114,7 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
         showError(error);
       });
 
-    extension.context.subscriptions.push(ws);
+    core.context.subscriptions.push(ws);
 
     ws.connect().catch(reject);
   });

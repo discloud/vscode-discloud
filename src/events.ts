@@ -1,6 +1,6 @@
-import type Discloud from "./structures/Discloud";
+import type ExtensionCore from "./core/extension";
 
-export async function loadEvents(extension: Discloud) {
+export async function loadEvents(core: ExtensionCore) {
   await import("./events/activate");
   await import("./events/appUpdate");
   await import("./events/authorized");
@@ -13,5 +13,5 @@ export async function loadEvents(extension: Discloud) {
   await import("./events/unauthorized");
   await import("./events/vscode");
 
-  extension.debug("Events loaded");
+  core.debug("Events loaded");
 }

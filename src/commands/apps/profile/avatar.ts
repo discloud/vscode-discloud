@@ -2,10 +2,10 @@ import { t } from "@vscode/l10n";
 import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBaseResult, Routes } from "discloud.app";
 import { CancellationError } from "vscode";
 import { type TaskData } from "../../../@types";
-import extension from "../../../extension";
+import core from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
-import InputBox from "../../../util/Input";
+import InputBox from "../../../utils/Input";
 
 export default class extends Command {
   constructor() {
@@ -21,16 +21,16 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const response = await extension.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
+    const response = await core.api.put<RESTApiBaseResult>(Routes.appProfile(item.appId), { body: { avatarURL } });
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
       if (response.status === "ok") {
-        extension.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
+        core.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
-        const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false });
+        const workspaceFolder = await core.getWorkspaceFolder({ fallbackUserChoice: false });
 
         if (workspaceFolder) {
           const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);

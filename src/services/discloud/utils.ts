@@ -1,6 +1,6 @@
 import { decodeJwt } from "jose";
 import { type RESTGetApiVscode } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import { NETWORK_UNREACHABLE_CODE } from "./constants";
 import DiscloudAPIError from "./errors/api";
 
@@ -13,43 +13,46 @@ export function tokenIsDiscloudJwt(token: string): boolean {
 
 export async function tokenValidator(token: string) {
   try {
+    const oldToken = await core.secrets.getToken();
+
     if (!tokenIsDiscloudJwt(token)) {
-      if (extension.token === token) extension.emit("unauthorized");
+      if (oldToken === token) core.emit("unauthorized");
       return false;
     }
 
-    if (extension.token === token) {
-      extension.api.tokenIsValid = true;
-      await extension.user.fetch(true);
+    if (oldToken === token) {
+      core.emit("authorized");
+      await core.user.fetch(true);
       return true;
     }
 
-    const response = await fetch(`${extension.api.baseURL}/vscode`, { headers: { "api-token": token } });
+    const response = await fetch(`${core.api.baseURL}/vscode`, { headers: { "api-token": token } });
 
     if (response.status === 401) return false;
 
     const data = await response.json() as RESTGetApiVscode;
 
     if ("user" in data) {
-      Object.assign(extension.user, data.user);
-      extension.emit("vscode", extension.user);
+      Object.assign(core.user, data.user);
+      core.emit("vscode", core.user);
     }
 
-    extension.emit("authorized");
+    core.emit("authorized");
 
     return true;
   } catch (error: any) {
     if (error instanceof DiscloudAPIError) {
       switch (error.code) {
         case 401:
-          extension.emit("unauthorized");
+          await core.secrets.setToken();
+          core.emit("unauthorized");
           return false;
       }
       return false;
     }
 
     switch (error.code) {
-      case NETWORK_UNREACHABLE_CODE: return extension.emit("missingConnection"), null;
+      case NETWORK_UNREACHABLE_CODE: return core.emit("missingConnection"), null;
       default: return false;
     }
   }

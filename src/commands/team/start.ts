@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { type RESTPutApiAppStartResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -17,13 +17,13 @@ export default class extends Command {
   }
 
   async run(_: TaskData, item: TeamAppTreeItem) {
-    const response = await extension.api.put<RESTPutApiAppStartResult>(Routes.teamStart(item.appId));
+    const response = await core.api.put<RESTPutApiAppStartResult>(Routes.teamStart(item.appId));
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await extension.teamAppTree.fetch();
+      await core.teamAppTree.fetch();
     }
   }
 }

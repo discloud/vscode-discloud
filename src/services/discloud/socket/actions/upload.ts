@@ -4,18 +4,18 @@ import { Routes, type DiscloudConfig } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type ApiVscodeApp, type TaskData } from "../../../../@types";
-import extension from "../../../../extension";
+import core from "../../../../extension";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
-import { type SocketEventUploadData } from "../types";
 import { SocketEvents } from "../enum/events";
+import { type SocketEventUploadData } from "../types";
 
 export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
     const debugCode = Date.now();
 
     function debug(message: string, ...args: unknown[]) {
-      extension.debug(`%o ${message}`, debugCode, ...args);
+      core.debug(`%o ${message}`, debugCode, ...args);
     }
 
     const value = `${bytes(buffer.length)}`;
@@ -24,7 +24,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
     if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value }));
 
-    const url = new URL(`${extension.api.baseURL}/ws${Routes.upload()}`);
+    const url = new URL(`${core.api.baseURL}/ws${Routes.upload()}`);
 
     const logger = window.createOutputChannel("Discloud Upload", { log: true });
 
@@ -103,7 +103,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
             ...data.app,
           };
 
-          extension.appTree.addRawApp(app); // TODO: fix ApiUploadApp
+          core.appTree.addRawApp(app); // TODO: fix ApiUploadApp
         }
 
         if (data.logs) showLog(data.logs);
@@ -113,7 +113,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
         showError(error);
       });
 
-    extension.context.subscriptions.push(logger, ws);
+    core.context.subscriptions.push(logger, ws);
 
     ws.connect().catch(reject);
   });

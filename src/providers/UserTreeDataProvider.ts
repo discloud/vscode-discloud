@@ -1,7 +1,7 @@
 import { type ExtensionContext } from "vscode";
 import UserTreeItem from "../structures/UserTreeItem";
 import type VSUser from "../structures/VSUser";
-import { TreeViewIds } from "../util/constants";
+import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = UserTreeItem

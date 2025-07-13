@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
 import { Uri, workspace } from "vscode";
 import WarningError from "../errors/warning";
-import extension from "../extension";
+import core from "../extension";
 import Command from "../structures/Command";
 
 export default class extends Command {
@@ -13,7 +13,7 @@ export default class extends Command {
   }
 
   async run() {
-    const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false });
+    const workspaceFolder = await core.getWorkspaceFolder({ fallbackUserChoice: false });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const findConfig = await workspace.findFiles(DiscloudConfig.filename);

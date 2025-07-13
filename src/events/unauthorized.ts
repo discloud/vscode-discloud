@@ -1,15 +1,17 @@
 import { commands } from "vscode";
-import extension from "../extension";
+import core from "../extension";
 
-extension.on("unauthorized", async function () {
-  commands.executeCommand("setContext", "discloudTokenAuthorized", false);
-  commands.executeCommand("setContext", "discloudTokenUnauthorized", true);
+core.on("unauthorized", async function () {
+  await Promise.all([
+    commands.executeCommand("setContext", "discloudAuthorized", false),
+    commands.executeCommand("setContext", "discloudUnauthorized", true),
+  ]);
 
-  extension.api.tokenIsValid = false;
+  core.api.authorized = false;
 
-  extension.userTree.clear();
+  core.userTree.clear();
 
-  extension.statusBar.setLogin();
+  core.statusBar.setLogin();
 
-  extension.logger.warn("Unauthorized");
+  core.logger.warn("Unauthorized");
 });

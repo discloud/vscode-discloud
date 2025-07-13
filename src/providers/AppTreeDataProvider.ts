@@ -1,24 +1,24 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
-import { type ExtensionContext, type ProviderResult, type TreeItem, commands, window } from "vscode";
+import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";
-import extension from "../extension";
+import type ExtensionCore from "../core/extension";
 import AppTreeItem from "../structures/AppTreeItem";
 import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
-import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
-import { compareBooleans, compareNumbers } from "../util/utils";
+import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../utils/constants";
+import { compareBooleans, compareNumbers } from "../utils/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
 type Item = AppTreeItem
 
 export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
-  constructor(context: ExtensionContext) {
-    super(context, TreeViewIds.discloudUserApps);
+  constructor(readonly core: ExtensionCore) {
+    super(core.context, TreeViewIds.discloudUserApps);
 
-    context.subscriptions.push(this._views);
+    this.core.context.subscriptions.push(this._views);
   }
 
   get size() {
@@ -37,7 +37,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   protected _sort(children: Item[]) {
-    const sort = extension.config.get<string>(ConfigKeys.appSortBy);
+    const sort = this.core.config.get<string>(ConfigKeys.appSortBy);
 
     if (!sort) return this._sortOnline(children);
 
@@ -85,7 +85,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   protected _sortOnline(children: Item[]) {
-    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.appSortOnline);
+    const sortOnlineFirst = this.core.config.get<boolean>(ConfigKeys.appSortOnline);
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online, b.online));
   }
 
@@ -103,7 +103,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       return element.children.values().toArray();
     }
 
-    const separate = extension.config.get(ConfigKeys.appSeparateByType, true);
+    const separate = this.core.config.get(ConfigKeys.appSeparateByType, true);
 
     if (separate) return this._views.values().toArray().sort((a, b) => a.children.size - b.children.size);
 
@@ -189,7 +189,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
 
       this.refresh(existing);
 
-      extension.emit("appUpdate", clone, existing);
+      this.core.emit("appUpdate", clone, existing);
 
       if (returnBoolean) return false;
     } else {
@@ -216,7 +216,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      extension.emit("appUpdate", clone, app);
+      this.core.emit("appUpdate", clone, app);
 
       this.refresh(app);
 
@@ -227,7 +227,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   async getStatus(appId: string) {
-    const response = await extension.api.queueGet<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
+    const response = await this.core.api.queueGet<RESTGetApiAppStatusResult>(Routes.appStatus(appId));
 
     if (!response) return;
 
@@ -251,9 +251,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
       location: { viewId: this.viewId },
       title: t("refreshing"),
     }, async () => {
-      extension.statusBar.setLoading();
-      await extension.user.fetch(true);
-      extension.statusBar.reset();
+      this.core.statusBar.setLoading();
+      await this.core.user.fetch(true);
+      this.core.statusBar.reset();
     });
   }
 

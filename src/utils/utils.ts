@@ -1,12 +1,12 @@
 import { join } from "path";
 import { type TreeItem, Uri } from "vscode";
-import extension from "../extension";
+import core from "../extension";
 import { RESOURCES_DIR } from "./constants";
 
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
-    dark: Uri.file(extension.context.asAbsolutePath(join(RESOURCES_DIR, "dark", `${iconName}.${iconExt}`))),
-    light: Uri.file(extension.context.asAbsolutePath(join(RESOURCES_DIR, "light", `${iconName}.${iconExt}`))),
+    dark: Uri.file(core.context.asAbsolutePath(join(RESOURCES_DIR, "dark", `${iconName}.${iconExt}`))),
+    light: Uri.file(core.context.asAbsolutePath(join(RESOURCES_DIR, "light", `${iconName}.${iconExt}`))),
   };
 }
 

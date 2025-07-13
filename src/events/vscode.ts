@@ -1,19 +1,19 @@
-import extension from "../extension";
+import core from "../extension";
 
-extension.on("vscode", async function (user) {
+core.on("vscode", async function (user) {
   if (!user) return;
 
-  extension.userTree.set(user);
+  core.userTree.set(user);
 
   if ("appsStatus" in user)
-    extension.appTree.setRawApps(user.appsStatus);
+    core.appTree.setRawApps(user.appsStatus);
 
   if ("appsTeam" in user)
-    extension.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));
+    core.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));
 
   if ("subdomains" in user)
-    extension.subDomainTree.update(user.subdomains);
+    core.subDomainTree.update(user.subdomains);
 
   if ("customdomains" in user)
-    extension.customDomainTree.update(user.customdomains);
+    core.customDomainTree.update(user.customdomains);
 });
