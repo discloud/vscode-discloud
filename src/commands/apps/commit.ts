@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import { socketCommit } from "../../services/discloud/socket/actions/commit";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
@@ -21,20 +21,20 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem) {
-    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
+    const workspaceFolder = await core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    extension.statusBar.setCommitting();
+    core.statusBar.setCommitting();
 
     task.progress.report({ increment: 30, message: `${item.appId} - ${t("choose.files")}` });
 
     const fs = new FileSystem({
       cwd: workspaceFolder.fsPath,
       ignoreFile: ".discloudignore",
-      ignoreList: extension.workspaceIgnoreList,
+      ignoreList: core.workspaceIgnoreList,
     });
 
     const found = await fs.findFiles(task.token);
@@ -48,7 +48,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
+    const strategy = core.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
     await this[strategy](task, buffer, item);
   }
@@ -60,14 +60,14 @@ export default class extends Command {
 
     const files: File[] = [file];
 
-    const response = await extension.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(app.appId), { files });
+    const response = await core.api.put<RESTPutApiAppCommitResult>(Routes.appCommit(app.appId), { files });
 
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await extension.appTree.fetch();
+      await core.appTree.fetch();
 
       if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }

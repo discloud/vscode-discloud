@@ -3,7 +3,7 @@ import { type RESTGetApiAppTeamResult, Routes } from "discloud.app";
 import { stripVTControlCharacters } from "util";
 import { type LogOutputChannel, type QuickPickItem, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
-import extension from "../extension";
+import core from "../extension";
 
 export interface CommandConstructor {
   new(...args: any[]): Command
@@ -17,7 +17,7 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const response = await extension.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
+    const response = await core.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
     if (!response?.team?.length) return;
 
     const mods = new Map(response.team.map(team => [team.modID, {
@@ -82,7 +82,7 @@ export default abstract class Command {
   logger(output: LogOutputChannel, log: string, show: false): void;
   logger(output: LogOutputChannel, log: string, show = true) {
     if (typeof output === "string")
-      output = extension.getLogOutputChannel(output);
+      output = core.getLogOutputChannel(output);
 
     output.info("\n" + stripVTControlCharacters(log));
 

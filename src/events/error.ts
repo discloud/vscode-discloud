@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { CancellationError, commands, version, window } from "vscode";
 import WarningError from "../errors/warning";
-import extension from "../extension";
+import core from "../extension";
 import DiscloudAPIError from "../services/discloud/errors/api";
 
-extension.on("error", async function (error: any) {
+core.on("error", async function (error: any) {
   if (!error) return;
 
   if (error instanceof CancellationError) {
@@ -19,19 +19,19 @@ extension.on("error", async function (error: any) {
 
   const metadata = [
     "",
-    `Extension v${extension.context.extension.packageJSON.version}`,
+    `Extension v${core.context.extension.packageJSON.version}`,
     `VSCode v${version}`,
   ].join("\n");
 
   if (error instanceof DiscloudAPIError) {
     if (error.code > 499) {
-      extension.logger.error(`Server error ${error.code}`, metadata);
+      core.logger.error(`Server error ${error.code}`, metadata);
       await window.showErrorMessage(`Server error ${error.code}`);
       return;
     }
   }
 
-  extension.logger.error(error, metadata);
+  core.logger.error(error, metadata);
 
   const message = error.message ?? error;
 

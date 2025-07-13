@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import type vscode from "vscode";
 import WebSocket from "ws";
-import extension from "../../../extension";
+import core from "../../../extension";
 import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_ABNORMAL_CLOSURE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import { SocketEvents } from "./enum/events";
 import BufferOverflowError from "./errors/BufferOverflow";
@@ -184,10 +184,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   async #resolveHeaders(headers: Record<string, string>) {
-    headers["api-token"] ??= (await extension.api.getToken())!;
+    headers["api-token"] ??= (await core.api.getToken())!;
 
-    if (extension.api.options.userAgent)
-      headers["User-Agent"] = extension.api.options.userAgent.toString();
+    if (core.api.options.userAgent)
+      headers["User-Agent"] = core.api.options.userAgent.toString();
 
     return headers;
   }

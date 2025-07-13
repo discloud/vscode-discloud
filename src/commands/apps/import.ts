@@ -4,7 +4,7 @@ import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync } from "fs";
 import { ProgressLocation, Uri, commands, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import { ConfigKeys } from "../../util/constants";
@@ -20,15 +20,15 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem) {
-    const workspaceAvailable = extension.workspaceAvailable;
+    const workspaceAvailable = core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = await extension.getWorkspaceFolder();
+    if (workspaceAvailable) workspaceFolder = await core.getWorkspaceFolder();
     if (!workspaceFolder) {
-      workspaceFolder = await extension.getFolderDialog(task);
+      workspaceFolder = await core.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
-    const response = await extension.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
+    const response = await core.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
     if (!response) return;
 
     if (!response.backups) throw Error(t("no.backup.found"));
@@ -36,7 +36,7 @@ export default class extends Command {
     const backup = await fetch(response.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
-    const configImportDir = extension.config.get<string>(ConfigKeys.appImportDir) ?? "";
+    const configImportDir = core.config.get<string>(ConfigKeys.appImportDir) ?? "";
     const importDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configImportDir) : workspaceFolder;
     const importUri = Uri.joinPath(importDirUri, response.backups.id);
     const importZipUri = Uri.joinPath(importDirUri, `${response.backups.id}.zip`);

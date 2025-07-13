@@ -3,7 +3,7 @@ import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync } from "fs";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { ConfigKeys } from "../../util/constants";
@@ -19,15 +19,15 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: TeamAppTreeItem) {
-    const workspaceAvailable = extension.workspaceAvailable;
+    const workspaceAvailable = core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = await extension.getWorkspaceFolder();
+    if (workspaceAvailable) workspaceFolder = await core.getWorkspaceFolder();
     if (!workspaceFolder) {
-      workspaceFolder = await extension.getFolderDialog(task);
+      workspaceFolder = await core.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
-    const response = await extension.api.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
+    const response = await core.api.get<RESTGetApiAppBackupResult>(Routes.teamBackup(item.appId));
     if (!response) return;
 
     if (!response.backups) throw Error(t("no.backup.found"));
@@ -35,7 +35,7 @@ export default class extends Command {
     const backup = await fetch(response.backups.url);
     if (!backup.body) throw Error(t("backup.request.failed"));
 
-    const configBackupDir = extension.config.get<string>(ConfigKeys.teamBackupDir) ?? "";
+    const configBackupDir = core.config.get<string>(ConfigKeys.teamBackupDir) ?? "";
     const backupDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configBackupDir) : workspaceFolder;
     const backupZipUri = Uri.joinPath(backupDirUri, `${response.backups.id}.zip`);
 

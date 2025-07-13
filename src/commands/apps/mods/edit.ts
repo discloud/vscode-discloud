@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { ModPermissionsBF, type RESTPutApiAppTeamResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
-import extension from "../../../extension";
+import core from "../../../extension";
 import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
 
@@ -34,7 +34,7 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const response = await extension.api.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
+    const response = await core.api.put<RESTPutApiAppTeamResult>(Routes.appTeam(item.appId), {
       body: {
         modID: mod.id,
         perms,

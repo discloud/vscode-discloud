@@ -1,4 +1,4 @@
-import extension from "../../extension";
+import core from "../../extension";
 import Command from "../../structures/Command";
 
 export default class extends Command {
@@ -7,6 +7,6 @@ export default class extends Command {
   }
 
   async run() {
-    await extension.appTree.fetch();
+    await core.appTree.fetch();
   }
 }

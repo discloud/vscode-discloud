@@ -3,7 +3,7 @@ import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, calculatePercenta
 import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
 import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";
-import extension from "../extension";
+import core from "../extension";
 import lazy from "../util/lazy";
 import { getIconName, getIconPath } from "../util/utils";
 import BaseTreeItem from "./BaseTreeItem";
@@ -28,11 +28,11 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
   #output!: LogOutputChannel;
   get output() {
-    return this.#output ??= extension.getLogOutputChannel(this.appId);
+    return this.#output ??= core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
-    extension.logOutputChannels.delete(this.appId);
+    core.logOutputChannels.delete(this.appId);
 
     this.output.dispose();
 

@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig, DiscloudConfigScopes } from "discloud.app";
 import { setTimeout as sleep } from "timers/promises";
-import { type ExtensionContext, StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
+import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
 import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
-import extension from "../extension";
+import type ExtensionCore from "../core/extension";
 import { ConfigKeys } from "../util/constants";
 import lazy from "../util/lazy";
 import BaseStatusBarItem from "./BaseStatusBarItem";
@@ -39,8 +39,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     tooltip: t("status.tooltip"),
   };
 
-  constructor(readonly context: ExtensionContext, data?: Partial<StatusBarItemOptions>) {
-    super(context, Object.assign({}, DiscloudStatusBarItem.#defaultOptions, data));
+  constructor(readonly core: ExtensionCore, data?: Partial<StatusBarItemOptions>) {
+    super(core.context, Object.assign({}, DiscloudStatusBarItem.#defaultOptions, data));
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -74,14 +74,14 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     });
 
     const disposableChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
-      if (extension.workspaceAvailable) {
+      if (this.core.workspaceAvailable) {
         this.show();
       } else {
         this.hide();
       }
     });
 
-    context.subscriptions.push(
+    core.context.subscriptions.push(
       disposableChangeActiveTextEditor,
       disposableOpenTextDocument,
       disposableChangeWorkspaceFolders,
@@ -99,18 +99,14 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     return this.data.text.includes(this.#loading);
   }
 
-  get token() {
-    return extension.config.get<string>(ConfigKeys.token);
-  }
-
-  reset(data: Partial<StatusBarItemData> = this.originalData) {
+  async reset(data: Partial<StatusBarItemData> = this.originalData) {
     if (this.limited) return;
 
     this._status = Status.Regular;
 
     super.reset(data);
 
-    if (this.token && extension.api.tokenIsValid) {
+    if (await this.core.secrets.getToken()) {
       this.setDefault();
     } else {
       this.setLogin();
@@ -148,7 +144,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
       if (!ID) continue;
 
-      app = extension.appTree.children.get(ID) ?? extension.teamAppTree.children.get(ID);
+      app = this.core.appTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
 
       if (app && (app.label || app.data.name || app.data.description)) break;
     }
@@ -159,7 +155,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   protected async _setConfigDefault(uri?: Uri) {
     if (this._status !== Status.Regular) return false;
 
-    const workspaceFolder = await extension.getWorkspaceFolder({ fallbackUserChoice: false, uri });
+    const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false, uri });
 
     if (!workspaceFolder) return false;
 
@@ -169,7 +165,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     if (!ID) return false;
 
-    const app = extension.appTree.children.get(ID) ?? extension.teamAppTree.children.get(ID);
+    const app = this.core.appTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
 
     if (!app) return false;
 
@@ -189,7 +185,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
       }
     }
 
-    const behavior = extension.config.get<string>(ConfigKeys.statusBarBehavior);
+    const behavior = this.core.config.get<string>(ConfigKeys.statusBarBehavior);
     const emoji = EMOJIS[<keyof typeof EMOJIS>behavior];
 
     this.text = `$(${emoji}) ${this.text}`;

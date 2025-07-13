@@ -1,4 +1,4 @@
-import extension from "../../../extension";
+import core from "../../../extension";
 import Command from "../../../structures/Command";
 import { ConfigKeys } from "../../../util/constants";
 
@@ -12,10 +12,10 @@ export default class extends Command {
   async run() {
     const configKey = ConfigKeys.appShowAvatarInsteadStatus;
 
-    const inspect = extension.config.inspect<number>(configKey);
+    const inspect = core.config.inspect<number>(configKey);
 
     const isGlobal = !inspect?.workspaceValue;
 
-    extension.config.update(configKey, "always", isGlobal);
+    core.config.update(configKey, "always", isGlobal);
   }
 }

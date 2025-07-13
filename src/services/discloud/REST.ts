@@ -2,8 +2,8 @@ import { t } from "@vscode/l10n";
 import { RouteBases, type RouteLike } from "discloud.app";
 import { EventEmitter } from "events";
 import { window } from "vscode";
+import type ExtensionCore from "../../core/extension";
 import AsyncQueue from "../../modules/async-queue";
-import type Discloud from "../../structures/Discloud";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
 import { type InternalRequestData, type RequestData, type RequestOptions, type RESTOptions } from "./types";
@@ -13,7 +13,7 @@ export default class REST extends EventEmitter {
   remaining = 60;
   reset = 60;
   declare time: number;
-  declare tokenIsValid: boolean;
+  declare authorized: boolean;
   declare readonly options: Partial<RESTOptions>;
   readonly #queue = new AsyncQueue();
 
@@ -30,10 +30,10 @@ export default class REST extends EventEmitter {
   }
 
   getToken() {
-    return this.extension.getToken();
+    return this.core.secrets.getToken();
   }
 
-  constructor(private extension: Discloud, options?: Partial<RESTOptions>) {
+  constructor(private core: ExtensionCore, options?: Partial<RESTOptions>) {
     super();
 
     this.options = options ?? {};
@@ -73,10 +73,10 @@ export default class REST extends EventEmitter {
 
   request<T>(url: URL, config?: RequestOptions | null, inQueue?: boolean): Promise<T>
   async request(url: URL, config: RequestOptions = {}, inQueue = false) {
-    if (!this.tokenIsValid) return null;
+    if (!this.authorized) return null;
 
     if (this.limited) {
-      this.extension.emit("rateLimited", { reset: this.reset, time: this.time });
+      this.core.emit("rateLimited", { reset: this.reset, time: this.time });
       return null;
     }
 
@@ -97,7 +97,7 @@ export default class REST extends EventEmitter {
       }
     }
 
-    queueMicrotask(() => this.extension.emit("debug",
+    queueMicrotask(() => this.core.emit("debug",
       "Request:", pathname,
       "Headers:", Object.entries(config.headers!).map(([k, v]) => `${k}:${typeof v}(${`${v}`.length})`).join(" "),
     ));
@@ -107,7 +107,7 @@ export default class REST extends EventEmitter {
     try {
       response = await fetch(url, config);
     } catch {
-      this.extension.emit("missingConnection");
+      this.core.emit("missingConnection");
       throw Error(t("missing.connection"));
     } finally {
       if (inQueue) {
@@ -124,8 +124,7 @@ export default class REST extends EventEmitter {
     if (!response.ok) {
       switch (response.status) {
         case 401:
-          this.tokenIsValid = false;
-          this.extension.emit("unauthorized");
+          this.core.emit("unauthorized");
           break;
       }
 

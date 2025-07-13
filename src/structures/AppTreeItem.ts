@@ -3,7 +3,7 @@ import { calculatePercentage, type ApiStatusApp } from "discloud.app";
 import { TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
-import extension from "../extension";
+import core from "../extension";
 import { ConfigKeys } from "../util/constants";
 import { getIconName, getIconPath } from "../util/utils";
 import AppChildTreeItem from "./AppChildTreeItem";
@@ -27,11 +27,11 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
   declare readonly type: AppType;
 
   get output() {
-    return extension.getLogOutputChannel(this.appId);
+    return core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
-    extension.logOutputChannels.delete(this.appId);
+    core.logOutputChannels.delete(this.appId);
 
     this.output.dispose();
 
@@ -65,7 +65,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
-    const showAvatar = extension.config.get<string>(ConfigKeys.appShowAvatarInsteadStatus);
+    const showAvatar = core.config.get<string>(ConfigKeys.appShowAvatarInsteadStatus);
 
     switch (showAvatar) {
       case "always": {

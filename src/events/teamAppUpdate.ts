@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import extension from "../extension";
+import core from "../extension";
 import { ConfigKeys } from "../util/constants";
 
-extension.on("teamAppUpdate", async function (oldApp, newApp) {
-  if (!extension.config.get<boolean>(ConfigKeys.teamAppNotificationStatus)) return;
+core.on("teamAppUpdate", async function (oldApp, newApp) {
+  if (!core.config.get<boolean>(ConfigKeys.teamAppNotificationStatus)) return;
 
   const messageList: string[] = [];
 

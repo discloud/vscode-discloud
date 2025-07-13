@@ -56,6 +56,11 @@
         "icon": "$(log-in)"
       },
       {
+        "command": "discloud.logout",
+        "title": "%command.logout%",
+        "icon": "$(log-out)"
+      },
+      {
         "command": "discloud.logs",
         "title": "%command.logs%",
         "icon": "$(console)"
@@ -579,6 +584,10 @@
           "when": "workspaceFolderCount"
         },
         {
+          "command": "discloud.logout",
+          "when": "discloudAuthorized"
+        },
+        {
           "command": "discloud.logs",
           "when": "never"
         },
@@ -812,7 +821,7 @@
         },
         {
           "command": "discloud.user.set.locale",
-          "when": "discloudAuthAuthorized"
+          "when": "discloudAuthorized"
         }
       ],
       "view/item/context": [
@@ -959,18 +968,18 @@
         },
         {
           "command": "discloud.user.set.locale",
-          "when": "view == discloudUser && discloudAuthAuthorized"
+          "when": "view == discloudUser && discloudAuthorized"
         }
       ],
       "view/title": [
         {
           "command": "discloud.upload",
-          "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthAuthorized",
+          "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthorized",
           "group": "navigation"
         },
         {
           "command": "discloud.apps.refresh",
-          "when": "view == discloudUserApps && discloudAuthAuthorized",
+          "when": "view == discloudUserApps && discloudAuthorized",
           "group": "navigation"
         },
         {
@@ -1026,7 +1035,7 @@
       "discloudsub": [
         {
           "command": "discloud.commit",
-          "when": "workspaceFolderCount && discloudAuthAuthorized",
+          "when": "workspaceFolderCount && discloudAuthorized",
           "group": "0"
         },
         {
@@ -1036,7 +1045,7 @@
         },
         {
           "command": "discloud.upload",
-          "when": "workspaceFolderCount && discloudAuthAuthorized",
+          "when": "workspaceFolderCount && discloudAuthorized",
           "group": "0"
         }
       ],
@@ -1172,7 +1181,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
-          "when": "discloudAuthAuthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1180,7 +1189,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthAuthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1188,7 +1197,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthAuthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1196,7 +1205,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthAuthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1220,17 +1229,17 @@
       {
         "view": "discloudUserApps",
         "contents": "%welcome%",
-        "when": "discloudAuthAuthorized"
+        "when": "discloudAuthorized"
       },
       {
         "view": "discloudUser",
         "contents": "%welcome.token.missing%",
-        "when": "!discloudAuthAuthorized"
+        "when": "!discloudAuthorized"
       },
       {
         "view": "discloudUser",
         "contents": "%welcome.token.unauthorized%",
-        "when": "discloudAuthUnauthorized"
+        "when": "discloudUnauthorized"
       }
     ],
     "walkthroughs": [
@@ -1247,7 +1256,7 @@
               "markdown": "resources/walkthrough/bar.md"
             },
             "completionEvents": [
-              "onContext:discloudAuthAuthorized"
+              "onContext:discloudAuthorized"
             ]
           }
         ]

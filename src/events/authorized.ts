@@ -1,15 +1,15 @@
 import { commands } from "vscode";
-import extension from "../extension";
+import core from "../extension";
 
-extension.on("authorized", async function () {
+core.on("authorized", async function () {
   await Promise.all([
-    commands.executeCommand("setContext", "discloudAuthAuthorized", true),
-    commands.executeCommand("setContext", "discloudAuthUnauthorized", false),
+    commands.executeCommand("setContext", "discloudAuthorized", true),
+    commands.executeCommand("setContext", "discloudUnauthorized", false),
   ]);
 
-  extension.api.tokenIsValid = true;
+  core.api.authorized = true;
 
-  await extension.statusBar.setDefault();
+  core.statusBar.reset();
 
-  extension.logger.info("Authorized");
+  core.logger.info("Authorized");
 });

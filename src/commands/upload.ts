@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { DiscloudConfig, resolveFile, type RESTPostApiUploadResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation, Uri } from "vscode";
 import { type TaskData } from "../@types";
-import extension from "../extension";
+import core from "../extension";
 import { socketUpload } from "../services/discloud/socket/actions/upload";
 import Command from "../structures/Command";
 import FileSystem from "../util/FileSystem";
@@ -20,13 +20,13 @@ export default class extends Command {
   }
 
   async run(task: TaskData) {
-    const workspaceFolder = await extension.getWorkspaceFolder({ token: task.token });
+    const workspaceFolder = await core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    extension.statusBar.setUploading();
+    core.statusBar.setUploading();
 
     task.progress.report({ increment: 30, message: t("files.checking") });
 
@@ -38,7 +38,7 @@ export default class extends Command {
     const fs = new FileSystem({
       cwd: workspaceFolder.fsPath,
       ignoreFile: ".discloudignore",
-      ignoreList: extension.workspaceIgnoreList,
+      ignoreList: core.workspaceIgnoreList,
     });
 
     const found = await fs.findFiles(task.token);
@@ -60,7 +60,7 @@ export default class extends Command {
 
     const buffer = await zipper.getBuffer();
 
-    const strategy = extension.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
+    const strategy = core.config.get(ConfigKeys.apiActionsStrategy, ApiActionsStrategy.socket);
 
     await this[strategy](task, buffer, dConfig);
   }
@@ -72,7 +72,7 @@ export default class extends Command {
 
     const files: File[] = [file];
 
-    const response = await extension.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
+    const response = await core.api.post<RESTPostApiUploadResult>(Routes.upload(), { files });
 
     if (!response) return;
 
@@ -81,7 +81,7 @@ export default class extends Command {
 
       if ("app" in response && response.app) {
         dConfig.update({ ID: response.app.id, AVATAR: response.app.avatarURL });
-        await extension.appTree.fetch();
+        await core.appTree.fetch();
       }
 
       if (response.logs) {

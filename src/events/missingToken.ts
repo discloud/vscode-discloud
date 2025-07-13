@@ -1,9 +1,15 @@
 import { t } from "@vscode/l10n";
-import extension from "../extension";
+import { commands } from "vscode";
+import core from "../extension";
 
-extension.on("missingToken", async function () {
-  extension.userTree.clear();
-  extension.statusBar.setLogin();
+core.on("missingToken", async function () {
+  await Promise.all([
+    commands.executeCommand("setContext", "discloudAuthorized", false),
+    commands.executeCommand("setContext", "discloudUnauthorized", false),
+  ]);
 
-  extension.logger.warn(t("missing.token"));
+  core.userTree.clear();
+  core.statusBar.setLogin();
+
+  core.logger.warn(t("missing.token"));
 });

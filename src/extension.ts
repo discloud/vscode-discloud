@@ -1,17 +1,17 @@
 import { type ExtensionContext } from "vscode";
+import ExtensionCore from "./core/extension";
 import { localize } from "./localize";
-import Discloud from "./structures/Discloud";
 
-const extension = new Discloud();
-export default extension;
+const core = new ExtensionCore();
+export default core;
 
 export async function activate(context: ExtensionContext) {
   await localize(context);
-  extension.setContext(context);
-  await extension.activate();
+  core.setContext(context);
+  await core.activate();
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-  extension.dispose();
+  core.dispose();
 }

@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
-import { type ExtensionContext, type ProviderResult, type TreeItem, commands, window } from "vscode";
-import extension from "../extension";
+import { type ProviderResult, type TreeItem, commands, window } from "vscode";
+import type ExtensionCore from "../core/extension";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../util/constants";
@@ -11,8 +11,8 @@ import BaseTreeDataProvider from "./BaseTreeDataProvider";
 type Item = TeamAppTreeItem
 
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> {
-  constructor(context: ExtensionContext) {
-    super(context, TreeViewIds.discloudTeamApps);
+  constructor(readonly core: ExtensionCore) {
+    super(core.context, TreeViewIds.discloudTeamApps);
   }
 
   get size() {
@@ -21,7 +21,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   protected _sort(children: TeamAppTreeItem[]) {
-    const sort = extension.config.get<string>(ConfigKeys.teamSortBy);
+    const sort = this.core.config.get<string>(ConfigKeys.teamSortBy);
 
     if (!sort) return this._sortOnline(children);
 
@@ -69,7 +69,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   protected _sortOnline(children: Item[]) {
-    const sortOnlineFirst = extension.config.get<boolean>(ConfigKeys.teamSortOnline);
+    const sortOnlineFirst = this.core.config.get<boolean>(ConfigKeys.teamSortOnline);
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online!, b.online!));
   }
 
@@ -140,7 +140,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       this.refresh(existing);
 
-      extension.emit("teamAppUpdate", clone, existing);
+      this.core.emit("teamAppUpdate", clone, existing);
 
       if (returnBoolean) return false;
     } else {
@@ -163,7 +163,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      extension.emit("teamAppUpdate", clone, app);
+      this.core.emit("teamAppUpdate", clone, app);
 
       this.refresh(app);
 
@@ -176,7 +176,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   async getApps(isInternal?: boolean) {
     const method = isInternal ? "queueGet" : "get";
 
-    const response = await extension.api[method]<RESTGetApiTeamResult>("/team");
+    const response = await this.core.api[method]<RESTGetApiTeamResult>("/team");
 
     if (!response) return;
 
@@ -196,7 +196,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   async getStatus(appId: string) {
-    const response = await extension.api.queueGet<RESTGetApiAppStatusResult>(Routes.teamStatus(appId));
+    const response = await this.core.api.queueGet<RESTGetApiAppStatusResult>(Routes.teamStatus(appId));
 
     if (!response) return;
 

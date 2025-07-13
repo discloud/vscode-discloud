@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { type RESTPutApiAppStartResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
@@ -20,13 +20,13 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const response = await extension.api.put<RESTPutApiAppStartResult>(Routes.teamStop(item.appId));
+    const response = await core.api.put<RESTPutApiAppStartResult>(Routes.teamStop(item.appId));
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await extension.teamAppTree.fetch();
+      await core.teamAppTree.fetch();
     }
   }
 }

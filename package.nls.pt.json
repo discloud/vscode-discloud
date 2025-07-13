@@ -2,6 +2,7 @@
   "command.create.config": "Criar discloud.config",
   "command.commit": "Commitar para Discloud",
   "command.login": "Login Discloud",
+  "command.logout": "Logout Discloud",
   "command.logs": "Obter logs do app",
   "command.upload": "Upload para Discloud",
   "command.apps.backup": "Backup do app",

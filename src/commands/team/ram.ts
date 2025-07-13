@@ -3,7 +3,7 @@ import { type RESTPutApiAppRamResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
-import extension from "../../extension";
+import core from "../../extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import InputBox from "../../util/Input";
@@ -32,13 +32,13 @@ export default class extends Command {
     if (!await this.confirmAction())
       throw new CancellationError();
 
-    const response = await extension.api.put<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), { body: { ramMB } });
+    const response = await core.api.put<RESTPutApiAppRamResult>(Routes.teamRam(item.appId), { body: { ramMB } });
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await extension.teamAppTree.fetch();
+      await core.teamAppTree.fetch();
     }
   }
 }
