@@ -13,13 +13,16 @@ export function tokenIsDiscloudJwt(token: string): boolean {
 
 export async function tokenValidator(token: string) {
   try {
+    const oldToken = await extension.getToken();
+
     if (!tokenIsDiscloudJwt(token)) {
-      if (extension.token === token) extension.emit("unauthorized");
+      if (oldToken === token) extension.emit("unauthorized");
       return false;
     }
 
-    if (extension.token === token) {
+    if (oldToken === token) {
       extension.api.tokenIsValid = true;
+      extension.emit("authorized");
       await extension.user.fetch(true);
       return true;
     }
@@ -42,6 +45,7 @@ export async function tokenValidator(token: string) {
     if (error instanceof DiscloudAPIError) {
       switch (error.code) {
         case 401:
+          await extension.setToken();
           extension.emit("unauthorized");
           return false;
       }

@@ -11,7 +11,7 @@ export default class extends Command {
 
   async run(_: TaskData, item: AppTreeItem) {
     const terminal = window.createTerminal({
-      env: { DISCLOUD_TOKEN: extension.token },
+      env: { DISCLOUD_TOKEN: await extension.getToken() },
       iconPath: item.iconPath as Uri,
       name: typeof item.label === "string" ? item.label : item.appId,
     });

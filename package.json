@@ -358,6 +358,7 @@
           },
           "discloud.token": {
             "type": "string",
+            "deprecationMessage": "%config.deprecation.message%",
             "markdownDescription": "%config.token.description%"
           },
           "discloud.users": {
@@ -578,12 +579,8 @@
           "when": "workspaceFolderCount"
         },
         {
-          "command": "discloud.login",
-          "when": "true"
-        },
-        {
           "command": "discloud.logs",
-          "when": "false"
+          "when": "never"
         },
         {
           "command": "discloud.upload",
@@ -639,7 +636,7 @@
         },
         {
           "command": "discloud.apps.refresh",
-          "when": "config.discloud.token"
+          "when": "never"
         },
         {
           "command": "discloud.apps.restart",
@@ -719,11 +716,11 @@
         },
         {
           "command": "discloud.domain.refresh",
-          "when": "config.discloud.token"
+          "when": "never"
         },
         {
           "command": "discloud.subdomain.refresh",
-          "when": "config.discloud.token"
+          "when": "never"
         },
         {
           "command": "discloud.team.backup",
@@ -751,7 +748,7 @@
         },
         {
           "command": "discloud.team.refresh",
-          "when": "config.discloud.token"
+          "when": "never"
         },
         {
           "command": "discloud.team.restart",
@@ -815,7 +812,7 @@
         },
         {
           "command": "discloud.user.set.locale",
-          "when": "config.discloud.token"
+          "when": "discloudAuthAuthorized"
         }
       ],
       "view/item/context": [
@@ -962,18 +959,18 @@
         },
         {
           "command": "discloud.user.set.locale",
-          "when": "view == discloudUser && config.discloud.token"
+          "when": "view == discloudUser && discloudAuthAuthorized"
         }
       ],
       "view/title": [
         {
           "command": "discloud.upload",
-          "when": "view == discloudUserApps && workspaceFolderCount && !discloudTokenUnauthorized",
+          "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthAuthorized",
           "group": "navigation"
         },
         {
           "command": "discloud.apps.refresh",
-          "when": "view == discloudUserApps && !discloudTokenUnauthorized",
+          "when": "view == discloudUserApps && discloudAuthAuthorized",
           "group": "navigation"
         },
         {
@@ -1029,7 +1026,7 @@
       "discloudsub": [
         {
           "command": "discloud.commit",
-          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized",
+          "when": "workspaceFolderCount && discloudAuthAuthorized",
           "group": "0"
         },
         {
@@ -1039,7 +1036,7 @@
         },
         {
           "command": "discloud.upload",
-          "when": "workspaceFolderCount && config.discloud.token && !discloudTokenUnauthorized",
+          "when": "workspaceFolderCount && discloudAuthAuthorized",
           "group": "0"
         }
       ],
@@ -1175,7 +1172,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
-          "when": "config.discloud.token && !discloudTokenUnauthorized"
+          "when": "discloudAuthAuthorized"
         },
         {
           "type": "tree",
@@ -1183,7 +1180,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
-          "when": "config.discloud.token && !discloudTokenUnauthorized"
+          "when": "discloudAuthAuthorized"
         },
         {
           "type": "tree",
@@ -1191,7 +1188,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
-          "when": "config.discloud.token && !discloudTokenUnauthorized"
+          "when": "discloudAuthAuthorized"
         },
         {
           "type": "tree",
@@ -1199,7 +1196,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "config.discloud.token && !discloudTokenUnauthorized"
+          "when": "discloudAuthAuthorized"
         },
         {
           "type": "tree",
@@ -1223,17 +1220,17 @@
       {
         "view": "discloudUserApps",
         "contents": "%welcome%",
-        "when": "config.discloud.token"
+        "when": "discloudAuthAuthorized"
       },
       {
         "view": "discloudUser",
         "contents": "%welcome.token.missing%",
-        "when": "!config.discloud.token"
+        "when": "!discloudAuthAuthorized"
       },
       {
         "view": "discloudUser",
         "contents": "%welcome.token.unauthorized%",
-        "when": "config.discloud.token && discloudTokenUnauthorized"
+        "when": "discloudAuthUnauthorized"
       }
     ],
     "walkthroughs": [
@@ -1250,7 +1247,7 @@
               "markdown": "resources/walkthrough/bar.md"
             },
             "completionEvents": [
-              "onSettingChanged:discloud.token"
+              "onContext:discloudAuthAuthorized"
             ]
           }
         ]

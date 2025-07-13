@@ -1,4 +1,5 @@
 /* eslint-disable no-duplicate-imports */
+import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
 import type Command from "./structures/Command";
 import { type CommandConstructor } from "./structures/Command";
@@ -122,7 +123,10 @@ function commandRegister(
 
   const disposable = commands.registerCommand(commandName, async function (...args) {
     if (!command.data.allowTokenless)
-      if (!extension.hasToken) return;
+      if (!await extension.getToken()) {
+        await window.showErrorMessage(t("missing.token"));
+        return;
+      }
 
     try {
       if (command.data.progress) {

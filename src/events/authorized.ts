@@ -2,8 +2,10 @@ import { commands } from "vscode";
 import extension from "../extension";
 
 extension.on("authorized", async function () {
-  commands.executeCommand("setContext", "discloudTokenAuthorized", true);
-  commands.executeCommand("setContext", "discloudTokenUnauthorized", false);
+  await Promise.all([
+    commands.executeCommand("setContext", "discloudAuthAuthorized", true),
+    commands.executeCommand("setContext", "discloudAuthUnauthorized", false),
+  ]);
 
   extension.api.tokenIsValid = true;
 

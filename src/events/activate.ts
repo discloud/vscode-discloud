@@ -4,7 +4,7 @@ import BaseLanguageProvider from "../providers/BaseLanguageProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
 import { tokenValidator } from "../services/discloud/utils";
-import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
+import { ConfigKeys, DISCLOUD_CONFIG_SCHEMA_FILE_NAME } from "../util/constants";
 
 extension.on("activate", async function (context) {
   try {
@@ -19,16 +19,6 @@ extension.on("activate", async function (context) {
   }
 
   const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
-    if (event.affectsConfiguration("discloud.token")) {
-      if (extension.token) {
-        tokenValidator(extension.token);
-      } else {
-        extension.emit("missingToken");
-      }
-
-      return;
-    }
-
     if (event.affectsConfiguration("discloud.app.sort")) {
       extension.appTree.refresh();
 
@@ -68,7 +58,14 @@ extension.on("activate", async function (context) {
 
   extension.logger.info("Activate: done");
 
-  if (extension.token) await tokenValidator(extension.token);
+  const oldConfigToken = extension.config.get<string>(ConfigKeys.token);
+  if (oldConfigToken) {
+    await extension.config.update(ConfigKeys.token, undefined, true);
+    await extension.setToken(oldConfigToken);
+  }
+
+  const token = await extension.getToken();
+  if (token) await tokenValidator(token);
 
   extension.statusBar.reset();
 });

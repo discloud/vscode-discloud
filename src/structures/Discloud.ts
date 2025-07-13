@@ -12,7 +12,7 @@ import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
-import { ConfigKeys } from "../util/constants";
+import { ConfigKeys, SecretKeys } from "../util/constants";
 import FileSystem from "../util/FileSystem";
 import type Command from "./Command";
 import DiscloudStatusBarItem from "./DiscloudStatusBarItem";
@@ -40,12 +40,6 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return workspace.getConfiguration("discloud");
   }
 
-  get hasToken() {
-    if (this.token) return true;
-    window.showErrorMessage(t("missing.token"));
-    return false;
-  }
-
   get isDebug() {
     return Boolean(this.config.get<boolean>(ConfigKeys.debug));
   }
@@ -54,13 +48,13 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return this.getLogOutputChannel("Discloud");
   }
 
+  get secrets() {
+    return this.context.secrets;
+  }
+
   get singleWorkspaceFolder() {
     const folders = workspace.workspaceFolders;
     if (folders?.length === 1) return folders[0].uri;
-  }
-
-  get token() {
-    return this.config.get<string>(ConfigKeys.token);
   }
 
   get workspaceAvailable() {
@@ -85,6 +79,13 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
   debug(...args: Parameters<LogOutputChannel["debug"]>) {
     this.emit("debug", ...args);
+  }
+
+  dispose() {
+    this.removeAllListeners();
+    this.commands.clear();
+    this.logOutputChannels.clear();
+    this.outputChannels.clear();
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
@@ -124,6 +125,10 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     return this.outputChannels.get(key) ?? this._createOutputChannel(key);
   }
 
+  getToken() {
+    return this.secrets.get(SecretKeys.token);
+  }
+
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
     options ??= {};
 
@@ -153,8 +158,19 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     }
   }
 
+  async hasToken() {
+    if (await this.getToken()) return true;
+    window.showErrorMessage(t("missing.token"));
+    return false;
+  }
+
   setContext(context: ExtensionContext) {
     Object.defineProperty(this, "context", { value: context });
+  }
+
+  setToken(token?: string | null) {
+    if (typeof token === "string") return this.context.secrets.store(SecretKeys.token, token);
+    return this.context.secrets.delete(SecretKeys.token);
   }
 
   #loadStatusBar(context: ExtensionContext = this.context) {
@@ -183,10 +199,7 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
 
     const userAgent = new UserAgent(version);
 
-    Object.defineProperties(this, {
-      // @ts-expect-error ts(2345) `this`
-      api: { value: new REST(this, { userAgent }) },
-    });
+    Object.defineProperties(this, { api: { value: new REST(this, { userAgent }) } });
 
     await loadEvents(this);
     await commandsRegister(this);
@@ -194,12 +207,5 @@ export default class Discloud extends EventEmitter<Events> implements Disposable
     this.#loadTreeViews();
 
     this.emit("activate", context);
-  }
-
-  dispose() {
-    this.removeAllListeners();
-    this.commands.clear();
-    this.logOutputChannels.clear();
-    this.outputChannels.clear();
   }
 }

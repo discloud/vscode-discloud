@@ -109,8 +109,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     }
   }
 
-  #createWebSocket() {
-    return new Promise<void>((resolve, reject) => {
+  async #createWebSocket() {
+    const headers = await this.#resolveHeaders(this._headers);
+
+    return await new Promise<void>((resolve, reject) => {
       if (this.connecting) return this.#waitConnect().then(resolve).catch(reject);
 
       if (this.connected) return resolve();
@@ -118,7 +120,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
       this.emit("connecting");
 
       const options: ConstructorParameters<typeof WebSocket>[2] = {
-        headers: this.#resolveHeaders(this._headers),
+        headers,
         ...typeof this._connectingTimeout === "number"
           ? { signal: AbortSignal.timeout(this._connectingTimeout) }
           : {},
@@ -181,8 +183,8 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  #resolveHeaders(headers: Record<string, string>) {
-    headers["api-token"] ??= extension.api.token!;
+  async #resolveHeaders(headers: Record<string, string>) {
+    headers["api-token"] ??= (await extension.api.getToken())!;
 
     if (extension.api.options.userAgent)
       headers["User-Agent"] = extension.api.options.userAgent.toString();
