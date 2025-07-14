@@ -16,14 +16,14 @@ export default class Zip {
     for (const uri of uriList) {
       if (zipped.has(uri.fsPath)) continue;
 
-      const name = workspace.asRelativePath(uri.fsPath, false);
+      const name = workspace.asRelativePath(uri, false);
       if (!name) continue;
 
-      let stats;
-      try { stats = await workspace.fs.stat(uri); }
+      let fileStat;
+      try { fileStat = await workspace.fs.stat(uri); }
       catch { continue; }
 
-      if (stats.type !== FileType.File) continue;
+      if (fileStat.type !== FileType.File) continue;
 
       zipped.add(uri.fsPath);
 
