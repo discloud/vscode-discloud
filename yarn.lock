@@ -24,7 +24,7 @@
     source-map-support "^0.5.21"
     tslib "^2.8.1"
 
-"@discloudapp/util@^1.2.2":
+"@discloudapp/util@^1.2.2", "@discloudapp/util@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-1.2.3.tgz#e35b1b2c96e39971f5d4aac782d51e6753e47334"
   integrity sha512-UF0Qk0xZLa5yhvspt7Cl/Z4khaQ1qaFMhaPvHz01TTj3WoZhndP+OAolst8CSCFhYWEVxZGTfBg1LyI0md9Wmg==
@@ -983,17 +983,17 @@ diff@^7.0.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-7.0.0.tgz#3fb34d387cd76d803f6eebea67b921dab0182a9a"
   integrity sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==
 
-discloud.app@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.0.7.tgz#125b47aacfc856cd1c0a3abf35b2ae5b74b4f0e6"
-  integrity sha512-eNFueO6tv/u8MkYz1Cvxr0DjXNklRq6wUpaokMdiini852TrWHt5JOuDvvulnufht+4sFsRlWJnk36FNrWUZwQ==
+discloud.app@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.1.0.tgz#51eb66f1b006b61ca4b157998261f648c1905748"
+  integrity sha512-GG7TqQxpUl72ytdTDxPlC5QRAZAarWSm9/qWIVxR7QzXnhc6Nog6xyKesJyNArVEaX2h/8rFLk/Q+tv57z2GCQ==
   dependencies:
     "@discloudapp/api-types" "^1.0.2"
     "@discloudapp/rest" "^1.0.7"
-    "@discloudapp/util" "^1.2.2"
+    "@discloudapp/util" "^1.2.3"
     source-map-support "^0.5.21"
     tslib "^2.8.1"
-    zod "^3.25.67"
+    zod "^3.25.76"
 
 discontinuous-range@1.0.0:
   version "1.0.0"
@@ -3351,7 +3351,7 @@ zod-validation-error@^3.5.2:
   resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.5.2.tgz#5af463c1acd4662e6b2610a75260931dbcb43a56"
   integrity sha512-mdi7YOLtram5dzJ5aDtm1AG9+mxRma1iaMrZdYIpFO7epdKBUwLHIxTF8CPDeCQ828zAXYtizrKlEJAtzgfgrw==
 
-zod@^3.25.67:
-  version "3.25.74"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.74.tgz#9368a3986fe756bd94b9a5baad9919660ff3f250"
-  integrity sha512-J8poo92VuhKjNknViHRAIuuN6li/EwFbAC8OedzI8uxpEPGiXHGQu9wemIAioIpqgfB4SySaJhdk0mH5Y4ICBg==
+zod@^3.25.67, zod@^3.25.76:
+  version "3.25.76"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
+  integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==
