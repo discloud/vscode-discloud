@@ -7,15 +7,11 @@ import DiscloudAPIError from "../services/discloud/errors/api";
 core.on("error", async function (error: any) {
   if (!error) return;
 
-  if (error instanceof CancellationError) {
-    await window.showWarningMessage(t("action.cancelled"));
-    return;
-  }
+  if (error instanceof CancellationError)
+    return void window.showWarningMessage(t("action.cancelled"));
 
-  if (error instanceof WarningError) {
-    await window.showWarningMessage(error.message);
-    return;
-  }
+  if (error instanceof WarningError)
+    return void window.showWarningMessage(error.message);
 
   const metadata = [
     "",
@@ -26,8 +22,7 @@ core.on("error", async function (error: any) {
   if (error instanceof DiscloudAPIError) {
     if (error.code > 499) {
       core.logger.error(`Server error ${error.code}`, metadata);
-      await window.showErrorMessage(`Server error ${error.code}`);
-      return;
+      return void window.showErrorMessage(`Server error ${error.code}`);
     }
   }
 
@@ -39,9 +34,9 @@ core.on("error", async function (error: any) {
     const buttonLabel = error.body.button.label;
     const buttonUrl = error.body.button.url;
     const action = await window.showErrorMessage(message, buttonLabel);
-    if (action === buttonLabel) await commands.executeCommand("vscode.open", buttonUrl);
+    if (action === buttonLabel) void commands.executeCommand("vscode.open", buttonUrl);
     return;
   }
 
-  await window.showErrorMessage(message);
+  void window.showErrorMessage(message);
 });

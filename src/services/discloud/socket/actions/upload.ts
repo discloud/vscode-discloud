@@ -51,10 +51,8 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
 
         setTimeout(() => logger.dispose(), 60_000);
 
-        if (code !== 1000) {
-          await window.showErrorMessage(t(`socket.close.${code}`));
-          return;
-        }
+        if (code !== 1000)
+          return void window.showErrorMessage(t(`socket.close.${code}`));
 
         return logger.appendLine(t("done"));
       })

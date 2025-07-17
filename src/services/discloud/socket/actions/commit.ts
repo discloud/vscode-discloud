@@ -52,10 +52,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
         resolve();
 
-        if (code !== 1000) {
-          await window.showErrorMessage(t(`socket.close.${code}`));
-          return;
-        }
+        if (code !== 1000)
+          return void window.showErrorMessage(t(`socket.close.${code}`));
 
         if (!reason.length) return app.output.append(t("done"));
 

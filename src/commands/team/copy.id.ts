@@ -14,6 +14,6 @@ export default class extends Command {
   async run(_: TaskData, item: TeamAppTreeItem) {
     await env.clipboard.writeText(item.appId);
 
-    await window.showInformationMessage(t("copied.team.appid"));
+    void window.showInformationMessage(t("copied.team.appid"));
   }
 }

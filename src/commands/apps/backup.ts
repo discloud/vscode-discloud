@@ -21,7 +21,7 @@ export default class extends Command {
   async run(task: TaskData, item: AppTreeItem) {
     const workspaceAvailable = core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = await core.getWorkspaceFolder();
+    if (workspaceAvailable) workspaceFolder = await core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) {
       workspaceFolder = await core.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
@@ -44,6 +44,6 @@ export default class extends Command {
 
     await workspace.fs.writeFile(backupZipUri, Buffer.from(await backup.arrayBuffer()));
 
-    await window.showInformationMessage(t("backup.success", { dir: backupZipUri.fsPath }));
+    void window.showInformationMessage(t("backup.success", { dir: backupZipUri.fsPath }));
   }
 }

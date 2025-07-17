@@ -90,7 +90,7 @@ export default class REST extends EventEmitter {
       if (this.limited) return null;
     } else {
       if (this.#noQueueProcesses.length) {
-        await window.showErrorMessage(t("process.already.running", this.#noQueueProcesses.length));
+        void window.showErrorMessage(t("process.already.running", this.#noQueueProcesses.length));
         return null;
       } else {
         this.#noQueueProcesses.push(processKey);

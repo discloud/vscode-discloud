@@ -13,7 +13,7 @@ core.on("rateLimited", async function (rateLimitData) {
 
   core.logger.warn("Rate limited by " + time + " seconds");
 
-  await window.showInformationMessage(t("ratelimited", { s: time }));
+  void window.showInformationMessage(t("ratelimited", { s: time }));
 
   core.statusBar.setRateLimited(true);
 

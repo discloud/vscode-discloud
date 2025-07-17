@@ -31,6 +31,6 @@ export default class extends Command {
 
     await core.secrets.setToken(input);
 
-    await window.showInformationMessage(t("valid.token"));
+    void window.showInformationMessage(t("valid.token"));
   }
 }

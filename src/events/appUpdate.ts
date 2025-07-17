@@ -18,5 +18,5 @@ core.on("appUpdate", async function (oldApp, newApp) {
   }
 
   if (messageList.length)
-    await window.showInformationMessage(messageList.join("\n"));
+    void window.showInformationMessage(messageList.join("\n"));
 });

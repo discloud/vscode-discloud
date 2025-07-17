@@ -55,7 +55,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
         if (!document.uri._discloudDiscloudHasWrongLocationWarned) {
           // @ts-expect-error ts(2339)
           document.uri._discloudDiscloudHasWrongLocationWarned = true;
-          await window.showErrorMessage(t("diagnostic.wrong.file.location"));
+          void window.showErrorMessage(t("diagnostic.wrong.file.location"));
         }
 
         diagnostics.push({

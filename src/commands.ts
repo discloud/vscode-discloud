@@ -122,10 +122,8 @@ function commandRegister(
 
   const disposable = commands.registerCommand(commandName, async function (...args) {
     if (!command.data.allowTokenless)
-      if (!await core.secrets.getToken()) {
-        await window.showErrorMessage(t("missing.token"));
-        return;
-      }
+      if (!await core.secrets.getToken()) 
+        return void window.showErrorMessage(t("missing.token"));
 
     try {
       if (command.data.progress) {
