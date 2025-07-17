@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.25.1
+
+- Melhorado o tratamento de operações assíncronas e o estilo do código.
+
 ## 2.25.0
 
 - O armazenamento de tokens foi migrado da configuração para o armazenamento secreto
