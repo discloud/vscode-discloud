@@ -1,12 +1,12 @@
 import { t } from "@vscode/l10n";
 import { CancellationError, commands, window } from "vscode";
 import { type TaskData } from "../../@types";
-import core from "../../extension";
+import type ExtensionCore from "../../core/extension";
 import DiscloudAPIError from "../../services/discloud/errors/api";
 import Command from "../../structures/Command";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super();
   }
 
@@ -33,7 +33,7 @@ export default class extends Command {
       throw new CancellationError();
 
     try {
-      const response = await core.user.setLocale(locale);
+      const response = await this.core.user.setLocale(locale);
       if (!response) return;
 
       if (response.status === "ok")

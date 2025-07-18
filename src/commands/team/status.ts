@@ -1,12 +1,12 @@
 import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import core from "../../extension";
+import type ExtensionCore from "../../core/extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       progress: {
         location: ProgressLocation.Notification,
@@ -16,6 +16,6 @@ export default class extends Command {
   }
 
   async run(_: TaskData, item: TeamAppTreeItem) {
-    await core.teamAppTree.getStatus(item.appId);
+    await this.core.teamAppTree.getStatus(item.appId);
   }
 }

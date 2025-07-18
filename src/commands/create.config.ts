@@ -1,19 +1,19 @@
 import { t } from "@vscode/l10n";
 import { DiscloudConfig } from "discloud.app";
 import { Uri, workspace } from "vscode";
+import type ExtensionCore from "../core/extension";
 import WarningError from "../errors/warning";
-import core from "../extension";
 import Command from "../structures/Command";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       allowTokenless: true,
     });
   }
 
   async run() {
-    const workspaceFolder = await core.getWorkspaceFolder({ fallbackUserChoice: false });
+    const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const findConfig = await workspace.findFiles(DiscloudConfig.filename);

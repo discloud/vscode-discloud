@@ -2,12 +2,12 @@ import { t } from "@vscode/l10n";
 import { type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
-import core from "../../extension";
+import type ExtensionCore from "../../core/extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       progress: {
         location: ProgressLocation.Notification,
@@ -17,7 +17,7 @@ export default class extends Command {
   }
 
   async run(_: TaskData, item: TeamAppTreeItem) {
-    const response = await core.api.get<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
+    const response = await this.core.api.get<RESTGetApiAppLogResult>(Routes.teamLogs(item.appId));
     if (!response) return;
 
     if (!response.apps || !response.apps.terminal.big) throw Error(t("no.log.found"));

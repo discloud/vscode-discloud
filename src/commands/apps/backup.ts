@@ -3,13 +3,13 @@ import { type RESTGetApiAppBackupResult, Routes } from "discloud.app";
 import { existsSync } from "fs";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
-import core from "../../extension";
+import type ExtensionCore from "../../core/extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 import { ConfigKeys } from "../../utils/constants";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       progress: {
         location: ProgressLocation.Notification,
@@ -19,15 +19,15 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: AppTreeItem) {
-    const workspaceAvailable = core.workspaceAvailable;
+    const workspaceAvailable = this.core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = await core.getWorkspaceFolder({ token: task.token });
+    if (workspaceAvailable) workspaceFolder = await this.core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) {
-      workspaceFolder = await core.getFolderDialog(task);
+      workspaceFolder = await this.core.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
-    const response = await core.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
+    const response = await this.core.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
     if (!response) return;
 
     if (!response.backups) throw Error(t("no.backup.found"));
@@ -35,7 +35,7 @@ export default class extends Command {
     const backup = await fetch(response.backups.url);
     if (!backup.ok) throw Error(t("backup.request.failed"));
 
-    const configBackupDir = core.config.get<string>(ConfigKeys.appBackupDir) ?? "";
+    const configBackupDir = this.core.config.get<string>(ConfigKeys.appBackupDir) ?? "";
     const backupDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configBackupDir) : workspaceFolder;
     const backupZipUri = Uri.joinPath(backupDirUri, `${response.backups.id}.zip`);
 
