@@ -4,8 +4,8 @@ import { existsSync } from "fs";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import { ConfigKeys } from "../../utils/constants";
 
 export default class extends Command {
@@ -18,7 +18,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem) {
+  async run(task: TaskData, item: UserAppTreeItem) {
     const workspaceAvailable = this.core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
     if (workspaceAvailable) workspaceFolder = await this.core.getWorkspaceFolder({ token: task.token });

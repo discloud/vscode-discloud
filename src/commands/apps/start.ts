@@ -3,8 +3,8 @@ import { type RESTPutApiAppStartResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 
 export default class extends Command {
   constructor(readonly core: ExtensionCore) {
@@ -16,14 +16,14 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item: AppTreeItem) {
+  async run(_: TaskData, item: UserAppTreeItem) {
     const response = await this.core.api.put<RESTPutApiAppStartResult>(Routes.appStart(item.appId));
     if (!response) return;
 
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await this.core.appTree.fetch();
+      await this.core.userAppTree.fetch();
     }
   }
 }

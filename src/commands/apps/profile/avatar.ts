@@ -3,8 +3,8 @@ import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBase
 import { CancellationError } from "vscode";
 import { type TaskData } from "../../../@types";
 import type ExtensionCore from "../../../core/extension";
-import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
+import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
 import InputBox from "../../../utils/Input";
 
 export default class extends Command {
@@ -12,7 +12,7 @@ export default class extends Command {
     super();
   }
 
-  async run(_: TaskData, item: AppTreeItem) {
+  async run(_: TaskData, item: UserAppTreeItem) {
     const avatarURL = await InputBox.getExternalImageURL({
       prompt: t("input.avatar.prompt"),
       required: true,
@@ -28,7 +28,7 @@ export default class extends Command {
       this.showApiMessage(response);
 
       if (response.status === "ok") {
-        this.core.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
+        this.core.userAppTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
         const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
 

@@ -4,8 +4,8 @@ import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
 import { socketCommit } from "../../services/discloud/socket/actions/commit";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import FileSystem from "../../utils/FileSystem";
 import Zip from "../../utils/Zip";
 import { ApiActionsStrategy, ConfigKeys } from "../../utils/constants";
@@ -20,7 +20,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem) {
+  async run(task: TaskData, item: UserAppTreeItem) {
     const workspaceFolder = await this.core.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
@@ -53,7 +53,7 @@ export default class extends Command {
     await this[strategy](task, buffer, item);
   }
 
-  async rest(task: TaskData, buffer: Buffer, app: AppTreeItem) {
+  async rest(task: TaskData, buffer: Buffer, app: UserAppTreeItem) {
     task.progress.report({ increment: -1, message: t("committing") });
 
     const file = await resolveFile(buffer, "file.zip");
@@ -67,13 +67,13 @@ export default class extends Command {
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await this.core.appTree.fetch();
+      await this.core.userAppTree.fetch();
 
       if (response.logs) this.logger(app.output ?? app.appId, response.logs);
     }
   }
 
-  async socket(task: TaskData, buffer: Buffer, app: AppTreeItem) {
+  async socket(task: TaskData, buffer: Buffer, app: UserAppTreeItem) {
     await socketCommit(task, buffer, app);
   }
 }

@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
-import type AppTreeItem from "./AppTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
+import type UserAppTreeItem from "./UserAppTreeItem";
 
-export default class AppTypeTreeItemView extends BaseTreeItem<AppTreeItem> {
+export default class AppTypeTreeItemView extends BaseTreeItem<UserAppTreeItem> {
   constructor(readonly type: AppType) {
     super(t(AppType[type]), TreeItemCollapsibleState.Expanded);
     this.contextValue = this.contextKey;
@@ -27,7 +27,7 @@ export default class AppTypeTreeItemView extends BaseTreeItem<AppTreeItem> {
     this.label = `${t(AppType[this.type])} (${this.children.size})`;
   }
 
-  set(key: string, app: AppTreeItem) {
+  set(key: string, app: UserAppTreeItem) {
     this.children.set(key, app);
     this.refresh();
   }

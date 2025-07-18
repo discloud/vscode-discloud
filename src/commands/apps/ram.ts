@@ -5,8 +5,8 @@ import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
 import core from "../../extension";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import InputBox from "../../utils/Input";
 
 export default class extends Command {
@@ -19,7 +19,7 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item: AppTreeItem) {
+  async run(_: TaskData, item: UserAppTreeItem) {
     const min = item.type === AppType.site ? 512 : 100;
     const max = this.core.user.totalRamMb - (core.user.ramUsedMb - item.data.ram);
 
@@ -41,7 +41,7 @@ export default class extends Command {
     if ("status" in response) {
       this.showApiMessage(response);
 
-      await this.core.appTree.fetch();
+      await this.core.userAppTree.fetch();
     }
   }
 }

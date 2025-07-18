@@ -4,9 +4,9 @@ import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
 import { socketCommit } from "../services/discloud/socket/actions/commit";
-import AppTreeItem from "../structures/AppTreeItem";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
+import UserAppTreeItem from "../structures/UserAppTreeItem";
 import FileSystem from "../utils/FileSystem";
 import Zip from "../utils/Zip";
 import { pickApp } from "../utils/apps";
@@ -61,14 +61,14 @@ export default class extends Command {
     await this[strategy](task, buffer, item);
   }
 
-  async rest(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
+  async rest(task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
     task.progress.report({ increment: -1, message: t("committing") });
 
     const file = await resolveFile(buffer, "file.zip");
 
     const files: File[] = [file];
 
-    const isUserApp = app instanceof AppTreeItem;
+    const isUserApp = app instanceof UserAppTreeItem;
 
     const response = await this.core.api.put<RESTPutApiAppCommitResult>(
       isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId),
@@ -80,7 +80,7 @@ export default class extends Command {
       this.showApiMessage(response);
 
       if (isUserApp)
-        await this.core.appTree.fetch();
+        await this.core.userAppTree.fetch();
       else
         await this.core.teamAppTree.fetch();
 
@@ -88,7 +88,7 @@ export default class extends Command {
     }
   }
 
-  async socket(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
+  async socket(task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
     await socketCommit(task, buffer, app);
   }
 }

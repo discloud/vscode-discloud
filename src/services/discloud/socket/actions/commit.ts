@@ -5,14 +5,14 @@ import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import core from "../../../../extension";
-import AppTreeItem from "../../../../structures/AppTreeItem";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
+import UserAppTreeItem from "../../../../structures/UserAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
 
-export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeItem | TeamAppTreeItem) {
+export async function socketCommit(task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
     const debugCode = app.appId;
 
@@ -26,8 +26,8 @@ export async function socketCommit(task: TaskData, buffer: Buffer, app: AppTreeI
 
     if (buffer.length > MAX_FILE_SIZE) return reject(t("file.too.big", { value }));
 
-    const isUserApp = app instanceof AppTreeItem;
-    const appTree = isUserApp ? core.appTree : core.teamAppTree;
+    const isUserApp = app instanceof UserAppTreeItem;
+    const appTree = isUserApp ? core.userAppTree : core.teamAppTree;
 
     const url = new URL(`${core.api.baseURL}/ws${isUserApp ? Routes.appCommit(app.appId) : Routes.teamCommit(app.appId)}`);
 
