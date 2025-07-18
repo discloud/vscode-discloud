@@ -1,9 +1,9 @@
-import core from "../../../../extension";
+import type ExtensionCore from "../../../../core/extension";
 import Command from "../../../../structures/Command";
 import { ConfigKeys } from "../../../../utils/constants";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       allowTokenless: true,
     });
@@ -12,10 +12,10 @@ export default class extends Command {
   async run() {
     const configKey = ConfigKeys.teamSortBy;
 
-    const inspect = core.config.inspect<number>(configKey);
+    const inspect = this.core.config.inspect<number>(configKey);
 
     const isGlobal = !inspect?.workspaceValue;
 
-    core.config.update(configKey, "none", isGlobal);
+    this.core.config.update(configKey, "none", isGlobal);
   }
 }

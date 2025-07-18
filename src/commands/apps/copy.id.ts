@@ -1,11 +1,12 @@
 import { t } from "@vscode/l10n";
 import { env, window } from "vscode";
 import { type TaskData } from "../../@types";
+import type ExtensionCore from "../../core/extension";
 import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       allowTokenless: true,
     });

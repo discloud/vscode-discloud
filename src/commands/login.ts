@@ -1,11 +1,11 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 import { tokenIsDiscloudJwt, tokenValidator } from "../services/discloud/utils";
 import Command from "../structures/Command";
 
 export default class extends Command {
-  constructor() {
+  constructor(readonly core: ExtensionCore) {
     super({
       allowTokenless: true,
     });
@@ -29,7 +29,7 @@ export default class extends Command {
 
     if (!authorization) throw Error(t("invalid.token"));
 
-    await core.secrets.setToken(input);
+    await this.core.secrets.setToken(input);
 
     void window.showInformationMessage(t("valid.token"));
   }
