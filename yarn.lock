@@ -977,10 +977,10 @@ diff@^7.0.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-7.0.0.tgz#3fb34d387cd76d803f6eebea67b921dab0182a9a"
   integrity sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==
 
-discloud.app@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.1.0.tgz#51eb66f1b006b61ca4b157998261f648c1905748"
-  integrity sha512-GG7TqQxpUl72ytdTDxPlC5QRAZAarWSm9/qWIVxR7QzXnhc6Nog6xyKesJyNArVEaX2h/8rFLk/Q+tv57z2GCQ==
+discloud.app@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.1.1.tgz#067117e5b5b291fdbba2c6db310352bc97de4b96"
+  integrity sha512-AbjAh1cpiThNwirDrrYF7C4QjL3tBI0cL3uQD0r/bAsto3oHFe162SrmqFI9xzB5Z8P/8kLH61ykpYAWQcXfaA==
   dependencies:
     "@discloudapp/api-types" "^1.0.2"
     "@discloudapp/rest" "^1.0.7"
