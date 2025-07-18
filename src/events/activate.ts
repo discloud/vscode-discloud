@@ -20,7 +20,7 @@ core.on("activate", async function (context) {
 
   const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.app.sort")) {
-      core.appTree.refresh();
+      core.userAppTree.refresh();
 
       return;
     }
@@ -32,17 +32,17 @@ core.on("activate", async function (context) {
     }
 
     if (event.affectsConfiguration("discloud.app.separate.by.type")) {
-      core.appTree.refresh();
+      core.userAppTree.refresh();
 
       return;
     }
 
     if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
-      for (const app of core.appTree.children.values()) {
+      for (const app of core.userAppTree.children.values()) {
         app._patch({});
       }
 
-      core.appTree.refresh();
+      core.userAppTree.refresh();
 
       return;
     }

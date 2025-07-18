@@ -81,7 +81,7 @@ export default class extends Command {
 
       if ("app" in response && response.app) {
         dConfig.update({ ID: response.app.id, AVATAR: response.app.avatarURL });
-        await this.core.appTree.fetch();
+        await this.core.userAppTree.fetch();
       }
 
       if (response.logs) {

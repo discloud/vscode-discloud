@@ -1,7 +1,7 @@
 import type { CancellationToken, ExtensionContext, LogOutputChannel, ProgressOptions, StatusBarItem, TreeItem, Uri, window } from "vscode";
-import type AppTreeItem from "../structures/AppTreeItem";
 import type BaseChildTreeItem from "../structures/BaseChildTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
+import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import type { RateLimitData } from "./rest";
 
@@ -47,7 +47,7 @@ export interface BaseChildTreeItemData extends Omit<TreeItem, "id"> {
   label: NonNullable<TreeItem["label"]>
 }
 
-export interface AppChildTreeItemData extends BaseChildTreeItemData {
+export interface UserAppChildTreeItemData extends BaseChildTreeItemData {
   appId: string
   appType: number
   online: boolean
@@ -55,9 +55,9 @@ export interface AppChildTreeItemData extends BaseChildTreeItemData {
   iconName: string
 }
 
-export interface AppTreeItemData extends BaseTreeItemData {
+export interface UserAppTreeItemData extends BaseTreeItemData {
   appId: string
-  children: AppTreeItem[]
+  children: UserAppTreeItem[]
   description: string
   iconName: string
   memoryUsage: number
@@ -102,7 +102,7 @@ export interface UserTreeItemData extends BaseTreeItemData {
 
 export interface Events {
   activate: [context: ExtensionContext]
-  appUpdate: [oldApp: AppTreeItem, newApp: AppTreeItem]
+  appUpdate: [oldApp: UserAppTreeItem, newApp: UserAppTreeItem]
   authorized: []
   debug: Parameters<LogOutputChannel["debug"]>
   error: [error: Error | unknown]

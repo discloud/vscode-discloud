@@ -3,15 +3,15 @@ import { type BaseApiApp, DiscloudConfig, DiscloudConfigScopes, type RESTApiBase
 import { CancellationError, window } from "vscode";
 import { type TaskData } from "../../../@types";
 import type ExtensionCore from "../../../core/extension";
-import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
+import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
 
 export default class extends Command {
   constructor(readonly core: ExtensionCore) {
     super();
   }
 
-  async run(_: TaskData, item: AppTreeItem) {
+  async run(_: TaskData, item: UserAppTreeItem) {
     const name = await window.showInputBox({
       prompt: t("input.name.prompt"),
       validateInput(value) {
@@ -32,7 +32,7 @@ export default class extends Command {
       this.showApiMessage(response);
 
       if (response.status === "ok") {
-        this.core.appTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, name });
+        this.core.userAppTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, name });
 
         const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
 

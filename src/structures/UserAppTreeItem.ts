@@ -2,15 +2,15 @@ import { t } from "@vscode/l10n";
 import { calculatePercentage, type ApiStatusApp } from "discloud.app";
 import { TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
-import { type ApiVscodeApp, type AppChildTreeItemData, type AppTreeItemData } from "../@types";
+import { type ApiVscodeApp, type UserAppChildTreeItemData, type UserAppTreeItemData } from "../@types";
 import core from "../extension";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName, getIconPath } from "../utils/utils";
-import AppChildTreeItem from "./AppChildTreeItem";
+import UserAppChildTreeItem from "./UserAppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
 
-export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
-  constructor(public readonly data: Partial<AppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
+export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> {
+  constructor(public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
@@ -49,7 +49,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     return this.data.online;
   }
 
-  _patch(data: Partial<AppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
+  _patch(data: Partial<UserAppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
     if (!data) return this;
 
     super._patch(data);
@@ -143,7 +143,7 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
     return this;
   }
 
-  private _addChild(id: string, data: Partial<AppChildTreeItemData>) {
+  private _addChild(id: string, data: Partial<UserAppChildTreeItemData>) {
     data.appId = this.appId;
     data.online = this.online;
     data.appType = this.type;
@@ -155,6 +155,6 @@ export default class AppTreeItem extends BaseTreeItem<AppChildTreeItem> {
       return;
     }
 
-    this.children.set(id, new AppChildTreeItem(<AppChildTreeItemData>data));
+    this.children.set(id, new UserAppChildTreeItem(<UserAppChildTreeItemData>data));
   }
 }

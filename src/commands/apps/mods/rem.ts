@@ -3,8 +3,8 @@ import { type RESTDeleteApiAppTeamResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../../@types";
 import type ExtensionCore from "../../../core/extension";
-import type AppTreeItem from "../../../structures/AppTreeItem";
 import Command from "../../../structures/Command";
+import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
 
 export default class extends Command {
   constructor(readonly core: ExtensionCore) {
@@ -16,7 +16,7 @@ export default class extends Command {
     });
   }
 
-  async run(task: TaskData, item: AppTreeItem) {
+  async run(task: TaskData, item: UserAppTreeItem) {
     const mod = await this.pickAppMod(item.appId, task);
     if (!mod) throw Error(t("missing.moderator"));
 

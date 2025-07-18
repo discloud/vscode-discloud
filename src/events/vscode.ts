@@ -6,7 +6,7 @@ core.on("vscode", async function (user) {
   core.userTree.set(user);
 
   if ("appsStatus" in user)
-    core.appTree.setRawApps(user.appsStatus);
+    core.userAppTree.setRawApps(user.appsStatus);
 
   if ("appsTeam" in user)
     core.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));

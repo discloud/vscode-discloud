@@ -144,7 +144,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
       if (!ID) continue;
 
-      app = this.core.appTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
+      app = this.core.userAppTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
 
       if (app && (app.label || app.data.name || app.data.description)) break;
     }
@@ -165,7 +165,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     if (!ID) return false;
 
-    const app = this.core.appTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
+    const app = this.core.userAppTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
 
     if (!app) return false;
 

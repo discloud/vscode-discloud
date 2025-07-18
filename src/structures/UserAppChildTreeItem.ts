@@ -1,15 +1,15 @@
 import { type AppType } from "../@enum";
-import { type AppChildTreeItemData } from "../@types";
+import { type UserAppChildTreeItemData } from "../@types";
 import { getIconPath } from "../utils/utils";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 
-export default class AppChildTreeItem extends BaseChildTreeItem {
+export default class UserAppChildTreeItem extends BaseChildTreeItem {
   readonly iconName: string;
   readonly appId: string;
   declare online: boolean;
   declare readonly type: AppType;
 
-  constructor(data: AppChildTreeItemData) {
+  constructor(data: UserAppChildTreeItemData) {
     super(data.label, data.collapsibleState);
 
     this.appId = data.appId;
@@ -27,7 +27,7 @@ export default class AppChildTreeItem extends BaseChildTreeItem {
     };
   }
 
-  _patch(data: Partial<AppChildTreeItemData>) {
+  _patch(data: Partial<UserAppChildTreeItemData>) {
     if (!data) return this;
 
     super._patch(data);

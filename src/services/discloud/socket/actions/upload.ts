@@ -101,7 +101,7 @@ export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: Disc
             ...data.app,
           };
 
-          core.appTree.addRawApp(app); // TODO: fix ApiUploadApp
+          core.userAppTree.addRawApp(app); // TODO: fix ApiUploadApp
         }
 
         if (data.logs) showLog(data.logs);

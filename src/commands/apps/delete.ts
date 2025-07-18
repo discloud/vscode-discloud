@@ -3,8 +3,8 @@ import { type RESTDeleteApiAppDeleteResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
-import type AppTreeItem from "../../structures/AppTreeItem";
 import Command from "../../structures/Command";
+import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 
 export default class extends Command {
   constructor(readonly core: ExtensionCore) {
@@ -16,7 +16,7 @@ export default class extends Command {
     });
   }
 
-  async run(_: TaskData, item: AppTreeItem) {
+  async run(_: TaskData, item: UserAppTreeItem) {
     if (!await this.confirmAction())
       throw new CancellationError();
 
@@ -27,7 +27,7 @@ export default class extends Command {
       this.showApiMessage(response);
 
       if (response.status === "ok") {
-        this.core.appTree.delete(item.appId);
+        this.core.userAppTree.delete(item.appId);
       }
     }
   }

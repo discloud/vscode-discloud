@@ -7,6 +7,6 @@ export default class extends Command {
   }
 
   async run() {
-    await this.core.appTree.fetch();
+    await this.core.userAppTree.fetch();
   }
 }

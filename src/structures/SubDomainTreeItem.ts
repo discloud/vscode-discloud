@@ -25,7 +25,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
     this.subdomain = data.subdomain ?? this.subdomain;
     this.label = data.subdomain ?? this.label;
 
-    const app = core.appTree.children.get(this.subdomain);
+    const app = core.userAppTree.children.get(this.subdomain);
 
     this.iconName = app?.iconName ?? getIconName(data) ?? this.iconName ?? "off";
     this.iconPath = getIconPath(this.iconName);

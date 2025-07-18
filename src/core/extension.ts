@@ -6,10 +6,10 @@ import { type Events, type GetWorkspaceFolderOptions, type TaskData } from "../@
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import SecretStorage from "../modules/storage/SecretStorage";
-import AppTreeDataProvider from "../providers/AppTreeDataProvider";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
+import UserAppTreeDataProvider from "../providers/UserAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
@@ -30,10 +30,10 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   declare readonly statusBar: DiscloudStatusBarItem;
 
-  declare readonly appTree: AppTreeDataProvider;
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
+  declare readonly userAppTree: UserAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
 
   readonly commands = new Map<string, Command>();
@@ -171,10 +171,10 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   #loadTreeViews(context: ExtensionContext = this.context) {
     Object.defineProperties(this, {
-      appTree: { value: new AppTreeDataProvider(this) },
       customDomainTree: { value: new CustomDomainTreeDataProvider(context) },
       subDomainTree: { value: new SubDomainTreeDataProvider(context) },
       teamAppTree: { value: new TeamAppTreeDataProvider(this) },
+      userAppTree: { value: new UserAppTreeDataProvider(this) },
       userTree: { value: new UserTreeDataProvider(context) },
     });
   }

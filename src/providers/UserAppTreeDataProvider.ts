@@ -4,17 +4,17 @@ import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";
 import type ExtensionCore from "../core/extension";
-import AppTreeItem from "../structures/AppTreeItem";
-import AppTypeTreeItemView from "../structures/AppTypeTreeItemView";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
+import UserAppTreeItem from "../structures/UserAppTreeItem";
+import AppTypeTreeItemView from "../structures/UserAppTypeTreeItemView";
 import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../utils/constants";
 import { compareBooleans, compareNumbers } from "../utils/utils";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-type Item = AppTreeItem
+type Item = UserAppTreeItem
 
-export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
+export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(readonly core: ExtensionCore) {
     super(core.context, TreeViewIds.discloudUserApps);
 
@@ -89,9 +89,9 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     if (sortOnlineFirst) children.sort((a, b) => compareBooleans(a.online, b.online));
   }
 
-  getChildren(element?: AppTreeItem): ProviderResult<AppTreeItem[]>;
+  getChildren(element?: UserAppTreeItem): ProviderResult<UserAppTreeItem[]>;
   getChildren(element?: AppTypeTreeItemView): ProviderResult<AppTypeTreeItemView[]>;
-  getChildren(element?: AppTreeItem | AppTypeTreeItemView): ProviderResult<TreeItem[]> {
+  getChildren(element?: UserAppTreeItem | AppTypeTreeItemView): ProviderResult<TreeItem[]> {
     if (element) {
       if (element instanceof AppTypeTreeItemView) {
         const children = element.children.values().toArray();
@@ -195,7 +195,7 @@ export default class AppTreeDataProvider extends BaseTreeDataProvider<Item> {
     } else {
       this.children.dispose(EMPTY_TREE_ITEM_ID);
 
-      const child = new AppTreeItem(data);
+      const child = new UserAppTreeItem(data);
 
       this._getView(child.type).set(child.appId, child);
 
