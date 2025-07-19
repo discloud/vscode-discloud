@@ -72,8 +72,10 @@ core.on("activate", async function (context) {
   const session = await core.auth.pat.getSession();
 
   if (session) {
-    void commands.executeCommand("discloud.login", session);
+    await commands.executeCommand("discloud.login", session);
   } else {
     core.statusBar.reset();
   }
+
+  await commands.executeCommand("setContext", "discloudInitialized", true);
 });

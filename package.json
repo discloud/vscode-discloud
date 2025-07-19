@@ -1245,7 +1245,7 @@
       {
         "view": "discloudUser",
         "contents": "%welcome.token.missing%",
-        "when": "!discloudAuthorized && !discloudUnauthorized"
+        "when": "discloudInitialized && !discloudAuthorized && !discloudUnauthorized"
       },
       {
         "view": "discloudUser",
