@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.26.1
+
+- Correção de erro grave no sistema de login
+
 ## 2.26.0
 
 - Implementamos um novo sistema de autenticação que se integra diretamente com o VS Code, permitindo que você use seu Token da Discloud de forma mais segura e conveniente.
