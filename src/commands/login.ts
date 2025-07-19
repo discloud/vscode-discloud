@@ -1,7 +1,8 @@
 import { t } from "@vscode/l10n";
-import { authentication, type AuthenticationSession, window } from "vscode";
+import { setTimeout as sleep } from "timers/promises";
+import { authentication, window, type AuthenticationSession } from "vscode";
 import { type TaskData } from "../@types";
-import { UnauthorizedError } from "../authentication/errors/unauthorized";
+import UnauthorizedError from "../authentication/errors/unauthorized";
 import type ExtensionCore from "../core/extension";
 import Command from "../structures/Command";
 
@@ -13,22 +14,24 @@ export default class extends Command {
   }
 
   async run(_: TaskData, session?: AuthenticationSession) {
-    session ??= await authentication.getSession("discloud", [], { forceNewSession: true });
+    if (!session) {
+      try {
+        await authentication.getSession("discloud", [], { forceNewSession: true });
+      } catch (error) {
+        if (error instanceof UnauthorizedError) {
+          throw Error(t("invalid.token"));
+        }
 
-    try {
-      await this.core.auth.pat.validate(session);
-
-      this.core.emit("authorized");
-
-      void this.core.user.fetch(true);
-
-      void window.showInformationMessage(t("valid.token"));
-    } catch (error) {
-      if (error instanceof UnauthorizedError) {
-        throw Error(t("invalid.token"));
+        throw error;
       }
 
-      throw error;
+      void window.showInformationMessage(t("valid.token"));
     }
+
+    this.core.emit("authorized");
+
+    await sleep();
+
+    await this.core.user.fetch(true);
   }
 }
