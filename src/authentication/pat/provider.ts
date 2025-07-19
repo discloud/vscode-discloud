@@ -107,7 +107,10 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     if (!session) return;
 
     await this.secrets.delete(secretKey);
-    await this.context.globalState.update(session.accessToken, undefined);
+
+    const secretHash = hash(session.accessToken);
+
+    await this.context.globalState.update(secretHash, undefined);
 
     this._fire({ removed: [session] });
   }
