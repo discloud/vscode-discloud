@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.26.2
+
+- Corrigido um erro que mostrava que não tinha token da Discloud na inicialização
+
 ## 2.26.1
 
 - Correção de erro grave no sistema de login
