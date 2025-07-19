@@ -74,7 +74,7 @@ const API_ACTIONS_STRATEGY = Object.freeze([
 ] as const);
 
 const SECRET_KEYS = Object.freeze([
-  "token",
+  "discloudpat",
 ] as const);
 
 export const TreeViewIds = Object.freeze(makeCamelizedPair(TREE_VIEW_IDS));

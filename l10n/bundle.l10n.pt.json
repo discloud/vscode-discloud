@@ -53,6 +53,7 @@
   "input.mod.edit.prompt": "Digite o ID do MOD para editar as permissões.",
   "input.name.prompt": "Defina o nome.",
   "input.ram.prompt": "Defina a quantidade de RAM.",
+  "input.same.previous": "Parece que você digitou a mesma coisa de antes.",
   "input.set.locale.available.title": "Estes são os idiomas disponíveis.",
   "input.set.locale.prompt": "Defina seu idioma.",
   "input.set.locale.validate": "Idioma deve ser como pt-BR.",

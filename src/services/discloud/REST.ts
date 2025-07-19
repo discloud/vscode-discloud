@@ -13,7 +13,7 @@ export default class REST extends EventEmitter {
   remaining = 60;
   reset = 60;
   declare time: number;
-  declare authorized: boolean;
+  authorized: boolean = true;
   declare readonly options: Partial<RESTOptions>;
   readonly #queue = new AsyncQueue();
 
@@ -29,11 +29,16 @@ export default class REST extends EventEmitter {
     return this.reset * 1000 + this.time - Date.now();
   }
 
-  getToken() {
-    return this.core.secrets.getToken();
+  getSession() {
+    return this.core.auth.pat.getSession();
   }
 
-  constructor(private core: ExtensionCore, options?: Partial<RESTOptions>) {
+  async getToken() {
+    const session = await this.getSession();
+    return session?.accessToken;
+  }
+
+  constructor(readonly core: ExtensionCore, options?: Partial<RESTOptions>) {
     super();
 
     this.options = options ?? {};
