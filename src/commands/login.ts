@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { type AuthenticationSession, window } from "vscode";
+import { authentication, type AuthenticationSession, window } from "vscode";
 import { type TaskData } from "../@types";
 import { UnauthorizedError } from "../authentication/errors/unauthorized";
 import type ExtensionCore from "../core/extension";
@@ -13,7 +13,7 @@ export default class extends Command {
   }
 
   async run(_: TaskData, session?: AuthenticationSession) {
-    session ??= await this.core.auth.pat.createSession([], {});
+    session ??= await authentication.getSession("discloud", [], { forceNewSession: true });
 
     try {
       await this.core.auth.pat.validate(session);

@@ -35,7 +35,6 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
   createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession>
   async createSession(_scopes: readonly string[], _options: AuthenticationProviderSessionOptions) {
-    const oldSession = this.getSession();
 
     const input = await window.showInputBox({
       ignoreFocusOut: true,
@@ -45,8 +44,6 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
         if (!tokenIsDiscloudJwt(value))
           return t("input.login.prompt");
 
-        if ((await oldSession)?.accessToken === value)
-          return t("input.same.previous");
       },
     });
 
@@ -56,7 +53,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     const newSession = new DiscloudPatAuthenticationSession(input);
 
-    this._fire(await oldSession ? { changed: [newSession] } : { added: [newSession] });
+    this._fire({ changed: [newSession] });
 
     return newSession;
   }
