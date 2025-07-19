@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.26.3
+
+- Agora mostra seu `username` em contas
+
 ## 2.26.2
 
 - Corrigido um erro que mostrava que não tinha token da Discloud na inicialização
