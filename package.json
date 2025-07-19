@@ -39,6 +39,12 @@
   "main": "out/extension.js",
   "l10n": "l10n",
   "contributes": {
+    "authentication": [
+      {
+        "id": "discloud",
+        "label": "Discloud"
+      }
+    ],
     "commands": [
       {
         "command": "discloud.create.config",
@@ -969,6 +975,11 @@
         {
           "command": "discloud.user.set.locale",
           "when": "view == discloudUser && discloudAuthorized"
+        },
+        {
+          "command": "discloud.logout",
+          "group": "inline",
+          "when": "view == discloudUser && !discloudUnauthorized && viewItem =~ /^TreeItem/"
         }
       ],
       "view/title": [
@@ -1181,7 +1192,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
-          "when": "!discloudUnauthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1189,7 +1200,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
-          "when": "!discloudUnauthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1197,7 +1208,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
-          "when": "!discloudUnauthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",
@@ -1205,7 +1216,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "!discloudUnauthorized"
+          "when": "discloudAuthorized"
         },
         {
           "type": "tree",

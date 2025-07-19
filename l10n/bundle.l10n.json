@@ -53,6 +53,7 @@
   "input.mod.rem.prompt": "Enter MOD ID to remove from your app.",
   "input.name.prompt": "Set the name.",
   "input.ram.prompt": "Set the RAM amount.",
+  "input.same.previous": "Looks like you typed the same thing again.",
   "input.set.locale.available.title": "These are the available languages.",
   "input.set.locale.prompt": "Set your language.",
   "input.set.locale.validate": "Language must be like en-US.",

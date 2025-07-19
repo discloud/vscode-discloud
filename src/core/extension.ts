@@ -1,11 +1,13 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, Uri, window, workspace } from "vscode";
+import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
 import { type Events, type GetWorkspaceFolderOptions, type TaskData } from "../@types";
+import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
+import AuthenticationProviders from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
-import SecretStorage from "../modules/storage/SecretStorage";
+import SecretStorageImpl from "../modules/storage/SecretStorage";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
@@ -24,9 +26,11 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     super({ captureRejections: true });
   }
 
-  declare readonly api: REST;
+  declare readonly auth: AuthenticationProviders;
   declare readonly context: ExtensionContext;
   declare readonly secrets: SecretStorage;
+
+  declare readonly api: REST;
 
   declare readonly statusBar: DiscloudStatusBarItem;
 
@@ -159,46 +163,53 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     Object.defineProperties(this, { context: { value: context } });
   }
 
-  #loadSecretStorage(context: ExtensionContext = this.context) {
-    Object.defineProperties(this, { secrets: { value: new SecretStorage(context.secrets) } });
-
-    this.context.subscriptions.push(this.secrets);
-  }
-
-  #loadStatusBar() {
-    Object.defineProperties(this, { statusBar: { value: new DiscloudStatusBarItem(this) } });
-  }
-
-  #loadTreeViews(context: ExtensionContext = this.context) {
-    Object.defineProperties(this, {
-      customDomainTree: { value: new CustomDomainTreeDataProvider(context) },
-      subDomainTree: { value: new SubDomainTreeDataProvider(context) },
-      teamAppTree: { value: new TeamAppTreeDataProvider(this) },
-      userAppTree: { value: new UserAppTreeDataProvider(this) },
-      userTree: { value: new UserTreeDataProvider(context) },
-    });
-  }
-
   async activate(context: ExtensionContext = this.context) {
     if (!this.context) this.setContext(context);
 
     this.logger.info("Activate: begin");
 
-    this.#loadSecretStorage();
+    const secrets = new SecretStorageImpl(context.secrets);
 
-    this.#loadStatusBar();
-    this.statusBar.setLoading();
+    context.subscriptions.push(secrets);
+
+    Object.defineProperties(this, { secrets: { value: secrets } });
+
+    const authPat = new DiscloudPatAuthenticationProvider(context, secrets);
+
+    const auth = new AuthenticationProviders(authPat);
+
+    Object.defineProperties(this, { auth: { value: auth } });
+
+    const statusBarItem = new DiscloudStatusBarItem(this);
+
+    statusBarItem.setLoading();
+
+    Object.defineProperties(this, { statusBar: { value: statusBarItem } });
 
     const version = context.extension.packageJSON.version;
 
     const userAgent = new UserAgent(version);
 
-    Object.defineProperties(this, { api: { value: new REST(this, { userAgent }) } });
+    const api = new REST(this, { userAgent });
+
+    Object.defineProperties(this, { api: { value: api } });
 
     await loadEvents(this);
     await commandsRegister(this);
 
-    this.#loadTreeViews();
+    const customDomainTree = new CustomDomainTreeDataProvider(context);
+    const subDomainTree = new SubDomainTreeDataProvider(context);
+    const teamAppTree = new TeamAppTreeDataProvider(this);
+    const userAppTree = new UserAppTreeDataProvider(this);
+    const userTree = new UserTreeDataProvider(context);
+
+    Object.defineProperties(this, {
+      customDomainTree: { value: customDomainTree },
+      subDomainTree: { value: subDomainTree },
+      teamAppTree: { value: teamAppTree },
+      userAppTree: { value: userAppTree },
+      userTree: { value: userTree },
+    });
 
     this.emit("activate", context);
   }

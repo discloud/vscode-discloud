@@ -10,8 +10,10 @@ export default class extends Command {
   }
 
   async run(_: TaskData, item: UserAppTreeItem) {
+    const session = await this.core.auth.pat.getSession();
+
     const terminal = window.createTerminal({
-      env: { DISCLOUD_TOKEN: await this.core.secrets.getToken() },
+      env: { DISCLOUD_TOKEN: session?.accessToken },
       iconPath: item.iconPath as Uri,
       name: typeof item.label === "string" ? item.label : item.appId,
     });

@@ -32,7 +32,7 @@ export default class extends Command {
 
     const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 
-    if (!dConfig.validate(true))
+    if (!dConfig.exists || !dConfig.validate(true))
       throw Error(t("invalid.discloud.config"));
 
     const fs = new FileSystem({
@@ -48,7 +48,7 @@ export default class extends Command {
 
     if (!main || !found.some(uri => uri.fsPath.endsWith(main)))
       throw Error([
-        t("missing.discloud.config.main", { file: `${dConfig.data.MAIN}` }),
+        t("missing.discloud.config.main", { file: `${dConfig.data.MAIN ?? "MAIN"}` }),
         t("readdiscloudconfigdocs"),
       ].join("\n"));
 

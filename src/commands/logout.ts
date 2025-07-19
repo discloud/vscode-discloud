@@ -9,9 +9,9 @@ export default class extends Command {
   }
 
   async run() {
-    if (!await this.core.secrets.getToken()) return;
+    if (!await this.core.auth.pat.getSession()) return;
 
-    await this.core.secrets.setToken();
+    await this.core.auth.pat.removeSession();
 
     this.core.emit("missingToken");
   }

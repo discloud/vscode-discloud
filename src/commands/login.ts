@@ -1,7 +1,8 @@
 import { t } from "@vscode/l10n";
-import { window } from "vscode";
+import { type AuthenticationSession, window } from "vscode";
+import { type TaskData } from "../@types";
+import { UnauthorizedError } from "../authentication/errors/unauthorized";
 import type ExtensionCore from "../core/extension";
-import { tokenIsDiscloudJwt, tokenValidator } from "../services/discloud/utils";
 import Command from "../structures/Command";
 
 export default class extends Command {
@@ -11,26 +12,23 @@ export default class extends Command {
     });
   }
 
-  async run() {
-    const input = await window.showInputBox({
-      password: true,
-      prompt: t("input.login.prompt"),
-      validateInput(value: string) {
-        if (!tokenIsDiscloudJwt(value))
-          return t("input.login.prompt");
-      },
-    });
+  async run(_: TaskData, session?: AuthenticationSession) {
+    session ??= await this.core.auth.pat.createSession([], {});
 
-    if (!input) throw Error(t("invalid.input"));
+    try {
+      await this.core.auth.pat.validate(session);
 
-    const authorization = await tokenValidator(input);
+      this.core.emit("authorized");
 
-    if (typeof authorization !== "boolean") return;
+      void this.core.user.fetch(true);
 
-    if (!authorization) throw Error(t("invalid.token"));
+      void window.showInformationMessage(t("valid.token"));
+    } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        throw Error(t("invalid.token"));
+      }
 
-    await this.core.secrets.setToken(input);
-
-    void window.showInformationMessage(t("valid.token"));
+      throw error;
+    }
   }
 }
