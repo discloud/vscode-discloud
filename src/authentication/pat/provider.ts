@@ -1,5 +1,6 @@
 import { t } from "@vscode/l10n";
 import { RouteBases, Routes } from "discloud.app";
+import { setTimeout as sleep } from "timers/promises";
 import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type Event, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
 import { SecretKeys } from "../../utils/constants";
@@ -9,7 +10,7 @@ import { type IPatAuthenticationProvider } from "../interfaces/pat";
 import DiscloudPatAuthenticationSession from "./session";
 
 const providerId = "discloud";
-const providerLabel = "Discloud Personal Access Token";
+const providerLabel = "Discloud Token";
 const secretKey = SecretKeys.discloudpat;
 
 export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
@@ -45,7 +46,11 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
         if (!tokenIsDiscloudJwt(value))
           return t("input.login.prompt");
 
-        if ((await oldSession)?.accessToken === value)
+        const maybeOldSession = await Promise.race([oldSession, sleep(100)]);
+
+        if (!maybeOldSession) return;
+
+        if (maybeOldSession.accessToken === value)
           return t("input.same.previous");
       },
     });
@@ -56,7 +61,9 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     const newSession = new DiscloudPatAuthenticationSession(input);
 
-    this._fire(await oldSession ? { changed: [newSession] } : { added: [newSession] });
+    const maybeOldSession = await Promise.race([oldSession, sleep(100)]);
+
+    this._fire(maybeOldSession ? { changed: [newSession] } : { added: [newSession] });
 
     return newSession;
   }

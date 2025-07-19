@@ -8,7 +8,7 @@ export default class DiscloudPatAuthenticationSession implements AuthenticationS
 
   readonly account: AuthenticationSessionAccountInformation = {
     id: SecretKeys.discloudpat,
-    label: "Personal Access Token",
+    label: "Discloud",
   };
 
   readonly scopes: readonly string[] = [];
