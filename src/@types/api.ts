@@ -1,4 +1,4 @@
-import type { BaseApiApp, RESTApiBaseResult } from "discloud.app";
+import { type BaseApiApp, type RESTApiBaseResult } from "@discloudapp/api-types/v2";
 import { type AppType } from "../@enum";
 
 export interface RESTGetApiVscode extends RESTApiBaseResult {

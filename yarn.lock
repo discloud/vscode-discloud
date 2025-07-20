@@ -14,17 +14,7 @@
   dependencies:
     tslib "^2.8.1"
 
-"@discloudapp/rest@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@discloudapp/rest/-/rest-1.0.7.tgz#1a383975f48a658c760db225648809cf6122038f"
-  integrity sha512-yO+h9AlYbUtkV4Lc1tyKxYm1TNxoqqVVLFSsYU+xxICq4eBejml0E8eNM+xsgzq+qzkx/aT/LC1aD4cH4K1zpg==
-  dependencies:
-    "@discloudapp/api-types" "^1.0.2"
-    "@discloudapp/util" "^1.2.2"
-    source-map-support "^0.5.21"
-    tslib "^2.8.1"
-
-"@discloudapp/util@^1.2.2", "@discloudapp/util@^1.2.3":
+"@discloudapp/util@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@discloudapp/util/-/util-1.2.3.tgz#e35b1b2c96e39971f5d4aac782d51e6753e47334"
   integrity sha512-UF0Qk0xZLa5yhvspt7Cl/Z4khaQ1qaFMhaPvHz01TTj3WoZhndP+OAolst8CSCFhYWEVxZGTfBg1LyI0md9Wmg==
@@ -976,18 +966,6 @@ diff@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-7.0.0.tgz#3fb34d387cd76d803f6eebea67b921dab0182a9a"
   integrity sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==
-
-discloud.app@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/discloud.app/-/discloud.app-1.1.1.tgz#067117e5b5b291fdbba2c6db310352bc97de4b96"
-  integrity sha512-AbjAh1cpiThNwirDrrYF7C4QjL3tBI0cL3uQD0r/bAsto3oHFe162SrmqFI9xzB5Z8P/8kLH61ykpYAWQcXfaA==
-  dependencies:
-    "@discloudapp/api-types" "^1.0.2"
-    "@discloudapp/rest" "^1.0.7"
-    "@discloudapp/util" "^1.2.3"
-    source-map-support "^0.5.21"
-    tslib "^2.8.1"
-    zod "^3.25.76"
 
 discontinuous-range@1.0.0:
   version "1.0.0"
@@ -3345,7 +3323,7 @@ zod-validation-error@^3.5.2:
   resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.5.3.tgz#85ba33290200d8db9f043621e284f40dddefb7e5"
   integrity sha512-OT5Y8lbUadqVZCsnyFaTQ4/O2mys4tj7PqhdbBCp7McPwvIEKfPtdA6QfPeFQK2/Rz5LgwmAXRJTugBNBi0btw==
 
-zod@^3.25.67, zod@^3.25.76:
+zod@^3.25.67:
   version "3.25.76"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
   integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==

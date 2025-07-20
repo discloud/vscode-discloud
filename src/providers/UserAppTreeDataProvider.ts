@@ -1,5 +1,5 @@
+import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "discloud.app";
 import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";

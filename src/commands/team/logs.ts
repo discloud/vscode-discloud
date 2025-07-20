@@ -1,5 +1,5 @@
+import { type RESTGetApiAppLogResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type RESTGetApiAppLogResult, Routes } from "discloud.app";
 import { ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";

@@ -1,4 +1,4 @@
-import type { ApiUploadApp } from "discloud.app";
+import { type ApiUploadApp } from "@discloudapp/api-types/v2";
 import type { RawData } from "ws";
 
 export interface SocketEventsMap<Data extends Record<any, any> = Record<any, any>> {

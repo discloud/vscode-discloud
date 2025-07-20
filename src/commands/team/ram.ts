@@ -1,5 +1,5 @@
+import { type RESTPutApiAppRamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type RESTPutApiAppRamResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";

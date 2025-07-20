@@ -1,5 +1,5 @@
+import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "discloud.app";
 import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import type ExtensionCore from "../core/extension";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";

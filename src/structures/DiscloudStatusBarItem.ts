@@ -1,5 +1,6 @@
+import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
+import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, DiscloudConfigScopes } from "discloud.app";
 import { setTimeout as sleep } from "timers/promises";
 import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
 import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";

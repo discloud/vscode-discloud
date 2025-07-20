@@ -1,4 +1,4 @@
-import { DiscloudConfigScopes } from "discloud.app";
+import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
 import { readFile } from "fs/promises";
 import type { JSONSchema7 } from "json-schema";
 import { compileSchema, type SchemaNode } from "json-schema-library";

@@ -1,5 +1,5 @@
+import { type RESTPutApiAppCommitResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type RESTPutApiAppCommitResult, Routes, resolveFile } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
@@ -56,7 +56,7 @@ export default class extends Command {
   async rest(task: TaskData, buffer: Buffer, app: TeamAppTreeItem) {
     task.progress.report({ increment: -1, message: t("committing") });
 
-    const file = await resolveFile(buffer, "file.zip");
+    const file = new File([buffer], "file.zip");
 
     const files: File[] = [file];
 

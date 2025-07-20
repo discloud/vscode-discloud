@@ -1289,10 +1289,11 @@
     "test": "vscode-test"
   },
   "dependencies": {
+    "@discloudapp/api-types": "^1.0.2",
+    "@discloudapp/util": "^1.2.3",
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "bytes": "^3.1.2",
-    "discloud.app": "^1.1.1",
     "jose": "^6.0.12",
     "json-schema-library": "^10.1.2",
     "ws": "^8.18.3"

@@ -1,5 +1,6 @@
+import { type RESTPutApiAppTeamResult, Routes } from "@discloudapp/api-types/v2";
+import { ModPermissionsBF } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { ModPermissionsBF, type RESTPutApiAppTeamResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation, type QuickPickItem, window } from "vscode";
 import { type TaskData } from "../../../@types";
 import type ExtensionCore from "../../../core/extension";
