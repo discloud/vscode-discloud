@@ -2,6 +2,7 @@ import { join } from "path";
 import { type TreeItem, Uri } from "vscode";
 import core from "../extension";
 import { RESOURCES_DIR } from "./constants";
+import { scapeRegExp } from "./regexp";
 
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
@@ -62,9 +63,13 @@ export function makeCamelizedPair<
 
   if (!Array.isArray(keys)) return configObj;
 
+  sep = sep.split("").map(char => `[${scapeRegExp(char)}]`).join("") as Sep;
+
+  const regexp = RegExp(`${sep}(\\w)`, "g");
+
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as string;
-    configObj[key.replace(RegExp(`[${sep}](\\w)`, "g"), (_, a) => a.toUpperCase())] = key;
+    configObj[key.replace(regexp, (_, a) => a.toUpperCase())] = key;
   }
 
   return configObj;
