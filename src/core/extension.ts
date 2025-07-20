@@ -7,7 +7,7 @@ import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
 import AuthenticationProviders from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
-import SecretStorageImpl from "../modules/storage/SecretStorage";
+import SecretStorageImpl from "../storage/secrets";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";

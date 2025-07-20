@@ -1,7 +1,9 @@
 import type vscode from "vscode";
 
 export default class SecretStorage implements vscode.SecretStorage, vscode.Disposable {
-  constructor(protected readonly secrets: vscode.SecretStorage) {
+  constructor(
+    protected readonly secrets: vscode.SecretStorage,
+  ) {
     this.onDidChange = secrets.onDidChange;
   }
 
