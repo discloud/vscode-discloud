@@ -1,5 +1,5 @@
+import { type RESTDeleteApiAppDeleteResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type RESTDeleteApiAppDeleteResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";

@@ -1,5 +1,6 @@
+import { type RESTPostApiUploadResult, Routes } from "@discloudapp/api-types/v2";
+import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, resolveFile, type RESTPostApiUploadResult, Routes } from "discloud.app";
 import { CancellationError, ProgressLocation, Uri } from "vscode";
 import { type TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
@@ -68,7 +69,7 @@ export default class extends Command {
   async rest(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
     task.progress.report({ increment: -1, message: t("uploading") });
 
-    const file = await resolveFile(buffer, "file.zip");
+    const file = new File([buffer], "file.zip");
 
     const files: File[] = [file];
 

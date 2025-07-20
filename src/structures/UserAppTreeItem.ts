@@ -1,13 +1,14 @@
+import { type ApiStatusApp } from "@discloudapp/api-types/v2";
+import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { calculatePercentage, type ApiStatusApp } from "discloud.app";
 import { TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type UserAppChildTreeItemData, type UserAppTreeItemData } from "../@types";
 import core from "../extension";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName, getIconPath } from "../utils/utils";
-import UserAppChildTreeItem from "./UserAppChildTreeItem";
 import BaseTreeItem from "./BaseTreeItem";
+import UserAppChildTreeItem from "./UserAppChildTreeItem";
 
 export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> {
   constructor(public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {

@@ -1,5 +1,6 @@
+import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp } from "@discloudapp/api-types/v2";
+import { calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "discloud.app";
 import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
 import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";

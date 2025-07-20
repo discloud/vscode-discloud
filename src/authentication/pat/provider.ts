@@ -1,5 +1,5 @@
+import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type RESTGetApiUserResult, RouteBases, Routes } from "discloud.app";
 import { setTimeout as sleep } from "timers/promises";
 import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type Event, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";

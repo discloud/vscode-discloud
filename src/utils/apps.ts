@@ -1,10 +1,11 @@
 import { t } from "@vscode/l10n";
-import { DiscloudConfig, DiscloudConfigScopes, ModPermissionsFlags } from "discloud.app";
 import { window, type CancellationToken, type QuickPickItem, type Uri } from "vscode";
 import type { VscodeProgressReporter } from "../@types";
 import core from "../extension";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
+import { DiscloudConfig, ModPermissionsFlags } from "@discloudapp/util";
+import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
 
 interface AppPickerOptions {
   allowOtherAppTypes?: boolean

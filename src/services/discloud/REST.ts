@@ -1,12 +1,12 @@
+import { RouteBases } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { RouteBases, type RouteLike } from "discloud.app";
 import { EventEmitter } from "events";
 import { window } from "vscode";
 import type ExtensionCore from "../../core/extension";
 import AsyncQueue from "../../modules/async-queue";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
-import { type InternalRequestData, type RequestData, type RequestOptions, type RESTOptions } from "./types";
+import { type InternalRequestData, type RequestData, type RequestOptions, type RESTOptions, type RouteLike } from "./types";
 
 export default class REST extends EventEmitter {
   limit = 60;
