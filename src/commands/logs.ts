@@ -21,7 +21,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: UserAppTreeItem | TeamAppTreeItem) {
     if (!item) {
-      const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
+      const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
       if (workspaceFolder) {
         const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 

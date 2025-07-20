@@ -150,12 +150,9 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
         return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
     }
 
-    options.fallbackUserChoice ??= true;
-
-    if (options.fallbackUserChoice) {
+    if (!options.silent) {
       const picked = await window.showWorkspaceFolderPick();
-      if (!picked) return;
-      return picked.uri;
+      if (picked) return picked.uri;
     }
   }
 

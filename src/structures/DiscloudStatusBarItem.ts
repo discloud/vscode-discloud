@@ -156,7 +156,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   protected async _setConfigDefault(uri?: Uri) {
     if (this._status !== Status.Regular) return false;
 
-    const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false, uri });
+    const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true, uri });
 
     if (!workspaceFolder) return false;
 

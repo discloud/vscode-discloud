@@ -13,7 +13,7 @@ export default class extends Command {
   }
 
   async run() {
-    const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
+    const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const findConfig = await workspace.findFiles(DiscloudConfig.filename);

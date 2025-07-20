@@ -8,8 +8,8 @@ import type { RateLimitData } from "./rest";
 export interface GetWorkspaceFolderOptions {
   /** @default true */
   allowReadSelectedPath?: boolean
-  /** @default true */
-  fallbackUserChoice?: boolean
+  /** @default false */
+  silent?: boolean
   token?: CancellationToken
   uri?: Uri
 }

@@ -26,7 +26,7 @@ export async function pickApp(core: ExtensionCore, options: AppPickerOptions = {
 
   const workspaceFolder = await core.getWorkspaceFolder({
     allowReadSelectedPath: false,
-    fallbackUserChoice: false,
+    silent: true,
     token: options.token,
     uri: options.uri,
   });
@@ -52,7 +52,7 @@ export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions): Pr
 export async function pickUserApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
   const workspaceFolder = await core.getWorkspaceFolder({
     allowReadSelectedPath: false,
-    fallbackUserChoice: false,
+    silent: true,
     token: options.token,
     uri: options.uri,
   });
@@ -154,7 +154,7 @@ export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions): Pr
 export async function pickTeamApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
   const workspaceFolder = await core.getWorkspaceFolder({
     allowReadSelectedPath: false,
-    fallbackUserChoice: false,
+    silent: true,
     token: options.token,
     uri: options.uri,
   });

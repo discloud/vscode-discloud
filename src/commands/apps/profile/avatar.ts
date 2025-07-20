@@ -31,7 +31,7 @@ export default class extends Command {
       if (response.status === "ok") {
         this.core.userAppTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, avatarURL });
 
-        const workspaceFolder = await this.core.getWorkspaceFolder({ fallbackUserChoice: false });
+        const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
 
         if (workspaceFolder) {
           const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
