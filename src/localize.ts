@@ -1,12 +1,14 @@
 import { config, type l10nJsonFormat } from "@vscode/l10n";
-import { existsSync } from "fs";
-import { readFile } from "fs/promises";
+import { open } from "fs/promises";
 import { join } from "path";
 import { env, type ExtensionContext } from "vscode";
 
 async function importJSON<T extends l10nJsonFormat>(path: string): Promise<T> {
-  if (existsSync(path))
-    try { return JSON.parse(await readFile(path, "utf8")); } catch { }
+  try {
+    const fileHandle = await open(path);
+    const content = await fileHandle.readFile("utf8");
+    return JSON.parse(content);
+  } catch { }
 
   return <T>{};
 }
