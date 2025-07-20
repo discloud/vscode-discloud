@@ -10,8 +10,8 @@ import UserAppTreeItem from "../structures/UserAppTreeItem";
 import { pickApp } from "../utils/apps";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       progress: {
         location: ProgressLocation.Notification,
         title: t("progress.logs.title"),
@@ -31,7 +31,7 @@ export default class extends Command {
 
         if (!item) throw Error(t("missing.appid"));
       } else {
-        item = await pickApp({
+        item = await pickApp(this.core, {
           noCached: true,
           throwOnCancel: true,
           token: task.token,

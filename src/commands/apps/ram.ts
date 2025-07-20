@@ -4,14 +4,13 @@ import { CancellationError, ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
-import core from "../../extension";
 import Command from "../../structures/Command";
 import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import InputBox from "../../utils/Input";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       progress: {
         location: ProgressLocation.Notification,
         title: t("progress.ram.title"),
@@ -21,7 +20,7 @@ export default class extends Command {
 
   async run(_: TaskData, item: UserAppTreeItem) {
     const min = item.type === AppType.site ? 512 : 100;
-    const max = this.core.user.totalRamMb - (core.user.ramUsedMb - item.data.ram);
+    const max = this.core.user.totalRamMb - (this.core.user.ramUsedMb - item.data.ram);
 
     const ramMB = await InputBox.getInt({
       denyInitial: item.data.ram >= min || item.data.ram <= max,

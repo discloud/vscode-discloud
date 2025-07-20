@@ -6,8 +6,8 @@ import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       progress: {
         location: ProgressLocation.Notification,
         title: t("progress.status.title"),

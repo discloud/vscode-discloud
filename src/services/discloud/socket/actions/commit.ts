@@ -4,7 +4,7 @@ import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
-import core from "../../../../extension";
+import type ExtensionCore from "../../../../core/extension";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../../../../structures/UserAppTreeItem";
 import { MAX_FILE_SIZE } from "../../constants";
@@ -12,7 +12,7 @@ import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
 
-export async function socketCommit(task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
+export async function socketCommit(core: ExtensionCore, task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
     const debugCode = app.appId;
 

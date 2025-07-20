@@ -3,21 +3,21 @@ import { t } from "@vscode/l10n";
 import { stripVTControlCharacters } from "util";
 import { type LogOutputChannel, type QuickPickItem, window } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 
 export interface CommandConstructor {
   new(...args: any[]): Command
 }
 
 export default abstract class Command {
-  constructor(readonly data: CommandData = {}) { }
+  constructor(readonly core: ExtensionCore, readonly data: CommandData = {}) { }
 
   abstract run(taskData: TaskData | null, ...args: any[]): Promise<unknown>;
 
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const response = await core.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
+    const response = await this.core.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
     if (!response?.team?.length) return;
 
     const mods = new Map(response.team.map(team => [team.modID, {
@@ -82,7 +82,7 @@ export default abstract class Command {
   logger(output: LogOutputChannel, log: string, show: false): void;
   logger(output: LogOutputChannel, log: string, show = true) {
     if (typeof output === "string")
-      output = core.getLogOutputChannel(output);
+      output = this.core.getLogOutputChannel(output);
 
     output.info("\n" + stripVTControlCharacters(log));
 

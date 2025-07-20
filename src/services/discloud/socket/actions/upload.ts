@@ -5,13 +5,13 @@ import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type ApiVscodeApp, type TaskData } from "../../../../@types";
-import core from "../../../../extension";
+import type ExtensionCore from "../../../../core/extension";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
 
-export async function socketUpload(task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
+export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {
     const debugCode = Date.now();
 

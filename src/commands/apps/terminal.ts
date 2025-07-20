@@ -5,8 +5,8 @@ import Command from "../../structures/Command";
 import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super();
+  constructor(core: ExtensionCore) {
+    super(core);
   }
 
   async run(_: TaskData, item: UserAppTreeItem) {

@@ -6,8 +6,8 @@ import DiscloudAPIError from "../../services/discloud/errors/api";
 import Command from "../../structures/Command";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super();
+  constructor(core: ExtensionCore) {
+    super(core);
   }
 
   async run(_: TaskData, localeList?: string[]) {

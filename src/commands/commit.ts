@@ -13,8 +13,8 @@ import { pickApp } from "../utils/apps";
 import { ApiActionsStrategy, ConfigKeys } from "../utils/constants";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       progress: {
         location: ProgressLocation.Notification,
         title: t("progress.commit.title"),
@@ -33,7 +33,7 @@ export default class extends Command {
 
     this.core.statusBar.setCommitting();
 
-    const item = await pickApp({ token: task.token });
+    const item = await pickApp(this.core, { token: task.token });
     if (!item) throw Error(t("missing.appid"));
 
     task.progress.report({ increment: 30, message: t("files.checking") });
@@ -89,6 +89,6 @@ export default class extends Command {
   }
 
   async socket(task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
-    await socketCommit(task, buffer, app);
+    await socketCommit(this.core, task, buffer, app);
   }
 }

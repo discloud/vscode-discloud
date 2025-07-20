@@ -9,8 +9,8 @@ import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
 import InputBox from "../../../utils/Input";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super();
+  constructor(core: ExtensionCore) {
+    super(core);
   }
 
   async run(_: TaskData, item: UserAppTreeItem) {

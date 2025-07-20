@@ -1,11 +1,11 @@
+import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
+import { DiscloudConfig, ModPermissionsFlags } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { window, type CancellationToken, type QuickPickItem, type Uri } from "vscode";
 import type { VscodeProgressReporter } from "../@types";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
-import { DiscloudConfig, ModPermissionsFlags } from "@discloudapp/util";
-import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
 
 interface AppPickerOptions {
   allowOtherAppTypes?: boolean
@@ -16,10 +16,10 @@ interface AppPickerOptions {
   uri?: Uri
 }
 
-export function pickApp(options?: AppPickerOptions & { allowOtherAppTypes: false }): Promise<never>
-export function pickApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
-export function pickApp(options?: AppPickerOptions): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
-export async function pickApp(options: AppPickerOptions = {}) {
+export function pickApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: false }): Promise<never>
+export function pickApp(core: ExtensionCore, options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
+export function pickApp(core: ExtensionCore, options?: AppPickerOptions): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
+export async function pickApp(core: ExtensionCore, options: AppPickerOptions = {}) {
   options.progress?.report({ increment: -1, message: t("choose.app") });
 
   options.allowOtherAppTypes = true;
@@ -37,19 +37,19 @@ export async function pickApp(options: AppPickerOptions = {}) {
     const ID = dConfig.get(DiscloudConfigScopes.ID);
 
     if (ID) {
-      if (core.userAppTree.children.has(ID)) return pickUserApp(options);
-      if (core.teamAppTree.children.has(ID)) return pickTeamApp(options);
+      if (core.userAppTree.children.has(ID)) return pickUserApp(core, options);
+      if (core.teamAppTree.children.has(ID)) return pickTeamApp(core, options);
     }
   }
 
-  return pickUserApp(options);
+  return pickUserApp(core, options);
 }
 
-export function pickUserApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem>
-export function pickUserApp(options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
-export function pickUserApp(options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
-export function pickUserApp(options?: AppPickerOptions): Promise<UserAppTreeItem | undefined>
-export async function pickUserApp(options: AppPickerOptions = {}): Promise<unknown> {
+export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem>
+export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
+export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
+export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions): Promise<UserAppTreeItem | undefined>
+export async function pickUserApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
   const workspaceFolder = await core.getWorkspaceFolder({
     allowReadSelectedPath: false,
     fallbackUserChoice: false,
@@ -64,7 +64,7 @@ export async function pickUserApp(options: AppPickerOptions = {}): Promise<unkno
     ID = dConfig.get(DiscloudConfigScopes.ID);
 
     if (options.allowOtherAppTypes && ID && core.teamAppTree.children.has(ID))
-      return pickTeamApp(options);
+      return pickTeamApp(core, options);
   }
 
   const apps: QuickPickItem[] = [];
@@ -87,13 +87,13 @@ export async function pickUserApp(options: AppPickerOptions = {}): Promise<unkno
   if (!apps.length) {
     if (!options.noCached) {
       options.noCached = true;
-      return pickUserApp(options);
+      return pickUserApp(core, options);
     }
 
     if (!options.allowOtherAppTypes || !teamAppsSize)
       throw new Error(t("no.apps.found.to.choose"));
 
-    return pickTeamApp(options);
+    return pickTeamApp(core, options);
   }
 
   let hasApp = false;
@@ -131,7 +131,7 @@ export async function pickUserApp(options: AppPickerOptions = {}): Promise<unkno
         items.splice(0, items.length, ...apps);
         break;
       case seeOtherAppTypesLabel:
-        return pickTeamApp(options);
+        return pickTeamApp(core, options);
     }
   } while (!picked);
 
@@ -147,11 +147,11 @@ export async function pickUserApp(options: AppPickerOptions = {}): Promise<unkno
   return core.userAppTree.children.get(pickedID);
 }
 
-export function pickTeamApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<TeamAppTreeItem>
-export function pickTeamApp(options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
-export function pickTeamApp(options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
-export function pickTeamApp(options?: AppPickerOptions): Promise<TeamAppTreeItem | undefined>
-export async function pickTeamApp(options: AppPickerOptions = {}): Promise<unknown> {
+export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions & { throwOnCancel: true }): Promise<TeamAppTreeItem>
+export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
+export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
+export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions): Promise<TeamAppTreeItem | undefined>
+export async function pickTeamApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
   const workspaceFolder = await core.getWorkspaceFolder({
     allowReadSelectedPath: false,
     fallbackUserChoice: false,
@@ -166,7 +166,7 @@ export async function pickTeamApp(options: AppPickerOptions = {}): Promise<unkno
     ID = dConfig.get(DiscloudConfigScopes.ID);
 
     if (options.allowOtherAppTypes && ID && core.userAppTree.children.has(ID))
-      return pickUserApp(options);
+      return pickUserApp(core, options);
   }
 
   const apps: QuickPickItem[] = [];
@@ -191,13 +191,13 @@ export async function pickTeamApp(options: AppPickerOptions = {}): Promise<unkno
   if (!apps.length) {
     if (!options.noCached) {
       options.noCached = true;
-      return pickTeamApp(options);
+      return pickTeamApp(core, options);
     }
 
     if (!options.allowOtherAppTypes || !userAppsSize)
       throw new Error(t("no.apps.found.to.choose"));
 
-    return pickUserApp(options);
+    return pickUserApp(core, options);
   }
 
   let hasApp = false;
@@ -233,7 +233,7 @@ export async function pickTeamApp(options: AppPickerOptions = {}): Promise<unkno
         items.splice(0, items.length, ...apps);
         break;
       case seeOtherAppTypesLabel:
-        return pickUserApp(options);
+        return pickUserApp(core, options);
     }
   } while (!picked);
 

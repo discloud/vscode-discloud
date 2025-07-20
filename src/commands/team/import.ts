@@ -10,8 +10,8 @@ import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { ConfigKeys } from "../../utils/constants";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       progress: {
         location: ProgressLocation.Notification,
         title: t("progress.import.title"),

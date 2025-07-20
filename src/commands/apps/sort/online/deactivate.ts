@@ -3,8 +3,8 @@ import Command from "../../../../structures/Command";
 import { ConfigKeys } from "../../../../utils/constants";
 
 export default class extends Command {
-  constructor(readonly core: ExtensionCore) {
-    super({
+  constructor(core: ExtensionCore) {
+    super(core, {
       allowTokenless: true,
     });
   }
