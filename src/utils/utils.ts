@@ -40,10 +40,6 @@ export function getIconName(data: any) {
   }
 }
 
-export function clamp(value: number, lowerLimit: number, upperLimit: number) {
-  return Math.min(Math.max(value, lowerLimit), upperLimit);
-}
-
 type StringCamelify<S, Sep extends string> =
   S extends `${infer P1}${Sep}${infer P2}${infer P3}`
   ? `${P1}${Uppercase<P2>}${StringCamelify<P3, Sep>}`

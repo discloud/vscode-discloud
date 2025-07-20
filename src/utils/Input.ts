@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type InputBoxOptions, window } from "vscode";
-import { clamp } from "./utils";
+import { clamp } from "./math";
 
 export default class InputBox {
   static getExternalURL(options?: ExternalURLInputOptions): Promise<string | void>
@@ -24,7 +24,7 @@ export default class InputBox {
         if (!response.ok) return options.prompt;
 
         if (typeof options.validate === "function")
-          return options.validate(response);
+          return await options.validate(response);
       },
     });
 
@@ -94,11 +94,12 @@ export default class InputBox {
 }
 
 type ValidateInput = NonNullable<InputBoxOptions["validateInput"]>
+type InputValidationResult = ReturnType<ValidateInput>
 
 interface ExternalURLInputOptions<Required extends boolean = false> {
   prompt?: string
   required?: Required
-  validate?: (response: Response) => ReturnType<ValidateInput>
+  validate?: (response: Response) => InputValidationResult
 }
 
 interface ExternalImageURLInputOptions<Required extends boolean = false> {
