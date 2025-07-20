@@ -7,6 +7,7 @@ async function importJSON<T extends l10nJsonFormat>(path: string): Promise<T> {
   try {
     const fileHandle = await open(path);
     const content = await fileHandle.readFile("utf8");
+    await fileHandle.close();
     return JSON.parse(content);
   } catch { }
 
