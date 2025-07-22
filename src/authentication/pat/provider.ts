@@ -11,7 +11,7 @@ import { hash } from "../utils/hash";
 import DiscloudPatAuthenticationSession from "./session";
 
 const providerId = "discloud";
-const providerLabel = "Discloud Token";
+const providerLabel = "Discloud";
 const secretKey = SecretKeys.discloudpat;
 
 export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
