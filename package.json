@@ -1299,7 +1299,7 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
+    "@eslint/js": "^9.33.0",
     "@types/adm-zip": "^0.5.7",
     "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
