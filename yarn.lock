@@ -2000,10 +2000,10 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-library@^10.1.2:
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-10.1.2.tgz#4837076cc3cd22afe7a2c804bd80205380c770bd"
-  integrity sha512-UkdcTupQkbH7m2Rrl8flU0IgWQN8IGqChG3c8X/xOIohy/8VA8cWcUBO+a2c+Q1M3ES5twNuEqDE8N2CiLCTeA==
+json-schema-library@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-10.2.0.tgz#987ad31346d98f724ced9139055984940fde48da"
+  integrity sha512-CK/EZwtMCdu+TJty+CJKBiFTLt5UpzcdUl2XRX+c5qfupWiqu4zx3aQbM/Jvm8rzvNwbE+KC+SSYVL/kuL7fTA==
   dependencies:
     "@sagold/json-pointer" "^7.0.0"
     "@sagold/json-query" "^6.2.0"
