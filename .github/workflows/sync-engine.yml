@@ -1,5 +1,8 @@
 name: Sync Engine with Dependency
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
