@@ -1295,7 +1295,7 @@
     "adm-zip": "^0.5.16",
     "bytes": "^3.1.2",
     "jose": "^6.0.13",
-    "json-schema-library": "^10.2.0",
+    "json-schema-library": "^10.2.1",
     "ws": "^8.18.3"
   },
   "devDependencies": {

@@ -402,9 +402,9 @@
     undici-types "~7.10.0"
 
 "@types/node@22.x":
-  version "22.17.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.17.2.tgz#47a93d6f4b79327da63af727e7c54e8cab8c4d33"
-  integrity sha512-gL6z5N9Jm9mhY+U2KXZpteb+09zyffliRkZyZOHODGATyC5B1Jt/7TzuuiLkFsSUMLbS1OLmlj/E+/3KF4Q/4w==
+  version "22.18.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.18.0.tgz#9e4709be4f104e3568f7dd1c71e2949bf147a47b"
+  integrity sha512-m5ObIqwsUp6BZzyiy4RdZpzWGub9bqLJMvZDD0QMXhxjqMHMENlj+SqF5QxoUwaQNFe+8kz8XM8ZQhqkQPTgMQ==
   dependencies:
     undici-types "~6.21.0"
 
@@ -2005,10 +2005,10 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-library@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-10.2.0.tgz#987ad31346d98f724ced9139055984940fde48da"
-  integrity sha512-CK/EZwtMCdu+TJty+CJKBiFTLt5UpzcdUl2XRX+c5qfupWiqu4zx3aQbM/Jvm8rzvNwbE+KC+SSYVL/kuL7fTA==
+json-schema-library@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-10.2.1.tgz#0a4734746e9458017ebacce3f1aff8d89ea5889d"
+  integrity sha512-mWjBz79uBHGCTK5X11a3cz4NAepxOjWWBLGkGM9KKkrfQjpJx9e3wlkgpj6ieqrdIJ/3CtMEHFermeBJk2Hanw==
   dependencies:
     "@sagold/json-pointer" "^7.0.0"
     "@sagold/json-query" "^6.2.0"
@@ -2989,9 +2989,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 tapable@^2.2.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.2.2.tgz#ab4984340d30cb9989a490032f086dbb8b56d872"
-  integrity sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.2.3.tgz#4b67b635b2d97578a06a2713d2f04800c237e99b"
+  integrity sha512-ZL6DDuAlRlLGghwcfmSn9sK3Hr6ArtyudlSAiCqQ6IfE+b+HHbydbYDIG15IfS5do+7XQQBdBiubF/cV2dnDzg==
 
 test-exclude@^6.0.0:
   version "6.0.0"
@@ -3114,9 +3114,9 @@ typescript@^5.9.2:
   integrity sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==
 
 uint8array-extras@^1.4.0:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/uint8array-extras/-/uint8array-extras-1.4.1.tgz#6d6e88363a414577c133aca1e63b2a6c5524be21"
-  integrity sha512-+NWHrac9dvilNgme+gP4YrBSumsaMZP0fNBtXXFIf33RLLKEcBUKaQZ7ULUbS0sBfcjxIZ4V96OTRkCbM7hxpw==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/uint8array-extras/-/uint8array-extras-1.5.0.tgz#10d2a85213de3ada304fea1c454f635c73839e86"
+  integrity sha512-rvKSBiC5zqCCiDZ9kAOszZcDvdAHwwIKJG33Ykj43OKcWsnmcBRL09YTU4nOeHZ8Y2a7l1MgTd08SBe9A8Qj6A==
 
 unbox-primitive@^1.1.0:
   version "1.1.0"
