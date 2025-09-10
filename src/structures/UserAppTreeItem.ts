@@ -71,14 +71,14 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
     switch (showAvatar) {
       case "always": {
         if (this.data.avatarURL)
-          this.iconPath = Uri.parse(this.data.avatarURL);
+          try { this.iconPath = Uri.parse(this.data.avatarURL); } catch { }
 
         break;
       }
 
       case "when.online": {
         if (this.online && this.data.avatarURL)
-          this.iconPath = Uri.parse(this.data.avatarURL);
+          try { this.iconPath = Uri.parse(this.data.avatarURL); } catch { }
 
         break;
       }

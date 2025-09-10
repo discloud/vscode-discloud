@@ -22,7 +22,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
     if (!data) return this;
 
     if (data.avatar) 
-      this.iconPath = Uri.parse(data.avatar);
+      try { this.iconPath = Uri.parse(data.avatar); } catch { }
 
     super._patch(data);
 
