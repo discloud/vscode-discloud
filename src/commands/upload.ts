@@ -45,7 +45,8 @@ export default class extends Command {
     const found = await fs.findFiles(task.token);
     if (!found.length) throw Error(t("files.missing"));
 
-    const main = dConfig.data.MAIN && Uri.parse(dConfig.data.MAIN).fsPath;
+    let main;
+    try { main = dConfig.data.MAIN && Uri.parse(dConfig.data.MAIN).fsPath; } catch { }
 
     if (!main || !found.some(uri => uri.fsPath.endsWith(main)))
       throw Error([
