@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.26.4
+
+- Correção para evitar erros de validação de URL em avatares
+
 ## 2.26.3
 
 - Agora mostra seu `username` em contas
