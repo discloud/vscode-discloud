@@ -19,17 +19,19 @@ jobs:
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          yarn: true
           preRelease: ${{ github.event.release.prerelease }}
+          skipDuplicate: true
+          yarn: true
 
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v2
         with:
-          pat: ${{ secrets.VSCE_PAT }}
-          registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
-          yarn: true
+          pat: ${{ secrets.VSCE_PAT }}
           preRelease: ${{ github.event.release.prerelease }}
+          registryUrl: https://marketplace.visualstudio.com
+          skipDuplicate: true
+          yarn: true
 
       - name: Upload .vsix to release
         if: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
