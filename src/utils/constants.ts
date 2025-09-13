@@ -1,5 +1,8 @@
 import { makeCamelizedPair } from "./utils";
 
+export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
+export const ONE_MINUTE_IN_MILLISECONDS = 60_000;
+
 export const DISCLOUD_CONFIG_SCHEMA_FILE_NAME = "discloudconfigschema.json";
 
 export const RESOURCES_DIR = "resources";
@@ -73,6 +76,10 @@ const API_ACTIONS_STRATEGY = Object.freeze([
   "socket",
 ] as const);
 
+const GLOBAL_STORAGE_KEYS = Object.freeze([
+  "fetch.user.timestamp",
+] as const);
+
 const SECRET_KEYS = Object.freeze([
   "discloudpat",
 ] as const);
@@ -84,5 +91,7 @@ export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
 export const SortBy = Object.freeze(makeCamelizedPair(SORT_BY));
 
 export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));
+
+export const GlobalStorageKeys = Object.freeze(makeCamelizedPair(GLOBAL_STORAGE_KEYS));
 
 export const SecretKeys = Object.freeze(makeCamelizedPair(SECRET_KEYS));

@@ -7,7 +7,6 @@ import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
 import AuthenticationProviders from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
-import SecretStorageImpl from "../storage/secrets";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
@@ -15,6 +14,9 @@ import UserAppTreeDataProvider from "../providers/UserAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import REST from "../services/discloud/REST";
 import { UserAgent } from "../services/discloud/UserAgent";
+import GlobalStateStorage from "../storage/globalState";
+import SecretStorageImpl from "../storage/secrets";
+import StateStorage from "../storage/state";
 import type Command from "../structures/Command";
 import DiscloudStatusBarItem from "../structures/DiscloudStatusBarItem";
 import VSUser from "../structures/VSUser";
@@ -29,6 +31,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly auth: AuthenticationProviders;
   declare readonly context: ExtensionContext;
   declare readonly secrets: SecretStorage;
+  declare readonly globalStorage: StateStorage;
+  declare readonly workspaceStorage: StateStorage;
 
   declare readonly api: REST;
 
@@ -165,11 +169,19 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
     this.logger.info("Activate: begin");
 
+    const globalStorage = new GlobalStateStorage(context.globalState);
+
+    const workspaceStorage = new StateStorage(context.workspaceState);
+
     const secrets = new SecretStorageImpl(context.secrets);
 
     context.subscriptions.push(secrets);
 
-    Object.defineProperties(this, { secrets: { value: secrets } });
+    Object.defineProperties(this, {
+      globalStorage: { value: globalStorage },
+      workspaceStorageStorage: { value: workspaceStorage },
+      secrets: { value: secrets },
+    });
 
     const authPat = new DiscloudPatAuthenticationProvider(context, secrets);
 
