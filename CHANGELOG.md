@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.0
+
+- Implementamos um cache global temporário para armazenar dados do usuário e seus aplicativos para reduzir a carga de trabalho da API.
+
 ## 2.26.4
 
 - Correção para evitar erros de validação de URL em avatares
