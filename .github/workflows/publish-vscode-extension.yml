@@ -8,6 +8,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: success()
+    outputs:
+      vsixPath: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,7 +22,6 @@ jobs:
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           preRelease: ${{ github.event.release.prerelease }}
-          skipDuplicate: true
           yarn: true
 
       - name: Publish to Visual Studio Marketplace
@@ -30,14 +31,17 @@ jobs:
           pat: ${{ secrets.VSCE_PAT }}
           preRelease: ${{ github.event.release.prerelease }}
           registryUrl: https://marketplace.visualstudio.com
-          skipDuplicate: true
           yarn: true
 
+  release:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
       - name: Upload .vsix to release
-        if: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+        if: ${{ needs.deploy.outputs.vsixPath }}
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          files: ${{ needs.deploy.outputs.vsixPath }}
           tag_name: ${{ github.ref_name }}
