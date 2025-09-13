@@ -1,6 +1,7 @@
 import { type RESTPutApiLocaleResult, Routes } from "@discloudapp/api-types/v2";
 import { type ApiVscodeApp, type ApiVscodeUser, type RESTGetApiVscode } from "../@types";
 import core from "../extension";
+import { GlobalStorageKeys, ONE_MINUTE_IN_MILLISECONDS, TEN_SECONDS_IN_MILLISECONDS } from "../utils/constants";
 
 export default class VSUser implements ApiVscodeUser {
   readonly apps: string[] = [];
@@ -17,7 +18,34 @@ export default class VSUser implements ApiVscodeUser {
   declare readonly userID: string;
   declare readonly username: string;
 
+  #fetchTimestamp!: number;
+
+  #upsertFetchTimestamp(defaultTimestampValue: number) {
+    return core.globalStorage.upsert<number>(GlobalStorageKeys.fetchUserTimestamp, defaultTimestampValue);
+  }
+
   async fetch(isInternal?: boolean) {
+    const now = Date.now();
+    const isDefinedFetchTimestamp = typeof this.#fetchTimestamp === "number";
+    const fetchTimestamp = this.#fetchTimestamp = await this.#upsertFetchTimestamp(now);
+    const isFetchTimeLessThanOneMinuteAgo = (fetchTimestamp + ONE_MINUTE_IN_MILLISECONDS) > now;
+    const isFetchTimeLessThanTenSecondsAgo = (fetchTimestamp + TEN_SECONDS_IN_MILLISECONDS) > now;
+    let cachedUser;
+
+    if (!isDefinedFetchTimestamp) {
+      cachedUser = core.globalStorage.get<ApiVscodeUser>("user");
+
+      if (cachedUser) {
+        Object.assign(this, cachedUser);
+
+        core.emit("vscode", this);
+
+        if (isFetchTimeLessThanOneMinuteAgo) return this;
+      }
+    }
+
+    if (!isInternal && isFetchTimeLessThanTenSecondsAgo) return this;
+
     const method = isInternal ? "queueGet" : "get";
 
     const response = await core.api[method]<RESTGetApiVscode>("/vscode");
@@ -25,6 +53,8 @@ export default class VSUser implements ApiVscodeUser {
     if (!response) return this;
 
     if ("user" in response) {
+      await core.globalStorage.update("user", response.user);
+
       Object.assign(this, response.user);
 
       core.emit("vscode", this);

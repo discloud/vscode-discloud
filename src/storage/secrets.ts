@@ -4,7 +4,7 @@ export default class SecretStorage implements vscode.SecretStorage, vscode.Dispo
   constructor(
     protected readonly secrets: vscode.SecretStorage,
   ) {
-    this.onDidChange = secrets.onDidChange;
+    this.onDidChange = secrets.onDidChange.bind(secrets);
   }
 
   readonly #cache = new Map<string, string>();
@@ -13,7 +13,7 @@ export default class SecretStorage implements vscode.SecretStorage, vscode.Dispo
     this.#cache.clear();
   }
 
-  delete(key: string): Thenable<void> {
+  delete(key: string) {
     this.#cache.delete(key);
     return this.secrets.delete(key);
   }
