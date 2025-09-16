@@ -14,6 +14,7 @@
   "choose.app": "Choose an app.",
   "choose.files": "Select the files.",
   "choose.mod": "Choose a MOD.",
+  "cluster": "Cluster",
   "command.declined.auto.refresh.is.activated": "Refresh command was declined because automatic Refresh is enabled.",
   "committing": "Committing...",
   "common.confirm": "Are you sure you want to do this?",

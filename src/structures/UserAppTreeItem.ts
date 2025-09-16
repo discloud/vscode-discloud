@@ -100,6 +100,13 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       iconName: "container",
     });
 
+    if (data.clusterName)
+      this._addChild("clusterName", {
+        label: data.clusterName,
+        description: t("cluster"),
+        iconName: "container",
+      });
+
     if (data.memory)
       this._addChild("memory", {
         label: data.memory,
