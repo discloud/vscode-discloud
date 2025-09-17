@@ -51,7 +51,7 @@ Aqui está uma lista de recursos que a extensão atualmente suporta:
 - [Discloud](https://discloud.com/)
 - [Documentação da Discloud](https://docs.discloud.com/)
 
-[![Discord](https://discord.com/api/guilds/584490943034425391/widget.png?style=banner2)](https://discord.gg/discloud)
+[![Discord](https://discord.com/api/guilds/584490943034425391/widget.png?style=banner2)](https://discord.discloudbot.com)
 
 ## Guia
 
