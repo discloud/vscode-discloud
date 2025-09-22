@@ -20,8 +20,8 @@ export default class VSUser implements ApiVscodeUser {
 
   #fetchTimestamp!: number;
 
-  #upsertFetchTimestamp(defaultTimestampValue: number) {
-    return core.globalStorage.upsert<number>(GlobalStorageKeys.fetchUserTimestamp, defaultTimestampValue);
+  #upsertFetchTimestamp(currentTimestampValue: number) {
+    return core.globalStorage.upsert<number>(GlobalStorageKeys.fetchUserTimestamp, currentTimestampValue);
   }
 
   async fetch(isInternal?: boolean) {
