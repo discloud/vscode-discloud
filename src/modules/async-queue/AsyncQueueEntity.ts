@@ -1,18 +1,25 @@
-import { type AsyncQueueKey } from "./types";
-
 export default class AsyncQueueEntity {
-  constructor(
-    readonly key: AsyncQueueKey,
-  ) {
-    this.promise = new Promise((resolve, _reject) => { this.#resolve = resolve; });
+  constructor() {
+    this.#promise = new Promise((resolve, reject) => {
+      this.#resolve = resolve;
+      this.#reject = reject;
+    });
   }
 
   #resolve!: () => void;
+  #reject!: (reason?: any) => void;
 
-  declare readonly promise: Promise<void>;
+  readonly #promise!: Promise<void>;
+  /** @readonly */
+  get promise() { return this.#promise; };
 
   resolve() {
     this.#resolve();
+    return this;
+  }
+
+  reject() {
+    this.#reject();
     return this;
   }
 }

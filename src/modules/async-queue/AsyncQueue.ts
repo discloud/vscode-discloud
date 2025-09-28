@@ -2,7 +2,7 @@ import AsyncQueueRepository from "./AsyncQueueRepository";
 import { type AsyncQueueKey } from "./types";
 
 export default class AsyncQueue {
-  readonly #repository: AsyncQueueRepository = new AsyncQueueRepository(this);
+  readonly #repository: AsyncQueueRepository = new AsyncQueueRepository();
 
   #resolveKey(key?: AsyncQueueKey) {
     return this.#repository.resolveKey(key);
@@ -11,7 +11,7 @@ export default class AsyncQueue {
   shift(key?: AsyncQueueKey) {
     key = this.#resolveKey(key);
 
-    this.#repository.resolve(key);
+    this.#repository.shift(key);
   }
 
   wait(key?: AsyncQueueKey) {
@@ -19,7 +19,7 @@ export default class AsyncQueue {
 
     const size = this.#repository.getSize(key);
 
-    const entity = this.#repository.add(key);
+    const entity = this.#repository.push(key);
 
     if (!size) return Promise.resolve();
 
