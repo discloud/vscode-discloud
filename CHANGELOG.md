@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.3
+
+- Melhorias no upload por socket
+
 ## 2.27.1
 
 - Mostrar nome dos clusters nos apps
