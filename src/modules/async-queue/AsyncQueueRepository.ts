@@ -1,13 +1,9 @@
-import type AsyncQueue from "./AsyncQueue";
+import Queue from "yocto-queue";
 import AsyncQueueEntity from "./AsyncQueueEntity";
 import { type AsyncQueueKey } from "./types";
 
 export default class AsyncQueueRepository {
-  constructor(
-    readonly asyncQueue: AsyncQueue,
-  ) { }
-
-  readonly #cache: Map<AsyncQueueKey, AsyncQueueEntity[]> = new Map();
+  readonly #cache: Map<AsyncQueueKey, Queue<AsyncQueueEntity>> = new Map();
   readonly #internalKey: symbol = Symbol("internal");
 
   resolveKey(key?: AsyncQueueKey) {
@@ -17,35 +13,27 @@ export default class AsyncQueueRepository {
   #resolveCached(key: AsyncQueueKey) {
     let cached = this.#cache.get(key);
     if (cached) return cached;
-    cached = [];
+
+    cached = new Queue();
     this.#cache.set(key, cached);
+
     return cached;
   }
 
-  add(key: AsyncQueueKey) {
-    const cached = this.#resolveCached(key);
-    const entity = new AsyncQueueEntity(key);
-    cached.push(entity);
-    return entity;
-  }
-
-  first(key: AsyncQueueKey) {
-    const cached = this.#resolveCached(key);
-    return cached.at(0);
-  }
-
   getSize(key: AsyncQueueKey) {
-    return this.#resolveCached(key).length;
+    return this.#resolveCached(key).size;
   }
 
-  resolve(key: AsyncQueueKey) {
+  push(key: AsyncQueueKey) {
     const cached = this.#resolveCached(key);
-    cached.shift();
-    cached.at(0)?.resolve();
+    const entity = new AsyncQueueEntity();
+    cached.enqueue(entity);
+    return entity;
   }
 
   shift(key: AsyncQueueKey) {
     const cached = this.#resolveCached(key);
-    return cached.shift();
+    cached.dequeue();
+    cached.peek()?.resolve();
   }
 }
