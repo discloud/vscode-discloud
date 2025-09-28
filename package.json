@@ -1289,8 +1289,8 @@
     "test": "vscode-test"
   },
   "dependencies": {
-    "@discloudapp/api-types": "^1.0.2",
-    "@discloudapp/util": "^1.2.3",
+    "@discloudapp/api-types": "^1.0.3",
+    "@discloudapp/util": "^1.2.4",
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "bytes": "^3.1.2",
