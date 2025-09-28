@@ -1,7 +1,9 @@
 export class NetworkUnreachableError extends Error {
   readonly name = "NetworkUnreachable";
 
-  constructor() {
+  constructor(
+    readonly reason: Buffer,
+  ) {
     super("Network unreachable");
   }
 }

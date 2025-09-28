@@ -4,7 +4,7 @@ import { t } from "@vscode/l10n";
 import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
-import { type ApiVscodeApp, type TaskData } from "../../../../@types";
+import { type TaskData } from "../../../../@types";
 import type ExtensionCore from "../../../../core/extension";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
@@ -92,17 +92,9 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
         if (data.app) {
           dConfig.update({ ID: data.app.id, AVATAR: data.app.avatarURL });
 
-          const app: ApiVscodeApp = {
-            apts: dConfig.data.APT as any,
-            clusterName: "",
-            exitCode: data.statusCode === 200 ? 0 : 1,
-            online: data.statusCode === 200,
-            ramKilled: false,
-            syncGit: null,
-            ...data.app,
-          };
+          data.app.apts = dConfig.data.APT ?? [];
 
-          core.userAppTree.addRawApp(app); // TODO: fix ApiUploadApp
+          core.userAppTree.addRawApp(data.app);
         }
 
         if (data.logs) showLog(data.logs);

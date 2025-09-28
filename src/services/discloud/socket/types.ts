@@ -1,5 +1,7 @@
-import { type ApiUploadApp } from "@discloudapp/api-types/v2";
 import type { RawData } from "ws";
+import { type ApiVscodeApp } from "../../../@types";
+
+export type BufferLike = Parameters<WebSocket["send"]>[0]
 
 export interface SocketEventsMap<Data extends Record<any, any> = Record<any, any>> {
   close: [code: number, reason: Buffer]
@@ -22,14 +24,14 @@ export interface SocketOptions {
   /**
    * Connecting timeout in milliseconds
    * 
-   * @default 10_000
+   * @default 10_000 (10 seconds)
    */
   connectingTimeout?: number | null
   headers?: Record<string, string>
 }
 
 export interface SocketEventUploadData {
-  app?: ApiUploadApp
+  app?: ApiVscodeApp
   logs?: string
   message: string | null
   progress: SocketProgressData

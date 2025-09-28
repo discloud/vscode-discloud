@@ -5,9 +5,10 @@ import core from "../../../extension";
 import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_ABNORMAL_CLOSURE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import { SocketEvents } from "./enum/events";
 import BufferOverflowError from "./errors/BufferOverflow";
+import ClosedError from "./errors/Closed";
 import { NetworkUnreachableError } from "./errors/NetworkUnreachable";
 import { UnauthorizedError } from "./errors/Unauthorized";
-import { type OnProgressCallback, type ProgressData, type SocketEventsMap, type SocketOptions } from "./types";
+import { type BufferLike, type OnProgressCallback, type ProgressData, type SocketEventsMap, type SocketOptions } from "./types";
 
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
   extends EventEmitter<SocketEventsMap<Data>>
@@ -27,14 +28,16 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   protected _chunkSize: number = DEFAULT_CHUNK_SIZE;
+  /** @internal */
   declare protected _connected: boolean;
   protected readonly _connectingTimeout: number | null = 10_000;
   protected readonly _headers: Record<string, string> = {};
-  declare protected _lastError?: any;
+  declare protected _error?: any;
   declare protected _socket?: WebSocket;
   declare protected _ping: number;
   declare protected _pong: number;
-  declare ping: number;
+
+  get ping() { return this._pong; }
 
   get closed() { return !this._socket || this._socket.readyState === WebSocket.CLOSED; }
   get closing() { return this._socket ? this._socket.readyState === WebSocket.CLOSING : false; }
@@ -55,43 +58,31 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   async connect() {
     await new Promise<void>((resolve, reject) => {
       if (this.connected) return resolve();
-      this.#createWebSocket().then(resolve).catch(reject);
+      this.#connect().then(resolve).catch(reject);
     });
   }
 
-  async #waitConnect() {
-    await new Promise<void>((resolve, reject) => {
-      if (this.connecting) {
-        const onConnected = () => {
-          this.off(SocketEvents.close, onClose);
-          resolve();
-        };
-        const onClose = () => {
-          this.off(SocketEvents.connected, onConnected);
-          reject();
-        };
-        return this.once(SocketEvents.connected, onConnected).once(SocketEvents.close, onClose);
-      }
-      if (this.connected) return resolve();
-      reject();
-    });
-  }
-
-  async sendJSON(value: Record<any, any> | any[]): Promise<void> {
+  async sendAsync(data: BufferLike) {
     if (!this.connected) await this.connect();
 
     await new Promise<void>((resolve, reject) => {
-      this._socket!.send(JSON.stringify(value), (err) => {
+      this._socket!.send(data, (err) => {
         if (err) return reject(err);
         resolve();
       });
     });
   }
 
-  async sendBuffer(buffer: Buffer, onProgress?: OnProgressCallback) {
-    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError(MAX_FILE_SIZE);
+  async sendJSON(value: Record<any, any> | any[]): Promise<void> {
+    await this.sendAsync(JSON.stringify(value));
+  }
 
+  async sendBuffer(buffer: Buffer, onProgress?: OnProgressCallback) {
+    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError(buffer.length, MAX_FILE_SIZE);
+
+    /** Number of parts to be sent */
     const total = Math.ceil(buffer.length / this._chunkSize);
+    /** Size of each part to be sent */
     const chunkSize = Math.ceil(buffer.length / total);
 
     for (let i = 0; i < total;) {
@@ -109,15 +100,19 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     }
   }
 
+  async #connect() {
+    if (this.connected) return;
+
+    if (this.connecting) return await this.#waitConnect();
+
+    return await this.#createWebSocket();
+  }
+
   async #createWebSocket() {
     const headers = await this.#resolveHeaders(this._headers);
 
     return await new Promise<void>((resolve, reject) => {
-      if (this.connecting) return this.#waitConnect().then(resolve).catch(reject);
-
-      if (this.connected) return resolve();
-
-      this.emit("connecting");
+      this.emit(SocketEvents.connecting);
 
       const options: ConstructorParameters<typeof WebSocket>[2] = {
         headers,
@@ -136,26 +131,26 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
           switch (code) {
             case SOCKET_ABNORMAL_CLOSURE:
               if (isConnected) break;
-              return reject(new NetworkUnreachableError());
+              return reject(new NetworkUnreachableError(reason));
 
             case SOCKET_UNAUTHORIZED_CODE:
-              return reject(new UnauthorizedError());
+              return reject(new UnauthorizedError(reason));
           }
 
-          if (this._lastError) {
-            const error = this._lastError;
-            delete this._lastError;
+          if (this._error) {
+            const error = this._error;
+            delete this._error;
 
             switch (error.code) {
               case NETWORK_UNREACHABLE_CODE:
-                return reject(new NetworkUnreachableError());
+                return reject(new NetworkUnreachableError(reason));
             }
           }
 
           this.emit(SocketEvents.close, code, reason);
         })
         .on("error", (error) => {
-          this.emit(SocketEvents.error, this._lastError = error);
+          this.emit(SocketEvents.error, this._error = error);
         })
         .on("message", (data) => {
           try { this.emit(SocketEvents.data, JSON.parse(data.toString())); }
@@ -163,7 +158,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
         })
         .once("open", () => {
           this._connected = true;
-          delete this._lastError;
+          delete this._error;
 
           this._ping = Date.now();
           this._socket!.ping();
@@ -177,9 +172,26 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
           this._socket!.ping();
         })
         .on("pong", () => {
-          this._pong = Date.now();
-          this.ping = this._pong - this._ping;
+          this._pong = Date.now() - this._ping;
         });
+    });
+  }
+
+  async #waitConnect() {
+    await new Promise<void>((resolve, reject) => {
+      if (this.connecting) {
+        const onConnected = () => {
+          this.off(SocketEvents.close, onClose);
+          resolve();
+        };
+        const onClose = (code: number, reason: Buffer) => {
+          this.off(SocketEvents.connected, onConnected);
+          reject(new ClosedError(code, reason));
+        };
+        return this.once(SocketEvents.connected, onConnected).once(SocketEvents.close, onClose);
+      }
+      if (this.connected) return resolve();
+      reject(this._error);
     });
   }
 
