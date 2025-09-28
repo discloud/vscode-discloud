@@ -4,7 +4,7 @@ import { CompletionItem, CompletionItemKind, FileType, languages, Position, Rang
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 const assignSymbol = "=";
-const comment = "# https://docs.discloudbot.com/discloud.config";
+const comment = "# https://docs.discloud.com/v/en/discloud.config";
 const commentPattern = /\s*#.*$/;
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
