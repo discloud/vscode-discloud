@@ -49,7 +49,7 @@ Aqui está uma lista de recursos que a extensão atualmente suporta:
 ## Links Úteis
 
 - [Discloud](https://discloud.com/)
-- [Documentação da Discloud](https://docs.discloud.com/)
+- [Documentação da Discloud](https://docs.discloud.com)
 
 [![Discord](https://discord.com/api/guilds/584490943034425391/widget.png?style=banner2)](https://discord.discloudbot.com)
 

@@ -127,7 +127,7 @@
   "progress.upload.title": "Upload",
   "ratelimited": "You have reached the request limit. Try again in {s} seconds.",
   "readdocs": "Read the [documentation](https://docs.discloud.com/en).",
-  "readdiscloudconfigdocs": "Read the [documentation](https://docs.discloud.com/en/configurations/discloud.config).",
+  "readdiscloudconfigdocs": "Read the [documentation](https://docs.discloud.com/en/discloud.config).",
   "refreshing": "Refreshing...",
   "rejected.action": "Rejected action",
   "see.also.your.apps": "See also your apps",
