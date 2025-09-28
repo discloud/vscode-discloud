@@ -21,7 +21,7 @@ export default class extends Command {
     if (findConfig.length) throw new WarningError(t("file.already.exists"));
 
     const content = [
-      "# https://docs.discloudbot.com/discloud.config",
+      "# https://docs.discloud.com/en/configurations/discloud.config",
       "ID=",
       "MAIN=",
       `NAME=${workspace.name}`,

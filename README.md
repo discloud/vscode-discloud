@@ -8,7 +8,7 @@ Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discl
 
 ## Requisitos
 
-- Estar registrado em nosso site discloud.com e ter gerado um [token](https://docs.discloud.com/suporte/comandos/api) de acesso para a nossa API.
+- Estar registrado em nosso site discloud.com e ter gerado um [token](https://docs.discloud.com/faq/perguntas-gerais/como-obter-o-meu-token-da-api-da-discloud) de acesso para a nossa API.
 
 ![Token de acesso](https://i.imgur.com/6OLhOMW.gif)
 

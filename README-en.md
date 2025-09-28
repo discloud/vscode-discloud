@@ -8,7 +8,7 @@ This extension makes it easy to host and manage applications on [Discloud](https
 
 ## Requirements
 
-- Be registered on our website, discloud.com, and have generated an [access token](https://docs.discloud.com/en/suport/commands/api) for our API.
+- Be registered on our website, discloud.com, and have generated an [access token](https://docs.discloud.com/en/faq/general-questions/how-can-i-get-my-discloud-api-token) for our API.
 
 ![Access token](https://i.imgur.com/6OLhOMW.gif)
 
