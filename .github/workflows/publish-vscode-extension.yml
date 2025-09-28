@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     steps:
+      - uses: actions/checkout@v4
       - name: Upload .vsix to release
         if: ${{ needs.deploy.outputs.vsixPath }}
         uses: softprops/action-gh-release@v2
