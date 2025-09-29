@@ -1,7 +1,11 @@
 export default class AsyncQueueEntity {
   constructor(
     readonly index: number,
-  ) { }
+  ) {
+    this.isFirst = !this.index;
+  }
+
+  declare readonly isFirst: boolean;
 
   readonly #promiseWithResolvers: PromiseWithResolvers<void> = Promise.withResolvers<void>();
 
