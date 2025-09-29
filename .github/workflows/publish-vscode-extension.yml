@@ -17,7 +17,7 @@ jobs:
       - name: "Create VSIX"
         id: createVSIX
         run: |
-          npx vsce package
+          npx vsce@latest package
           PKG=$(node -p "require('./package.json').name + '-' + require('./package.json').version")
           echo "vsixPath=$PKG.vsix" >> $GITHUB_OUTPUT
 
