@@ -7,19 +7,33 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: success()
-    outputs:
-      vsixPath: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
       - run: yarn
+
+      - name: "Create VSIX"
+        id: createVSIX
+        run: |
+          npx vsce package
+          PKG=$(node -p "require('./package.json').name + '-' + require('./package.json').version")
+          echo "vsixPath=$PKG.vsix" >> $GITHUB_OUTPUT
+
+      - name: Upload .vsix to release
+        if: ${{ steps.createVSIX.outputs.vsixPath }}
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: ${{ steps.createVSIX.outputs.vsixPath }}
+          tag_name: ${{ github.ref_name }}
+
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v2
-        id: publishToOpenVSX
         with:
+          extensionFile: ${{ steps.createVSIX.outputs.vsixPath }}
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           preRelease: ${{ github.event.release.prerelease }}
           yarn: true
@@ -27,22 +41,8 @@ jobs:
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v2
         with:
-          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          extensionFile: ${{ steps.createVSIX.outputs.vsixPath }}
           pat: ${{ secrets.VSCE_PAT }}
           preRelease: ${{ github.event.release.prerelease }}
           registryUrl: https://marketplace.visualstudio.com
           yarn: true
-
-  release:
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - uses: actions/checkout@v4
-      - name: Upload .vsix to release
-        if: ${{ needs.deploy.outputs.vsixPath }}
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ${{ needs.deploy.outputs.vsixPath }}
-          tag_name: ${{ github.ref_name }}
