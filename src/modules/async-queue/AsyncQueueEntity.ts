@@ -1,25 +1,14 @@
 export default class AsyncQueueEntity {
-  constructor() {
-    this.#promise = new Promise((resolve, reject) => {
-      this.#resolve = resolve;
-      this.#reject = reject;
-    });
-  }
+  constructor(
+    readonly index: number,
+  ) { }
 
-  #resolve!: () => void;
-  #reject!: (reason?: any) => void;
+  readonly #promiseWithResolvers: PromiseWithResolvers<void> = Promise.withResolvers<void>();
 
-  readonly #promise!: Promise<void>;
   /** @readonly */
-  get promise() { return this.#promise; };
+  get promise() { return this.#promiseWithResolvers.promise; };
 
-  resolve() {
-    this.#resolve();
-    return this;
-  }
+  resolve() { this.#promiseWithResolvers.resolve(); }
 
-  reject() {
-    this.#reject();
-    return this;
-  }
+  reject(reason?: any) { this.#promiseWithResolvers.reject(reason); }
 }
