@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.7
+
+- Melhorias internas e refatoração do sistema de fila assíncrona.
+
 ## 2.27.6
 
 - Correções e melhorias na lógica de remoção de sessão (logout).
