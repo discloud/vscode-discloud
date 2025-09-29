@@ -13,6 +13,7 @@ import DiscloudPatAuthenticationSession from "./session";
 const providerId = "discloud";
 const providerLabel = "Discloud";
 const secretKey = SecretKeys.discloudpat;
+const defaultSessionAccount = { id: "Discloud User ID", label: "Discloud User" };
 
 export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
   constructor(
@@ -41,8 +42,8 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     const input = await window.showInputBox({
       ignoreFocusOut: true,
-      prompt: t("input.login.prompt"),
       password: true,
+      prompt: t("input.login.prompt"),
       validateInput: async (value: string) => {
         if (!tokenIsDiscloudJwt(value))
           return t("input.login.prompt");
@@ -67,8 +68,8 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     const body = await response.json() as RESTGetApiUserResult;
 
     const account: AuthenticationSessionAccountInformation = {
-      id: body.user.userID ?? "Discloud User ID",
-      label: body.user.username ?? "Discloud User",
+      id: body.user.userID ?? defaultSessionAccount.id,
+      label: body.user.username ?? defaultSessionAccount.label,
     };
 
     const secretHash = hash(input);
@@ -95,20 +96,25 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     const secretHash = hash(secret);
 
     const account = this.context.globalState.get<AuthenticationSessionAccountInformation>(secretHash)
-      ?? { id: "Discloud User ID", label: "Discloud User" };
+      ?? defaultSessionAccount;
 
     const session = new DiscloudPatAuthenticationSession(secret, account);
 
     return [session];
   }
 
-  async removeSession() {
-    const session = await this.getSession();
-    if (!session) return;
+  async removeSession(sessionId: string) {
+    const secret = await this.secrets.get(sessionId);
+    if (!secret) return;
+
+    const secretHash = hash(secret);
+
+    const account = this.context.globalState.get<AuthenticationSessionAccountInformation>(secretHash)
+      ?? defaultSessionAccount;
+
+    const session = new DiscloudPatAuthenticationSession(secret, account);
 
     await this.secrets.delete(secretKey);
-
-    const secretHash = hash(session.accessToken);
 
     await this.context.globalState.update(secretHash, undefined);
 

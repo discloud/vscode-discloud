@@ -18,51 +18,44 @@ core.on("activate", async function (context) {
   }
 
   const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
-    if (event.affectsConfiguration("discloud.app.sort")) {
-      core.userAppTree.refresh();
+    if (event.affectsConfiguration("discloud.app.sort")) return core.userAppTree.refresh();
 
-      return;
-    }
+    if (event.affectsConfiguration("discloud.team.sort")) return core.teamAppTree.refresh();
 
-    if (event.affectsConfiguration("discloud.team.sort")) {
-      core.teamAppTree.refresh();
-
-      return;
-    }
-
-    if (event.affectsConfiguration("discloud.app.separate.by.type")) {
-      core.userAppTree.refresh();
-
-      return;
-    }
+    if (event.affectsConfiguration("discloud.app.separate.by.type")) return core.userAppTree.refresh();
 
     if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
       for (const app of core.userAppTree.children.values()) {
         app._patch({});
       }
 
-      core.userAppTree.refresh();
-
-      return;
+      return core.userAppTree.refresh();
     }
 
-    if (event.affectsConfiguration("discloud.status.bar.behavior")) {
-      core.statusBar.setDefault();
+    if (event.affectsConfiguration("discloud.status.bar.behavior")) return core.statusBar.setDefault();
+  });
 
+  // Refresh extension when session was removed
+  const disposableAuthenticationEvent = core.auth.pat.onDidChangeSessions(async (event) => {
+    if (event.removed?.length) {
+      const session = await core.auth.pat.getSession();
+      if (!session) core.emit("missingToken");
       return;
     }
   });
 
-  context.subscriptions.push(disposableChangeConfiguration);
+  context.subscriptions.push(disposableChangeConfiguration, disposableAuthenticationEvent);
 
   core.logger.info("Activate: done");
 
+  // TODO: remove it in future
   const oldConfigToken = core.config.get<string>(ConfigKeys.token);
   if (oldConfigToken) {
     await core.config.update(ConfigKeys.token, undefined, true);
     await core.secrets.store(SecretKeys.discloudpat, oldConfigToken);
   }
 
+  // TODO: remove it in future
   const oldSecret = await core.secrets.get("token");
   if (oldSecret) {
     await core.secrets.delete("token");
