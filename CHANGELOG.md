@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.6
+
+- Correções e melhorias na lógica de remoção de sessão (logout).
+
 ## 2.27.3
 
 - Melhorias no upload por socket
