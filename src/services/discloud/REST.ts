@@ -22,7 +22,7 @@ export default class REST extends EventEmitter {
   }
 
   get limited() {
-    return !this.remaining;
+    return this.remaining < 1;
   }
 
   get timeToReset(): number {
