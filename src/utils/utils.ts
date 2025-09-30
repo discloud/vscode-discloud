@@ -53,12 +53,12 @@ type Config<T, Sep extends string> =
   ? { [K in U as StringCamelify<string & K, Sep>]: K }
   : T
 
-const defaultSeparator = "." as const;
+const _defaultSeparator = "." as const;
 
 export function makeCamelizedPair<
   T extends ReadonlyArray<string>,
-  Sep extends string = typeof defaultSeparator
->(keys: T, sep: Sep = defaultSeparator as Sep): Config<T, Sep> {
+  Sep extends string = typeof _defaultSeparator
+>(keys: T, sep: Sep = "." as Sep): Config<T, Sep> {
   const configObj: any = {};
 
   if (!Array.isArray(keys)) return configObj;
