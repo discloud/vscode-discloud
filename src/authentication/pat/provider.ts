@@ -8,6 +8,7 @@ import UnauthorizedError from "../errors/unauthorized";
 import { type IPatAuthenticationProvider } from "../interfaces/pat";
 import { hash } from "../utils/hash";
 import DiscloudPatAuthenticationSession from "./session";
+import { SecretKeys } from "../../utils/constants";
 
 const providerId = "discloud";
 const providerLabel = "Discloud";
@@ -95,7 +96,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
   getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]>
   async getSessions(_scopes: readonly string[] | undefined, _options: AuthenticationProviderSessionOptions) {
-    const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, []);
+    const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, [SecretKeys.discloudpat]);
     const sessionIdSet = new Set(sessionIdList);
 
     const sessions: DiscloudPatAuthenticationSession[] = [];
