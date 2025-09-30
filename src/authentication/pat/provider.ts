@@ -1,14 +1,14 @@
 import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
-import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type Event, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
+import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
+import { SecretKeys } from "../../utils/constants";
 import BaseAuthenticationError from "../errors/base";
 import UnauthorizedError from "../errors/unauthorized";
 import { type IPatAuthenticationProvider } from "../interfaces/pat";
 import { hash } from "../utils/hash";
 import DiscloudPatAuthenticationSession from "./session";
-import { SecretKeys } from "../../utils/constants";
 
 const providerId = "discloud";
 const providerLabel = "Discloud";
@@ -22,14 +22,12 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   ) {
     const disposable = authentication.registerAuthenticationProvider(providerId, providerLabel, this);
 
-    this.context.subscriptions.push(disposable);
+    this.context.subscriptions.push(disposable, this._onDidChangeSessions);
   }
 
   protected readonly _onDidChangeSessions = new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
-  get onDidChangeSessions(): Event<AuthenticationProviderAuthenticationSessionsChangeEvent> {
-    return this._onDidChangeSessions.event;
-  }
+  get onDidChangeSessions() { return this._onDidChangeSessions.event; }
 
   protected _fire(data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>): void
   protected _fire(data: AuthenticationProviderAuthenticationSessionsChangeEvent) {
@@ -37,8 +35,8 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession>
-  async createSession(_scopes: readonly string[], _options: AuthenticationProviderSessionOptions) {
-    const oldSession = this.getSession();
+  async createSession(_scopes: readonly string[], options: AuthenticationProviderSessionOptions) {
+    const oldSession = this.getSession(options.account);
 
     const input = await window.showInputBox({
       ignoreFocusOut: true,
@@ -65,7 +63,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     if (!response.ok) throw await BaseAuthenticationError.fromStatusCode(response.status);
 
-    const newSessionId = `${Date.now()}`;
+    const newSessionId = SecretKeys.discloudpat; //`session.pat.${Date.now()}`;
 
     const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, []);
     sessionIdList.push(newSessionId);
@@ -76,7 +74,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     const account: AuthenticationSessionAccountInformation = {
       id: body.user.userID ?? defaultSessionAccount.id,
-      label: body.user.username ?? defaultSessionAccount.label,
+      label: body.user.username ?? body.user.userID ?? defaultSessionAccount.label,
     };
 
     await Promise.all([
@@ -95,17 +93,19 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]>
-  async getSessions(_scopes: readonly string[] | undefined, _options: AuthenticationProviderSessionOptions) {
+  async getSessions(_scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions) {
     const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, [SecretKeys.discloudpat]);
     const sessionIdSet = new Set(sessionIdList);
 
     const sessions: DiscloudPatAuthenticationSession[] = [];
 
-    await Promise.all(sessionIdList.map(async (sessionId) => {
+    for (let i = 0; i < sessionIdList.length; i++) {
+      const sessionId = sessionIdList[i];
+
       const secret = await this.secrets.get(sessionId);
       if (!secret) {
         sessionIdSet.delete(sessionId);
-        return;
+        continue;
       }
 
       const account: AuthenticationSessionAccountInformation
@@ -113,10 +113,12 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
         ?? this.context.globalState.get(hash(secret))
         ?? defaultSessionAccount;
 
+      if (options.account && options.account.id !== account.id) continue;
+
       const session = new DiscloudPatAuthenticationSession(sessionId, secret, account);
 
       sessions.push(session);
-    }));
+    }
 
     if (sessionIdList.length !== sessionIdSet.size)
       await this.context.globalState.update(sessionIdListKey, Array.from(sessionIdSet));
@@ -145,8 +147,13 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     this._fire({ removed: [session] });
   }
 
-  getSession() {
-    return authentication.getSession(providerId, [], { silent: true });
+  async clearSession(account?: AuthenticationSessionAccountInformation) {
+    const session = await authentication.getSession(providerId, [], { account, silent: true });
+    if (session) this.removeSession(session.id);
+  }
+
+  async getSession(account?: AuthenticationSessionAccountInformation) {
+    return authentication.getSession(providerId, [], { account, silent: true });
   }
 
   async validate(session: AuthenticationSession) {

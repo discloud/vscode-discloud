@@ -1,6 +1,6 @@
 import { type ExtensionContext } from "vscode";
+import { type ApiVscodeUser } from "../@types";
 import UserTreeItem from "../structures/UserTreeItem";
-import type VSUser from "../structures/VSUser";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
@@ -16,13 +16,18 @@ export default class UserTreeDataProvider extends BaseTreeDataProvider<Item> {
     this.refresh();
   }
 
-  add(user: VSUser) {
+  delete(userId: string) {
+    this.children.delete(`${userId}`);
+    this.refresh();
+  }
+
+  add(user: ApiVscodeUser) {
     this.children.set(`${user.userID}`, new UserTreeItem(user));
     this.refresh();
   }
 
-  set(user: VSUser) {
-    this.children.clear();
+  set(user: ApiVscodeUser) {
+    this.children.dispose();
     this.children.set(`${user.userID}`, new UserTreeItem(user));
     this.refresh();
   }

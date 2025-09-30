@@ -1,5 +1,7 @@
+import { type AuthenticationSessionAccountInformation } from "vscode";
 import type ExtensionCore from "../core/extension";
 import Command from "../structures/Command";
+import type UserTreeItem from "../structures/UserTreeItem";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -8,10 +10,12 @@ export default class extends Command {
     });
   }
 
-  async run() {
-    const session = await this.core.auth.pat.getSession();
-    if (session) await this.core.auth.pat.removeSession(session.id);
+  async run(_: null, user: UserTreeItem) {
+    const account: AuthenticationSessionAccountInformation = {
+      id: user.userID,
+      label: user.data.username ?? user.userID,
+    };
 
-    this.core.emit("missingToken");
+    await this.core.auth.pat.clearSession(account);
   }
 }

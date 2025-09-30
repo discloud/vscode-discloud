@@ -21,7 +21,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
     if (!data) return this;
 
-    if (data.avatar) 
+    if (data.avatar)
       try { this.iconPath = Uri.parse(data.avatar); } catch { }
 
     super._patch(data);
