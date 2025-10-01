@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.8
+
+- Correções e melhorias no provider de autenticação
+
 ## 2.27.7
 
 - Melhorias internas e refatoração do sistema de fila assíncrona.
