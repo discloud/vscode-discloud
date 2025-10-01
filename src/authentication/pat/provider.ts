@@ -3,14 +3,13 @@ import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
 import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
-import { SecretKeys } from "../../utils/constants";
+import { AUTHENTICATION_PROVIDER_ID, SecretKeys } from "../../utils/constants";
 import BaseAuthenticationError from "../errors/base";
 import UnauthorizedError from "../errors/unauthorized";
 import { type IPatAuthenticationProvider } from "../interfaces/pat";
 import { hash } from "../utils/hash";
 import DiscloudPatAuthenticationSession from "./session";
 
-const providerId = "discloud";
 const providerLabel = "Discloud";
 const defaultSessionAccount = { id: "Discloud User ID", label: "Discloud User" };
 const sessionIdListKey = "sessionIdList";
@@ -20,7 +19,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     protected readonly context: ExtensionContext,
     protected readonly secrets: SecretStorage,
   ) {
-    const disposable = authentication.registerAuthenticationProvider(providerId, providerLabel, this);
+    const disposable = authentication.registerAuthenticationProvider(AUTHENTICATION_PROVIDER_ID, providerLabel, this);
 
     this.context.subscriptions.push(disposable, this._onDidChangeSessions);
   }
@@ -148,12 +147,12 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   async clearSession(account?: AuthenticationSessionAccountInformation) {
-    const session = await authentication.getSession(providerId, [], { account, silent: true });
+    const session = await this.getSession(account);
     if (session) this.removeSession(session.id);
   }
 
   async getSession(account?: AuthenticationSessionAccountInformation) {
-    return authentication.getSession(providerId, [], { account, silent: true });
+    return authentication.getSession(AUTHENTICATION_PROVIDER_ID, [], { account, silent: true });
   }
 
   async validate(session: AuthenticationSession) {

@@ -5,6 +5,7 @@ import { type TaskData } from "../@types";
 import UnauthorizedError from "../authentication/errors/unauthorized";
 import type ExtensionCore from "../core/extension";
 import Command from "../structures/Command";
+import { AUTHENTICATION_PROVIDER_ID } from "../utils/constants";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -16,7 +17,7 @@ export default class extends Command {
   async run(_: TaskData, session?: AuthenticationSession) {
     if (!session) {
       try {
-        await authentication.getSession("discloud", [], { forceNewSession: true });
+        await authentication.getSession(AUTHENTICATION_PROVIDER_ID, [], { forceNewSession: true });
       } catch (error) {
         if (error instanceof UnauthorizedError) {
           throw Error(t("invalid.token"));
