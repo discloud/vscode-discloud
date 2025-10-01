@@ -10,11 +10,12 @@ export default class extends Command {
     });
   }
 
-  async run(_: null, user: UserTreeItem) {
-    const account: AuthenticationSessionAccountInformation = {
-      id: user.userID,
-      label: user.data.username ?? user.userID,
-    };
+  async run(_: null, user?: UserTreeItem) {
+    const account: AuthenticationSessionAccountInformation | undefined
+      = user ? {
+        id: user.userID,
+        label: user.data.username ?? user.userID,
+      } : undefined;
 
     await this.core.auth.pat.clearSession(account);
   }
