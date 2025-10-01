@@ -6,7 +6,7 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
-## 2.27.8
+## 2.27.9
 
 - Correções e melhorias no provider de autenticação
 
