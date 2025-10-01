@@ -38,11 +38,6 @@ core.on("activate", async function (context) {
   // Refresh extension when session was removed
   const disposableAuthenticationEvent = core.auth.pat.onDidChangeSessions(async (event) => {
     if (event.removed?.length) {
-      for (let i = 0; i < event.removed.length; i++) {
-        const session = event.removed[i];
-        core.userTree.delete(session.account.id);
-      }
-
       const session = await core.auth.pat.getSession();
       if (!session) core.emit("missingToken");
       return;
