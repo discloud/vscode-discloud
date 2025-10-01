@@ -25,7 +25,6 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   protected readonly _onDidChangeSessions = new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
-
   get onDidChangeSessions() { return this._onDidChangeSessions.event; }
 
   protected _fire(data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>): void
