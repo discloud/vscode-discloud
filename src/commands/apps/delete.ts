@@ -28,6 +28,8 @@ export default class extends Command {
 
       if (response.status === "ok") {
         this.core.userAppTree.delete(item.appId);
+
+        await this.core.userAppTree.fetch();
       }
     }
   }
