@@ -1300,7 +1300,7 @@
     "yocto-queue": "^1.2.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.37.0",
     "@types/adm-zip": "^0.5.7",
     "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
