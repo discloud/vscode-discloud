@@ -23,6 +23,10 @@ export default class SecretStorage implements vscode.SecretStorage, vscode.Dispo
     return this.#cache.get(key) ?? this.secrets.get(key);
   }
 
+  keys(): Thenable<string[]> {
+    return this.secrets.keys();
+  }
+
   onDidChange: vscode.Event<vscode.SecretStorageChangeEvent>;
 
   store(key: string, value: string): Thenable<void> {
