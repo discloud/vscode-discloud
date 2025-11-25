@@ -2,8 +2,9 @@
   "exclude": ["node_modules", "out"],
   "include": ["src", "*.d.ts"],
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ESNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext",
     "outDir": "out",
     "lib": ["ESNext"],
     "inlineSourceMap": true,
