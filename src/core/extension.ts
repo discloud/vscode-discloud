@@ -47,6 +47,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   readonly commands = new Map<string, Command>();
   readonly logOutputChannels = new Map<string, LogOutputChannel>();
   readonly outputChannels = new Map<string, OutputChannel>();
+  readonly timers = new Map<string, NodeJS.Timeout>();
   readonly user = new VSUser();
 
   get config() {
@@ -95,6 +96,10 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     this.commands.clear();
     this.logOutputChannels.clear();
     this.outputChannels.clear();
+    for (const timer of this.timers.values()) {
+      clearTimeout(timer);
+    }
+    this.timers.clear();
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
@@ -119,6 +124,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   }
 
   getLogOutputChannel(name: string) {
+    this.clearTimeout(`LogOutputChannel:${name}`);
     return this.logOutputChannels.get(name) ?? this._createLogOutputChannel(name);
   }
 
@@ -131,7 +137,43 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   getOutputChannel(name: string, languageId?: string) {
     const key = `${name}${languageId}`;
+    this.clearTimeout(`OutputChannel:${key}`);
     return this.outputChannels.get(key) ?? this._createOutputChannel(key);
+  }
+
+  clearLogOutputChannelDisposeTimer(channel: LogOutputChannel) {
+    this.clearTimeout(`LogOutputChannel:${channel.name}`);
+  }
+
+  clearOutputChannelDisposeTimer(channel: OutputChannel) {
+    this.clearTimeout(`OutputChannel:${channel.name}`);
+  }
+
+  logOutputChannelDispose(channel: LogOutputChannel, delay?: number | undefined) {
+    const id = `LogOutputChannel:${channel.name}`;
+    clearTimeout(this.timers.get(id));
+    this.setTimeout(id, () => {
+      this.timers.delete(id);
+      channel.dispose();
+    }, delay);
+  }
+
+  outputChannelDispose(channel: OutputChannel, delay?: number | undefined) {
+    const id = `OutputChannel:${channel.name}`;
+    clearTimeout(this.timers.get(id));
+    this.setTimeout(`OutputChannel:${channel.name}`, () => {
+      this.timers.delete(id);
+      channel.dispose();
+    }, delay);
+  }
+
+  clearTimeout(id: string) {
+    clearTimeout(this.timers.get(id));
+    this.timers.delete(id);
+  }
+
+  setTimeout(id: string, callback: () => void, delay?: number | undefined) {
+    this.timers.set(id, setTimeout(callback, delay));
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
