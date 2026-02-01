@@ -1289,7 +1289,7 @@
     "test": "vscode-test"
   },
   "dependencies": {
-    "@discloudapp/api-types": "^1.0.4",
+    "@discloudapp/api-types": "^1.0.5",
     "@discloudapp/util": "^1.2.7",
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
@@ -1307,13 +1307,13 @@
     "@types/node": "22",
     "@types/vscode": "^1.108.1",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.52.0",
-    "@typescript-eslint/parser": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
-    "globals": "^16.5.0",
+    "globals": "^17.3.0",
     "mocha": "^11.7.5",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3"
