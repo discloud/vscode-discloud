@@ -27,7 +27,7 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
 
     const url = new URL(`${core.api.baseURL}/ws${Routes.upload()}`);
 
-    const logger = window.createOutputChannel("Discloud Upload", { log: true });
+    const logger = core.getLogOutputChannel("Discloud Upload");
 
     function showLog(value: string) {
       const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
@@ -50,7 +50,7 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
 
         resolve();
 
-        setTimeout(() => logger.dispose(), 60_000);
+        core.logOutputChannelDispose(logger, 60_000);
 
         if (code !== 1000)
           return void window.showErrorMessage(t(`socket.close.${code}`));
