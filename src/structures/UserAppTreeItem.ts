@@ -1,7 +1,7 @@
 import { type ApiStatusApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, Uri } from "vscode";
+import { type LogOutputChannel, TreeItemCollapsibleState, Uri } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type UserAppChildTreeItemData, type UserAppTreeItemData } from "../@types";
 import core from "../extension";
@@ -27,14 +27,13 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
   declare readonly appId: string;
   declare readonly type: AppType;
 
+  #output!: LogOutputChannel;
   get output() {
-    return core.getLogOutputChannel(this.appId);
+    return this.#output ??= core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
-    core.logOutputChannels.delete(this.appId);
-
-    this.output.dispose();
+    this.#output.dispose();
 
     super.dispose();
   }

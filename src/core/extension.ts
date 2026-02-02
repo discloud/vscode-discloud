@@ -7,6 +7,7 @@ import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
 import AuthenticationProviders from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
+import DiscloudLogOutputChannel from "../output/LogOutputChannel";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
@@ -45,7 +46,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly userTree: UserTreeDataProvider;
 
   readonly commands = new Map<string, Command>();
-  readonly logOutputChannels = new Map<string, LogOutputChannel>();
   readonly outputChannels = new Map<string, OutputChannel>();
   readonly timers = new Map<string, NodeJS.Timeout>();
   readonly user = new VSUser();
@@ -94,7 +94,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   dispose() {
     this.removeAllListeners();
     this.commands.clear();
-    this.logOutputChannels.clear();
     this.outputChannels.clear();
     for (const timer of this.timers.values()) {
       clearTimeout(timer);
@@ -116,16 +115,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     return uris?.at(0);
   }
 
-  protected _createLogOutputChannel(name: string) {
-    const output = window.createOutputChannel(name, { log: true });
-    this.context.subscriptions.push(output);
-    this.logOutputChannels.set(name, output);
-    return output;
-  }
-
   getLogOutputChannel(name: string) {
-    this.clearTimeout(`LogOutputChannel:${name}`);
-    return this.logOutputChannels.get(name) ?? this._createLogOutputChannel(name);
+    return DiscloudLogOutputChannel.getInstance(this.context, name);
   }
 
   protected _createOutputChannel(key: string) {
@@ -137,39 +128,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   getOutputChannel(name: string, languageId?: string) {
     const key = `${name}${languageId}`;
-    this.clearTimeout(`OutputChannel:${key}`);
     return this.outputChannels.get(key) ?? this._createOutputChannel(key);
-  }
-
-  clearLogOutputChannelDisposeTimer(channel: LogOutputChannel) {
-    this.clearTimeout(`LogOutputChannel:${channel.name}`);
-  }
-
-  clearOutputChannelDisposeTimer(channel: OutputChannel) {
-    this.clearTimeout(`OutputChannel:${channel.name}`);
-  }
-
-  logOutputChannelDispose(channel: LogOutputChannel, delay?: number | undefined) {
-    const id = `LogOutputChannel:${channel.name}`;
-    clearTimeout(this.timers.get(id));
-    this.setTimeout(id, () => {
-      this.timers.delete(id);
-      channel.dispose();
-    }, delay);
-  }
-
-  outputChannelDispose(channel: OutputChannel, delay?: number | undefined) {
-    const id = `OutputChannel:${channel.name}`;
-    clearTimeout(this.timers.get(id));
-    this.setTimeout(`OutputChannel:${channel.name}`, () => {
-      this.timers.delete(id);
-      channel.dispose();
-    }, delay);
-  }
-
-  clearTimeout(id: string) {
-    clearTimeout(this.timers.get(id));
-    this.timers.delete(id);
   }
 
   setTimeout(id: string, callback: () => void, delay?: number | undefined) {

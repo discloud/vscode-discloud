@@ -50,7 +50,7 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
 
         resolve();
 
-        core.logOutputChannelDispose(logger, 60_000);
+        logger.dispose(60_000);
 
         if (code !== 1000)
           return void window.showErrorMessage(t(`socket.close.${code}`));
