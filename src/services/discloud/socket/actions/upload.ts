@@ -50,12 +50,14 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
 
         resolve();
 
-        logger.dispose(60_000);
-
-        if (code !== 1000)
+        if (code !== 1000) {
+          logger.dispose(60_000);
           return void window.showErrorMessage(t(`socket.close.${code}`));
+        }
 
-        return logger.appendLine(t("done"));
+        logger.appendLine(t("done"));
+
+        logger.dispose(60_000);
       })
       .on(SocketEvents.connecting, () => {
         debug(SocketEvents.connecting);

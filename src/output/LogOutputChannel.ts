@@ -21,8 +21,8 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
       this._channel = instance._channel;
     } else {
       DiscloudLogOutputChannel._instances.set(name, this);
-      context.subscriptions.push(this);
       this._channel = window.createOutputChannel(name, { log: true });
+      context.subscriptions.push(this);
     }
   }
 
