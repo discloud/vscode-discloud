@@ -33,7 +33,9 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
   }
 
   dispose() {
-    this.#output.dispose();
+    if (this.#output) {
+      this.#output.dispose();
+    }
 
     super.dispose();
   }
