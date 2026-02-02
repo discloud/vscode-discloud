@@ -9,7 +9,7 @@ export default class DisposableMap<K, V extends Disposable> extends Map<K, V> im
         try {
           disposable.dispose?.();
         } catch (error) {
-          console.error(`Error disposing item:`, error);
+          console.error("Error disposing item:", error);
         }
       }
       this.clear();
