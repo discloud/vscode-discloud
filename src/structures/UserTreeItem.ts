@@ -49,14 +49,16 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
         userID: this.userID,
       });
 
-    if ("planDataEnd" in data && typeof data.planDataEnd === "string")
+    if ("planDataEnd" in data && typeof data.planDataEnd === "string") {
+      const planDate = new Date(data.planDataEnd);
       this._addChild("planDataEnd", {
-        label: new Date(data.planDataEnd).toJSON() ?
-          new Date(data.planDataEnd).toLocaleDateString() :
+        label: !isNaN(planDate.getTime()) ?
+          planDate.toLocaleDateString() :
           data.planDataEnd,
         description: t("label.plan.expiration"),
         userID: this.userID,
       });
+    }
 
     if (data.locale)
       this._addChild("locale", {
