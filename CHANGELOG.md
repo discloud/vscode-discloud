@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.12
+
+- Correção de erros no descarte de items em providers
+
 ## 2.27.11
 
 - Correção para o descarte incorreto do canal de saída de logs.
