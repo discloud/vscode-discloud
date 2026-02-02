@@ -27,13 +27,13 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
   declare readonly appId: string;
   readonly permissions = new ModPermissionsBF();
 
-  #output!: LogOutputChannel;
+  #output?: LogOutputChannel;
   get output() {
     return this.#output ??= core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
-    this.#output.dispose();
+    this.#output?.dispose();
 
     super.dispose();
   }
