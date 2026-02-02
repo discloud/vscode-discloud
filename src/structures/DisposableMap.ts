@@ -6,17 +6,23 @@ export default class DisposableMap<K, V extends Disposable> extends Map<K, V> im
   dispose(key?: K) {
     if (key === undefined) {
       for (const disposable of this.values()) {
-        disposable.dispose?.();
+        try {
+          disposable.dispose?.();
+        } catch (error) {
+          console.error(`Error disposing item:`, error);
+        }
       }
       this.clear();
     } else {
       const existing = this.get(key);
-
       if (existing) {
-        existing.dispose?.();
+        try {
+          existing.dispose?.();
+        } catch (error) {
+          console.error(`Error disposing item with key ${key}:`, error);
+        }
         return this.delete(key);
       }
-
       return false;
     }
   }

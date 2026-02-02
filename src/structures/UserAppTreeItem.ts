@@ -27,13 +27,16 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
   declare readonly appId: string;
   declare readonly type: AppType;
 
-  #output!: LogOutputChannel;
+  #output?: LogOutputChannel;
   get output() {
     return this.#output ??= core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
-    this.#output.dispose();
+    if (this.#output) {
+      this.#output.dispose();
+      this.#output = undefined;
+    }
 
     super.dispose();
   }

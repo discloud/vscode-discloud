@@ -124,14 +124,18 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       const child = this.children.get(key);
       if (!child) continue;
 
-      refresh = this.children.dispose(key);
+      try {
+        refresh = this.children.dispose(key);
 
-      const view = this._views.get(child.type);
-      if (!view) continue;
+        const view = this._views.get(child.type);
+        if (!view) continue;
 
-      view.dispose(key);
+        view.dispose(key);
 
-      if (!view.children.size) this._views.dispose(view.type);
+        if (!view.children.size) this._views.dispose(view.type);
+      } catch (error) {
+        console.error(`Error cleaning app ${key}:`, error);
+      }
     }
 
     if (refresh) this.refresh();
@@ -142,19 +146,23 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
     if (!child) return;
 
-    const view = this._views.get(child.type);
+    try {
+      const view = this._views.get(child.type);
 
-    if (view) {
-      view.dispose(id);
+      if (view) {
+        view.dispose(id);
 
-      if (!view.children.size) this._views.dispose(view.type);
+        if (!view.children.size) this._views.dispose(view.type);
+      }
+
+      this.children.dispose(id);
+
+      if (!this.children.size) this.init();
+
+      this.refresh();
+    } catch (error) {
+      console.error(`Error deleting app ${id}:`, error);
     }
-
-    this.children.dispose(id);
-
-    if (!this.children.size) this.init();
-
-    this.refresh();
   }
 
   refresh(data?: Item | Item[] | null) {
