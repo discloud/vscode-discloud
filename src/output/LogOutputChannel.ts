@@ -9,7 +9,10 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
 
   static getInstance(context: ExtensionContext, name: string) {
     const instance = DiscloudLogOutputChannel._instances.get(name);
-    if (instance) return instance;
+    if (instance) {
+      instance._clearDisposeTimer();
+      return instance;
+    }
     return new DiscloudLogOutputChannel(context, name);
   }
 
@@ -17,7 +20,7 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
     const instance = DiscloudLogOutputChannel._instances.get(name);
 
     if (instance) {
-      instance.clearDisposeTimer();
+      instance._clearDisposeTimer();
       this._channel = instance._channel;
     } else {
       DiscloudLogOutputChannel._instances.set(name, this);
@@ -45,64 +48,64 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
   }
 
   trace(message: string, ...args: any[]) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.trace(message, ...args);
   }
 
   debug(message: string, ...args: any[]) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.debug(message, ...args);
   }
 
   info(message: string, ...args: any[]) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.info(message, ...args);
   }
 
   warn(message: string, ...args: any[]) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.warn(message, ...args);
   }
 
   error(error: string | Error, ...args: any[]) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.error(error, ...args);
   }
 
   append(value: string) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.append(value);
   }
 
   appendLine(value: string) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.appendLine(value);
   }
 
   replace(value: string) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.replace(value);
   }
 
   clear() {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.clear();
   }
 
   show(preserveFocus?: boolean): void
   show(): void
   show(preserveFocus?: boolean) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.show(preserveFocus);
   }
 
   hide() {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     this._channel.hide();
   }
 
   dispose(delay?: number) {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
 
     if (typeof delay === "number") {
       this._disposeTimer = setTimeout(() => this._dispose(), delay);
@@ -111,12 +114,12 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
     }
   }
 
-  clearDisposeTimer() {
+  protected _clearDisposeTimer() {
     clearTimeout(this._disposeTimer);
   }
 
   private _dispose() {
-    this.clearDisposeTimer();
+    this._clearDisposeTimer();
     DiscloudLogOutputChannel._instances.delete(this.name);
     this._channel.dispose();
   }
