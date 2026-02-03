@@ -46,7 +46,7 @@ export default class VSUser implements ApiVscodeUser {
 
     if (!isInternal && isFetchTimeLessThanTenSecondsAgo) return this;
 
-    const method = isInternal ? "queueGet" : "get";
+    const method: keyof typeof core.api = isInternal ? "queueGet" : "get";
 
     const response = await core.api[method]<RESTGetApiVscode>("/vscode");
 

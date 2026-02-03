@@ -20,6 +20,7 @@ import SecretStorageImpl from "../storage/secrets";
 import StateStorage from "../storage/state";
 import type Command from "../structures/Command";
 import DiscloudStatusBarItem from "../structures/DiscloudStatusBarItem";
+import TimerMap from "../structures/TimerMap";
 import VSUser from "../structures/VSUser";
 import { ConfigKeys } from "../utils/constants";
 import FileSystem from "../utils/FileSystem";
@@ -47,7 +48,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   readonly commands = new Map<string, Command>();
   readonly outputChannels = new Map<string, OutputChannel>();
-  readonly timers = new Map<string, NodeJS.Timeout>();
+  readonly timers = new TimerMap();
   readonly user = new VSUser();
 
   get config() {
@@ -94,10 +95,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     this.removeAllListeners();
     this.commands.clear();
     this.outputChannels.clear();
-    for (const timer of this.timers.values()) {
-      clearTimeout(timer);
-    }
-    this.timers.clear();
+    this.timers.dispose();
   }
 
   async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
@@ -128,10 +126,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   getOutputChannel(name: string, languageId?: string) {
     const key = `${name}${languageId}`;
     return this.outputChannels.get(key) ?? this._createOutputChannel(key);
-  }
-
-  setTimeout(id: string, callback: () => void, delay?: number | undefined) {
-    this.timers.set(id, setTimeout(callback, delay));
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {

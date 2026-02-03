@@ -108,7 +108,7 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
     this._clearDisposeTimer();
 
     if (typeof delay === "number") {
-      this._disposeTimer = setTimeout(() => this._dispose(), delay);
+      this._disposeTimer = setTimeout(() => this._dispose(), delay).unref();
     } else {
       this._dispose();
     }

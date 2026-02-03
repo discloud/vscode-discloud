@@ -2,10 +2,10 @@ import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import core from "../extension";
 
-let timer: NodeJS.Timeout | null = null;
+const eventName = "rateLimited";
 
-core.on("rateLimited", async function (rateLimitData) {
-  if (timer || isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
+core.on(eventName, async function (rateLimitData) {
+  if (core.timers.has(eventName) || isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
 
   const reset = rateLimitData.reset * 1000 + rateLimitData.time - Date.now();
 
@@ -13,12 +13,12 @@ core.on("rateLimited", async function (rateLimitData) {
 
   core.logger.warn("Rate limited by " + time + " seconds");
 
-  void window.showInformationMessage(t("ratelimited", { s: time }));
+  core.timers.setTimeout(eventName, () => {
+    core.timers.delete(eventName);
+    core.statusBar.setRateLimited(false);
+  }, reset);
 
   core.statusBar.setRateLimited(true);
 
-  timer = setTimeout(() => {
-    timer = null;
-    core.statusBar.setRateLimited(false);
-  }, reset);
+  void window.showInformationMessage(t(eventName, { s: time }));
 });

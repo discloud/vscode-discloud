@@ -5,20 +5,23 @@ export default class DisposableMap<K, V extends Disposable> extends Map<K, V> im
   dispose(key: K, onError?: (error: unknown) => void): boolean;
   dispose(key?: K, onError?: (error: unknown) => void): boolean;
   dispose(key?: K, onError?: (error: unknown) => void) {
-    if (key === undefined) {
-      for (const disposable of this.values()) {
-        try { disposable.dispose(); }
-        catch (error) { onError?.(error); }
-      }
-      this.clear();
-    } else {
-      const existing = this.get(key);
+    if (key !== undefined) {
+      const existing = super.get(key);
+
       if (existing) {
         try { existing.dispose(); }
         catch (error) { onError?.(error); }
-        return this.delete(key);
+        return super.delete(key);
       }
+
       return false;
     }
+
+    for (const disposable of super.values()) {
+      try { disposable.dispose(); }
+      catch (error) { onError?.(error); }
+    }
+
+    super.clear();
   }
 }
