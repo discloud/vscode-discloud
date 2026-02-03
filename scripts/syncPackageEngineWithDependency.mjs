@@ -3,6 +3,12 @@ import { readFile, writeFile } from "fs/promises";
 const ENCODING = "utf8";
 const INDENTATION = 2;
 const PACKAGE_PATH = "package.json";
+const PACKAGE_DEPENDENCY_KEYS = [
+  "dependencies",
+  "devDependencies",
+  "optionalDependencies",
+  "peerDependencies",
+];
 
 const [, , engine, dependency] = process.argv;
 
@@ -17,11 +23,8 @@ packageJSON.engines ??= {};
 
 const oldEngineVersion = packageJSON.engines[engine];
 
-const packageJSONDependencyKeyRegexp = /^(dependencies|\w+Dependencies)$/;
-
 let found = false, updated = false;
-for (const key in packageJSON) {
-  if (!packageJSONDependencyKeyRegexp.test(key)) continue;
+for (const key of PACKAGE_DEPENDENCY_KEYS) {
   if (!(dependency in packageJSON[key])) continue;
   found = true;
   if (oldEngineVersion === packageJSON[key][dependency]) break;
