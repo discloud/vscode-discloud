@@ -1290,7 +1290,7 @@
   },
   "dependencies": {
     "@discloudapp/api-types": "^1.0.5",
-    "@discloudapp/util": "^1.2.7",
+    "@discloudapp/util": "^1.2.8",
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "bytes": "^3.1.2",
