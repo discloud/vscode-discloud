@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.13
+
+- Melhorias no gerenciamento de timers
+
 ## 2.27.12
 
 - Correção de erros no descarte de items em providers
