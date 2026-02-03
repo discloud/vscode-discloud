@@ -80,10 +80,9 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     ]
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
-        if (data) acc.push(normalize(data));
+        if (data) return acc.concat(normalize(data));
         return acc;
       }, [])
-      .filter(Boolean)
       .concat("discloud", `${workspace.name}.zip`);
   }
 
