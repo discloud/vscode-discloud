@@ -49,16 +49,18 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   }
 
   setTimeout(key: K, callback: () => unknown, delay?: number): void {
+    this.clearTimeout(key);
+
     if (typeof delay === "number" && delay > timerDelayLimit) {
       const timer = setTimeout(() => this.setTimeout(key, callback, delay - timerDelayLimit), timerDelayLimit);
       if (this.autoUnref) timer.unref();
-      this.set(key, timer as V);
+      super.set(key, timer as V);
       return;
     }
 
     const timer = setTimeout(callback, delay);
     if (this.autoUnref) timer.unref();
-    this.set(key, timer as V);
+    super.set(key, timer as V);
   }
 
   unrefTimeout(key: K) {
