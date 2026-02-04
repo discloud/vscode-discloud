@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.27.15
+
+- Melhorias no TimerMap
+
 ## 2.27.14
 
 - Correção para a vulnerabilidade [GHSA-7h2j-956f-4vf2](https://github.com/advisories/GHSA-7h2j-956f-4vf2)
