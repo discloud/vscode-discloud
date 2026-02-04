@@ -48,15 +48,10 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     return super.set(key, timeout);
   }
 
-  setTimeout(key: K, callback: () => unknown, delay?: number): void {
+  setTimeout(key: K, callback: () => unknown, delay: number = 0): void {
     this.clearTimeout(key);
 
-    if (typeof delay === "number" && delay > timerDelayLimit) {
-      const timer = setTimeout(() => this.setTimeout(key, callback, delay - timerDelayLimit), timerDelayLimit);
-      if (this.autoUnref) timer.unref();
-      super.set(key, timer as V);
-      return;
-    }
+    if (delay > timerDelayLimit) return this._autoRefresh(key, callback, delay);
 
     const timer = setTimeout(callback, delay);
     if (this.autoUnref) timer.unref();
@@ -65,5 +60,16 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
   unrefTimeout(key: K) {
     return this.get(key)?.ref();
+  }
+
+  protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
+    const timer = setTimeout(() => {
+      delay -= timerDelayLimit;
+      if (delay > timerDelayLimit) return timer.refresh();
+      this.setTimeout(key, callback, delay);
+    }, timerDelayLimit);
+
+    if (this.autoUnref) timer.unref();
+    super.set(key, timer as V);
   }
 }
