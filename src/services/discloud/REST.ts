@@ -229,7 +229,7 @@ export default class REST extends EventEmitter {
     this.#timer = setTimeout(() => {
       this.#timer = null;
       this.remaining = this.limit;
-    }, this.timeToReset);
+    }, this.timeToReset).unref();
   }
 
   readonly #noQueueProcesses: string[] = [];
