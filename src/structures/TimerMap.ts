@@ -3,7 +3,13 @@ import { type Disposable } from "vscode";
 const maxTimerDelay = 2147483647;
 
 export interface TimerMapOptions {
-  /** @default true */
+  /**
+   * When `true`, the active `Timeout` object will not require the Node.js event loop to remain active.
+   * If there is no other activity keeping the event loop running, the process may terminate before
+   * the `Timeout` object's callback is invoked.
+   * 
+   * @default true
+   */
   autoUnref?: boolean
 }
 
@@ -16,11 +22,6 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     this.autoUnref = options?.autoUnref ?? true;
   }
 
-  /**
-   * When `true`, the active `Timeout` object will not require the Node.js event loop to remain active.
-   * If there is no other activity keeping the event loop running, the process may terminate before
-   * the `Timeout` object's callback is invoked.
-   */
   declare autoUnref: boolean;
 
   clearTimeout(key: K) {
@@ -53,7 +54,21 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     return super.set(key, timeout);
   }
 
-  setTimeout(key: K, callback: () => unknown, delay: number = 0): void {
+  /**
+   * Schedules execution of a one-time `callback` after `delay` milliseconds.
+   * 
+   * The `delay` value can be greater than `2147483647`, and can be infinite.
+   * 
+   * When `delay` is less than `1` or `NaN`, the `delay` will be set to `1`.
+   * Non-integer delays are truncated to an integer.
+   * 
+   * If `callback` is not a function, a `TypeError` will be thrown.
+   * 
+   * @param key 
+   * @param callback The function to call when the timer elapses.
+   * @param delay The number of milliseconds to wait before calling the callback. **Default**: 1.
+   */
+  setTimeout(key: K, callback: () => unknown, delay: number = 1): void {
     this.clearTimeout(key);
 
     if (delay > maxTimerDelay) return this._autoRefresh(key, callback, delay);
@@ -64,7 +79,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   }
 
   unrefTimeout(key: K) {
-    return this.get(key)?.ref();
+    return this.get(key)?.unref();
   }
 
   protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
