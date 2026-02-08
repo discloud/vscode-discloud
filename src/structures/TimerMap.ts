@@ -1,6 +1,6 @@
 import { type Disposable } from "vscode";
 
-const maxTimerDelay = 2147483647;
+const MAX_TIMER_DELAY = 2147483647;
 
 export interface TimerMapOptions {
   /**
@@ -72,7 +72,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   setTimeout(key: K, callback: () => unknown, delay: number = 1): void {
     this.clearTimeout(key);
 
-    if (delay > maxTimerDelay) return this._autoRefresh(key, callback, delay);
+    if (delay > MAX_TIMER_DELAY) return this._autoRefresh(key, callback, delay);
 
     const timer = setTimeout(callback, delay);
     if (this.autoUnref) timer.unref();
@@ -81,10 +81,10 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
   protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
     const timer = setTimeout(() => {
-      delay -= maxTimerDelay;
-      if (delay > maxTimerDelay) return timer.refresh();
+      delay -= MAX_TIMER_DELAY;
+      if (delay > MAX_TIMER_DELAY) return timer.refresh();
       this.setTimeout(key, callback, delay);
-    }, maxTimerDelay);
+    }, MAX_TIMER_DELAY);
 
     if (this.autoUnref) timer.unref();
     super.set(key, timer as V);
