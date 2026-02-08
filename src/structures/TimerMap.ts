@@ -14,9 +14,10 @@ export interface TimerMapOptions {
 }
 
 export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> extends Map<K, V> implements Disposable {
-  constructor(iterable?: Iterable<readonly [K, V]> | null, options?: TimerMapOptions)
-  constructor(entries?: readonly (readonly [K, V])[] | null, options?: TimerMapOptions)
-  constructor(entries?: any, options?: TimerMapOptions) {
+  constructor(
+    entries?: readonly (readonly [K, V])[] | Iterable<readonly [K, V]> | null,
+    options?: TimerMapOptions,
+  ) {
     super(entries);
 
     this.autoUnref = options?.autoUnref ?? true;
