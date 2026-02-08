@@ -1,6 +1,6 @@
 import { type Disposable } from "vscode";
 
-const timerDelayLimit = 2147483647;
+const maxTimerDelay = 2147483647;
 
 export interface TimerMapOptions {
   /** @default true */
@@ -16,6 +16,11 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     this.autoUnref = options?.autoUnref ?? true;
   }
 
+  /**
+   * When `true`, the active `Timeout` object will not require the Node.js event loop to remain active.
+   * If there is no other activity keeping the event loop running, the process may terminate before
+   * the `Timeout` object's callback is invoked.
+   */
   declare autoUnref: boolean;
 
   clearTimeout(key: K) {
@@ -51,7 +56,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   setTimeout(key: K, callback: () => unknown, delay: number = 0): void {
     this.clearTimeout(key);
 
-    if (delay > timerDelayLimit) return this._autoRefresh(key, callback, delay);
+    if (delay > maxTimerDelay) return this._autoRefresh(key, callback, delay);
 
     const timer = setTimeout(callback, delay);
     if (this.autoUnref) timer.unref();
@@ -64,10 +69,10 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
   protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
     const timer = setTimeout(() => {
-      delay -= timerDelayLimit;
-      if (delay > timerDelayLimit) return timer.refresh();
+      delay -= maxTimerDelay;
+      if (delay > maxTimerDelay) return timer.refresh();
       this.setTimeout(key, callback, delay);
-    }, timerDelayLimit);
+    }, maxTimerDelay);
 
     if (this.autoUnref) timer.unref();
     super.set(key, timer as V);
