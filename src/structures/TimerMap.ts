@@ -79,10 +79,6 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     super.set(key, timer as V);
   }
 
-  unrefTimeout(key: K) {
-    return this.get(key)?.unref();
-  }
-
   protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
     const timer = setTimeout(() => {
       delay -= maxTimerDelay;
@@ -92,5 +88,9 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
     if (this.autoUnref) timer.unref();
     super.set(key, timer as V);
+  }
+
+  unrefTimeout(key: K) {
+    return this.get(key)?.unref();
   }
 }
