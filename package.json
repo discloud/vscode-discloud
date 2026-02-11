@@ -5,7 +5,7 @@
   "publisher": "discloud",
   "version": "2.27.15",
   "engines": {
-    "vscode": "^1.108.1"
+    "vscode": "^1.109.0"
   },
   "repository": {
     "type": "git",
@@ -1305,7 +1305,7 @@
     "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
     "@types/node": "22",
-    "@types/vscode": "^1.108.1",
+    "@types/vscode": "^1.109.0",
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.55.0",
     "@typescript-eslint/parser": "^8.55.0",
