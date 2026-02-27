@@ -354,6 +354,11 @@
         "icon": "$(debug-stop)"
       },
       {
+        "command": "discloud.user.copy.id",
+        "title": "%command.user.copy.id%",
+        "icon": "$(clippy)"
+      },
+      {
         "command": "discloud.user.set.locale",
         "title": "%command.user.set.locale%",
         "icon": "$(location)"
@@ -826,6 +831,10 @@
           "when": "never"
         },
         {
+          "command": "discloud.user.copy.id",
+          "when": "never"
+        },
+        {
           "command": "discloud.user.set.locale",
           "when": "discloudAuthorized"
         }
@@ -971,6 +980,10 @@
           "command": "discloud.team.stop",
           "group": "0",
           "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /stop_app/ && viewItem =~ /online\":true/"
+        },
+        {
+          "command": "discloud.user.copy.id",
+          "when": "view == discloudUser && discloudAuthorized"
         },
         {
           "command": "discloud.user.set.locale",

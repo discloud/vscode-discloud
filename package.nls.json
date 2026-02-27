@@ -40,6 +40,7 @@
   "command.team.start": "Start team app",
   "command.team.status": "Refresh team app status",
   "command.team.stop": "Stop team app",
+  "command.user.copy.id": "Copy user ID",
   "command.user.set.locale": "Set language",
   "config.app.backup.dir.description": "Here you can change the place where backups will stay.\n\n`All files within this mass and subfolders will be ignored by Commit and Upload commands.`\n\n(Default: discloud/backup)",
   "config.app.backup.dir.title": "Your app backup directory",
