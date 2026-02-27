@@ -20,7 +20,7 @@ export default class extends Command {
         await authentication.getSession(AUTHENTICATION_PROVIDER_ID, [], { forceNewSession: true });
       } catch (error) {
         if (error instanceof UnauthorizedError) {
-          throw Error(t("invalid.token"));
+          throw Error(t("invalid.token"), { cause: error });
         }
 
         throw error;
