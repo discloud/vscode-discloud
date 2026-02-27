@@ -5,7 +5,7 @@
   "publisher": "discloud",
   "version": "2.27.15",
   "engines": {
-    "vscode": "^1.108.1"
+    "vscode": "^1.109.0"
   },
   "repository": {
     "type": "git",
@@ -1313,7 +1313,7 @@
     "yocto-queue": "^1.2.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@types/adm-zip": "^0.5.7",
     "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
