@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.28.0
+
+- Criado comando para copiar id de usuário
+
 ## 2.27.15
 
 - Melhorias no TimerMap
