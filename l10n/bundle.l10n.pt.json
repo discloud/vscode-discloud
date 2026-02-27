@@ -21,6 +21,7 @@
   "container": "Container",
   "copied.appid": "ID do app copiado com sucesso.",
   "copied.team.appid": "ID do app de equipe copiado com sucesso.",
+  "copied.user.id": "ID do usuário copiado com sucesso.",
   "diagnostic.apt.invalid": "Pacote APT inválido.",
   "diagnostic.avatar.must.be.url": "O escopo do avatar deve ser uma url com extensão gif, jpg, jpeg ou png.",
   "diagnostic.equal.missing": "Operador igual (=) ausente.",

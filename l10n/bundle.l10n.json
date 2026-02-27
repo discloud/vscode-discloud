@@ -21,6 +21,7 @@
   "container": "Container",
   "copied.appid": "App ID successfully copied.",
   "copied.team.appid": "Team app ID successfully copied.",
+  "copied.user.id": "User ID successfully copied.",
   "diagnostic.apt.invalid": "Invalid APT Package.",
   "diagnostic.avatar.must.be.url": "The avatar scope must be an url with gif, jpg, jpeg or png extension.",
   "diagnostic.equal.missing": "Missing equal (=) operator.",
