@@ -5,7 +5,7 @@
   "publisher": "discloud",
   "version": "2.28.2",
   "engines": {
-    "vscode": "^1.109.0"
+    "vscode": "^1.110.0"
   },
   "repository": {
     "type": "git",
@@ -1307,7 +1307,7 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.5.16",
     "bytes": "^3.1.2",
-    "jose": "^6.2.0",
+    "jose": "^6.2.1",
     "json-schema-library": "^11.0.4",
     "ws": "^8.19.0",
     "yocto-queue": "^1.2.2"
@@ -1318,10 +1318,10 @@
     "@types/bytes": "^3.1.5",
     "@types/mocha": "^10.0.10",
     "@types/node": "22",
-    "@types/vscode": "^1.109.0",
+    "@types/vscode": "^1.110.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.27.3",
