@@ -1,7 +1,7 @@
 import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import { type BaseChildTreeItemData } from "../@types";
 
-export default class BaseChildTreeItem extends TreeItem implements Disposable {
+export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
   readonly contextKey = "ChildTreeItem";
   contextValue = this.contextKey;
 
@@ -15,6 +15,7 @@ export default class BaseChildTreeItem extends TreeItem implements Disposable {
 
   dispose() { }
 
+  protected _patch(data: Partial<BaseChildTreeItemData>): this;
   protected _patch(data: Partial<BaseChildTreeItemData>) {
     if (!data) return this;
 

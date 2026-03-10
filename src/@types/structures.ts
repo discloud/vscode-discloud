@@ -4,6 +4,7 @@ import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import type { RateLimitData } from "./rest";
+import type { OmitFunction, OmitReadonly } from "./utils";
 
 export interface GetWorkspaceFolderOptions {
   /** @default true */
@@ -27,9 +28,9 @@ type ProgressTaskParameters = Parameters<ProgressTask>
 
 export type CreateStatusBarItemOptions = Parameters<VscodeWindowType["createStatusBarItem"]>
 
-export type StatusBarItemOptions = Omit<StatusBarItem, "dispose" | "hide" | "show">
+export type StatusBarItemOptions = OmitFunction<StatusBarItem>
 
-export type StatusBarItemData = Omit<StatusBarItemOptions, "alignment" | "id" | "priority">
+export type StatusBarItemData = OmitReadonly<StatusBarItemOptions>
 
 export type VscodeProgressReporter = ProgressTaskParameters[0]
 
