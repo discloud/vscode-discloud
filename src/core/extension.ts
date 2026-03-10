@@ -2,7 +2,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
 import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
-import { type Events, type GetWorkspaceFolderOptions, type TaskData } from "../@types";
+import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
 import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
 import AuthenticationProviders from "../authentication/providers";
 import { commandsRegister } from "../commands";
@@ -33,7 +33,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly auth: AuthenticationProviders;
   declare readonly context: ExtensionContext;
   declare readonly secrets: SecretStorage;
-  declare readonly globalStorage: StateStorage;
+  declare readonly globalStorage: StateStorage & IGlobalStateStorage;
   declare readonly workspaceStorage: StateStorage;
 
   declare readonly api: REST;
@@ -169,11 +169,9 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
     const secrets = new SecretStorageImpl(context.secrets);
 
-    context.subscriptions.push(secrets);
-
     Object.defineProperties(this, {
       globalStorage: { value: globalStorage },
-      workspaceStorageStorage: { value: workspaceStorage },
+      workspaceStorage: { value: workspaceStorage },
       secrets: { value: secrets },
     });
 
