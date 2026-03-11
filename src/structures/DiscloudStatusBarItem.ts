@@ -21,27 +21,30 @@ enum Status {
   Limited,
 }
 
-const lazyCommittingMessage = lazy(() => t("status.text.committing"));
-const lazyLimitedMessage = lazy(() => t("status.text.ratelimited"));
-const lazyLimitedTooltip = lazy(() => t("status.tooltip.ratelimited"));
-const lazyLoadingMessage = lazy(() => t("status.text.loading"));
-const lazyLoginMessage = lazy(() => t("status.text.login"));
-const lazyLoginTooltip = lazy(() => t("status.tooltip.login"));
-const lazyUploadMessage = lazy(() => t("status.text.upload"));
-const lazyUploadTooltip = lazy(() => t("status.tooltip.upload"));
-const lazyUploadingMessage = lazy(() => t("status.text.uploading"));
+const textCommittingKey = "status.text.committing";
+const textLoadingKey = "status.text.loading";
+const textLoginKey = "status.text.login";
+const textRatelimitedKey = "status.text.ratelimited";
+const textUploadKey = "status.text.upload";
+const textUploadingKey = "status.text.uploading";
+const tooltipLoginKey = "status.tooltip.login";
+const tooltipRatelimitedKey = "status.tooltip.ratelimited";
+const tooltipUploadKey = "status.tooltip.upload";
+
 const lazyWarningBackgroundColor = lazy(() => new ThemeColor("statusBarItem.warningBackground"));
 
-export default class DiscloudStatusBarItem extends BaseStatusBarItem {
-  static readonly #defaultOptions: Partial<StatusBarItemOptions> = {
+function defaultOptions(): Partial<StatusBarItemOptions> {
+  return {
     alignment: StatusBarAlignment.Left,
     priority: 40,
     text: t("status.text"),
     tooltip: t("status.tooltip"),
   };
+}
 
+export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   constructor(readonly core: ExtensionCore, data?: Partial<StatusBarItemOptions>) {
-    super(core.context, Object.assign({}, DiscloudStatusBarItem.#defaultOptions, data));
+    super(core.context, Object.assign({}, defaultOptions(), data));
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -92,7 +95,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   protected _status!: Status;
 
   get limited() {
-    return this.text === lazyLimitedMessage();
+    return this.text === t(textRatelimitedKey);
   }
 
   #loading = "$(loading~spin)";
@@ -120,7 +123,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = lazyCommittingMessage();
+    this.text = t(textCommittingKey);
     this.tooltip = undefined;
   }
 
@@ -210,7 +213,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = lazyLoadingMessage();
+    this.text = t(textLoadingKey);
     this.tooltip = undefined;
   }
 
@@ -218,8 +221,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.login";
-    this.text = lazyLoginMessage();
-    this.tooltip = lazyLoginTooltip();
+    this.text = t(textLoginKey);
+    this.tooltip = t(tooltipLoginKey);
   }
 
   setRateLimited(limited?: boolean) {
@@ -228,8 +231,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
         this._status = Status.Limited;
         this.command = undefined;
         this.backgroundColor = lazyWarningBackgroundColor();
-        this.text = lazyLimitedMessage();
-        this.tooltip = lazyLimitedTooltip();
+        this.text = t(textRatelimitedKey);
+        this.tooltip = t(tooltipRatelimitedKey);
       } else {
         this.text = this.originalData.text;
         this.reset();
@@ -249,8 +252,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.upload";
-    this.text = lazyUploadMessage();
-    this.tooltip = lazyUploadTooltip();
+    this.text = t(textUploadKey);
+    this.tooltip = t(tooltipUploadKey);
   }
 
   setUploading() {
@@ -259,7 +262,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = lazyUploadingMessage();
+    this.text = t(textUploadingKey);
     this.tooltip = undefined;
   }
 }
