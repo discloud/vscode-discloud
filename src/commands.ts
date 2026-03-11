@@ -121,8 +121,7 @@ function commandRegister(
     !Reflect.has(command, "data") ||
     !Reflect.has(command, "run")
   ) {
-    core.debug(commandName, "❌");
-    return;
+    return core.debug(commandName, "❌");
   }
 
   const disposable = commands.registerCommand(commandName, async function (...args) {
