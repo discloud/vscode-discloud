@@ -35,6 +35,10 @@ export interface RequestData {
    * Query string parameters to append to the called endpoint
    */
   query?: ConstructorParameters<typeof URLSearchParams>[0]
+  /**
+   * A signal to abort connection
+   */
+  signal?: AbortSignal
 }
 
 /**

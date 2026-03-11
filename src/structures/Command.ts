@@ -17,7 +17,7 @@ export default abstract class Command {
   async pickAppMod(appId: string, task?: TaskData | null) {
     task?.progress.report({ increment: -1, message: t("choose.mod") });
 
-    const response = await this.core.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), {});
+    const response = await this.core.api.queueGet<RESTGetApiAppTeamResult>(Routes.appTeam(appId), { signal: task?.signal });
     if (!response?.team?.length) return;
 
     const mods = new Map(response.team.map(team => [team.modID, {

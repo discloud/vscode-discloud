@@ -146,6 +146,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     }
 
     if (!options.silent) {
+      if (options.token && options.token.isCancellationRequested) return;
       const picked = await window.showWorkspaceFolderPick();
       if (picked) return picked.uri;
     }

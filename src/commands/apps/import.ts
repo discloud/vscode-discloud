@@ -28,12 +28,12 @@ export default class extends Command {
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 
-    const response = await this.core.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId));
+    const response = await this.core.api.get<RESTGetApiAppBackupResult>(Routes.appBackup(item.appId), { signal: task.signal });
     if (!response) return;
 
     if (!response.backups) throw Error(t("no.backup.found"));
 
-    const backup = await fetch(response.backups.url);
+    const backup = await fetch(response.backups.url, { signal: task.signal });
     if (!backup.body) throw Error(t("backup.request.failed"));
 
     const configImportDir = this.core.config.get<string>(ConfigKeys.appImportDir) ?? "";

@@ -132,9 +132,14 @@ function commandRegister(
     try {
       if (command.data.progress) {
         return await window.withProgress(command.data.progress, async function (progress, token) {
+          const controller = new AbortController();
+
           return await Promise.race([
-            new Promise((_, reject) => token.onCancellationRequested(reject)),
-            command.run({ progress, token }, ...args),
+            new Promise((_, reject) => token.onCancellationRequested((e) => {
+              controller.abort(e);
+              reject(e);
+            })),
+            command.run({ progress, token, signal: controller.signal }, ...args),
           ]);
         });
       }

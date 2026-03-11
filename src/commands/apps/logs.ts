@@ -20,7 +20,7 @@ export default class extends Command {
     const response = await this.core.api.get<RESTGetApiAppLogResult>(Routes.appLogs(item.appId));
     if (!response) return;
 
-    if (!response.apps || !response.apps.terminal.big) throw Error(t("no.log.found"));
+    if (!response.apps?.terminal?.big) throw Error(t("no.log.found"));
 
     this.logger(item.output ?? response.apps.id, response.apps.terminal.big);
   }

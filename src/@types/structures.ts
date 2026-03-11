@@ -23,6 +23,7 @@ export interface CommandData {
 export interface TaskData {
   progress: VscodeProgressReporter
   token: ProgressTaskParameters[1]
+  signal: AbortSignal
 }
 
 export interface BaseTreeItemData extends Omit<TreeItem, "id"> {
