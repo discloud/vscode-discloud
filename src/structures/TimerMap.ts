@@ -69,7 +69,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
    * @param callback The function to call when the timer elapses.
    * @param delay The number of milliseconds to wait before calling the callback. **Default**: 1.
    */
-  setTimeout(key: K, callback: () => unknown, delay: number = 1): void {
+  setTimeout(key: K, callback: () => void, delay: number = 1): void {
     this.clearTimeout(key);
 
     if (delay > MAX_TIMER_DELAY) return this._autoRefresh(key, callback, delay);
@@ -79,7 +79,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     super.set(key, timer as V);
   }
 
-  protected _autoRefresh(key: K, callback: () => unknown, delay: number) {
+  protected _autoRefresh(key: K, callback: () => void, delay: number) {
     const timer = setTimeout(() => {
       delay -= MAX_TIMER_DELAY;
       if (delay > MAX_TIMER_DELAY) return timer.refresh();
@@ -91,6 +91,6 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   }
 
   unrefTimeout(key: K) {
-    return this.get(key)?.unref();
+    return super.get(key)?.unref();
   }
 }
