@@ -18,7 +18,6 @@ import { UserAgent } from "../services/discloud/UserAgent";
 import GlobalStateStorage from "../storage/globalState";
 import SecretStorageImpl from "../storage/secrets";
 import StateStorage from "../storage/state";
-import type Command from "../structures/Command";
 import DiscloudStatusBarItem from "../structures/DiscloudStatusBarItem";
 import TimerMap from "../structures/TimerMap";
 import VSUser from "../structures/VSUser";
@@ -46,7 +45,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly userAppTree: UserAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
 
-  readonly commands = new Map<string, Command>();
   readonly outputChannels = new Map<string, OutputChannel>();
   readonly timers = new TimerMap();
   readonly user = new VSUser();
@@ -93,7 +91,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   dispose() {
     this.removeAllListeners();
-    this.commands.clear();
     this.outputChannels.clear();
     this.timers.dispose();
   }

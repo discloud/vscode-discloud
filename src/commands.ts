@@ -95,7 +95,7 @@ export async function commandsRegister(core: ExtensionCore) {
   // user
   commandModuleRegister(core, "user/set.locale", await import("./commands/user/set.locale"));
 
-  core.debug("Commands loaded:", core.commands.size);
+  core.debug("Commands loaded");
 }
 
 function commandModuleRegister(
@@ -149,8 +149,6 @@ function commandRegister(
   });
 
   core.context.subscriptions.push(disposable);
-
-  core.commands.set(commandName, command);
 
   core.debug(commandName, "✅");
 }
