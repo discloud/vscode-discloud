@@ -1324,7 +1324,7 @@
     "@typescript-eslint/parser": "^8.57.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.27.4",
     "eslint": "^10.0.3",
     "globals": "^17.4.0",
     "mocha": "^11.7.5",
