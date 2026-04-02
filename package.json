@@ -1305,7 +1305,7 @@
     "@discloudapp/api-types": "^1.0.5",
     "@discloudapp/util": "^1.2.8",
     "@vscode/l10n": "^0.0.18",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.5.17",
     "bytes": "^3.1.2",
     "jose": "^6.2.2",
     "json-schema-library": "^11.1.0",
