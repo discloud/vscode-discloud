@@ -5,7 +5,7 @@
   "publisher": "discloud",
   "version": "2.28.4",
   "engines": {
-    "vscode": "^1.110.0"
+    "vscode": "^1.115.0"
   },
   "repository": {
     "type": "git",
