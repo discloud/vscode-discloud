@@ -1,6 +1,7 @@
 import { type RESTGetApiAppBackupResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { existsSync } from "fs";
+import { basename } from "path";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import { type TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
@@ -32,12 +33,14 @@ export default class extends Command {
 
     if (!response.backups) throw Error(t("no.backup.found"));
 
-    const backup = await fetch(response.backups.url, { signal: task.signal });
+    const url = new URL(response.backups.url);
+
+    const backup = await fetch(url, { signal: task.signal });
     if (!backup.body) throw Error(t("backup.request.failed"));
 
     const configBackupDir = this.core.config.get<string>(ConfigKeys.teamBackupDir) ?? "";
     const backupDirUri = workspaceAvailable ? Uri.joinPath(workspaceFolder, configBackupDir) : workspaceFolder;
-    const backupZipUri = Uri.joinPath(backupDirUri, `${response.backups.id}.zip`);
+    const backupZipUri = Uri.joinPath(backupDirUri, basename(url.pathname));
 
     if (!existsSync(backupDirUri.fsPath))
       await workspace.fs.createDirectory(backupDirUri);
