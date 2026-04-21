@@ -93,6 +93,7 @@ export async function commandsRegister(core: ExtensionCore) {
   commandModuleRegister(core, "team/sort/online/deactivate", await import("./commands/team/sort/online/deactivate"));
 
   // user
+  commandModuleRegister(core, "user/copy.id", await import("./commands/user/copy.id"));
   commandModuleRegister(core, "user/set.locale", await import("./commands/user/set.locale"));
 
   core.debug("Commands loaded");
