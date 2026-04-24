@@ -3,6 +3,8 @@ import { makeCamelizedPair } from "./utils";
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 export const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 
+export const MAX_LANGUAGE_PROVIDER_READ_LINES = 100;
+
 export const AUTHENTICATION_PROVIDER_ID = "discloud";
 
 export const DISCLOUD_CONFIG_SCHEMA_FILE_NAME = "discloudconfigschema.json";

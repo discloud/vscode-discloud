@@ -3,9 +3,13 @@ import { readFile } from "fs/promises";
 import type { JSONSchema7 } from "json-schema";
 import { compileSchema, type SchemaNode } from "json-schema-library";
 import { parseEnv } from "util";
-import { type ExtensionContext, type TextDocument } from "vscode";
+import { Position, Range, type ExtensionContext, type TextDocument } from "vscode";
+import { MAX_LANGUAGE_PROVIDER_READ_LINES } from "../utils/constants";
 
 const STRING_BOOLEAN = new Set(["false", "true"]);
+const start = new Position(0, 0);
+const end = new Position(MAX_LANGUAGE_PROVIDER_READ_LINES, 0);
+const range = new Range(start, end);
 
 export default class BaseLanguageProvider {
   static readonly #schemas: Record<string, JSONSchema7> = {};
@@ -26,7 +30,7 @@ export default class BaseLanguageProvider {
   }
 
   transformConfigToJSON(document: TextDocument) {
-    return this.#parseValues(parseEnv(document.getText()));
+    return this.#parseValues(parseEnv(document.getText(range)));
   }
 
   validateJsonSchema(data: Record<any, any>) {
