@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.0
+
+- Adicionado configuração para alterar comportamento do foco nos logs enquanto faz upload: [`⚙️discloud.upload.focus.logs`](vscode://settings/discloud.upload.focus.logs)
+
 ## 2.28.0
 
 - Criado comando para copiar id de usuário
