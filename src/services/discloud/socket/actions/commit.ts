@@ -11,6 +11,7 @@ import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
+import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 
 export async function socketCommit(core: ExtensionCore, task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {
@@ -34,17 +35,21 @@ export async function socketCommit(core: ExtensionCore, task: TaskData, buffer: 
     function showLog(value: string) {
       const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
       for (const text of lines) app.output.info(text);
-      queueMicrotask(() => app.output.show(true));
+      const focus = core.config.get<string>(ConfigKeys.uploadAlwaysFocusLogs, UploadFocusLogs.always);
+      if (focus === UploadFocusLogs.always) queueMicrotask(() => app.output.show(true));
     }
 
     function showError(error: Error) {
       app.output.error(error);
-      queueMicrotask(() => app.output.show(true));
+      const focus = core.config.get<string>(ConfigKeys.uploadAlwaysFocusLogs, UploadFocusLogs.always);
+      if (focus !== UploadFocusLogs.never) queueMicrotask(() => app.output.show(true));
     }
 
     const status = {
       uploading: false,
     };
+
+    app.output.show(true);
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .once(SocketEvents.close, async (code, reason) => {

@@ -53,6 +53,7 @@ const CONFIG_KEYS = Object.freeze([
   "team.app.notification.status",
   "team.sort.by",
   "team.sort.online",
+  "upload.always.focus.logs",
 ] as const);
 
 const TREE_VIEW_IDS = Object.freeze([
@@ -75,6 +76,12 @@ const SORT_BY = Object.freeze([
   "started.desc",
 ] as const);
 
+const UPLOAD_FOCUS_LOGS = Object.freeze([
+  "always",
+  "errors",
+  "never",
+] as const);
+
 const API_ACTIONS_STRATEGY = Object.freeze([
   "rest",
   "socket",
@@ -93,6 +100,8 @@ export const TreeViewIds = Object.freeze(makeCamelizedPair(TREE_VIEW_IDS));
 export const ConfigKeys = Object.freeze(makeCamelizedPair(CONFIG_KEYS));
 
 export const SortBy = Object.freeze(makeCamelizedPair(SORT_BY));
+
+export const UploadFocusLogs = Object.freeze(makeCamelizedPair(UPLOAD_FOCUS_LOGS));
 
 export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));
 

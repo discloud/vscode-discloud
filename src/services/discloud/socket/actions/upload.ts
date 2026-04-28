@@ -6,6 +6,7 @@ import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import { type TaskData } from "../../../../@types";
 import type ExtensionCore from "../../../../core/extension";
+import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
@@ -32,17 +33,21 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
     function showLog(value: string) {
       const lines = stripVTControlCharacters(value).replace(/^[\r\n]+|[\r\n]+$/g, "").split(/[\r\n]+/);
       for (const text of lines) logger.info(text);
-      queueMicrotask(() => logger.show(true));
+      const focus = core.config.get<string>(ConfigKeys.uploadAlwaysFocusLogs, UploadFocusLogs.always);
+      if (focus === UploadFocusLogs.always) queueMicrotask(() => logger.show(true));
     }
 
     function showError(error: Error) {
       logger.error(error);
-      queueMicrotask(() => logger.show(true));
+      const focus = core.config.get<string>(ConfigKeys.uploadAlwaysFocusLogs, UploadFocusLogs.always);
+      if (focus !== UploadFocusLogs.never) queueMicrotask(() => logger.show(true));
     }
 
     const status = {
       uploading: false,
     };
+
+    logger.show(true);
 
     const ws = new SocketClient<SocketEventUploadData>(url)
       .once(SocketEvents.close, async (code, _reason) => {

@@ -392,6 +392,21 @@
             },
             "default": []
           },
+          "discloud.upload.focus.logs": {
+            "title": "%config.upload.focus.logs.title%",
+            "type": "string",
+            "default": "always",
+            "enum": [
+              "always",
+              "errors",
+              "never"
+            ],
+            "enumItemLabels": [
+              "%config.upload.focus.logs.always.label%",
+              "%config.upload.focus.logs.errors.label%",
+              "%config.upload.focus.logs.never.label%"
+            ]
+          },
           "discloud.api.actions.strategy": {
             "type": "string",
             "default": "socket",
