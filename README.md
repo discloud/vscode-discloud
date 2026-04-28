@@ -2,8 +2,8 @@
 
 Esta extensão facilita a hospedagem e o gerenciamento de aplicações na [Discloud](https://discloud.com) pelo Visual Studio Code.
 
-<img width="6000" height="2700" alt="Banner 16x9" src="https://github.com/user-attachments/assets/fa6b236e-6df1-4b0e-81ea-7caab4b56c20" />
-
+![Discloud](https://github.com/user-attachments/assets/fa6b236e-6df1-4b0e-81ea-7caab4b56c20)
+<!-- <img width="6000" height="2700" alt="Banner 16x9" src="https://github.com/user-attachments/assets/fa6b236e-6df1-4b0e-81ea-7caab4b56c20" /> -->
 
 ## 🌐 Outros idiomas
 

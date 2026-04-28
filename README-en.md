@@ -2,6 +2,8 @@
 
 This extension makes it easy to host and manage applications on [Discloud](https://discloud.com/) through Visual Studio Code.
 
+![Discloud](https://github.com/user-attachments/assets/fa6b236e-6df1-4b0e-81ea-7caab4b56c20)
+
 ## 🌐 Other languages
 
 - [🇧🇷 Versão portuguesa](./README.md)
