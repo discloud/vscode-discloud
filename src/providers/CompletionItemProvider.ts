@@ -5,9 +5,10 @@ import BaseLanguageProvider from "./BaseLanguageProvider";
 const assignSymbol = "=";
 const comment = "# https://docs.discloud.com/en/discloud.config";
 const commentPattern = /\s*#.*$/;
-const pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
 const pathSeparator = "/";
+const pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
 const arraySeparator = ",";
+const arraySeparatorRegexp = /(^[,]+|[,]{2,})/;
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
@@ -30,7 +31,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     this.context.subscriptions.push(disposable);
   }
 
-  provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext) {
+  async provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext) {
     if (!this.schema.properties) return [];
 
     if (!position.character) {
@@ -57,7 +58,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (maybeSchema && maybeSchema.node)
       schema = maybeSchema.node.schema;
 
-    return this.parseSchema(schema, {
+    const items = await this.parseSchema(schema, {
       document,
       line,
       position,
@@ -68,6 +69,8 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       valueUntilCharacterPosition,
       startValueIndex,
     });
+
+    return items;
   }
 
   async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions, parentSchema?: JSONSchema7): Promise<CompletionItem[]> {
@@ -149,7 +152,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       case "boolean":
       case "number":
       case "string":
-        const item = new CompletionItem(schema as string);
+        const item = new CompletionItem(`${schema}`);
 
         if (replaceValue) {
           item.range = new Range(
@@ -160,6 +163,22 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
           data.push(item);
           break;
         }
+
+        const additionalTextEdits: TextEdit[] = [];
+
+        for (const r of getMultipleSeparators(options.value, arraySeparatorRegexp)) {
+          additionalTextEdits.push(
+            new TextEdit(
+              new Range(
+                new Position(options.position.line, options.startValueIndex + r.index),
+                new Position(options.position.line, options.startValueIndex + r.index + r.length),
+              ),
+              r.index === 0 ? "" : arraySeparator,
+            ),
+          );
+        }
+
+        item.additionalTextEdits = additionalTextEdits;
 
         const startIndex = options.valueUntilCharacterPosition.lastIndexOf(arraySeparator) + 1;
         const endIndex = Math.max(options.value.indexOf(arraySeparator, startIndex), 0) || options.value.length;
@@ -229,7 +248,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
           const additionalTextEdits: TextEdit[] = [];
 
-          for (const r of getMultiplePathSeparators(options.value)) {
+          for (const r of getMultipleSeparators(options.value, pathSeparatorRegexp)) {
             additionalTextEdits.push(
               new TextEdit(
                 new Range(
@@ -300,15 +319,15 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 }
 
-function* getMultiplePathSeparators(value: string): Generator<MultiplePathSeparatorsResult, void, void> {
+function* getMultipleSeparators(value: string, sepRegexp: RegExp): Generator<MultiplePathSeparatorsResult, void, void> {
   let baseIndex = 0;
-  let mached = pathSeparatorRegexp.exec(value);
+  let mached = sepRegexp.exec(value);
   while (mached !== null) {
     const val = mached[1];
-    yield { index: baseIndex + mached.index, length: val.length };
+    yield { index: baseIndex + mached.index, length: val.length, value: val };
     baseIndex += val.length;
     value = value.replace(val, "");
-    mached = pathSeparatorRegexp.exec(value);
+    mached = sepRegexp.exec(value);
   }
 }
 
@@ -339,4 +358,5 @@ interface ParseSchemaOptions {
 interface MultiplePathSeparatorsResult {
   readonly index: number
   readonly length: number
+  readonly value: string
 }
