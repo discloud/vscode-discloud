@@ -1,4 +1,4 @@
-import { commands, workspace } from "vscode";
+import { type AuthenticationSessionAccountInformation, commands, workspace } from "vscode";
 import { AuthenticationProviderId } from "../authentication/enum/providers";
 import type ExtensionCore from "../core/extension";
 import core from "../extension";
@@ -71,14 +71,17 @@ async function migrateAuthenticationProvider(core: ExtensionCore) {
   if (oldSessionId === "discloudpat") {
     const promises: Thenable<void>[] = [];
 
-    const account = core.globalStorage.get(oldSessionId);
+    const account = core.globalStorage.get<AuthenticationSessionAccountInformation>(oldSessionId);
 
-    const newSessionId = AuthenticationProviderId.discloud;
+    const newSessionId = account
+      ? `${AuthenticationProviderId.discloud}.${account.id}`
+      : AuthenticationProviderId.discloud;
 
     promises.push(
       core.globalStorage.update(GlobalStorageKeys.currentAutenticationProviderId, newSessionId),
       core.globalStorage.update(GlobalStorageKeys.currentSessionId, newSessionId),
       core.globalStorage.update(newSessionId, account),
+      core.globalStorage.update(oldSessionId, undefined),
     );
 
     const secret = await core.secrets.get(oldSessionId);
