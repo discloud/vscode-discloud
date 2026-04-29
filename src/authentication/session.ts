@@ -1,6 +1,6 @@
 import { type AuthenticationSession, type AuthenticationSessionAccountInformation } from "vscode";
 
-export default class DiscloudPatAuthenticationSession implements AuthenticationSession {
+export default class DiscloudAuthenticationSession implements AuthenticationSession {
   constructor(
     readonly id: string,
     readonly accessToken: string,

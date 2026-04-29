@@ -30,7 +30,7 @@ export default class REST extends EventEmitter {
   }
 
   getSession() {
-    return this.core.auth.pat.getSession();
+    return this.core.auth.getSession();
   }
 
   async getToken() {

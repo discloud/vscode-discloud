@@ -110,7 +110,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
     super.reset(data);
 
-    if (await this.core.auth.pat.getSession()) {
+    if (await this.core.auth.getSession()) {
       this.setDefault();
     } else {
       this.setLogin();

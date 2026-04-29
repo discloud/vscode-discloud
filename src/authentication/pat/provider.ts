@@ -1,40 +1,44 @@
 import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { setTimeout as sleep } from "timers/promises";
-import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter, type ExtensionContext, type SecretStorage, window } from "vscode";
+import { authentication, type AuthenticationProvider, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type EventEmitter, type SecretStorage, window } from "vscode";
+import { type IGlobalStateStorage } from "../../@types";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
-import { AUTHENTICATION_PROVIDER_ID, SecretKeys } from "../../utils/constants";
+import { GlobalStorageKeys } from "../../utils/constants";
+import { AuthenticationProviderId } from "../enum/providers";
 import BaseAuthenticationError from "../errors/base";
 import UnauthorizedError from "../errors/unauthorized";
 import { type IPatAuthenticationProvider } from "../interfaces/pat";
-import { hash } from "../utils/hash";
-import DiscloudPatAuthenticationSession from "./session";
+import DiscloudAuthenticationSession from "../session";
 
-const providerLabel = "Discloud";
-const defaultSessionAccount = { id: "Discloud User ID", label: "Discloud User" };
-const sessionIdListKey = "sessionIdList";
+const providerId = AuthenticationProviderId.discloud;
+const defaultSessionAccount: AuthenticationSessionAccountInformation
+  = { id: "Unknown Discloud User ID", label: "Unknown Discloud User" };
 
-export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
+export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider, AuthenticationProvider {
   constructor(
-    protected readonly context: ExtensionContext,
+    protected readonly emitter: EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>,
     protected readonly secrets: SecretStorage,
-  ) {
-    const disposable = authentication.registerAuthenticationProvider(AUTHENTICATION_PROVIDER_ID, providerLabel, this);
+    protected readonly storage: IGlobalStateStorage,
+  ) { }
 
-    this.context.subscriptions.push(disposable, this._onDidChangeSessions);
-  }
-
-  protected readonly _onDidChangeSessions = new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
-  get onDidChangeSessions() { return this._onDidChangeSessions.event; }
+  get onDidChangeSessions() { return this.emitter.event; }
 
   protected _fire(data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>): void
   protected _fire(data: AuthenticationProviderAuthenticationSessionsChangeEvent) {
-    this._onDidChangeSessions.fire(data);
+    this.emitter.fire(data);
   }
 
+  /** @override {@link AuthenticationProvider} */
   createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession>
-  async createSession(_scopes: readonly string[], options: AuthenticationProviderSessionOptions) {
-    const oldSession = this.getSession(options.account);
+  async createSession(_scopes: readonly string[], _options: AuthenticationProviderSessionOptions) {
+    const sessionIdList = this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []);
+
+    const currentTokens = new Set<string>();
+    for (let i = 0; i < sessionIdList.length; i++) {
+      const sessionId = sessionIdList[i];
+      const maybeToken = await this.secrets.get(sessionId);
+      if (maybeToken) currentTokens.add(maybeToken);
+    }
 
     const input = await window.showInputBox({
       ignoreFocusOut: true,
@@ -44,11 +48,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
         if (!tokenIsDiscloudJwt(value))
           return t("input.login.prompt");
 
-        const maybeOldSession = await Promise.race([oldSession, sleep(100)]);
-
-        if (!maybeOldSession) return;
-
-        if (maybeOldSession.accessToken === value)
+        if (currentTokens.has(value))
           return t("input.same.previous");
       },
     });
@@ -61,13 +61,6 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     if (!response.ok) throw await BaseAuthenticationError.fromStatusCode(response.status);
 
-    const newSessionId = SecretKeys.discloudpat; //`session.pat.${Date.now()}`;
-
-    const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, []);
-    sessionIdList.push(newSessionId);
-
-    const sessionIdSet = new Set(sessionIdList);
-
     const body = await response.json() as RESTGetApiUserResult;
 
     const account: AuthenticationSessionAccountInformation = {
@@ -75,27 +68,43 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
       label: body.user.username ?? body.user.userID ?? defaultSessionAccount.label,
     };
 
+    const newSessionId = `${providerId}.${account.id}`;
+
+    const sessionIdSet = new Set(sessionIdList);
+
+    sessionIdSet.add(newSessionId);
+
+    const oldSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
+    if (oldSessionId) {
+      sessionIdSet.delete(oldSessionId);
+      await Promise.all([
+        this.storage.update(oldSessionId, undefined),
+        this.secrets.delete(oldSessionId),
+      ]);
+    }
+
     await Promise.all([
-      this.context.globalState.update(sessionIdListKey, Array.from(sessionIdSet)),
-      this.context.globalState.update(newSessionId, account),
+      this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
+      this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, providerId),
+      this.storage.update(GlobalStorageKeys.currentSessionId, newSessionId),
+      this.storage.update(newSessionId, account),
       this.secrets.store(newSessionId, input),
     ]);
 
-    const newSession = new DiscloudPatAuthenticationSession(newSessionId, input, account);
+    const newSession = new DiscloudAuthenticationSession(newSessionId, input, account);
 
-    const maybeOldSession = await Promise.race([oldSession, sleep(100)]);
-
-    this._fire(maybeOldSession ? { changed: [newSession] } : { added: [newSession] });
+    this._fire(oldSessionId ? { changed: [newSession] } : { added: [newSession] });
 
     return newSession;
   }
 
+  /** @override {@link AuthenticationProvider} */
   getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]>
   async getSessions(_scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions) {
-    const sessionIdList = this.context.globalState.get<string[]>(sessionIdListKey, [SecretKeys.discloudpat]);
+    const sessionIdList = this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []);
     const sessionIdSet = new Set(sessionIdList);
 
-    const sessions: DiscloudPatAuthenticationSession[] = [];
+    const sessions: DiscloudAuthenticationSession[] = [];
 
     for (let i = 0; i < sessionIdList.length; i++) {
       const sessionId = sessionIdList[i];
@@ -107,40 +116,35 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
       }
 
       const account: AuthenticationSessionAccountInformation
-        = this.context.globalState.get(sessionId)
-        ?? this.context.globalState.get(hash(secret))
-        ?? defaultSessionAccount;
+        = this.storage.get(sessionId) ?? defaultSessionAccount;
 
       if (options.account && options.account.id !== account.id) continue;
 
-      const session = new DiscloudPatAuthenticationSession(sessionId, secret, account);
+      const session = new DiscloudAuthenticationSession(sessionId, secret, account);
 
       sessions.push(session);
     }
 
     if (sessionIdList.length !== sessionIdSet.size)
-      await this.context.globalState.update(sessionIdListKey, Array.from(sessionIdSet));
+      await this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet));
 
     return sessions;
   }
 
+  /** @override {@link AuthenticationProvider} */
+  removeSession(sessionId: string): Thenable<void>
   async removeSession(sessionId: string) {
     const secret = await this.secrets.get(sessionId);
     if (!secret) return;
 
-    const secretHash = hash(secret);
-
     const account: AuthenticationSessionAccountInformation
-      = this.context.globalState.get(sessionId)
-      ?? this.context.globalState.get(secretHash)
-      ?? defaultSessionAccount;
+      = this.storage.get(sessionId) ?? defaultSessionAccount;
 
-    const session = new DiscloudPatAuthenticationSession(sessionId, secret, account);
+    const session = new DiscloudAuthenticationSession(sessionId, secret, account);
 
     await this.secrets.delete(sessionId);
 
-    await this.context.globalState.update(sessionId, undefined);
-    await this.context.globalState.update(secretHash, undefined);
+    await this.storage.update(sessionId, undefined);
 
     this._fire({ removed: [session] });
   }
@@ -151,7 +155,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   async getSession(account?: AuthenticationSessionAccountInformation) {
-    return authentication.getSession(AUTHENTICATION_PROVIDER_ID, [], { account, silent: true });
+    return authentication.getSession(providerId, [], { account, silent: true });
   }
 
   async validate(session: AuthenticationSession) {
@@ -161,7 +165,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
     const response = await fetch(url, { headers: { "api-token": session.accessToken } });
 
-    if (response.ok) return;
+    if (response.ok) return; // Valid Session
 
     throw await BaseAuthenticationError.fromStatusCode(response.status);
   }
