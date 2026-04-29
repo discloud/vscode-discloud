@@ -1,6 +1,5 @@
-import { existsSync } from "fs";
 import { type JSONSchema7, type JSONSchema7Definition, type JSONSchema7Type } from "json-schema";
-import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, Uri, workspace, type CancellationToken, type CompletionContext, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
+import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, TextEdit, Uri, workspace, type CancellationToken, type CompletionContext, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 const assignSymbol = "=";
@@ -216,6 +215,22 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
           const targetUri = Uri.joinPath(rootUri, value);
 
           const data: CompletionItem[] = [];
+          const additionalTextEdits: TextEdit[] = [];
+
+          const result = getMultiplePathSeparators(options.value);
+
+          for (let i = 0; i < result.length; i++) {
+            const r = result[i];
+            additionalTextEdits.push(
+              new TextEdit(
+                new Range(
+                  new Position(options.position.line, options.startValueIndex + r.index),
+                  new Position(options.position.line, options.startValueIndex + r.index + r.length),
+                ),
+                pathSeparator,
+              ),
+            );
+          }
 
           for (const [filename, fileType] of await safeReadDirectory(targetUri)) {
             const type = fileTypeAsCompletionItemKind[fileType];
@@ -229,14 +244,23 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
               options.fullValue.substring(endIndex),
             );
 
-            const exists = existsSync(fullValueUri.fsPath);
             const isDirectory = fileType === FileType.Directory;
 
+            item.additionalTextEdits = additionalTextEdits;
+
             item.sortText = `${!isDirectory}${filename}`;
-            item.insertText = isDirectory ? filename + "/" : filename;
+            item.insertText = filename;
+
+            let exists = true;
+            try {
+              await workspace.fs.stat(fullValueUri);
+            } catch {
+              exists = false;
+            }
+
             item.range = new Range(
               new Position(options.position.line, startPositionIndex),
-              new Position(options.position.line, exists ? endPositionIndex + (isDirectory ? 1 : 0) : fullRangedIndex),
+              new Position(options.position.line, exists ? endPositionIndex : fullRangedIndex),
             );
 
             data.push(item);
@@ -250,10 +274,30 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 }
 
+function getMultiplePathSeparators(value: string) {
+  let baseIndex = 0;
+  let mached = pathSeparatorRegexp.exec(value);
+  const processed: MultiplePathSeparatorsResult[] = [];
+  while (mached) {
+    const seps = mached[1];
+    processed.push({
+      index: baseIndex + mached.index!,
+      length: seps.length,
+    });
+    baseIndex += seps.length;
+    value = value.replace(seps, "");
+    mached = pathSeparatorRegexp.exec(value);
+  }
+  return processed;
+}
+
 async function safeReadDirectory(uri: Uri) {
   try { return await workspace.fs.readDirectory(uri); }
   catch { return []; }
 }
+
+const pathSeparatorRegexp = /([\\/]{2,})/;
+const pathSeparator = "/";
 
 const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {
   [FileType.Unknown]: CompletionItemKind.Keyword,
@@ -271,4 +315,9 @@ interface ParseSchemaOptions {
   value: string
   fullValue: string
   startValueIndex: number
+}
+
+interface MultiplePathSeparatorsResult {
+  index: number
+  length: number
 }
