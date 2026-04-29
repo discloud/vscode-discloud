@@ -1,8 +1,7 @@
 import { t } from "@vscode/l10n";
-import { existsSync } from "fs";
 import { type JSONSchema7 } from "json-schema";
-import { dirname, join } from "path";
-import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, type ExtensionContext, Position, Range, type TextDocument, languages, window, workspace } from "vscode";
+import { type AnnotationData, type JsonError } from "json-schema-library";
+import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, type ExtensionContext, Position, Range, type TextDocument, Uri, languages, window, workspace } from "vscode";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 const assignSymbol = "=";
@@ -35,9 +34,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
     queueMicrotask(() => {
       for (let i = 0; i < workspace.textDocuments.length; i++) {
         const document = workspace.textDocuments[i];
-        if (document.languageId === this.schema.$id) {
-          this.checkDocument(document);
-        }
+        this.checkDocument(document);
       }
     });
   }
@@ -49,8 +46,10 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const workspaceFolder = workspace.getWorkspaceFolder(document.uri);
 
+    const rootUri = Uri.joinPath(document.uri, "..");
+
     if (workspaceFolder) {
-      if (workspaceFolder.uri.fsPath !== dirname(document.uri.fsPath)) {
+      if (workspaceFolder.uri.fsPath !== rootUri.fsPath) {
         // @ts-expect-error ts(2339)
         if (!document.uri._discloudDiscloudHasWrongLocationWarned) {
           // @ts-expect-error ts(2339)
@@ -73,25 +72,6 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     const result = this.validateJsonSchema(data);
 
-    for (let i = 0; i < result.errors.length; i++) {
-      const error = result.errors[i];
-
-      switch (error.code) {
-        case "required-property-error":
-          result.errors.splice(i, 1);
-
-          diagnostics.push({
-            message: error.message.substring(0, error.message.lastIndexOf(` at \`${error.data.pointer}\``)),
-            range: new Range(
-              new Position(0, 0),
-              new Position(0, 0),
-            ),
-            severity: DiagnosticSeverity.Error,
-          });
-          break;
-      }
-    }
-
     for (let i = 0; i < document.lineCount; i++) {
       const line = document.lineAt(i);
 
@@ -108,18 +88,19 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
       if (!scopeSchema || scopeSchema.error) continue;
 
-      const errorIndex = result.errors.findIndex(e => e.data.pointer.includes(key));
+      const errorIndex = result.errors.findIndex(e => e.data.key === key || e.data.pointer.endsWith(key));
 
       if (errorIndex > -1) {
         const error = result.errors.splice(errorIndex, 1)[0];
 
         diagnostics.push({
-          message: error.message.replace("#/", ""),
+          message: formatErrorMessage(error),
           range: new Range(
             new Position(i, key.length + 1),
             new Position(i, lineText.length),
           ),
           severity: DiagnosticSeverity.Error,
+          code: `${error.code}`,
         });
       }
 
@@ -130,7 +111,9 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
           if (scopeSchema.node.schema.format) {
             switch (scopeSchema.node.schema.format) {
               case "uri-reference":
-                if (!existsSync(join(dirname(document.uri.fsPath), value))) {
+                try {
+                  await workspace.fs.stat(Uri.joinPath(rootUri, value));
+                } catch (error: any) {
                   diagnostics.push({
                     message: t("diagnostic.main.not.exist"),
                     range: new Range(
@@ -138,6 +121,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
                       new Position(i, lineText.length),
                     ),
                     severity: DiagnosticSeverity.Error,
+                    code: error.code,
                   });
                 }
                 break;
@@ -147,6 +131,23 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
       }
     }
 
+    for (let i = 0; i < result.errors.length; i++) {
+      const error = result.errors[i];
+
+      diagnostics.push({
+        message: formatErrorMessage(error),
+        range: new Range(new Position(0, 0), new Position(0, 0)),
+        severity: DiagnosticSeverity.Error,
+        code: `${error.code}`,
+      });
+    }
+
     this.collection.set(document.uri, diagnostics);
   }
+}
+
+function formatErrorMessage(error: JsonError<AnnotationData<Record<string, unknown>>>) {
+  if (error.data.pointer === "#") return error.message.replace("at `#`", "");
+  if (error.data.pointer.startsWith("#/")) return error.message.replace("#/", "");
+  return error.message;
 }
