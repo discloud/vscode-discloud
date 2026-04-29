@@ -2,9 +2,9 @@ import { type AuthenticationSessionAccountInformation, commands, workspace } fro
 import { AuthenticationProviderId } from "../authentication/enum/providers";
 import type ExtensionCore from "../core/extension";
 import core from "../extension";
-import BaseLanguageProvider from "../providers/BaseLanguageProvider";
-import CompletionItemProvider from "../providers/CompletionItemProvider";
-import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
+import BaseLanguageProvider from "../language/BaseLanguageProvider";
+import CompletionItemProvider from "../language/CompletionItemProvider";
+import LanguageConfigurationProvider from "../language/LanguageConfigurationProvider";
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, GlobalStorageKeys } from "../utils/constants";
 
 core.on("activate", async function (context) {
