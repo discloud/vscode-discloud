@@ -8,16 +8,18 @@ import LanguageConfigurationProvider from "../providers/LanguageConfigurationPro
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, GlobalStorageKeys } from "../utils/constants";
 
 core.on("activate", async function (context) {
-  try {
-    const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
+  queueMicrotask(async function () {
+    try {
+      const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
 
-    const schema = await BaseLanguageProvider.getSchemaFromPath(path);
+      const schema = await BaseLanguageProvider.getSchemaFromPath(path);
 
-    new CompletionItemProvider(context, schema);
-    new LanguageConfigurationProvider(context, schema);
-  } catch (error: any) {
-    core.logger.error(error);
-  }
+      new CompletionItemProvider(context, schema);
+      new LanguageConfigurationProvider(context, schema);
+    } catch (error: any) {
+      core.logger.error(error);
+    }
+  });
 
   const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration("discloud.app.sort")) return core.userAppTree.refresh();
