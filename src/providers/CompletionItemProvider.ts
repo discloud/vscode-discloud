@@ -5,6 +5,9 @@ import BaseLanguageProvider from "./BaseLanguageProvider";
 const assignSymbol = "=";
 const comment = "# https://docs.discloud.com/en/discloud.config";
 const commentPattern = /\s*#.*$/;
+const pathSeparatorRegexp = /([\\/]{2,})/;
+const pathSeparator = "/";
+const arraySeparator = ",";
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
@@ -22,7 +25,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
           this.provideCompletionItems(document, position, token, _context),
         ]).catch(() => []);
       },
-    }, "\n", assignSymbol, "/");
+    }, "\n", arraySeparator, assignSymbol, pathSeparator);
 
     this.context.subscriptions.push(disposable);
   }
@@ -38,12 +41,12 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
     const line = document.lineAt(position);
     const text = line.text.replace(commentPattern, "");
-    const [key, value] = text.substring(0, position.character).split(assignSymbol);
 
-    if (typeof value !== "string") return [];
-
-    const [_, fullValue] = text.split(assignSymbol);
+    const [key, value] = text.split(assignSymbol);
     const startValueIndex = key.length + 1;
+
+    const textUntilCharacterPosition = text.substring(0, position.character);
+    const [_, valueUntilCharacterPosition] = textUntilCharacterPosition.split(assignSymbol);
 
     const data = this.transformConfigToJSON(document);
 
@@ -59,30 +62,31 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
       line,
       position,
       text,
+      textUntilCharacterPosition,
       key,
       value,
-      fullValue,
+      valueUntilCharacterPosition,
       startValueIndex,
     });
   }
 
-  async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions): Promise<CompletionItem[]> {
+  async parseSchema(schema: JSONSchema7, options: ParseSchemaOptions, parentSchema?: JSONSchema7): Promise<CompletionItem[]> {
     switch (schema.type) {
       case "array":
         const items = await this.parseSchemaArray(schema, options);
         if (schema.uniqueItems) {
-          return items.filter(item => !options.value.includes(item.label.toString()));
+          return items.filter(item => !options.valueUntilCharacterPosition.includes(item.label.toString()));
         }
         return items;
       case "boolean":
-        return this.parseSchemaBoolean(schema, options, true);
+        return this.parseSchemaBoolean(schema, options, parentSchema?.type !== "array");
       case "integer":
       case "number":
-        return this.parseSchemaNumber(schema, options, true);
+        return this.parseSchemaNumber(schema, options, parentSchema?.type !== "array");
       case "null":
         return [];
       case "string":
-        return this.parseSchemaString(schema, options, true);
+        return this.parseSchemaString(schema, options, parentSchema?.type !== "array");
       case "object":
       default:
         return this.parseSchemaObject(schema, options);
@@ -101,14 +105,12 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     const itemTrue = new CompletionItem("true", CompletionItemKind.Keyword);
 
     if (replaceValue) {
-      itemFalse.range = new Range(
+      const range = new Range(
         new Position(options.position.line, options.startValueIndex),
         new Position(options.position.line, options.line.text.length),
       );
-      itemTrue.range = new Range(
-        new Position(options.position.line, options.startValueIndex),
-        new Position(options.position.line, options.line.text.length),
-      );
+      itemFalse.range = range;
+      itemTrue.range = range;
     }
 
     return [
@@ -131,9 +133,9 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
   async parseSchemaItems(schema: JSONSchema7, options: ParseSchemaOptions) {
     if (Array.isArray(schema.items)) {
-      return Promise.all(schema.items.map(value => this.parseSchemaDefinition(value, options))).then(r => r.flat());
+      return Promise.all(schema.items.map(value => this.parseSchemaDefinition(value, options, schema))).then(r => r.flat());
     } else {
-      return this.parseSchemaDefinition(schema.items!, options);
+      return this.parseSchemaDefinition(schema.items!, options, schema);
     }
   }
 
@@ -141,20 +143,30 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (Array.isArray(schema))
       return schema.flatMap(value => this.parseSchemaType(value, options, replaceValue));
 
-    const data = [];
+    const data: CompletionItem[] = [];
 
     switch (typeof schema) {
       case "boolean":
       case "number":
       case "string":
-        const item = new CompletionItem(`${schema}`);
+        const item = new CompletionItem(schema as string);
 
         if (replaceValue) {
           item.range = new Range(
             new Position(options.position.line, options.startValueIndex),
-            new Position(options.position.line, options.line.text.length),
+            new Position(options.position.line, options.text.length),
           );
+
+          data.push(item);
+          break;
         }
+
+        const startIndex = options.valueUntilCharacterPosition.lastIndexOf(arraySeparator) + 1;
+
+        item.range = new Range(
+          new Position(options.position.line, options.startValueIndex + startIndex),
+          new Position(options.position.line, options.text.length),
+        );
 
         data.push(item);
         break;
@@ -189,9 +201,9 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     return [];
   }
 
-  async parseSchemaDefinition(schema: JSONSchema7Definition, options: ParseSchemaOptions): Promise<CompletionItem[]> {
+  async parseSchemaDefinition(schema: JSONSchema7Definition, options: ParseSchemaOptions, parentSchema?: JSONSchema7): Promise<CompletionItem[]> {
     if (typeof schema === "boolean") return [];
-    return this.parseSchema(schema, options);
+    return this.parseSchema(schema, options, parentSchema);
   }
 
   async parseSchemaString(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
@@ -201,23 +213,22 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (typeof schema.format === "string") {
       switch (schema.format) {
         case "uri-reference":
-          if (typeof options.value !== "string") break;
+          const startIndex = options.valueUntilCharacterPosition.lastIndexOf(pathSeparator) + 1;
+          const endIndex = Math.max(options.value.indexOf(pathSeparator, startIndex), 0) || options.value.length;
 
-          const startIndex = options.value.lastIndexOf("/") + 1;
-          const endIndex = Math.max(options.fullValue.indexOf("/", startIndex), 0) || options.fullValue.length;
-          const fullRangedIndex = options.line.text.length;
           const startPositionIndex = options.startValueIndex + startIndex;
           const endPositionIndex = options.startValueIndex + endIndex;
 
-          const value = options.value.substring(0, startIndex);
+          const directory = options.valueUntilCharacterPosition.substring(0, startIndex);
+          const actual = options.value.substring(startIndex, endIndex);
+          const after = options.value.substring(endIndex);
 
           const rootUri = Uri.joinPath(options.document.uri, "..");
-          const targetUri = Uri.joinPath(rootUri, value);
+          const targetUri = Uri.joinPath(rootUri, directory);
 
-          const data: CompletionItem[] = [];
           const additionalTextEdits: TextEdit[] = [];
 
-          const result = getMultiplePathSeparators(options.value);
+          const result = getMultiplePathSeparators(options.valueUntilCharacterPosition);
 
           for (let i = 0; i < result.length; i++) {
             const r = result[i];
@@ -232,17 +243,12 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
             );
           }
 
+          const data: CompletionItem[] = [];
+
           for (const [filename, fileType] of await safeReadDirectory(targetUri)) {
             const type = fileTypeAsCompletionItemKind[fileType];
 
             const item = new CompletionItem(filename, type);
-
-            const fullValueUri = Uri.joinPath(
-              rootUri,
-              options.fullValue.substring(0, startIndex),
-              filename,
-              options.fullValue.substring(endIndex),
-            );
 
             const isDirectory = fileType === FileType.Directory;
 
@@ -251,17 +257,39 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
             item.sortText = `${!isDirectory}${filename}`;
             item.insertText = filename;
 
-            let exists = true;
-            try {
-              await workspace.fs.stat(fullValueUri);
-            } catch {
-              exists = false;
+            const start = new Position(options.position.line, startPositionIndex);
+
+            if (actual === filename) {
+              item.range = new Range(
+                start,
+                new Position(options.position.line, endPositionIndex),
+              );
+
+              data.push(item);
+
+              continue;
             }
 
-            item.range = new Range(
-              new Position(options.position.line, startPositionIndex),
-              new Position(options.position.line, exists ? endPositionIndex : fullRangedIndex),
+            const fullValueUri = Uri.joinPath(
+              rootUri,
+              directory,
+              filename,
+              after,
             );
+
+            try {
+              await workspace.fs.stat(fullValueUri);
+
+              item.range = new Range(
+                start,
+                new Position(options.position.line, endPositionIndex),
+              );
+            } catch {
+              item.range = new Range(
+                start,
+                new Position(options.position.line, options.text.length),
+              );
+            }
 
             data.push(item);
           }
@@ -280,10 +308,9 @@ function getMultiplePathSeparators(value: string) {
   const processed: MultiplePathSeparatorsResult[] = [];
   while (mached) {
     const seps = mached[1];
-    processed.push({
-      index: baseIndex + mached.index!,
-      length: seps.length,
-    });
+    const index = baseIndex + mached.index;
+    const length = seps.length;
+    processed.push({ index, length });
     baseIndex += seps.length;
     value = value.replace(seps, "");
     mached = pathSeparatorRegexp.exec(value);
@@ -296,9 +323,6 @@ async function safeReadDirectory(uri: Uri) {
   catch { return []; }
 }
 
-const pathSeparatorRegexp = /([\\/]{2,})/;
-const pathSeparator = "/";
-
 const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {
   [FileType.Unknown]: CompletionItemKind.Keyword,
   [FileType.File]: CompletionItemKind.File,
@@ -307,17 +331,18 @@ const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {
 };
 
 interface ParseSchemaOptions {
-  document: TextDocument
-  line: TextLine
-  position: Position
-  text: string
-  key: string
-  value: string
-  fullValue: string
-  startValueIndex: number
+  readonly document: TextDocument
+  readonly line: TextLine
+  readonly position: Position
+  readonly text: string
+  readonly textUntilCharacterPosition: string,
+  readonly key: string
+  readonly value: string
+  readonly valueUntilCharacterPosition: string
+  readonly startValueIndex: number
 }
 
 interface MultiplePathSeparatorsResult {
-  index: number
-  length: number
+  readonly index: number
+  readonly length: number
 }
