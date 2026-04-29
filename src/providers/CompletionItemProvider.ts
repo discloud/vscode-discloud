@@ -5,7 +5,7 @@ import BaseLanguageProvider from "./BaseLanguageProvider";
 const assignSymbol = "=";
 const comment = "# https://docs.discloud.com/en/discloud.config";
 const commentPattern = /\s*#.*$/;
-const pathSeparatorRegexp = /([\\/]{2,})/;
+const pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
 const pathSeparator = "/";
 const arraySeparator = ",";
 
@@ -162,10 +162,11 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
         }
 
         const startIndex = options.valueUntilCharacterPosition.lastIndexOf(arraySeparator) + 1;
+        const endIndex = Math.max(options.value.indexOf(arraySeparator, startIndex), 0) || options.value.length;
 
         item.range = new Range(
           new Position(options.position.line, options.startValueIndex + startIndex),
-          new Position(options.position.line, options.text.length),
+          new Position(options.position.line, options.startValueIndex + endIndex),
         );
 
         data.push(item);
@@ -228,17 +229,14 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
           const additionalTextEdits: TextEdit[] = [];
 
-          const result = getMultiplePathSeparators(options.valueUntilCharacterPosition);
-
-          for (let i = 0; i < result.length; i++) {
-            const r = result[i];
+          for (const r of getMultiplePathSeparators(options.value)) {
             additionalTextEdits.push(
               new TextEdit(
                 new Range(
                   new Position(options.position.line, options.startValueIndex + r.index),
                   new Position(options.position.line, options.startValueIndex + r.index + r.length),
                 ),
-                pathSeparator,
+                r.index === 0 ? "" : pathSeparator,
               ),
             );
           }
@@ -302,20 +300,16 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 }
 
-function getMultiplePathSeparators(value: string) {
+function* getMultiplePathSeparators(value: string): Generator<MultiplePathSeparatorsResult, void, void> {
   let baseIndex = 0;
   let mached = pathSeparatorRegexp.exec(value);
-  const processed: MultiplePathSeparatorsResult[] = [];
-  while (mached) {
-    const seps = mached[1];
-    const index = baseIndex + mached.index;
-    const length = seps.length;
-    processed.push({ index, length });
-    baseIndex += seps.length;
-    value = value.replace(seps, "");
+  while (mached !== null) {
+    const val = mached[1];
+    yield { index: baseIndex + mached.index, length: val.length };
+    baseIndex += val.length;
+    value = value.replace(val, "");
     mached = pathSeparatorRegexp.exec(value);
   }
-  return processed;
 }
 
 async function safeReadDirectory(uri: Uri) {
