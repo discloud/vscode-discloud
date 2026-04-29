@@ -3,8 +3,7 @@ import { EventEmitter } from "events";
 import { normalize } from "path";
 import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
 import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
-import DiscloudPatAuthenticationProvider from "../authentication/pat/provider";
-import AuthenticationProviders from "../authentication/providers";
+import AuthenticationProviderContainer from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import DiscloudLogOutputChannel from "../output/LogOutputChannel";
@@ -29,7 +28,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     super({ captureRejections: true });
   }
 
-  declare readonly auth: AuthenticationProviders;
+  declare readonly auth: AuthenticationProviderContainer;
   declare readonly context: ExtensionContext;
   declare readonly secrets: SecretStorage;
   declare readonly globalStorage: StateStorage & IGlobalStateStorage;
@@ -159,7 +158,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   async activate(context: ExtensionContext = this.context) {
     if (!this.context) this.setContext(context);
 
-    this.logger.info("Activate: begin");
+    this.logger.debug("Activate: begin");
 
     const globalStorage = new GlobalStateStorage(context.globalState);
 
@@ -173,9 +172,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
       secrets: { value: secrets },
     });
 
-    const authPat = new DiscloudPatAuthenticationProvider(context, secrets);
-
-    const auth = new AuthenticationProviders(authPat);
+    const auth = new AuthenticationProviderContainer(this);
 
     Object.defineProperties(this, { auth: { value: auth } });
 

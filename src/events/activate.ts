@@ -1,9 +1,11 @@
 import { commands, workspace } from "vscode";
+import { AuthenticationProviderId } from "../authentication/enum/providers";
+import type ExtensionCore from "../core/extension";
 import core from "../extension";
 import BaseLanguageProvider from "../providers/BaseLanguageProvider";
 import CompletionItemProvider from "../providers/CompletionItemProvider";
 import LanguageConfigurationProvider from "../providers/LanguageConfigurationProvider";
-import { ConfigKeys, DISCLOUD_CONFIG_SCHEMA_FILE_NAME, SecretKeys } from "../utils/constants";
+import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, GlobalStorageKeys } from "../utils/constants";
 
 core.on("activate", async function (context) {
   try {
@@ -36,9 +38,9 @@ core.on("activate", async function (context) {
   });
 
   // Refresh extension when session was removed
-  const disposableAuthenticationEvent = core.auth.pat.onDidChangeSessions(async (event) => {
+  const disposableAuthenticationEvent = core.auth.onDidChangeSessions(async (event) => {
     if (event.removed?.length) {
-      const session = await core.auth.pat.getSession();
+      const session = await core.auth.getSession();
       if (!session) core.emit("missingToken");
       return;
     }
@@ -46,23 +48,11 @@ core.on("activate", async function (context) {
 
   context.subscriptions.push(disposableChangeConfiguration, disposableAuthenticationEvent);
 
-  core.logger.info("Activate: done");
+  core.logger.debug("Activate: done");
 
-  // TODO: remove it in future
-  const oldConfigToken = core.config.get<string>(ConfigKeys.token);
-  if (oldConfigToken) {
-    await core.config.update(ConfigKeys.token, undefined, true);
-    await core.secrets.store(SecretKeys.discloudpat, oldConfigToken);
-  }
+  await migrateAuthenticationProvider(core);
 
-  // TODO: remove it in future
-  const oldSecret = await core.secrets.get("token");
-  if (oldSecret) {
-    await core.secrets.delete("token");
-    await core.secrets.store(SecretKeys.discloudpat, oldSecret);
-  }
-
-  const session = await core.auth.pat.getSession();
+  const session = await core.auth.getSession();
 
   if (session) {
     await commands.executeCommand("discloud.login", session);
@@ -72,3 +62,43 @@ core.on("activate", async function (context) {
 
   await commands.executeCommand("setContext", "discloudInitialized", true);
 });
+
+async function migrateAuthenticationProvider(core: ExtensionCore) {
+  const oldSessionIdList = core.globalStorage.get<string[]>("sessionIdList", []);
+
+  const [oldSessionId] = oldSessionIdList;
+
+  if (oldSessionId === "discloudpat") {
+    const promises: Thenable<void>[] = [];
+
+    const account = core.globalStorage.get(oldSessionId);
+
+    const newSessionId = AuthenticationProviderId.discloud;
+
+    promises.push(
+      core.globalStorage.update(GlobalStorageKeys.currentAutenticationProviderId, newSessionId),
+      core.globalStorage.update(GlobalStorageKeys.currentSessionId, newSessionId),
+      core.globalStorage.update(newSessionId, account),
+    );
+
+    const secret = await core.secrets.get(oldSessionId);
+    if (secret) {
+      promises.push(
+        core.secrets.store(newSessionId, secret),
+        core.secrets.delete(oldSessionId),
+      );
+    }
+
+    oldSessionIdList[0] = newSessionId;
+
+    await Promise.all(promises);
+
+    await Promise.all([
+      core.globalStorage.update(GlobalStorageKeys.sessionIdList, oldSessionIdList),
+    ]);
+
+    await Promise.all([
+      core.globalStorage.delete("sessionIdList"),
+    ]);
+  }
+}

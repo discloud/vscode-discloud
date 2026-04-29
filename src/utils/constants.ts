@@ -5,8 +5,6 @@ export const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 
 export const MAX_LANGUAGE_PROVIDER_READ_LINES = 100;
 
-export const AUTHENTICATION_PROVIDER_ID = "discloud";
-
 export const DISCLOUD_CONFIG_SCHEMA_FILE_NAME = "discloudconfigschema.json";
 
 export const RESOURCES_DIR = "resources";
@@ -88,11 +86,10 @@ const API_ACTIONS_STRATEGY = Object.freeze([
 ] as const);
 
 const GLOBAL_STORAGE_KEYS = Object.freeze([
+  "current.autentication.provider.id",
+  "current.session.id",
   "fetch.user.timestamp",
-] as const);
-
-const SECRET_KEYS = Object.freeze([
-  "discloudpat",
+  "session.id.list",
 ] as const);
 
 export const TreeViewIds = Object.freeze(makeCamelizedPair(TREE_VIEW_IDS));
@@ -106,5 +103,3 @@ export const UploadFocusLogs = Object.freeze(makeCamelizedPair(UPLOAD_FOCUS_LOGS
 export const ApiActionsStrategy = Object.freeze(makeCamelizedPair(API_ACTIONS_STRATEGY));
 
 export const GlobalStorageKeys = Object.freeze(makeCamelizedPair(GLOBAL_STORAGE_KEYS));
-
-export const SecretKeys = Object.freeze(makeCamelizedPair(SECRET_KEYS));

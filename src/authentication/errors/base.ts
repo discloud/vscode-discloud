@@ -19,7 +19,7 @@ export default class BaseAuthenticationError extends Error {
       case BadGatewayError.code:
         return new BadGatewayError();
       default:
-        return new UnknownError();
+        return new UnknownError(statusCode);
     }
   }
 }

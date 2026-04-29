@@ -17,6 +17,6 @@ export default class extends Command {
         label: user.data.username ?? user.userID,
       } : undefined;
 
-    await this.core.auth.pat.clearSession(account);
+    await this.core.auth.clearSession(account);
   }
 }

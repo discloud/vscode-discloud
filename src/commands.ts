@@ -127,7 +127,7 @@ function commandRegister(
 
   const disposable = commands.registerCommand(commandName, async function (...args) {
     if (!command.data.allowTokenless)
-      if (!await core.auth.pat.getSession())
+      if (!await core.auth.getSession())
         return void window.showErrorMessage(t("missing.token"));
 
     try {

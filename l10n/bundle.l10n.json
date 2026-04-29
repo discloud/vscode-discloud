@@ -7,6 +7,7 @@
   "app.status.off": "Off",
   "app.status.on": "On",
   "app.status.ramKilled": "App shutdown due to lack of RAM",
+  "authentication.provider.discloud.label": "Discloud API Token",
   "backup.request.failed": "Failure requesting backup",
   "backup.success": "Backup successful!\n{dir}",
   "bot": "Bot",
