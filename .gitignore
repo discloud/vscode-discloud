@@ -1,6 +1,8 @@
 /out
 /.vscode-test
 *.vsix
+bun.lock
+bun.lockb
 
 # Logs
 logs
@@ -53,6 +55,9 @@ typings/
 
 # Optional npm cache directory
 .npm
+
+# Optional bun cache directory
+.bun
 
 # Optional eslint cache
 .eslintcache
