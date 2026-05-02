@@ -62,7 +62,14 @@ export async function commandsRegister(core: ExtensionCore) {
   commandModuleRegister(core, "domain/refresh", await import("./commands/domain/refresh"));
 
   // subdomain
+  commandModuleRegister(core, "subdomain/create", await import("./commands/subdomain/create"));
+  commandModuleRegister(core, "subdomain/delete", await import("./commands/subdomain/delete"));
   commandModuleRegister(core, "subdomain/refresh", await import("./commands/subdomain/refresh"));
+
+  // snapshot
+  commandModuleRegister(core, "snapshot/create", await import("./commands/snapshot/create"));
+  commandModuleRegister(core, "snapshot/download", await import("./commands/snapshot/download"));
+  commandModuleRegister(core, "snapshot/refresh", await import("./commands/snapshot/refresh"));
 
   // team
   commandModuleRegister(core, "team/backup", await import("./commands/team/backup"));

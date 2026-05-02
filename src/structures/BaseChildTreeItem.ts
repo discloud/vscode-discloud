@@ -2,7 +2,7 @@ import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItem
 import { type BaseChildTreeItemData } from "../@types";
 
 export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
-  readonly contextKey = "ChildTreeItem";
+  readonly contextKey: string = "ChildTreeItem";
   contextValue = this.contextKey;
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {

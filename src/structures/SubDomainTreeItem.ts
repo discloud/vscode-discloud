@@ -6,6 +6,7 @@ import { getIconName, getIconPath } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class SubDomainTreeItem extends BaseTreeItem<any> {
+  readonly contextKey = "SubDomainTreeItem";
   declare subdomain: string;
   declare iconName: string;
 
@@ -31,6 +32,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
     this.iconPath = getIconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
+    this.contextValue = this.contextKey;
 
     this.collapsibleState =
       this.children.size ?

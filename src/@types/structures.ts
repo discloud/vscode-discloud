@@ -88,6 +88,21 @@ export interface UserTreeItemData extends BaseTreeItemData {
   tooltip?: string
 }
 
+export interface SnapshotAppTreeItemData extends BaseTreeItemData {
+  appId: string
+  appName?: string
+  description?: string
+  snapshotCount?: number
+  type?: number
+}
+
+export interface SnapshotVersionTreeItemData extends BaseChildTreeItemData {
+  appId: string
+  version: string
+  date?: number | string
+  size?: number | string
+}
+
 export interface Events {
   activate: [context: ExtensionContext]
   appUpdate: [oldApp: UserAppTreeItem, newApp: UserAppTreeItem]

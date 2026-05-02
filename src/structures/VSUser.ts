@@ -12,7 +12,7 @@ export default class VSUser implements ApiVscodeUser {
   declare avatar: string | null;
   declare locale: string;
   declare readonly plan: string;
-  declare readonly planDataEnd: string;
+  declare readonly planDataEnd: string | null | undefined;
   declare readonly ramUsedMb: number;
   declare readonly totalRamMb: number;
   declare readonly userID: string;
@@ -67,8 +67,11 @@ export default class VSUser implements ApiVscodeUser {
     const response = await core.api.put<RESTPutApiLocaleResult>(Routes.locale(locale));
     if (!response) return null;
 
-    if ("locale" in response)
+    if ("locale" in response) {
       this.locale = response.locale;
+      await core.globalStorage.update("user", this);
+      core.emit("vscode", this);
+    }
 
     return "body" in response ?
       <RESTPutApiLocaleResult>response.body :

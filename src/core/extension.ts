@@ -8,6 +8,7 @@ import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import DiscloudLogOutputChannel from "../output/LogOutputChannel";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
+import SnapshotTreeDataProvider from "../providers/SnapshotTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserAppTreeDataProvider from "../providers/UserAppTreeDataProvider";
@@ -39,6 +40,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly statusBar: DiscloudStatusBarItem;
 
   declare readonly customDomainTree: CustomDomainTreeDataProvider;
+  declare readonly snapshotTree: SnapshotTreeDataProvider;
   declare readonly subDomainTree: SubDomainTreeDataProvider;
   declare readonly teamAppTree: TeamAppTreeDataProvider;
   declare readonly userAppTree: UserAppTreeDataProvider;
@@ -194,6 +196,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     await commandsRegister(this);
 
     const customDomainTree = new CustomDomainTreeDataProvider(context);
+    const snapshotTree = new SnapshotTreeDataProvider(this);
     const subDomainTree = new SubDomainTreeDataProvider(context);
     const teamAppTree = new TeamAppTreeDataProvider(this);
     const userAppTree = new UserAppTreeDataProvider(this);
@@ -201,6 +204,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
     Object.defineProperties(this, {
       customDomainTree: { value: customDomainTree },
+      snapshotTree: { value: snapshotTree },
       subDomainTree: { value: subDomainTree },
       teamAppTree: { value: teamAppTree },
       userAppTree: { value: userAppTree },

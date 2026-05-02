@@ -245,6 +245,31 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "discloud.subdomain.create",
+        "title": "%command.subdomain.create%",
+        "icon": "$(add)"
+      },
+      {
+        "command": "discloud.subdomain.delete",
+        "title": "%command.subdomain.delete%",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "discloud.snapshot.refresh",
+        "title": "%command.snapshot.refresh%",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "discloud.snapshot.download",
+        "title": "%command.snapshot.download%",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "discloud.snapshot.create",
+        "title": "%command.snapshot.create%",
+        "icon": "$(history)"
+      },
+      {
         "command": "discloud.team.backup",
         "title": "%command.team.backup%",
         "icon": "$(cloud-download)"
@@ -585,8 +610,8 @@
           ".discloudignore"
         ],
         "icon": {
-          "dark": "resources/icons/discloud_icon.svg",
-          "light": "resources/icons/discloud_icon.svg"
+          "dark": "resources/icons/discloud_white_icon.svg",
+          "light": "resources/icons/discloud_white_icon.svg"
         }
       },
       {
@@ -595,8 +620,8 @@
           "discloud.config"
         ],
         "icon": {
-          "dark": "resources/icons/discloud_icon.svg",
-          "light": "resources/icons/discloud_icon.svg"
+          "dark": "resources/icons/discloud_white_icon.svg",
+          "light": "resources/icons/discloud_white_icon.svg"
         }
       }
     ],
@@ -1006,6 +1031,26 @@
           "when": "view == discloudUser && discloudAuthorized"
         },
         {
+          "command": "discloud.subdomain.delete",
+          "group": "inline",
+          "when": "view == discloudSubdomains && viewItem =~ /^SubDomainTreeItem/"
+        },
+        {
+          "command": "discloud.snapshot.create",
+          "group": "1",
+          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
+        },
+        {
+          "command": "discloud.snapshot.create",
+          "group": "1",
+          "when": "view == discloudSnapshots && viewItem =~ /^SnapshotAppTreeItem/"
+        },
+        {
+          "command": "discloud.snapshot.download",
+          "group": "inline",
+          "when": "view == discloudSnapshots && viewItem =~ /^SnapshotVersionTreeItem/"
+        },
+        {
           "command": "discloud.logout",
           "group": "inline",
           "when": "view == discloudUser && !discloudUnauthorized && viewItem =~ /^TreeItem/"
@@ -1046,6 +1091,16 @@
         {
           "command": "discloud.subdomain.refresh",
           "when": "view == discloudSubdomains",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud.subdomain.create",
+          "when": "view == discloudSubdomains",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud.snapshot.refresh",
+          "when": "view == discloudSnapshots && discloudAuthorized",
           "group": "navigation"
         },
         {
@@ -1218,7 +1273,7 @@
         {
           "type": "tree",
           "id": "discloudUserApps",
-          "icon": "resources/icons/discloud_icon.svg",
+          "icon": "resources/icons/discloud_white_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
           "when": "discloudAuthorized"
@@ -1226,31 +1281,39 @@
         {
           "type": "tree",
           "id": "discloudTeamApps",
-          "icon": "resources/icons/discloud_icon.svg",
+          "icon": "resources/icons/discloud_white_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
         },
         {
           "type": "tree",
-          "id": "discloudSubdomains",
-          "icon": "resources/icons/discloud_icon.svg",
-          "name": "%view.subdomain.title%",
+          "id": "discloudSnapshots",
+          "icon": "resources/icons/discloud_white_icon.svg",
+          "name": "%view.snapshot.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
+        },
+        {
+          "type": "tree",
+          "id": "discloudSubdomains",
+          "icon": "resources/icons/discloud_white_icon.svg",
+          "name": "%view.subdomain.title%",
+          "visibility": "collapsed",
+          "when": "discloudAuthorized && discloudHasSubdomainsAccess"
         },
         {
           "type": "tree",
           "id": "discloudDomains",
-          "icon": "resources/icons/discloud_icon.svg",
+          "icon": "resources/icons/discloud_white_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "discloudAuthorized && discloudHasCustomDomainsAccess"
         },
         {
           "type": "tree",
           "id": "discloudUser",
-          "icon": "resources/icons/discloud_icon.svg",
+          "icon": "resources/icons/discloud_white_icon.svg",
           "name": "%view.user.title%",
           "visibility": "collapsed"
         }
@@ -1261,7 +1324,7 @@
         {
           "id": "discloudActivityBar",
           "title": "Discloud",
-          "icon": "resources/icons/discloud_icon.svg"
+          "icon": "resources/icons/discloud_white_icon.svg"
         }
       ]
     },
@@ -1325,6 +1388,7 @@
     "bytes": "^3.1.2",
     "jose": "^6.2.3",
     "json-schema-library": "^11.4.0",
+    "path": "^0.12.7",
     "ws": "^8.20.0",
     "yocto-queue": "^1.2.2"
   },

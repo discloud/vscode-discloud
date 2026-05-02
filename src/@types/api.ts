@@ -13,6 +13,7 @@ export interface ApiVscodeUser {
   customdomains: string[]
   locale: string
   plan: string
+  planDataEnd?: string | null
   ramUsedMb: number
   subdomains: string[]
   totalRamMb: number
@@ -34,4 +35,58 @@ export interface ApiVscodeApp extends BaseApiApp {
   ramKilled: boolean
   type: AppType
   version: string
+}
+
+export interface ApiSubdomain {
+  date: number
+  id: string
+  status: number
+  userID: string
+}
+
+export interface RESTGetApiSubdomainResult extends RESTApiBaseResult {
+  subdomain?: ApiSubdomain
+}
+
+export interface RESTPostApiSubdomainResult extends RESTApiBaseResult {
+  subdomain?: ApiSubdomain
+}
+
+export interface RESTDeleteApiSubdomainResult extends RESTApiBaseResult {}
+
+export interface ApiSnapshotVersion {
+  date: number | string
+  size: number | string
+  version: string
+}
+
+export interface RESTGetApiSnapshotVersionsResult extends RESTApiBaseResult {
+  app?: {
+    id: string
+  }
+  versions?: ApiSnapshotVersion[]
+}
+
+export interface RESTGetApiSnapshotDownloadResult extends RESTApiBaseResult {
+  app?: {
+    id: string
+  }
+  download?: {
+    expiresAt: string
+    size: number
+    url: string
+    version: string
+  }
+}
+
+export interface RESTPostApiSnapshotResult extends RESTApiBaseResult {
+  app?: {
+    id: string
+  }
+  snapshot?: {
+    allVersions?: ApiSnapshotVersion[]
+    size?: number | string
+    url?: string
+    version: string
+  }
 }
