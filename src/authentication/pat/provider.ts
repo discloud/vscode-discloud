@@ -31,7 +31,7 @@ const defaultSessionAccount: AuthenticationSessionAccountInformation = {
 };
 
 export default class DiscloudPatAuthenticationProvider
-  implements IPatAuthenticationProvider, AuthenticationProvider
+implements IPatAuthenticationProvider, AuthenticationProvider
 {
   constructor(
     protected readonly emitter: EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>,
@@ -255,9 +255,9 @@ export default class DiscloudPatAuthenticationProvider
         : Promise.resolve(),
       currentSessionId === sessionId
         ? this.storage.update(
-            GlobalStorageKeys.currentAutenticationProviderId,
-            undefined,
-          )
+          GlobalStorageKeys.currentAutenticationProviderId,
+          undefined,
+        )
         : Promise.resolve(),
     ]);
 
