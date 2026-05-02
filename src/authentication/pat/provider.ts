@@ -1,20 +1,6 @@
-import {
-  type RESTGetApiUserResult,
-  RouteBases,
-  Routes,
-} from "@discloudapp/api-types/v2";
+import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import {
-  authentication,
-  type AuthenticationProvider,
-  type AuthenticationProviderAuthenticationSessionsChangeEvent,
-  type AuthenticationProviderSessionOptions,
-  type AuthenticationSession,
-  type AuthenticationSessionAccountInformation,
-  type EventEmitter,
-  type SecretStorage,
-  window,
-} from "vscode";
+import { authentication, type AuthenticationProvider, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type EventEmitter, type SecretStorage, window } from "vscode";
 import { type IGlobalStateStorage } from "../../@types";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
 import { GlobalStorageKeys } from "../../utils/constants";
@@ -30,55 +16,35 @@ const defaultSessionAccount: AuthenticationSessionAccountInformation = {
   label: "Unknown Discloud User",
 };
 
-export default class DiscloudPatAuthenticationProvider
-implements IPatAuthenticationProvider, AuthenticationProvider
-{
+export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider, AuthenticationProvider {
   constructor(
     protected readonly emitter: EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>,
     protected readonly secrets: SecretStorage,
     protected readonly storage: IGlobalStateStorage,
-  ) {}
+  ) { }
 
-  get onDidChangeSessions() {
-    return this.emitter.event;
+  get onDidChangeSessions() { return this.emitter.event; }
+
+  get #sessionIdList() {
+    return this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []);
   }
 
-  protected getStoredSessionIds() {
-    const sessionIds = new Set(
-      this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []),
-    );
-    const currentSessionId = this.storage.get<string>(
-      GlobalStorageKeys.currentSessionId,
-    );
-
-    if (currentSessionId) sessionIds.add(currentSessionId);
-
-    return Array.from(sessionIds);
+  get #sessionIdSet() {
+    return new Set(this.#sessionIdList);
   }
 
-  protected _fire(
-    data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>,
-  ): void;
-  protected _fire(
-    data: AuthenticationProviderAuthenticationSessionsChangeEvent,
-  ) {
+  protected _fire(data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>): void;
+  protected _fire(data: AuthenticationProviderAuthenticationSessionsChangeEvent) {
     this.emitter.fire(data);
   }
 
   /** @override {@link AuthenticationProvider} */
-  createSession(
-    scopes: readonly string[],
-    options: AuthenticationProviderSessionOptions,
-  ): Thenable<AuthenticationSession>;
-  async createSession(
-    _scopes: readonly string[],
-    _options: AuthenticationProviderSessionOptions,
-  ) {
-    const sessionIdList = this.getStoredSessionIds();
+  createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession>;
+  async createSession(_scopes: readonly string[], _options: AuthenticationProviderSessionOptions) {
+    const sessionIdSet = this.#sessionIdSet;
 
     const currentTokens = new Set<string>();
-    for (let i = 0; i < sessionIdList.length; i++) {
-      const sessionId = sessionIdList[i];
+    for (const sessionId of sessionIdSet) {
       const maybeToken = await this.secrets.get(sessionId);
       if (maybeToken) currentTokens.add(maybeToken);
     }
@@ -88,9 +54,11 @@ implements IPatAuthenticationProvider, AuthenticationProvider
       password: true,
       prompt: t("input.login.prompt"),
       async validateInput(value: string) {
-        if (!tokenIsDiscloudJwt(value)) return t("input.login.prompt");
+        if (!tokenIsDiscloudJwt(value))
+          return t("input.login.prompt");
 
-        if (currentTokens.has(value)) return t("input.same.previous");
+        if (currentTokens.has(value))
+          return t("input.same.previous");
       },
     });
 
@@ -103,7 +71,7 @@ implements IPatAuthenticationProvider, AuthenticationProvider
     if (!response.ok)
       throw await BaseAuthenticationError.fromStatusCode(response.status);
 
-    const body = (await response.json()) as RESTGetApiUserResult;
+    const body = await response.json() as RESTGetApiUserResult;
 
     const account: AuthenticationSessionAccountInformation = {
       id: body.user.userID ?? defaultSessionAccount.id,
@@ -113,14 +81,8 @@ implements IPatAuthenticationProvider, AuthenticationProvider
 
     const newSessionId = `${providerId}.${account.id}`;
 
-    const sessionIdSet = new Set(sessionIdList);
-
-    sessionIdSet.add(newSessionId);
-
-    const oldSessionId = this.storage.get<string>(
-      GlobalStorageKeys.currentSessionId,
-    );
-    if (oldSessionId && oldSessionId !== newSessionId) {
+    const oldSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
+    if (oldSessionId) {
       sessionIdSet.delete(oldSessionId);
       await Promise.all([
         this.storage.update(oldSessionId, undefined),
@@ -128,57 +90,32 @@ implements IPatAuthenticationProvider, AuthenticationProvider
       ]);
     }
 
+    sessionIdSet.add(newSessionId);
+
     await Promise.all([
-      this.storage.update(
-        GlobalStorageKeys.sessionIdList,
-        Array.from(sessionIdSet),
-      ),
-      this.storage.update(
-        GlobalStorageKeys.currentAutenticationProviderId,
-        providerId,
-      ),
+      this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
+      this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, providerId),
       this.storage.update(GlobalStorageKeys.currentSessionId, newSessionId),
       this.storage.update(newSessionId, account),
       this.secrets.store(newSessionId, input),
     ]);
 
-    const newSession = new DiscloudAuthenticationSession(
-      newSessionId,
-      input,
-      account,
-    );
+    const newSession = new DiscloudAuthenticationSession(newSessionId, input, account);
 
-    this._fire(
-      oldSessionId ? { changed: [newSession] } : { added: [newSession] },
-    );
+    this._fire(oldSessionId ? { changed: [newSession] } : { added: [newSession] });
 
     return newSession;
   }
 
   /** @override {@link AuthenticationProvider} */
-  getSessions(
-    scopes: readonly string[] | undefined,
-    options: AuthenticationProviderSessionOptions,
-  ): Thenable<AuthenticationSession[]>;
-  async getSessions(
-    _scopes: readonly string[] | undefined,
-    options: AuthenticationProviderSessionOptions,
-  ) {
-    const storedSessionIdList = this.storage.get<string[]>(
-      GlobalStorageKeys.sessionIdList,
-      [],
-    );
-    const currentSessionId = this.storage.get<string>(
-      GlobalStorageKeys.currentSessionId,
-    );
-    const sessionIdSet = new Set(this.getStoredSessionIds());
-    const sessionIdList = Array.from(sessionIdSet);
+  getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]>;
+  async getSessions(_scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions) {
+    const sessionIdList = this.#sessionIdList;
+    const sessionIdSet = new Set(sessionIdList);
 
     const sessions: DiscloudAuthenticationSession[] = [];
 
-    for (let i = 0; i < sessionIdList.length; i++) {
-      const sessionId = sessionIdList[i];
-
+    for (const sessionId of sessionIdSet) {
       const secret = await this.secrets.get(sessionId);
       if (!secret) {
         sessionIdSet.delete(sessionId);
@@ -190,31 +127,13 @@ implements IPatAuthenticationProvider, AuthenticationProvider
 
       if (options.account && options.account.id !== account.id) continue;
 
-      const session = new DiscloudAuthenticationSession(
-        sessionId,
-        secret,
-        account,
-      );
+      const session = new DiscloudAuthenticationSession(sessionId, secret, account);
 
       sessions.push(session);
     }
 
-    const normalizedSessionIds = Array.from(sessionIdSet);
-
-    if (currentSessionId && !sessionIdSet.has(currentSessionId))
-      await this.storage.update(GlobalStorageKeys.currentSessionId, undefined);
-
-    if (
-      storedSessionIdList.length !== normalizedSessionIds.length ||
-      storedSessionIdList.some(
-        (sessionId, index) => sessionId !== normalizedSessionIds[index],
-      )
-    ) {
-      await this.storage.update(
-        GlobalStorageKeys.sessionIdList,
-        normalizedSessionIds,
-      );
-    }
+    if (sessionIdList.length !== sessionIdSet.size)
+      await this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet));
 
     return sessions;
   }
@@ -228,38 +147,27 @@ implements IPatAuthenticationProvider, AuthenticationProvider
     const account: AuthenticationSessionAccountInformation =
       this.storage.get(sessionId) ?? defaultSessionAccount;
 
-    const session = new DiscloudAuthenticationSession(
-      sessionId,
-      secret,
-      account,
-    );
+    const session = new DiscloudAuthenticationSession(sessionId, secret, account);
 
-    const sessionIdSet = new Set(
-      this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []),
-    );
+    const currentSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
+
+    const sessionIdSet = this.#sessionIdSet;
     sessionIdSet.delete(sessionId);
 
-    const currentSessionId = this.storage.get<string>(
-      GlobalStorageKeys.currentSessionId,
-    );
-
-    await Promise.all([
+    const promises: Thenable<void>[] = [
       this.secrets.delete(sessionId),
       this.storage.update(sessionId, undefined),
-      this.storage.update(
-        GlobalStorageKeys.sessionIdList,
-        Array.from(sessionIdSet),
-      ),
-      currentSessionId === sessionId
-        ? this.storage.update(GlobalStorageKeys.currentSessionId, undefined)
-        : Promise.resolve(),
-      currentSessionId === sessionId
-        ? this.storage.update(
-          GlobalStorageKeys.currentAutenticationProviderId,
-          undefined,
-        )
-        : Promise.resolve(),
-    ]);
+      this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
+    ];
+
+    if (currentSessionId === sessionId) {
+      promises.push(
+        this.storage.update(GlobalStorageKeys.currentSessionId, undefined),
+        this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, undefined),
+      );
+    }
+
+    await Promise.all(promises);
 
     this._fire({ removed: [session] });
   }
@@ -278,9 +186,7 @@ implements IPatAuthenticationProvider, AuthenticationProvider
 
     const url = new URL(`${RouteBases.api}${Routes.user()}`);
 
-    const response = await fetch(url, {
-      headers: { "api-token": session.accessToken },
-    });
+    const response = await fetch(url, { headers: { "api-token": session.accessToken } });
 
     if (response.ok) return; // Valid Session
 
