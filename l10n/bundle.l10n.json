@@ -2,7 +2,7 @@
   "action.cancel": "Cancel",
   "action.cancelled": "Action cancelled",
   "action.ok": "Yes",
-  "action.title": "Are you sure that you want to do {action}?",
+  "action.title": "Are you sure you want to perform this action?",
   "app.status.errorCode": "Code error",
   "app.status.off": "Off",
   "app.status.on": "On",
