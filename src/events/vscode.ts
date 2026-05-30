@@ -20,9 +20,6 @@ core.on("vscode", async function (user) {
   if ("appsStatus" in user)
     core.userAppTree.setRawApps(user.appsStatus);
 
-  if ("appsStatus" in user)
-    core.snapshotTree.setRawApps(user.appsStatus);
-
   if ("appsTeam" in user)
     core.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));
 

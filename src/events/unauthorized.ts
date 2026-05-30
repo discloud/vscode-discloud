@@ -14,7 +14,6 @@ core.on("unauthorized", async function () {
   core.api.authorized = false;
 
   core.userTree.clear();
-  core.snapshotTree.clear();
   core.subDomainTree.update([]);
   core.customDomainTree.update([]);
 

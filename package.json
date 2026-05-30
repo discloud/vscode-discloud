@@ -25,7 +25,13 @@
     "discloud.app",
     "discloudbot",
     "discord",
-    "host"
+    "host",
+    "hospedagem",
+    "host free",
+    "discloud.com",
+    "discloudbot.com",
+    "hosting",
+    "discord"
   ],
   "categories": [
     "Other"
@@ -253,21 +259,6 @@
         "command": "discloud.subdomain.delete",
         "title": "%command.subdomain.delete%",
         "icon": "$(trash)"
-      },
-      {
-        "command": "discloud.snapshot.refresh",
-        "title": "%command.snapshot.refresh%",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "discloud.snapshot.download",
-        "title": "%command.snapshot.download%",
-        "icon": "$(cloud-download)"
-      },
-      {
-        "command": "discloud.snapshot.create",
-        "title": "%command.snapshot.create%",
-        "icon": "$(history)"
       },
       {
         "command": "discloud.team.backup",
@@ -1036,21 +1027,6 @@
           "when": "view == discloudSubdomains && viewItem =~ /^SubDomainTreeItem/"
         },
         {
-          "command": "discloud.snapshot.create",
-          "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
-        },
-        {
-          "command": "discloud.snapshot.create",
-          "group": "1",
-          "when": "view == discloudSnapshots && viewItem =~ /^SnapshotAppTreeItem/"
-        },
-        {
-          "command": "discloud.snapshot.download",
-          "group": "inline",
-          "when": "view == discloudSnapshots && viewItem =~ /^SnapshotVersionTreeItem/"
-        },
-        {
           "command": "discloud.logout",
           "group": "inline",
           "when": "view == discloudUser && !discloudUnauthorized && viewItem =~ /^TreeItem/"
@@ -1096,11 +1072,6 @@
         {
           "command": "discloud.subdomain.create",
           "when": "view == discloudSubdomains",
-          "group": "navigation"
-        },
-        {
-          "command": "discloud.snapshot.refresh",
-          "when": "view == discloudSnapshots && discloudAuthorized",
           "group": "navigation"
         },
         {
@@ -1283,14 +1254,6 @@
           "id": "discloudTeamApps",
           "icon": "resources/icons/discloud_white_icon.svg",
           "name": "%view.team.title%",
-          "visibility": "collapsed",
-          "when": "discloudAuthorized"
-        },
-        {
-          "type": "tree",
-          "id": "discloudSnapshots",
-          "icon": "resources/icons/discloud_white_icon.svg",
-          "name": "%view.snapshot.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
         },

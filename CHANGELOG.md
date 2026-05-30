@@ -8,9 +8,8 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ## 2.29.7
 
-- Adição de ícones na interface da extensão, presentes em praticamente todas as seções, incluindo Apps (ao lado de Bot e Site), User e Snapshots.
+- Adição de ícones na interface da extensão, presentes em praticamente todas as seções, incluindo Apps (ao lado de Bot e Site), User.
 - Correção de bugs no sistema de tradução, que anteriormente não aplicava grande parte dos textos.
-- Implementação do novo sistema de Snapshots da Discloud: agora é possível selecionar seu app, visualizar os snapshots disponíveis e salvá-los diretamente no seu computador.
 - Melhoria no gerenciamento de subdomínios, permitindo criar e deletar diretamente pela extensão, sem precisar acessar o dashboard.
 - Atualizações na interface de User:
   - Exibição da RAM em MB de forma mais organizada
