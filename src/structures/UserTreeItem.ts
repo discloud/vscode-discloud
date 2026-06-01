@@ -9,7 +9,7 @@ import UserChildTreeItem from "./UserChildTreeItem";
 function getUserFallbackIconPath() {
   return getThemedResourceIconPath(
     "resources/icons/discloud_white_icon.svg",
-    "resources/icons/discloud_white_icon.svg",
+    "resources/icons/discloud_icon.svg",
   );
 }
 
