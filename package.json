@@ -1260,7 +1260,7 @@
         {
           "type": "tree",
           "id": "discloudSubdomains",
-          "icon": "resources/icons/discloud_white_icon.svg",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized && discloudHasSubdomainsAccess"
