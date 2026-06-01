@@ -1268,7 +1268,7 @@
         {
           "type": "tree",
           "id": "discloudDomains",
-          "icon": "resources/icons/discloud_white_icon.svg",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized && discloudHasCustomDomainsAccess"
