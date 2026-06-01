@@ -1252,7 +1252,7 @@
         {
           "type": "tree",
           "id": "discloudTeamApps",
-          "icon": "resources/icons/discloud_white_icon.svg",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
