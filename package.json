@@ -1244,7 +1244,7 @@
         {
           "type": "tree",
           "id": "discloudUserApps",
-          "icon": "resources/icons/discloud_white_icon.svg",
+          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.apps.title%",
           "visibility": "visible",
           "when": "discloudAuthorized"
