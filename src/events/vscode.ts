@@ -24,7 +24,7 @@ core.on("vscode", async function (user) {
     core.teamAppTree.setRawApps(user.appsTeam.map(id => ({ id })));
 
   if ("subdomains" in user)
-    core.subDomainTree.update(hasSubdomainsAccess ? user.subdomains : []);
+    core.subDomainTree.update(user.subdomains);
 
   if ("customdomains" in user)
     core.customDomainTree.update(hasCustomDomainsAccess ? user.customdomains : []);
