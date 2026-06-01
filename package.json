@@ -1287,7 +1287,7 @@
         {
           "id": "discloudActivityBar",
           "title": "Discloud",
-          "icon": "resources/icons/discloud_white_icon.svg"
+          "icon": "resources/icons/discloud_icon.svg"
         }
       ]
     },
