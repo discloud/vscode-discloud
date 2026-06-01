@@ -27,5 +27,5 @@ core.on("vscode", async function (user) {
     core.subDomainTree.update(user.subdomains);
 
   if ("customdomains" in user)
-    core.customDomainTree.update(hasCustomDomainsAccess ? user.customdomains : []);
+    core.customDomainTree.update(user.customdomains);
 });
