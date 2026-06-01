@@ -601,7 +601,7 @@
           ".discloudignore"
         ],
         "icon": {
-          "dark": "resources/icons/discloud_white_icon.svg",
+          "dark": "resources/icons/discloud_icon.svg",
           "light": "resources/icons/discloud_white_icon.svg"
         }
       },
