@@ -52,6 +52,10 @@ core.on("activate", async function (context) {
 
   core.logger.debug("Activate: done");
 
+  await commands.executeCommand("setContext", "discloudInitialized", true);
+  await commands.executeCommand("setContext", "discloudHasSubdomainsAccess", false);
+  await commands.executeCommand("setContext", "discloudHasCustomDomainsAccess", false);
+
   await migrateAuthenticationProvider(core);
 
   const session = await core.auth.getSession();
@@ -61,8 +65,6 @@ core.on("activate", async function (context) {
   } else {
     core.statusBar.reset();
   }
-
-  await commands.executeCommand("setContext", "discloudInitialized", true);
 });
 
 async function migrateAuthenticationProvider(core: ExtensionCore) {

@@ -57,6 +57,7 @@ const CONFIG_KEYS = Object.freeze([
 const TREE_VIEW_IDS = Object.freeze([
   "discloudUserApps",
   "discloudTeamApps",
+  "discloudSnapshots",
   "discloudSubdomains",
   "discloudDomains",
   "discloudUser",

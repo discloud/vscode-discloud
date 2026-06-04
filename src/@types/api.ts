@@ -13,6 +13,7 @@ export interface ApiVscodeUser {
   customdomains: string[]
   locale: string
   plan: string
+  planDataEnd?: string | null
   ramUsedMb: number
   subdomains: string[]
   totalRamMb: number
@@ -35,3 +36,20 @@ export interface ApiVscodeApp extends BaseApiApp {
   type: AppType
   version: string
 }
+
+export interface ApiSubdomain {
+  date: number
+  id: string
+  status: number
+  userID: string
+}
+
+export interface RESTGetApiSubdomainResult extends RESTApiBaseResult {
+  subdomain?: ApiSubdomain
+}
+
+export interface RESTPostApiSubdomainResult extends RESTApiBaseResult {
+  subdomain?: ApiSubdomain
+}
+
+export interface RESTDeleteApiSubdomainResult extends RESTApiBaseResult {}

@@ -6,6 +6,16 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.7
+
+- Adição de ícones na interface da extensão, presentes em praticamente todas as seções, incluindo Apps (ao lado de Bot e Site), User.
+- Correção de bugs no sistema de tradução, que anteriormente não aplicava grande parte dos textos.
+- Melhoria no gerenciamento de subdomínios, permitindo criar e deletar diretamente pela extensão, sem precisar acessar o dashboard.
+- Atualizações na interface de User:
+  - Exibição da RAM em MB de forma mais organizada
+  - Visualização do plano com suporte a português/inglês, acompanhado de ícone
+  - Identificação do idioma mais clara (ex: de pt-BR para Português (BR))
+
 ## 2.29.6
 
 - Correção no sistema de autenticação, e orquestração de sessão.

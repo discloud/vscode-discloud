@@ -12,8 +12,11 @@
           "ffmpeg",
           "java",
           "libgl",
+          "mysql",
           "openssl",
           "puppeteer",
+          "selenium",
+          "tesseract",
           "tools"
         ]
       }

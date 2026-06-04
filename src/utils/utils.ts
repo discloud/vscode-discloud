@@ -11,6 +11,17 @@ export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPa
   };
 }
 
+export function getResourceUri(...pathSegments: string[]) {
+  return Uri.file(core.context.asAbsolutePath(join(...pathSegments)));
+}
+
+export function getThemedResourceIconPath(lightPath: string, darkPath = lightPath): TreeItem["iconPath"] {
+  return {
+    dark: getResourceUri(darkPath),
+    light: getResourceUri(lightPath),
+  };
+}
+
 export function compareBooleans(a: boolean, b: boolean) {
   let i = 0;
   if (a) i--;

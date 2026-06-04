@@ -3,7 +3,7 @@
   "displayName": "Discloud",
   "description": "Somos uma plataforma de nuvem baseada em contêiner que nasceu com a vontade de oferecer hospedagem fácil, rápida, gratuita e de qualidade.",
   "publisher": "discloud",
-  "version": "2.29.6",
+  "version": "2.29.7",
   "engines": {
     "vscode": "^1.118.0"
   },
@@ -25,7 +25,13 @@
     "discloud.app",
     "discloudbot",
     "discord",
-    "host"
+    "host",
+    "hospedagem",
+    "host free",
+    "discloud.com",
+    "discloudbot.com",
+    "hosting",
+    "discord"
   ],
   "categories": [
     "Other"
@@ -243,6 +249,16 @@
         "command": "discloud.subdomain.refresh",
         "title": "%command.subdomain.refresh%",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "discloud.subdomain.create",
+        "title": "%command.subdomain.create%",
+        "icon": "$(add)"
+      },
+      {
+        "command": "discloud.subdomain.delete",
+        "title": "%command.subdomain.delete%",
+        "icon": "$(trash)"
       },
       {
         "command": "discloud.team.backup",
@@ -1006,6 +1022,11 @@
           "when": "view == discloudUser && discloudAuthorized"
         },
         {
+          "command": "discloud.subdomain.delete",
+          "group": "inline",
+          "when": "view == discloudSubdomains && viewItem =~ /^SubDomainTreeItem/"
+        },
+        {
           "command": "discloud.logout",
           "group": "inline",
           "when": "view == discloudUser && !discloudUnauthorized && viewItem =~ /^TreeItem/"
@@ -1045,6 +1066,11 @@
         },
         {
           "command": "discloud.subdomain.refresh",
+          "when": "view == discloudSubdomains",
+          "group": "navigation"
+        },
+        {
+          "command": "discloud.subdomain.create",
           "when": "view == discloudSubdomains",
           "group": "navigation"
         },
@@ -1237,7 +1263,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "discloudAuthorized && discloudHasSubdomainsAccess"
         },
         {
           "type": "tree",
@@ -1245,7 +1271,7 @@
           "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
           "visibility": "collapsed",
-          "when": "discloudAuthorized"
+          "when": "discloudAuthorized && discloudHasCustomDomainsAccess"
         },
         {
           "type": "tree",
@@ -1325,6 +1351,7 @@
     "bytes": "^3.1.2",
     "jose": "^6.2.3",
     "json-schema-library": "^11.4.1",
+    "path": "^0.12.7",
     "ws": "^8.21.0",
     "yocto-queue": "^1.2.2"
   },
