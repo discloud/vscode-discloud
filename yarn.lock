@@ -1895,10 +1895,10 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-library@^11.5.1:
-  version "11.5.1"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-11.5.1.tgz#a2791bb6c41d0f1346b1ed9ea60595a2a1fea19d"
-  integrity sha512-fhctW6SNCQ3nBsxfH3E31InMaUOy0tdiBMAENKRhOcminp4gUMcB/cUxU5i2eCJGX4MS7BA0Uk1lb+hXf6T6YA==
+json-schema-library@^11.6.1:
+  version "11.6.1"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-11.6.1.tgz#872067366f95b6f6de5b18b8221d8f05ce0c5b34"
+  integrity sha512-WAdI8/IdFtgfd9RzjV5lsd82RNXoWb0TR52Z+eQW6xeHGXtLJihvbdCvUVLMaQVO6DnwGj1WyGnaey/w6SmdxA==
   dependencies:
     "@hyperjump/json-schema-formats" "^1.0.1"
     "@sagold/json-pointer" "^7.2.1"
