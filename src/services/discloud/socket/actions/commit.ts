@@ -7,11 +7,11 @@ import { type TaskData } from "../../../../@types";
 import type ExtensionCore from "../../../../core/extension";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../../../../structures/UserAppTreeItem";
+import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
 import { type SocketEventUploadData } from "../types";
-import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 
 export async function socketCommit(core: ExtensionCore, task: TaskData, buffer: Buffer, app: UserAppTreeItem | TeamAppTreeItem) {
   await new Promise<void>((resolve, reject) => {

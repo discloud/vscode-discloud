@@ -1,4 +1,4 @@
-import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "@discloudapp/api-types/v2";
+import { type ApiStatusApp, type ApiTeamApp, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { type ProviderResult, type TreeItem, commands, window } from "vscode";
 import type ExtensionCore from "../core/extension";
@@ -156,7 +156,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     }
   }
 
-  editRawApp(appId: string, data: Partial<ApiTeamApps & ApiStatusApp>) {
+  editRawApp(appId: string, data: Partial<ApiTeamApp & ApiStatusApp>) {
     const app = this.children.get(appId);
 
     if (app) {
