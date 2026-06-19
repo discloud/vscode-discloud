@@ -5,7 +5,6 @@ export default class DiscloudAuthenticationSession implements AuthenticationSess
     readonly id: string,
     readonly accessToken: string,
     readonly account: AuthenticationSessionAccountInformation,
+    readonly scopes: readonly string[] = [],
   ) { }
-
-  readonly scopes: readonly string[] = [];
 }

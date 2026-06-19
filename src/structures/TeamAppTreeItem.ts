@@ -1,4 +1,4 @@
-import { type ApiStatusApp, type ApiTeamApps, type BaseApiApp } from "@discloudapp/api-types/v2";
+import { type ApiStatusApp, type ApiTeamApp, type BaseApiApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { type LogOutputChannel, TreeItemCollapsibleState } from "vscode";
@@ -13,7 +13,7 @@ import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 const lazyAllModPermissions = lazy(() => ModPermissionsBF.All.toArray());
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  constructor(readonly data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp> & BaseApiApp) {
+  constructor(readonly data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
     super(data.label, data.collapsibleState);
@@ -53,7 +53,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     return this.data.type ?? null;
   }
 
-  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApps & ApiStatusApp>): this {
+  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp>): this {
     if (!data) return this;
 
     super._patch(data);
