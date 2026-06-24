@@ -1,6 +1,6 @@
-import { type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult, Routes } from "@discloudapp/api-types/v2";
+import { Routes, type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type ProviderResult, type TreeItem, commands, window } from "vscode";
+import { commands, window, type ProviderResult, type TreeItem } from "vscode";
 import { type AppType } from "../@enum";
 import { type ApiVscodeApp } from "../@types";
 import type ExtensionCore from "../core/extension";
@@ -189,7 +189,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       this.refresh(existing);
 
-      this.core.emit("appUpdate", clone, existing);
+      this.core.emit("appUpdate", this.core, clone, existing);
 
       if (returnBoolean) return false;
     } else {
@@ -216,7 +216,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      this.core.emit("appUpdate", clone, app);
+      this.core.emit("appUpdate", this.core, clone, app);
 
       this.refresh(app);
 

@@ -1,7 +1,7 @@
 import { type ApiStatusApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { type LogOutputChannel, TreeItemCollapsibleState, Uri } from "vscode";
+import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import { type ApiVscodeApp, type UserAppChildTreeItemData, type UserAppTreeItemData } from "../@types";
 import core from "../extension";

@@ -1,7 +1,7 @@
 import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { authentication, type AuthenticationProvider, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type EventEmitter, type SecretStorage, window } from "vscode";
-import { type IGlobalStateStorage } from "../../@types";
+import type { IGlobalStateStorage } from "../../@types";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
 import { GlobalStorageKeys } from "../../utils/constants";
 import { AuthenticationProviderId } from "../enum/providers";

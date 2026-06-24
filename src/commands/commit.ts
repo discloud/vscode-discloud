@@ -1,7 +1,7 @@
 import { type RESTPutApiAppCommitResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation } from "vscode";
-import { type TaskData } from "../@types";
+import type { TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
 import { socketCommit } from "../services/discloud/socket/actions/commit";
 import Command from "../structures/Command";

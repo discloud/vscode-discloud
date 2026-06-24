@@ -1,6 +1,7 @@
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
+import type VSUser from "../structures/VSUser";
 
-core.on("vscode", async function (user) {
+export default async function (core: ExtensionCore, user: VSUser) {
   if (!user) return;
 
   core.userTree.set(user);
@@ -16,4 +17,4 @@ core.on("vscode", async function (user) {
 
   if ("customdomains" in user)
     core.customDomainTree.update(user.customdomains);
-});
+}

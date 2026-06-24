@@ -85,7 +85,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   }
 
   debug(...args: Parameters<LogOutputChannel["debug"]>) {
-    this.emit("debug", ...args);
+    this.emit("debug", this, ...args);
   }
 
   dispose() {
@@ -207,6 +207,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
       userTree: { value: userTree },
     });
 
-    this.emit("activate", context);
+    this.emit("activate", this, context);
   }
 }

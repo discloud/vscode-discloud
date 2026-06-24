@@ -1,9 +1,10 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
+import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { ConfigKeys } from "../utils/constants";
 
-core.on("teamAppUpdate", async function (oldApp, newApp) {
+export default async function (core: ExtensionCore, oldApp: TeamAppTreeItem, newApp: TeamAppTreeItem) {
   if (!core.config.get<boolean>(ConfigKeys.teamAppNotificationStatus)) return;
 
   const messageList: string[] = [];
@@ -19,4 +20,4 @@ core.on("teamAppUpdate", async function (oldApp, newApp) {
 
   if (messageList.length)
     void window.showInformationMessage(messageList.join("\n"));
-});
+}

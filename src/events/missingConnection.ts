@@ -1,5 +1,5 @@
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 
-core.on("missingConnection", async function () {
+export default async function (core: ExtensionCore) {
   core.statusBar.reset();
-});
+}

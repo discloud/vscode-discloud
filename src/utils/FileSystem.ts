@@ -1,5 +1,5 @@
 import { dirname, join } from "path";
-import { type CancellationToken, FileType, type Uri, commands, env, workspace } from "vscode";
+import { commands, env, FileType, workspace, type CancellationToken, type Uri } from "vscode";
 import { BLOCKED_FILES } from "./constants";
 import lazy from "./lazy";
 

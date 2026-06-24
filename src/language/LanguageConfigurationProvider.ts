@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
-import { type JSONSchema7 } from "json-schema";
-import { type AnnotationData, type JsonError } from "json-schema-library";
+import type { JSONSchema7 } from "json-schema";
+import type { AnnotationData, JsonError } from "json-schema-library";
 import { type Diagnostic, type DiagnosticCollection, DiagnosticSeverity, type ExtensionContext, Position, Range, type TextDocument, Uri, languages, window, workspace } from "vscode";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 

@@ -1,10 +1,11 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import core from "../extension";
+import { type RateLimitData } from "../@types";
+import type ExtensionCore from "../core/extension";
 
 const eventName = "rateLimited";
 
-core.on(eventName, async function (rateLimitData) {
+export default async function (core: ExtensionCore, rateLimitData: RateLimitData) {
   if (core.timers.has(eventName) || isNaN(rateLimitData.reset) || isNaN(rateLimitData.time)) return;
 
   const reset = rateLimitData.reset * 1000 + rateLimitData.time - Date.now();
@@ -21,4 +22,4 @@ core.on(eventName, async function (rateLimitData) {
   core.statusBar.setRateLimited(true);
 
   void window.showInformationMessage(t(eventName, { s: time }));
-});
+}

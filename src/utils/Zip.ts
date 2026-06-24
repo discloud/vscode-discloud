@@ -1,5 +1,5 @@
 import AdmZip from "adm-zip";
-import { FileType, type Uri, workspace } from "vscode";
+import { FileType, workspace, type Uri } from "vscode";
 
 export default class Zip {
   declare readonly zip: AdmZip;

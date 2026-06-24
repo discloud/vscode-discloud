@@ -1,4 +1,4 @@
-import { type Disposable } from "vscode";
+import type { Disposable } from "vscode";
 
 export default class DisposableMap<K, V extends Disposable> extends Map<K, V> implements Disposable {
   dispose(): void;

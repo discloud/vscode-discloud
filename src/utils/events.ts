@@ -1,4 +1,4 @@
-import { type EventEmitter, once } from "events";
+import { once, type EventEmitter } from "events";
 
 export function multiListener
   <T extends Record<keyof T, any[]>, K extends keyof T = keyof T>

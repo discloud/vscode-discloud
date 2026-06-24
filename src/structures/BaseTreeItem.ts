@@ -1,4 +1,4 @@
-import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { TreeItem, type Disposable, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import DisposableMap from "./DisposableMap";
 
 export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem implements Disposable {
