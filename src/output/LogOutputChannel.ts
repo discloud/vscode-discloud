@@ -1,3 +1,4 @@
+
 import { type Event, type ExtensionContext, type LogLevel, type LogOutputChannel, window } from "vscode";
 
 export default class DiscloudLogOutputChannel implements LogOutputChannel {

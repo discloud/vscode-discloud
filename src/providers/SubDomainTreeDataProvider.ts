@@ -1,4 +1,4 @@
-import { type ExtensionContext } from "vscode";
+import type { ExtensionContext } from "vscode";
 import SubDomainTreeItem from "../structures/SubDomainTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";

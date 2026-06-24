@@ -1,6 +1,6 @@
-import { type ApiStatusApp, type ApiTeamApp, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult, Routes } from "@discloudapp/api-types/v2";
+import { Routes, type ApiStatusApp, type ApiTeamApp, type BaseApiApp, type RESTGetApiAppStatusResult, type RESTGetApiTeamResult } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { type ProviderResult, type TreeItem, commands, window } from "vscode";
+import { commands, window, type ProviderResult, type TreeItem } from "vscode";
 import type ExtensionCore from "../core/extension";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
@@ -140,7 +140,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       this.refresh(existing);
 
-      this.core.emit("teamAppUpdate", clone, existing);
+      this.core.emit("teamAppUpdate", this.core, clone, existing);
 
       if (returnBoolean) return false;
     } else {
@@ -163,7 +163,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
       // @ts-expect-error ts(2445)
       const clone = app._update(data);
 
-      this.core.emit("teamAppUpdate", clone, app);
+      this.core.emit("teamAppUpdate", this.core, clone, app);
 
       this.refresh(app);
 

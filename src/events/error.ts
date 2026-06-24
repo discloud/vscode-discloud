@@ -1,10 +1,10 @@
 import { t } from "@vscode/l10n";
 import { CancellationError, commands, version, window } from "vscode";
+import type ExtensionCore from "../core/extension";
 import WarningError from "../errors/warning";
-import core from "../extension";
 import DiscloudAPIError from "../services/discloud/errors/api";
 
-core.on("error", async function (error: any) {
+export default async function (core: ExtensionCore, error: any) {
   if (!error) return;
 
   if (error instanceof CancellationError)
@@ -39,4 +39,4 @@ core.on("error", async function (error: any) {
   }
 
   void window.showErrorMessage(message);
-});
+}

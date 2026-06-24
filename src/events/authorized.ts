@@ -1,7 +1,7 @@
 import { commands } from "vscode";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 
-core.on("authorized", async function () {
+export default async function (core: ExtensionCore) {
   await Promise.all([
     commands.executeCommand("setContext", "discloudAuthorized", true),
     commands.executeCommand("setContext", "discloudUnauthorized", false),
@@ -12,4 +12,4 @@ core.on("authorized", async function () {
   core.statusBar.reset();
 
   core.logger.info("Authorized");
-});
+}

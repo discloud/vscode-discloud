@@ -1,9 +1,9 @@
-/* eslint-disable no-duplicate-imports */
+ 
 import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
 import type ExtensionCore from "./core/extension";
 import type Command from "./structures/Command";
-import { type CommandConstructor } from "./structures/Command";
+import type { CommandConstructor } from "./structures/Command";
 
 export async function commandsRegister(core: ExtensionCore) {
   // root
@@ -147,7 +147,7 @@ function commandRegister(
 
       return await command.run(null, ...args);
     } catch (error) {
-      core.emit("error", error);
+      core.emit("error", core, error);
     } finally {
       core.statusBar.reset();
     }

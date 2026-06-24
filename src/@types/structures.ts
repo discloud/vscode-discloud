@@ -1,10 +1,11 @@
 import type { CancellationToken, ExtensionContext, LogOutputChannel, ProgressOptions, TreeItem, Uri } from "vscode";
+import type ExtensionCore from "../core/extension";
 import type BaseChildTreeItem from "../structures/BaseChildTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import type { RateLimitData } from "./rest";
-import { type ProgressTaskParameters, type VscodeProgressReporter } from "./vscode";
+import type { ProgressTaskParameters, VscodeProgressReporter } from "./vscode";
 
 export interface GetWorkspaceFolderOptions {
   /** @default true */
@@ -89,15 +90,15 @@ export interface UserTreeItemData extends BaseTreeItemData {
 }
 
 export interface Events {
-  activate: [context: ExtensionContext]
-  appUpdate: [oldApp: UserAppTreeItem, newApp: UserAppTreeItem]
-  authorized: []
-  debug: Parameters<LogOutputChannel["debug"]>
-  error: [error: Error | unknown]
-  missingConnection: []
-  missingToken: []
-  rateLimited: [rateLimitData: RateLimitData]
-  teamAppUpdate: [oldTeamApp: TeamAppTreeItem, newTeamApp: TeamAppTreeItem]
-  unauthorized: []
-  vscode: [user: VSUser]
+  activate: [core: ExtensionCore, context: ExtensionContext]
+  appUpdate: [core: ExtensionCore, oldApp: UserAppTreeItem, newApp: UserAppTreeItem]
+  authorized: [core: ExtensionCore]
+  debug: [core: ExtensionCore, ...Parameters<LogOutputChannel["debug"]>]
+  error: [core: ExtensionCore, error: Error | unknown]
+  missingConnection: [core: ExtensionCore]
+  missingToken: [core: ExtensionCore]
+  rateLimited: [core: ExtensionCore, rateLimitData: RateLimitData]
+  teamAppUpdate: [core: ExtensionCore, oldTeamApp: TeamAppTreeItem, newTeamApp: TeamAppTreeItem]
+  unauthorized: [core: ExtensionCore]
+  vscode: [core: ExtensionCore, user: VSUser]
 }

@@ -1,4 +1,4 @@
-import { type Disposable, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import { type BaseChildTreeItemData } from "../@types";
 
 export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
@@ -7,6 +7,9 @@ export default abstract class BaseChildTreeItem extends TreeItem implements Disp
 
   constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
+  }
+  [Symbol.dispose](): void {
+    throw new Error("Method not implemented.");
   }
 
   get contextJSON(): Record<any, any> {

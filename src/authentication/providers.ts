@@ -3,7 +3,7 @@ import { authentication, type AuthenticationProvider, type AuthenticationProvide
 import type ExtensionCore from "../core/extension";
 import { GlobalStorageKeys } from "../utils/constants";
 import { AuthenticationProviderId } from "./enum/providers";
-import { type IPatAuthenticationProvider } from "./interfaces/pat";
+import type { IPatAuthenticationProvider } from "./interfaces/pat";
 import DiscloudPatAuthenticationProvider from "./pat/provider";
 
 export default class AuthenticationProviderContainer implements AuthenticationProvider {

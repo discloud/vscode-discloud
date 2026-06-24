@@ -38,7 +38,7 @@ export default class VSUser implements ApiVscodeUser {
       if (cachedUser) {
         Object.assign(this, cachedUser);
 
-        core.emit("vscode", this);
+        core.emit("vscode", core, this);
 
         if (isFetchTimeLessThanOneMinuteAgo) return this;
       }
@@ -57,7 +57,7 @@ export default class VSUser implements ApiVscodeUser {
 
       Object.assign(this, response.user);
 
-      core.emit("vscode", this);
+      core.emit("vscode", core, this);
     }
 
     return this;

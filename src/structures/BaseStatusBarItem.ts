@@ -1,4 +1,4 @@
-import { type ExtensionContext, type StatusBarItem, window } from "vscode";
+import { window, type ExtensionContext, type StatusBarItem } from "vscode";
 import { type CreateStatusBarItemOptions, type StatusBarItemData, type StatusBarItemOptions } from "../@types";
 
 export default abstract class BaseStatusBarItem implements StatusBarItem {

@@ -1,4 +1,4 @@
-import { type ExtensionContext } from "vscode";
+import type { ExtensionContext } from "vscode";
 import { type ApiVscodeUser } from "../@types";
 import UserTreeItem from "../structures/UserTreeItem";
 import { TreeViewIds } from "../utils/constants";

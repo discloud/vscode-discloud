@@ -1,7 +1,7 @@
-import { type RESTGetApiAppTeamResult, Routes } from "@discloudapp/api-types/v2";
+import { Routes, type RESTGetApiAppTeamResult } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { stripVTControlCharacters } from "util";
-import { type LogOutputChannel, type QuickPickItem, window } from "vscode";
+import { window, type LogOutputChannel, type QuickPickItem } from "vscode";
 import { type CommandData, type TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
 

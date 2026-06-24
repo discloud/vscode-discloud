@@ -1,5 +1,5 @@
 import { t } from "@vscode/l10n";
-import { type InputBoxOptions, window } from "vscode";
+import { window, type InputBoxOptions } from "vscode";
 import { clamp } from "./math";
 
 export default class InputBox {

@@ -3,7 +3,7 @@ import { readFile } from "fs/promises";
 import type { JSONSchema7 } from "json-schema";
 import { compileSchema, type SchemaNode } from "json-schema-library";
 import { parseEnv } from "util";
-import { Position, Range, type ExtensionContext, type TextDocument } from "vscode";
+import { type ExtensionContext, Position, Range, type TextDocument } from "vscode";
 import { MAX_LANGUAGE_PROVIDER_READ_LINES } from "../utils/constants";
 
 const STRING_BOOLEAN = new Set(["false", "true"]);

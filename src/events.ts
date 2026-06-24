@@ -1,17 +1,30 @@
+import type { Events, IEventModule } from "./@types";
 import type ExtensionCore from "./core/extension";
 
 export async function loadEvents(core: ExtensionCore) {
-  await import("./events/activate");
-  await import("./events/appUpdate");
-  await import("./events/authorized");
-  await import("./events/debug");
-  await import("./events/error");
-  await import("./events/missingConnection");
-  await import("./events/missingToken");
-  await import("./events/rateLimited");
-  await import("./events/teamAppUpdate");
-  await import("./events/unauthorized");
-  await import("./events/vscode");
+  await Promise.all([
+    loadEvent(core, "activate", import("./events/activate")),
+    loadEvent(core, "appUpdate", import("./events/appUpdate")),
+    loadEvent(core, "authorized", import("./events/authorized")),
+    loadEvent(core, "debug", import("./events/debug")),
+    loadEvent(core, "error", import("./events/error")),
+    loadEvent(core, "missingConnection", import("./events/missingConnection")),
+    loadEvent(core, "missingToken", import("./events/missingToken")),
+    loadEvent(core, "rateLimited", import("./events/rateLimited")),
+    loadEvent(core, "teamAppUpdate", import("./events/teamAppUpdate")),
+    loadEvent(core, "unauthorized", import("./events/unauthorized")),
+    loadEvent(core, "vscode", import("./events/vscode")),
+  ]);
 
   core.debug("Events loaded");
+}
+
+async function loadEvent<K extends keyof Events>(
+  core: ExtensionCore,
+  name: K,
+  eventPromise: Promise<IEventModule<Events, K, Events[K]>>,
+) {
+  const event = await eventPromise;
+  const invoker = event.once ? "once" : "on";
+  core[invoker](name, event.default as any);
 }

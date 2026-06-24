@@ -1,4 +1,4 @@
-import { type Disposable } from "vscode";
+import type { Disposable } from "vscode";
 
 const MAX_TIMER_DELAY = 2147483647;
 

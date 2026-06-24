@@ -1,8 +1,8 @@
 import { t } from "@vscode/l10n";
 import { commands } from "vscode";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 
-core.on("missingToken", async function () {
+export default async function (core: ExtensionCore) {
   await Promise.all([
     commands.executeCommand("setContext", "discloudAuthorized", false),
     commands.executeCommand("setContext", "discloudUnauthorized", false),
@@ -14,4 +14,4 @@ core.on("missingToken", async function () {
   core.statusBar.setLogin();
 
   core.logger.warn(t("missing.token"));
-});
+}

@@ -1,5 +1,5 @@
 import { Routes } from "@discloudapp/api-types/v2";
-import { type DiscloudConfig } from "@discloudapp/util";
+import type { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import bytes from "bytes";
 import { stripVTControlCharacters } from "util";

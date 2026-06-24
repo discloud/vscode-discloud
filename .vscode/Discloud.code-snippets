@@ -15,6 +15,17 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+  "event" :{
+    "body": [
+      "import type ExtensionCore from \"../core/extension\";",
+      "",
+      "export default async function (core: ExtensionCore) {",
+      "\t$0",
+      "}"
+    ],
+    "prefix": "event",
+    "scope": "typescript"
+  },
 	"extcmd": {
 		"body": [
 			"import { TaskData } from \"../@types\";",

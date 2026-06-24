@@ -1,4 +1,4 @@
-import { type AuthenticationSession, type AuthenticationSessionAccountInformation } from "vscode";
+import type { AuthenticationSession, AuthenticationSessionAccountInformation } from "vscode";
 
 export default class DiscloudAuthenticationSession implements AuthenticationSession {
   constructor(

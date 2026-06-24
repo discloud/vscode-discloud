@@ -1,7 +1,7 @@
 import { commands } from "vscode";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 
-core.on("unauthorized", async function () {
+export default async function (core: ExtensionCore) {
   await Promise.all([
     commands.executeCommand("setContext", "discloudAuthorized", false),
     commands.executeCommand("setContext", "discloudUnauthorized", true),
@@ -14,4 +14,4 @@ core.on("unauthorized", async function () {
   core.statusBar.setLogin();
 
   core.logger.warn("Unauthorized");
-});
+}

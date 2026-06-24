@@ -1,13 +1,12 @@
-import { type AuthenticationSessionAccountInformation, commands, workspace } from "vscode";
+import { type AuthenticationSessionAccountInformation, commands, type ExtensionContext, workspace } from "vscode";
 import { AuthenticationProviderId } from "../authentication/enum/providers";
 import type ExtensionCore from "../core/extension";
-import core from "../extension";
 import BaseLanguageProvider from "../language/BaseLanguageProvider";
 import CompletionItemProvider from "../language/CompletionItemProvider";
 import LanguageConfigurationProvider from "../language/LanguageConfigurationProvider";
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, GlobalStorageKeys } from "../utils/constants";
 
-core.on("activate", async function (context) {
+export default async function (core: ExtensionCore, context: ExtensionContext) {
   queueMicrotask(async function () {
     try {
       const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
@@ -43,7 +42,7 @@ core.on("activate", async function (context) {
   const disposableAuthenticationEvent = core.auth.onDidChangeSessions(async (event) => {
     if (event.removed?.length) {
       const session = await core.auth.getSession();
-      if (!session) core.emit("missingToken");
+      if (!session) core.emit("missingToken", core);
       return;
     }
   });
@@ -63,7 +62,7 @@ core.on("activate", async function (context) {
   }
 
   await commands.executeCommand("setContext", "discloudInitialized", true);
-});
+}
 
 async function migrateAuthenticationProvider(core: ExtensionCore) {
   const oldSessionIdList = core.globalStorage.get<string[]>("sessionIdList", []);

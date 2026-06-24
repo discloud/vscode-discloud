@@ -1,5 +1,5 @@
 import { join } from "path";
-import { type TreeItem, Uri } from "vscode";
+import { Uri, type TreeItem } from "vscode";
 import core from "../extension";
 import { RESOURCES_DIR } from "./constants";
 import { scapeRegExp } from "./regexp";

@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
 import { authentication, window, type AuthenticationSession } from "vscode";
-import { type TaskData } from "../@types";
+import type { TaskData } from "../@types";
 import UnauthorizedError from "../authentication/errors/unauthorized";
 import { pickAuthenticationProviderId } from "../authentication/pick/AuthenticationProviderPicker";
 import type ExtensionCore from "../core/extension";
@@ -31,7 +31,7 @@ export default class extends Command {
       void window.showInformationMessage(t("valid.token"));
     }
 
-    this.core.emit("authorized");
+    this.core.emit("authorized", this.core);
 
     await sleep();
 

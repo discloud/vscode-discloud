@@ -81,7 +81,7 @@ export default class REST extends EventEmitter {
     if (!this.authorized) return null;
 
     if (this.limited) {
-      this.core.emit("rateLimited", { reset: this.reset, time: this.time });
+      this.core.emit("rateLimited", this.core, { reset: this.reset, time: this.time });
       return null;
     }
 
@@ -103,6 +103,7 @@ export default class REST extends EventEmitter {
     }
 
     queueMicrotask(() => this.core.emit("debug",
+      this.core,
       "Request:", pathname,
       "Headers:", Object.entries(config.headers!).map(([k, v]) => `${k}:${typeof v}(${`${v}`.length})`).join(" "),
     ));
@@ -112,7 +113,7 @@ export default class REST extends EventEmitter {
     try {
       response = await fetch(url, config);
     } catch {
-      this.core.emit("missingConnection");
+      this.core.emit("missingConnection", this.core);
       throw Error(t("missing.connection"));
     } finally {
       if (inQueue) {
@@ -129,7 +130,7 @@ export default class REST extends EventEmitter {
     if (!response.ok) {
       switch (response.status) {
         case 401:
-          this.core.emit("unauthorized");
+          this.core.emit("unauthorized", this.core);
           break;
       }
 
