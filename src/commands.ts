@@ -1,4 +1,3 @@
- 
 import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
 import type ExtensionCore from "./core/extension";
@@ -6,109 +5,119 @@ import type Command from "./structures/Command";
 import type { CommandConstructor } from "./structures/Command";
 
 export async function commandsRegister(core: ExtensionCore) {
-  // root
-  commandModuleRegister(core, "commit", await import("./commands/commit"));
-  commandModuleRegister(core, "create.config", await import("./commands/create.config"));
-  commandModuleRegister(core, "login", await import("./commands/login"));
-  commandModuleRegister(core, "logout", await import("./commands/logout"));
-  commandModuleRegister(core, "logs", await import("./commands/logs"));
-  commandModuleRegister(core, "upload", await import("./commands/upload"));
+  await Promise.all([
+    // root
+    commandModuleRegister(core, "commit", import("./commands/commit")),
+    commandModuleRegister(core, "create.config", import("./commands/create.config")),
+    commandModuleRegister(core, "login", import("./commands/login")),
+    commandModuleRegister(core, "logout", import("./commands/logout")),
+    commandModuleRegister(core, "logs", import("./commands/logs")),
+    commandModuleRegister(core, "upload", import("./commands/upload")),
 
-  // apps
-  commandModuleRegister(core, "apps/backup", await import("./commands/apps/backup"));
-  commandModuleRegister(core, "apps/commit", await import("./commands/apps/commit"));
-  commandModuleRegister(core, "apps/copy.id", await import("./commands/apps/copy.id"));
-  commandModuleRegister(core, "apps/delete", await import("./commands/apps/delete"));
-  commandModuleRegister(core, "apps/import", await import("./commands/apps/import"));
-  commandModuleRegister(core, "apps/logs", await import("./commands/apps/logs"));
-  commandModuleRegister(core, "apps/ram", await import("./commands/apps/ram"));
-  commandModuleRegister(core, "apps/refresh", await import("./commands/apps/refresh"));
-  commandModuleRegister(core, "apps/restart", await import("./commands/apps/restart"));
-  commandModuleRegister(core, "apps/start", await import("./commands/apps/start"));
-  commandModuleRegister(core, "apps/status", await import("./commands/apps/status"));
-  commandModuleRegister(core, "apps/stop", await import("./commands/apps/stop"));
-  commandModuleRegister(core, "apps/terminal", await import("./commands/apps/terminal"));
+    // apps
+    commandModuleRegister(core, "apps/backup", import("./commands/apps/backup")),
+    commandModuleRegister(core, "apps/commit", import("./commands/apps/commit")),
+    commandModuleRegister(core, "apps/copy.id", import("./commands/apps/copy.id")),
+    commandModuleRegister(core, "apps/delete", import("./commands/apps/delete")),
+    commandModuleRegister(core, "apps/import", import("./commands/apps/import")),
+    commandModuleRegister(core, "apps/logs", import("./commands/apps/logs")),
+    commandModuleRegister(core, "apps/ram", import("./commands/apps/ram")),
+    commandModuleRegister(core, "apps/refresh", import("./commands/apps/refresh")),
+    commandModuleRegister(core, "apps/restart", import("./commands/apps/restart")),
+    commandModuleRegister(core, "apps/start", import("./commands/apps/start")),
+    commandModuleRegister(core, "apps/status", import("./commands/apps/status")),
+    commandModuleRegister(core, "apps/stop", import("./commands/apps/stop")),
+    commandModuleRegister(core, "apps/terminal", import("./commands/apps/terminal")),
 
-  // apps mods
-  commandModuleRegister(core, "apps/mods/add", await import("./commands/apps/mods/add"));
-  commandModuleRegister(core, "apps/mods/edit", await import("./commands/apps/mods/edit"));
-  commandModuleRegister(core, "apps/mods/rem", await import("./commands/apps/mods/rem"));
+    // apps mods
+    commandModuleRegister(core, "apps/mods/add", import("./commands/apps/mods/add")),
+    commandModuleRegister(core, "apps/mods/edit", import("./commands/apps/mods/edit")),
+    commandModuleRegister(core, "apps/mods/rem", import("./commands/apps/mods/rem")),
 
-  // apps profile
-  commandModuleRegister(core, "apps/profile/avatar", await import("./commands/apps/profile/avatar"));
-  commandModuleRegister(core, "apps/profile/name", await import("./commands/apps/profile/name"));
+    // apps profile
+    commandModuleRegister(core, "apps/profile/avatar", import("./commands/apps/profile/avatar")),
+    commandModuleRegister(core, "apps/profile/name", import("./commands/apps/profile/name")),
 
-  // apps show avatar instead status
-  commandModuleRegister(core, "apps/show.avatar.instead.status/always", await import("./commands/apps/show.avatar.instead.status/always"));
-  commandModuleRegister(core, "apps/show.avatar.instead.status/never", await import("./commands/apps/show.avatar.instead.status/never"));
-  commandModuleRegister(core, "apps/show.avatar.instead.status/when.online", await import("./commands/apps/show.avatar.instead.status/when.online"));
+    // apps show avatar instead status
+    commandModuleRegister(core, "apps/show.avatar.instead.status/always", import("./commands/apps/show.avatar.instead.status/always")),
+    commandModuleRegister(core, "apps/show.avatar.instead.status/never", import("./commands/apps/show.avatar.instead.status/never")),
+    commandModuleRegister(core, "apps/show.avatar.instead.status/when.online", import("./commands/apps/show.avatar.instead.status/when.online")),
 
-  // apps sort by
-  commandModuleRegister(core, "apps/sort/by/id.asc", await import("./commands/apps/sort/by/id.asc"));
-  commandModuleRegister(core, "apps/sort/by/id.desc", await import("./commands/apps/sort/by/id.desc"));
-  commandModuleRegister(core, "apps/sort/by/memory.usage.asc", await import("./commands/apps/sort/by/memory.usage.asc"));
-  commandModuleRegister(core, "apps/sort/by/memory.usage.desc", await import("./commands/apps/sort/by/memory.usage.desc"));
-  commandModuleRegister(core, "apps/sort/by/name.asc", await import("./commands/apps/sort/by/name.asc"));
-  commandModuleRegister(core, "apps/sort/by/name.desc", await import("./commands/apps/sort/by/name.desc"));
-  commandModuleRegister(core, "apps/sort/by/none", await import("./commands/apps/sort/by/none"));
-  commandModuleRegister(core, "apps/sort/by/started.asc", await import("./commands/apps/sort/by/started.asc"));
-  commandModuleRegister(core, "apps/sort/by/started.desc", await import("./commands/apps/sort/by/started.desc"));
+    // apps sort by
+    commandModuleRegister(core, "apps/sort/by/id.asc", import("./commands/apps/sort/by/id.asc")),
+    commandModuleRegister(core, "apps/sort/by/id.desc", import("./commands/apps/sort/by/id.desc")),
+    commandModuleRegister(core, "apps/sort/by/memory.usage.asc", import("./commands/apps/sort/by/memory.usage.asc")),
+    commandModuleRegister(core, "apps/sort/by/memory.usage.desc", import("./commands/apps/sort/by/memory.usage.desc")),
+    commandModuleRegister(core, "apps/sort/by/name.asc", import("./commands/apps/sort/by/name.asc")),
+    commandModuleRegister(core, "apps/sort/by/name.desc", import("./commands/apps/sort/by/name.desc")),
+    commandModuleRegister(core, "apps/sort/by/none", import("./commands/apps/sort/by/none")),
+    commandModuleRegister(core, "apps/sort/by/started.asc", import("./commands/apps/sort/by/started.asc")),
+    commandModuleRegister(core, "apps/sort/by/started.desc", import("./commands/apps/sort/by/started.desc")),
 
-  // apps sort online
-  commandModuleRegister(core, "apps/sort/online/activate", await import("./commands/apps/sort/online/activate"));
-  commandModuleRegister(core, "apps/sort/online/deactivate", await import("./commands/apps/sort/online/deactivate"));
+    // apps sort online
+    commandModuleRegister(core, "apps/sort/online/activate", import("./commands/apps/sort/online/activate")),
+    commandModuleRegister(core, "apps/sort/online/deactivate", import("./commands/apps/sort/online/deactivate")),
 
-  // domain
-  commandModuleRegister(core, "domain/refresh", await import("./commands/domain/refresh"));
+    // domain
+    commandModuleRegister(core, "domain/refresh", import("./commands/domain/refresh")),
 
-  // subdomain
-  commandModuleRegister(core, "subdomain/refresh", await import("./commands/subdomain/refresh"));
+    // subdomain
+    commandModuleRegister(core, "subdomain/refresh", import("./commands/subdomain/refresh")),
 
-  // team
-  commandModuleRegister(core, "team/backup", await import("./commands/team/backup"));
-  commandModuleRegister(core, "team/commit", await import("./commands/team/commit"));
-  commandModuleRegister(core, "team/copy.id", await import("./commands/team/copy.id"));
-  commandModuleRegister(core, "team/import", await import("./commands/team/import"));
-  commandModuleRegister(core, "team/logs", await import("./commands/team/logs"));
-  commandModuleRegister(core, "team/ram", await import("./commands/team/ram"));
-  commandModuleRegister(core, "team/refresh", await import("./commands/team/refresh"));
-  commandModuleRegister(core, "team/restart", await import("./commands/team/restart"));
-  commandModuleRegister(core, "team/start", await import("./commands/team/start"));
-  commandModuleRegister(core, "team/status", await import("./commands/team/status"));
-  commandModuleRegister(core, "team/stop", await import("./commands/team/stop"));
+    // team
+    commandModuleRegister(core, "team/backup", import("./commands/team/backup")),
+    commandModuleRegister(core, "team/commit", import("./commands/team/commit")),
+    commandModuleRegister(core, "team/copy.id", import("./commands/team/copy.id")),
+    commandModuleRegister(core, "team/import", import("./commands/team/import")),
+    commandModuleRegister(core, "team/logs", import("./commands/team/logs")),
+    commandModuleRegister(core, "team/ram", import("./commands/team/ram")),
+    commandModuleRegister(core, "team/refresh", import("./commands/team/refresh")),
+    commandModuleRegister(core, "team/restart", import("./commands/team/restart")),
+    commandModuleRegister(core, "team/start", import("./commands/team/start")),
+    commandModuleRegister(core, "team/status", import("./commands/team/status")),
+    commandModuleRegister(core, "team/stop", import("./commands/team/stop")),
 
-  // team sort by
-  commandModuleRegister(core, "team/sort/by/id.asc", await import("./commands/team/sort/by/id.asc"));
-  commandModuleRegister(core, "team/sort/by/id.desc", await import("./commands/team/sort/by/id.desc"));
-  commandModuleRegister(core, "team/sort/by/memory.usage.asc", await import("./commands/team/sort/by/memory.usage.asc"));
-  commandModuleRegister(core, "team/sort/by/memory.usage.desc", await import("./commands/team/sort/by/memory.usage.desc"));
-  commandModuleRegister(core, "team/sort/by/name.asc", await import("./commands/team/sort/by/name.asc"));
-  commandModuleRegister(core, "team/sort/by/name.desc", await import("./commands/team/sort/by/name.desc"));
-  commandModuleRegister(core, "team/sort/by/none", await import("./commands/team/sort/by/none"));
-  commandModuleRegister(core, "team/sort/by/started.asc", await import("./commands/team/sort/by/started.asc"));
-  commandModuleRegister(core, "team/sort/by/started.desc", await import("./commands/team/sort/by/started.desc"));
+    // team sort by
+    commandModuleRegister(core, "team/sort/by/id.asc", import("./commands/team/sort/by/id.asc")),
+    commandModuleRegister(core, "team/sort/by/id.desc", import("./commands/team/sort/by/id.desc")),
+    commandModuleRegister(core, "team/sort/by/memory.usage.asc", import("./commands/team/sort/by/memory.usage.asc")),
+    commandModuleRegister(core, "team/sort/by/memory.usage.desc", import("./commands/team/sort/by/memory.usage.desc")),
+    commandModuleRegister(core, "team/sort/by/name.asc", import("./commands/team/sort/by/name.asc")),
+    commandModuleRegister(core, "team/sort/by/name.desc", import("./commands/team/sort/by/name.desc")),
+    commandModuleRegister(core, "team/sort/by/none", import("./commands/team/sort/by/none")),
+    commandModuleRegister(core, "team/sort/by/started.asc", import("./commands/team/sort/by/started.asc")),
+    commandModuleRegister(core, "team/sort/by/started.desc", import("./commands/team/sort/by/started.desc")),
 
-  // apps sort online
-  commandModuleRegister(core, "team/sort/online/activate", await import("./commands/team/sort/online/activate"));
-  commandModuleRegister(core, "team/sort/online/deactivate", await import("./commands/team/sort/online/deactivate"));
+    // apps sort online
+    commandModuleRegister(core, "team/sort/online/activate", import("./commands/team/sort/online/activate")),
+    commandModuleRegister(core, "team/sort/online/deactivate", import("./commands/team/sort/online/deactivate")),
 
-  // user
-  commandModuleRegister(core, "user/copy.id", await import("./commands/user/copy.id"));
-  commandModuleRegister(core, "user/set.locale", await import("./commands/user/set.locale"));
+    // user
+    commandModuleRegister(core, "user/copy.id", import("./commands/user/copy.id")),
+    commandModuleRegister(core, "user/set.locale", import("./commands/user/set.locale")),
+  ]);
 
   core.debug("Commands loaded");
 }
 
-function commandModuleRegister(
+async function commandModuleRegister(
   core: ExtensionCore,
   commandName: string,
-  module: { default: CommandConstructor } | CommandConstructor,
+  modulePromise: Promise<{ default: CommandConstructor } | CommandConstructor>,
 ) {
+  const module = await modulePromise;
+
   commandRegister(
     core,
-    `discloud.${commandName.replace(/[/\\]+/g, ".")}`,
+    normalizeCommandName(commandName),
     "default" in module ? new module.default(core) : new module(core),
   );
+}
+
+const commandNameNormalizerRegex = /[/\\]+/g;
+const dot = ".";
+function normalizeCommandName(commandName: string) {
+  return `discloud.${commandName.replace(commandNameNormalizerRegex, dot)}`;
 }
 
 function commandRegister(
