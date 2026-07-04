@@ -8,13 +8,37 @@
       "items": {
         "type": "string",
         "enum": [
+          "buildtools",
           "canvas",
+          "cffi",
+          "espeak-ng",
           "ffmpeg",
+          "ghostscript",
+          "go-build",
+          "hdf5",
+          "imagemagick",
           "java",
           "libgl",
+          "lxml",
+          "mongodb",
+          "mysql",
+          "mysql-dev",
+          "openmp",
+          "opencv",
           "openssl",
+          "pillow",
+          "playwright",
+          "poppler",
+          "postgresql",
           "puppeteer",
-          "tools"
+          "scientific",
+          "selenium",
+          "sharp",
+          "sqlite",
+          "tesseract",
+          "texlive",
+          "tools",
+          "unixodbc"
         ]
       }
     },
@@ -56,9 +80,6 @@
       ]
     },
     "START": {
-      "type": "string"
-    },
-    "STORAGE": {
       "type": "string"
     },
     "TYPE": {
