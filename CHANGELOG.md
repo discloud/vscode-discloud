@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.8
+
+- Adição de novos APTs no schema do discloud.config.
+
 ## 2.29.7
 
 - Correção de bugs e melhorias
