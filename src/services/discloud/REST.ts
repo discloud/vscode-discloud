@@ -6,7 +6,7 @@ import type ExtensionCore from "../../core/extension";
 import AsyncQueue from "../../modules/async-queue";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
-import { type InternalRequestData, type RequestData, type RequestOptions, type RESTOptions, type RouteLike } from "./types";
+import { type InternalRequestData, type RequestData, type RESTOptions, type RouteLike } from "./types";
 
 export default class REST extends EventEmitter {
   limit = 60;
@@ -76,14 +76,16 @@ export default class REST extends EventEmitter {
     return this.#raw(Object.assign({}, options, { fullRoute, method: RequestMethod.Put }), true);
   }
 
-  request<T>(url: URL, config?: RequestOptions | null, inQueue?: boolean): Promise<T>
-  async request(url: URL, config: RequestOptions = {}, inQueue = false) {
+  request<T>(url: URL, config?: RequestInit | null, inQueue?: boolean): Promise<T>
+  async request(url: URL, config: RequestInit | null, inQueue = false) {
     if (!this.authorized) return null;
 
     if (this.limited) {
       this.core.emit("rateLimited", this.core, { reset: this.reset, time: this.time });
       return null;
     }
+
+    config ??= {};
 
     const pathname = url.pathname;
 
@@ -147,7 +149,7 @@ export default class REST extends EventEmitter {
   }
 
   async #resolveRequest(request: InternalRequestData) {
-    const options: RequestOptions = { method: request.method };
+    const options: RequestInit = { method: request.method };
 
     if (!request.fullRoute.startsWith("/")) request.fullRoute = `/${request.fullRoute}`;
 

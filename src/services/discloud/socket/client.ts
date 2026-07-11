@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { type ClientRequestArgs } from "http";
 import type vscode from "vscode";
 import WebSocket from "ws";
 import core from "../../../extension";
@@ -73,24 +74,24 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     });
   }
 
-  async sendJSON(value: Record<any, any> | any[]): Promise<void> {
+  async sendJSON(value: object): Promise<void> {
     await this.sendAsync(JSON.stringify(value));
   }
 
   async sendBuffer(buffer: Buffer, onProgress?: OnProgressCallback) {
-    if (buffer.length > MAX_FILE_SIZE) throw new BufferOverflowError(buffer.length, MAX_FILE_SIZE);
+    BufferOverflowError.check(buffer.length, MAX_FILE_SIZE);
 
     /** Number of parts to be sent */
-    const total = Math.ceil(buffer.length / this._chunkSize);
+    const total = buffer.length ? Math.ceil(buffer.length / this._chunkSize) : 0;
     /** Size of each part to be sent */
-    const chunkSize = Math.ceil(buffer.length / total);
+    const chunkSize = buffer.length ? Math.ceil(buffer.length / total) : 0;
 
     for (let i = 0; i < total;) {
       const offset = chunkSize * i;
-      const end = offset + chunkSize;
-      const chunk = buffer.subarray(offset, end);
       const current = ++i;
       const pending = current < total;
+      const end = offset + chunkSize;
+      const chunk = buffer.subarray(offset, end);
 
       const data: ProgressData = { chunk, current, offset, pending, total };
 
@@ -114,7 +115,7 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
     return await new Promise<void>((resolve, reject) => {
       this.emit(SocketEvents.connecting);
 
-      const options: ConstructorParameters<typeof WebSocket>[2] = {
+      const options: WebSocket.ClientOptions | ClientRequestArgs = {
         headers,
         ...typeof this._connectingTimeout === "number"
           ? { signal: AbortSignal.timeout(this._connectingTimeout) }
