@@ -1,10 +1,14 @@
 export default class BufferOverflowError extends Error {
-  readonly name = "BufferOverflow";
+  static check(currentSize: number, maxSize: number) {
+    if (currentSize > maxSize) throw new BufferOverflowError(currentSize, maxSize);
+  }
 
   constructor(
-    readonly size: number,
-    readonly max: number,
+    readonly currentSize: number,
+    readonly maxSize: number,
   ) {
     super();
   }
+
+  readonly name = "BufferOverflow";
 }

@@ -5,7 +5,7 @@ import type { RequestMethod } from "./enum";
 export type RouteLike = `/${string}`
 
 export interface RESTEvents {
-  debug: [...args: Parameters<LogOutputChannel["debug"]>]
+  debug: Parameters<LogOutputChannel["debug"]>
   error: [error: Error]
   missingConnection: []
   rateLimited: [rateLimitData: RateLimitData]
@@ -15,8 +15,6 @@ export interface RESTEvents {
 export interface RESTOptions {
   userAgent: string | { toString(): string }
 }
-
-export type RequestOptions = NonNullable<Parameters<typeof fetch>[1]>;
 
 export interface RequestData {
   /**
