@@ -3,30 +3,30 @@ import { CompletionItem, CompletionItemKind, FileType, languages, Position, Rang
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 const assignSymbol = "=";
+const arraySeparator = ",";
+const arraySeparatorRegexp = /(^,+|,{2,})/;
 const comment = "# https://docs.discloud.com/en/discloud.config";
 const commentPattern = /\s*#.*$/;
+const emptyString = "";
+const lineBreakSymbol = "\n";
 const pathSeparator = "/";
 const pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
-const arraySeparator = ",";
-const arraySeparatorRegexp = /(^[,]+|[,]{2,})/;
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
     super(context, schema);
-
 
     const disposable = languages.registerCompletionItemProvider({
       language: this.schema.$id,
       pattern: `**/${this.schema.$id}`,
       scheme: "file",
     }, {
-      provideCompletionItems: (document, position, token, _context) => {
-        return Promise.race([
+      provideCompletionItems: (document, position, token, _context) =>
+        Promise.race([
           new Promise<any>((_, reject) => token.onCancellationRequested(reject)),
           this.provideCompletionItems(document, position, token, _context),
-        ]).catch(() => []);
-      },
-    }, "\n", arraySeparator, assignSymbol, pathSeparator);
+        ]).catch(() => []),
+    }, lineBreakSymbol, arraySeparator, assignSymbol, pathSeparator);
 
     this.context.subscriptions.push(disposable);
   }
@@ -36,12 +36,12 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
     if (!position.character) {
       return this.scopes
-        .map(scope => new CompletionItem(`${scope}=`, CompletionItemKind.Value))
+        .map(scope => new CompletionItem(`${scope}${assignSymbol}`, CompletionItemKind.Value))
         .concat(new CompletionItem(comment, CompletionItemKind.Reference));
     }
 
     const line = document.lineAt(position);
-    const text = line.text.replace(commentPattern, "");
+    const text = line.text.replace(commentPattern, emptyString);
 
     const [key, value] = text.split(assignSymbol);
     const startValueIndex = key.length + 1;
@@ -173,7 +173,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
                 new Position(options.position.line, options.startValueIndex + r.index),
                 new Position(options.position.line, options.startValueIndex + r.index + r.length),
               ),
-              r.index === 0 ? "" : arraySeparator,
+              r.index === 0 ? emptyString : arraySeparator,
             ),
           );
         }
@@ -255,7 +255,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
                   new Position(options.position.line, options.startValueIndex + r.index),
                   new Position(options.position.line, options.startValueIndex + r.index + r.length),
                 ),
-                r.index === 0 ? "" : pathSeparator,
+                r.index === 0 ? emptyString : pathSeparator,
               ),
             );
           }
@@ -326,7 +326,7 @@ function* getMultipleSeparators(value: string, sepRegexp: RegExp): Generator<Mul
     const val = mached[1];
     yield { index: baseIndex + mached.index, length: val.length, value: val };
     baseIndex += val.length;
-    value = value.replace(val, "");
+    value = value.replace(val, emptyString);
     mached = sepRegexp.exec(value);
   }
 }
@@ -337,10 +337,10 @@ async function safeReadDirectory(uri: Uri) {
 }
 
 const fileTypeAsCompletionItemKind: Record<FileType, CompletionItemKind> = {
-  [FileType.Unknown]: CompletionItemKind.Keyword,
-  [FileType.File]: CompletionItemKind.File,
   [FileType.Directory]: CompletionItemKind.Folder,
+  [FileType.File]: CompletionItemKind.File,
   [FileType.SymbolicLink]: CompletionItemKind.Keyword,
+  [FileType.Unknown]: CompletionItemKind.Keyword,
 };
 
 interface ParseSchemaOptions {
