@@ -2,7 +2,7 @@ import { Routes, type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusRes
 import { t } from "@vscode/l10n";
 import { commands, window, type ProviderResult, type TreeItem } from "vscode";
 import { type AppType } from "../@enum";
-import { type ApiVscodeApp } from "../@types";
+import type { ApiVscodeApp } from "../@types";
 import type ExtensionCore from "../core/extension";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";

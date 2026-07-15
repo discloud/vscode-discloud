@@ -9,7 +9,7 @@ import BufferOverflowError from "./errors/BufferOverflow";
 import ClosedError from "./errors/Closed";
 import { NetworkUnreachableError } from "./errors/NetworkUnreachable";
 import { UnauthorizedError } from "./errors/Unauthorized";
-import { type BufferLike, type OnProgressCallback, type ProgressData, type SocketEventsMap, type SocketOptions } from "./types";
+import type { BufferLike, OnProgressCallback, ProgressData, SocketEventsMap, SocketOptions } from "./types";
 
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
   extends EventEmitter<SocketEventsMap<Data>>

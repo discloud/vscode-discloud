@@ -1,6 +1,6 @@
 import type { Disposable, TreeItem } from "vscode";
 import { type AppType } from "../@enum";
-import { type TeamAppChildTreeItemData } from "../@types";
+import type { TeamAppChildTreeItemData } from "../@types";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 import DisposableMap from "./DisposableMap";
 

@@ -1,5 +1,5 @@
 import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
-import { type BaseChildTreeItemData } from "../@types";
+import type { BaseChildTreeItemData } from "../@types";
 
 export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
   readonly contextKey = "ChildTreeItem";

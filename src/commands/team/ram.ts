@@ -2,7 +2,7 @@ import { type RESTPutApiAppRamResult, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation } from "vscode";
 import { AppType } from "../../@enum";
-import { type TaskData } from "../../@types";
+import type { TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";

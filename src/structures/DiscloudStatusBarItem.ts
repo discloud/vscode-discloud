@@ -3,7 +3,7 @@ import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
 import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
-import { type StatusBarItemData, type StatusBarItemOptions } from "../@types";
+import type { StatusBarItemData, StatusBarItemOptions } from "../@types";
 import type ExtensionCore from "../core/extension";
 import { ConfigKeys } from "../utils/constants";
 import lazy from "../utils/lazy";
