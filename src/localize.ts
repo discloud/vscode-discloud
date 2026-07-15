@@ -16,7 +16,7 @@ async function importJSON<T extends l10nJsonFormat>(path: string): Promise<T> {
 
 export async function localize(context: ExtensionContext) {
   const firstLanguagePart = env.language.split(/\W+/)[0];
-  const bundleDir: string = context.extension.packageJSON.l10n;
+  const bundleDir: string = context.extension.packageJSON.l10n ?? "l10n";
 
   config({
     contents: Object.assign({}, ...await Promise.all([

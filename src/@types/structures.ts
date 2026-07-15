@@ -5,7 +5,7 @@ import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import type VSUser from "../structures/VSUser";
 import type { RateLimitData } from "./rest";
-import type { ProgressTaskParameters, VscodeProgressReporter } from "./vscode";
+import type { VscodeProgressReporter } from "./vscode";
 
 export interface GetWorkspaceFolderOptions {
   /** @default true */
@@ -23,7 +23,7 @@ export interface CommandData {
 
 export interface TaskData {
   progress: VscodeProgressReporter
-  token: ProgressTaskParameters[1]
+  token: CancellationToken
   signal: AbortSignal
 }
 

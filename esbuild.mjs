@@ -8,13 +8,20 @@ const esbuildProblemMatcherPlugin = {
     build.onStart(() => console.log("[watch] build started"));
 
     build.onEnd((result) => {
-      for (let i = 0; i < result.errors.length; i++) {
-        const error = result.errors[i];
+      const messages = [];
+      const params = [];
 
-        console.error("✘ [ERROR] %s", error.text);
-
-        console.error("    %s:%s:%s:", error.location.file, error.location.line, error.location.column);
+      for (const error of result.errors) {
+        messages.push("✘ [ERROR] %s\n    %s:%s:%s:");
+        params.push(
+          error.text,
+          error.location.file,
+          error.location.line,
+          error.location.column,
+        );
       }
+
+      console.error(messages.join("\n"), ...params);
 
       console.log("[watch] build finished");
     });
@@ -37,7 +44,7 @@ async function main() {
     keepNames: !production,
     external: ["vscode"],
     logLevel: "silent",
-    plugins: [...watch ? [esbuildProblemMatcherPlugin] : []],
+    plugins: [...(watch ? [esbuildProblemMatcherPlugin] : [])],
   });
 
   if (watch) {

@@ -3,17 +3,18 @@
   "include": ["src", "*.d.ts"],
   "compilerOptions": {
     "module": "esnext",
-    "moduleResolution": "bundler",
-    "target": "esnext",
+    //"moduleResolution": "bundler",
+    //"target": "es2025",
     "outDir": "out",
     "lib": ["ESNext"],
+    "types": ["node", "mocha"],
     "inlineSourceMap": true,
-    "noEmitHelpers": true,
+    //"noEmitHelpers": true,
     "removeComments": true,
     "rootDir": "src",
     "strict": true /* enable all strict type-checking options */,
-    "skipLibCheck": true,
-    "esModuleInterop": true
+    //"skipLibCheck": true,
+    //"esModuleInterop": true
     /* Additional Checks */
     // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
     // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
