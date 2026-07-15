@@ -2,7 +2,6 @@ import { join } from "path";
 import { Uri, type TreeItem } from "vscode";
 import core from "../extension";
 import { RESOURCES_DIR } from "./constants";
-import { scapeRegExp } from "./regexp";
 
 export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
   return {
@@ -26,19 +25,10 @@ export function compareNumbers(a: number, b: number) {
 }
 
 export function getIconName(data: any) {
-  if ("online" in data) {
-    return data.online ? "on" :
-      data.ramKilled ? "ramKilled" :
-        data.exitCode === 1 ? "errorCode" :
-          "off";
-  }
-
-  if ("container" in data) {
-    return data.container === "Online" ? "on" :
-      data.ramKilled ? "ramKilled" :
-        data.exitCode === 1 ? "errorCode" :
-          "off";
-  }
+  return data.online || data.container === "Online" ? "on" :
+    data.ramKilled ? "ramKilled" :
+      data.exitCode === 1 ? "errorCode" :
+        "off";
 }
 
 type StringCamelify<S, Sep extends string> =
@@ -55,17 +45,21 @@ type Config<T, Sep extends string> =
 
 const _defaultSeparator = "." as const;
 
+const _captureAnyRegexp = /([\s\S])/g;
+const _firstElement = "[$1]";
+const _captureWordPattern = "(\\w)";
+
 export function makeCamelizedPair<
   T extends ReadonlyArray<string>,
   Sep extends string = typeof _defaultSeparator
 >(keys: T, sep: Sep = "." as Sep): Config<T, Sep> {
   const configObj: any = {};
 
-  if (!Array.isArray(keys)) return configObj;
+  if (!Array.isArray(keys) || !keys.length) return configObj;
 
-  sep = sep.split("").map(char => `[${scapeRegExp(char)}]`).join("") as Sep;
+  sep = sep.replace(_captureAnyRegexp, _firstElement) as Sep;
 
-  const regexp = RegExp(`${sep}(\\w)`, "g");
+  const regexp = RegExp(`${sep}${_captureWordPattern}`, "g");
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as string;
