@@ -4,13 +4,13 @@ import { t } from "@vscode/l10n";
 import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
-import { type TaskData } from "../../../../@types";
+import type { TaskData } from "../../../../@types";
 import type ExtensionCore from "../../../../core/extension";
 import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";
 import { SocketEvents } from "../enum/events";
-import { type SocketEventUploadData } from "../types";
+import type { SocketEventUploadData } from "../types";
 
 export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: Buffer, dConfig: DiscloudConfig) {
   await new Promise<void>((resolve, reject) => {

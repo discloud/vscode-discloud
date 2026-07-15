@@ -1,6 +1,6 @@
 import Queue from "yocto-queue";
 import AsyncQueueEntity from "./AsyncQueueEntity";
-import { type AsyncQueueKey } from "./types";
+import type { AsyncQueueKey } from "./types";
 
 export default class AsyncQueueRepository {
   readonly #cache: Map<AsyncQueueKey, Queue<AsyncQueueEntity>> = new Map();

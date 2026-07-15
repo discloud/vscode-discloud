@@ -3,7 +3,7 @@ import { calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } 
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
-import { type TeamAppChildTreeItemData, type TeamAppTreeItemData } from "../@types";
+import type { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
 import core from "../extension";
 import lazy from "../utils/lazy";
 import { getIconName, getIconPath } from "../utils/utils";

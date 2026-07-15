@@ -1,5 +1,5 @@
 import AsyncQueueRepository from "./AsyncQueueRepository";
-import { type AsyncQueueKey } from "./types";
+import type { AsyncQueueKey } from "./types";
 
 export default class AsyncQueue {
   readonly #repository: AsyncQueueRepository = new AsyncQueueRepository();

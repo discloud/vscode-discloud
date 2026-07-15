@@ -3,7 +3,7 @@ import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
-import { type ApiVscodeApp, type UserAppChildTreeItemData, type UserAppTreeItemData } from "../@types";
+import type { ApiVscodeApp, UserAppChildTreeItemData, UserAppTreeItemData } from "../@types";
 import core from "../extension";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName, getIconPath } from "../utils/utils";

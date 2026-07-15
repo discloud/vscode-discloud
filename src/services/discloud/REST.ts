@@ -6,7 +6,7 @@ import type ExtensionCore from "../../core/extension";
 import AsyncQueue from "../../modules/async-queue";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
-import { type InternalRequestData, type RequestData, type RESTOptions, type RouteLike } from "./types";
+import type { InternalRequestData, RequestData, RESTOptions, RouteLike } from "./types";
 
 export default class REST extends EventEmitter {
   limit = 60;

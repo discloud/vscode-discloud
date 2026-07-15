@@ -1,5 +1,5 @@
 import { window, type ExtensionContext, type StatusBarItem } from "vscode";
-import { type CreateStatusBarItemOptions, type StatusBarItemData, type StatusBarItemOptions } from "../@types";
+import type { CreateStatusBarItemOptions, StatusBarItemData, StatusBarItemOptions } from "../@types";
 
 export default abstract class BaseStatusBarItem implements StatusBarItem {
   protected readonly originalData: StatusBarItemData;

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import { type RateLimitData } from "../@types";
+import type { RateLimitData } from "../@types";
 import type ExtensionCore from "../core/extension";
 
 const eventName = "rateLimited";

@@ -1,5 +1,5 @@
 import type { RawData } from "ws";
-import { type ApiVscodeApp } from "../../../@types";
+import type { ApiVscodeApp } from "../../../@types";
 
 export type BufferLike = Parameters<WebSocket["send"]>[0]
 

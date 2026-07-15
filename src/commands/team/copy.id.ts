@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { env, window } from "vscode";
-import { type TaskData } from "../../@types";
+import type { TaskData } from "../../@types";
 import type ExtensionCore from "../../core/extension";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";

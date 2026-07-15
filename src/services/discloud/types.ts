@@ -1,5 +1,5 @@
 import type { LogOutputChannel } from "vscode";
-import { type RateLimitData } from "../../@types";
+import type { RateLimitData } from "../../@types";
 import type { RequestMethod } from "./enum";
 
 export type RouteLike = `/${string}`
