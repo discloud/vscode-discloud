@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "discloud.config",
+  "$comment": "https://docs.discloud.com/configurations/discloud.config",
   "properties": {
     "APT": {
       "type": "array",
