@@ -1324,7 +1324,7 @@
     "adm-zip": "^0.6.0",
     "bytes": "^3.1.2",
     "jose": "^6.2.4",
-    "json-schema-library": "^11.6.1",
+    "json-schema-library": "^11.6.2",
     "ws": "^8.21.1",
     "yocto-queue": "^1.2.2"
   },
