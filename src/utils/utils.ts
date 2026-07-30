@@ -48,6 +48,7 @@ const _defaultSeparator = "." as const;
 const _captureAnyRegexp = /([\s\S])/g;
 const _firstElement = "[$1]";
 const _captureWordPattern = "(\\w)";
+const _regexpGlobalFlag = "g";
 
 export function makeCamelizedPair<
   T extends ReadonlyArray<string>,
@@ -59,7 +60,7 @@ export function makeCamelizedPair<
 
   sep = sep.replace(_captureAnyRegexp, _firstElement) as Sep;
 
-  const regexp = RegExp(`${sep}${_captureWordPattern}`, "g");
+  const regexp = RegExp(`${sep}${_captureWordPattern}`, _regexpGlobalFlag);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as string;

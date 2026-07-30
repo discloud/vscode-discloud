@@ -8,20 +8,27 @@ const esbuildProblemMatcherPlugin = {
     build.onStart(() => console.log("[watch] build started"));
 
     build.onEnd((result) => {
-      const messages = [];
-      const params = [];
+      if (result.warnings.length) {
+        /** @type {[string[], unknown[]]} */
+        const [messages, params] = result.warnings.reduce((acc, m) => {
+          acc[0].push("⚠ [WARN] %s\n    %s:%s:%s:");
+          acc[1].push(m.text, m.location.file, m.location.line, m.location.column);
+          return acc;
+        }, [[], []]);
 
-      for (const error of result.errors) {
-        messages.push("✘ [ERROR] %s\n    %s:%s:%s:");
-        params.push(
-          error.text,
-          error.location.file,
-          error.location.line,
-          error.location.column,
-        );
+        console.warn(messages.join("\n"), ...params);
       }
 
-      console.error(messages.join("\n"), ...params);
+      if (result.errors.length) {
+        /** @type {[string[], unknown[]]} */
+        const [messages, params] = result.errors.reduce((acc, m) => {
+          acc[0].push("✘ [ERROR] %s\n    %s:%s:%s:");
+          acc[1].push(m.text, m.location.file, m.location.line, m.location.column);
+          return acc;
+        }, [[], []]);
+
+        console.error(messages.join("\n"), ...params);
+      }
 
       console.log("[watch] build finished");
     });
@@ -29,8 +36,9 @@ const esbuildProblemMatcherPlugin = {
 };
 
 async function main() {
-  const production = process.argv.includes("--production");
-  const watch = process.argv.includes("--watch");
+  const argv = new Set(process.argv);
+  const production = argv.has("--production");
+  const watch = argv.has("--watch");
 
   const ctx = await context({
     entryPoints: ["src/extension.ts"],
