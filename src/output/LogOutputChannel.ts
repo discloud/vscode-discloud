@@ -1,7 +1,7 @@
 
 import { type Event, type ExtensionContext, type LogLevel, type LogOutputChannel, window } from "vscode";
 
-export default class DiscloudLogOutputChannel implements LogOutputChannel {
+export default abstract class DiscloudLogOutputChannel implements LogOutputChannel {
   protected static readonly _instances = new Map<string, DiscloudLogOutputChannel>();
 
   static disposeNamed(name: string, delay?: number) {
@@ -10,11 +10,13 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
 
   static getInstance(context: ExtensionContext, name: string) {
     const instance = DiscloudLogOutputChannel._instances.get(name);
+
     if (instance) {
       instance._clearDisposeTimer();
       return instance;
     }
-    return new DiscloudLogOutputChannel(context, name);
+
+    return new _DiscloudLogOutputChannel(context, name);
   }
 
   constructor(readonly context: ExtensionContext, name: string) {
@@ -22,12 +24,12 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
 
     if (instance) {
       instance._clearDisposeTimer();
-      this._channel = instance._channel;
-    } else {
-      DiscloudLogOutputChannel._instances.set(name, this);
-      this._channel = window.createOutputChannel(name, { log: true });
-      context.subscriptions.push(this);
+      return instance;
     }
+
+    DiscloudLogOutputChannel._instances.set(name, this);
+    this._channel = window.createOutputChannel(name, { log: true });
+    context.subscriptions.push(this);
   }
 
   declare protected readonly _channel: LogOutputChannel;
@@ -125,3 +127,5 @@ export default class DiscloudLogOutputChannel implements LogOutputChannel {
     this._channel.dispose();
   }
 }
+
+class _DiscloudLogOutputChannel extends DiscloudLogOutputChannel { }
