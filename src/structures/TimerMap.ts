@@ -74,7 +74,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
     if (delay > MAX_TIMER_DELAY) return this._autoRefresh(key, callback, delay);
 
-    const timer = setTimeout(callback, delay);
+    const timer = setTimeout(this._wrapCallback(key, callback), delay);
     if (this.autoUnref) timer.unref();
     super.set(key, timer as V);
   }
@@ -88,6 +88,13 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
 
     if (this.autoUnref) timer.unref();
     super.set(key, timer as V);
+  }
+
+  protected _wrapCallback(key: K, callback: () => void) {
+    return () => {
+      super.delete(key);
+      callback();
+    };
   }
 
   unrefTimeout(key: K) {

@@ -14,10 +14,7 @@ export default async function (core: ExtensionCore, rateLimitData: RateLimitData
 
   core.logger.warn("Rate limited by " + time + " seconds");
 
-  core.timers.setTimeout(eventName, () => {
-    core.timers.delete(eventName);
-    core.statusBar.setRateLimited(false);
-  }, reset);
+  core.timers.setTimeout(eventName, () => core.statusBar.setRateLimited(false), reset);
 
   core.statusBar.setRateLimited(true);
 
