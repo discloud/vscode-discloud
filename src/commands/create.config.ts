@@ -16,7 +16,7 @@ export default class extends Command {
     const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
-    const findConfig = await workspace.findFiles(DiscloudConfig.filename);
+    const findConfig = await workspace.findFiles(DiscloudConfig.filename, null, 1);
 
     if (findConfig.length) throw new WarningError(t("file.already.exists"));
 
