@@ -1,7 +1,7 @@
 import { Routes, type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { commands, window, type ProviderResult, type TreeItem } from "vscode";
-import { type AppType } from "../@enum";
+import { window, type ProviderResult, type TreeItem } from "vscode";
+import { ExtensionContextId, type AppType } from "../@enum";
 import type { ApiVscodeApp } from "../@types";
 import type ExtensionCore from "../core/extension";
 import DisposableMap from "../structures/DisposableMap";
@@ -158,7 +158,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   refresh(data?: Item | Item[] | null) {
-    commands.executeCommand("setContext", "discloudAppLength", this.size);
+    this.core.setContext(ExtensionContextId.discloudUserAppCount, this.size);
     super.refresh(data);
   }
 

@@ -1,6 +1,7 @@
 import { RouteBases } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
+import { constants } from "http2";
 import { window } from "vscode";
 import type ExtensionCore from "../../core/extension";
 import AsyncQueue from "../../modules/async-queue";
@@ -8,26 +9,34 @@ import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
 import type { InternalRequestData, RequestData, RESTOptions, RouteLike } from "./types";
 
+const _defaultRateLimitLimit = 60;
+const _minimumRateRemaining = 1;
+const _sInMs = 1_000;
+
 export default class REST extends EventEmitter {
-  limit = 60;
-  remaining = 60;
-  reset = 60;
-  declare time: number;
-  authorized: boolean = true;
+  constructor(readonly core: ExtensionCore, options?: Partial<RESTOptions>) {
+    super({ captureRejections: true });
+
+    this.options = options ?? {};
+  }
+
   declare readonly options: Partial<RESTOptions>;
   readonly #queue = new AsyncQueue();
+  authorized: boolean = true;
 
-  get baseURL() {
-    return RouteBases.api;
-  }
+  #limit = _defaultRateLimitLimit;
+  #remaining = _defaultRateLimitLimit;
+  #reset = _defaultRateLimitLimit;
+  #time!: number;
 
-  get limited() {
-    return this.remaining < 1;
-  }
+  get baseURL() { return RouteBases.api; }
 
-  get timeToReset(): number {
-    return this.reset * 1000 + this.time - Date.now();
-  }
+  get limit(): number { return this.#limit; }
+  get remaining(): number { return this.#remaining; }
+  get reset(): number { return this.#reset; }
+
+  get limited(): boolean { return this.#remaining < _minimumRateRemaining; }
+  get timeToReset(): number { return this.#reset * _sInMs + this.#time - Date.now(); }
 
   getSession() {
     return this.core.auth.getSession();
@@ -36,12 +45,6 @@ export default class REST extends EventEmitter {
   async getToken() {
     const session = await this.getSession();
     return session?.accessToken;
-  }
-
-  constructor(readonly core: ExtensionCore, options?: Partial<RESTOptions>) {
-    super();
-
-    this.options = options ?? {};
   }
 
   delete<T>(fullRoute: RouteLike, options: RequestData = {}): Promise<T> {
@@ -81,7 +84,7 @@ export default class REST extends EventEmitter {
     if (!this.authorized) return null;
 
     if (this.limited) {
-      this.core.emit("rateLimited", this.core, { reset: this.reset, time: this.time });
+      this.core.emit("rateLimited", this.core, { reset: this.reset, time: this.#time });
       return null;
     }
 
@@ -107,13 +110,12 @@ export default class REST extends EventEmitter {
       }
     }
 
-    queueMicrotask(() => this.core.emit("debug",
-      this.core,
+    queueMicrotask(() => this.core.debug(
       "Request:", pathname,
       "Headers:", Object.entries(config.headers!).map(([k, v]) => `${k}:${typeof v}(${`${v}`.length})`).join(" "),
     ));
 
-    this.remaining--;
+    this.#remaining--;
     let response: Response;
     try {
       response = await fetch(url, config);
@@ -134,7 +136,7 @@ export default class REST extends EventEmitter {
 
     if (!response.ok) {
       switch (response.status) {
-        case 401:
+        case constants.HTTP_STATUS_UNAUTHORIZED:
           this.core.emit("unauthorized", this.core);
           break;
       }
@@ -159,7 +161,7 @@ export default class REST extends EventEmitter {
     const url = new URL(this.baseURL + request.fullRoute);
     const formData = new FormData();
 
-    const headers = new Headers(Object.assign({}, {
+    const headers = new Headers(Object.assign({
       "api-token": await this.getToken(),
       "User-Agent": this.options.userAgent,
     }, request.headers));
@@ -217,15 +219,15 @@ export default class REST extends EventEmitter {
   }
 
   #resolveResponseHeaders(headers: Headers) {
-    this.time = Date.now();
+    this.#time = Date.now();
 
     const Limit = parseInt(headers.get("ratelimit-limit")!);
     const Remaining = parseInt(headers.get("ratelimit-remaining")!);
     const Reset = parseInt(headers.get("ratelimit-reset")!);
-    if (!isNaN(Limit)) this.limit = Math.max(Limit, 0);
-    if (!isNaN(Remaining)) this.remaining = Math.max(Remaining, 0);
+    if (!isNaN(Limit)) this.#limit = Math.max(Limit, 0);
+    if (!isNaN(Remaining)) this.#remaining = Math.max(Remaining, 0);
     if (!isNaN(Reset)) {
-      this.reset = Math.max(Reset, 0);
+      this.#reset = Math.max(Reset, 0);
       this.#initRateLimitResetTimer();
     }
   }
@@ -235,7 +237,7 @@ export default class REST extends EventEmitter {
     if (this.#timer) clearTimeout(this.#timer);
     this.#timer = setTimeout(() => {
       this.#timer = null;
-      this.remaining = this.limit;
+      this.#remaining = this.#limit;
     }, this.timeToReset).unref();
   }
 

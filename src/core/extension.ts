@@ -1,7 +1,8 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { type ExtensionContextId } from "../@enum";
 import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
 import AuthenticationProviderContainer from "../authentication/providers";
 import { commandsRegister } from "../commands";
@@ -22,6 +23,13 @@ import TimerMap from "../structures/TimerMap";
 import VSUser from "../structures/VSUser";
 import { ConfigKeys } from "../utils/constants";
 import FileSystem from "../utils/FileSystem";
+
+const _workspaceIgnoreConfigKeys = Object.freeze([
+  ConfigKeys.appBackupDir,
+  ConfigKeys.appImportDir,
+  ConfigKeys.teamBackupDir,
+  ConfigKeys.teamImportDir,
+]);
 
 export default class ExtensionCore extends EventEmitter<Events> implements Disposable {
   constructor() {
@@ -70,18 +78,17 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   }
 
   get workspaceIgnoreList() {
-    return [
-      ConfigKeys.appBackupDir,
-      ConfigKeys.appImportDir,
-      ConfigKeys.teamBackupDir,
-      ConfigKeys.teamImportDir,
-    ]
+    return _workspaceIgnoreConfigKeys
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
         if (data) return acc.concat(normalize(data));
         return acc;
       }, [])
       .concat("discloud", `${workspace.name}.zip`);
+  }
+
+  async setContext(contextId: ExtensionContextId, ...values: any[]) {
+    await commands.executeCommand("setContext", contextId, ...values);
   }
 
   debug(...args: Parameters<LogOutputChannel["debug"]>) {
@@ -151,12 +158,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     }
   }
 
-  setContext(context: ExtensionContext) {
-    Object.defineProperties(this, { context: { value: context } });
-  }
-
   async activate(context: ExtensionContext = this.context) {
-    if (!this.context) this.setContext(context);
+    Object.defineProperties(this, { context: { value: context } });
 
     this.logger.debug("Activate: begin");
 
