@@ -84,7 +84,7 @@ export default class REST extends EventEmitter {
     if (!this.authorized) return null;
 
     if (this.limited) {
-      this.core.emit("rateLimited", this.core, { reset: this.reset, time: this.#time });
+      this.core.emit("rateLimited", this.core, { reset: this.#reset, time: this.#time });
       return null;
     }
 
@@ -138,6 +138,9 @@ export default class REST extends EventEmitter {
       switch (response.status) {
         case constants.HTTP_STATUS_UNAUTHORIZED:
           this.core.emit("unauthorized", this.core);
+          break;
+        case constants.HTTP_STATUS_TOO_MANY_REQUESTS:
+          this.core.emit("rateLimited", this.core, { reset: this.#reset, time: this.#time });
           break;
       }
 

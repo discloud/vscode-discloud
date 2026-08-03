@@ -1,8 +1,11 @@
 import { t } from "@vscode/l10n";
+import { constants } from "http2";
 import { CancellationError, commands, version, window } from "vscode";
 import type ExtensionCore from "../core/extension";
 import WarningError from "../errors/warning";
 import DiscloudAPIError from "../services/discloud/errors/api";
+
+const _belowInternalServerError = constants.HTTP_STATUS_INTERNAL_SERVER_ERROR - 1;
 
 export default async function (core: ExtensionCore, error: any) {
   if (!error) return;
@@ -20,7 +23,7 @@ export default async function (core: ExtensionCore, error: any) {
   ].join("\n");
 
   if (error instanceof DiscloudAPIError) {
-    if (error.code > 499) {
+    if (error.code > _belowInternalServerError) {
       core.logger.error(`Server error ${error.code}`, metadata);
       return void window.showErrorMessage(`Server error ${error.code}`);
     }
