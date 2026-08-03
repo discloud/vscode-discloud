@@ -94,7 +94,10 @@ export default class REST extends EventEmitter {
     if (inQueue) {
       await this.#queue.wait(processKey);
 
-      if (this.limited) return null;
+      if (this.limited) {
+        this.#queue.shift(processKey);
+        return null;
+      }
     } else {
       if (this.#noQueueProcesses.length) {
         void window.showErrorMessage(t("process.already.running", this.#noQueueProcesses.length));
@@ -221,14 +224,15 @@ export default class REST extends EventEmitter {
     const Reset = parseInt(headers.get("ratelimit-reset")!);
     if (!isNaN(Limit)) this.limit = Math.max(Limit, 0);
     if (!isNaN(Remaining)) this.remaining = Math.max(Remaining, 0);
-    if (!isNaN(Reset)) this.reset = Math.max(Reset, 0);
-
-    this.#initRateLimitResetTimer();
+    if (!isNaN(Reset)) {
+      this.reset = Math.max(Reset, 0);
+      this.#initRateLimitResetTimer();
+    }
   }
 
   #timer!: NodeJS.Timeout | null;
   #initRateLimitResetTimer() {
-    if (this.#timer) return;
+    if (this.#timer) clearTimeout(this.#timer);
     this.#timer = setTimeout(() => {
       this.#timer = null;
       this.remaining = this.limit;
