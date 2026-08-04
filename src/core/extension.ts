@@ -1,13 +1,14 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
 import { type ExtensionContextId } from "../@enum";
 import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
 import AuthenticationProviderContainer from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import DiscloudLogOutputChannel from "../output/LogOutputChannel";
+import DiscloudOutputChannel from "../output/OutputChannel";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
@@ -52,7 +53,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly userAppTree: UserAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
 
-  readonly outputChannels = new Map<string, OutputChannel>();
   readonly timers = new TimerMap();
   readonly user = new VSUser();
 
@@ -97,7 +97,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   dispose() {
     this.removeAllListeners();
-    this.outputChannels.clear();
     this.timers.dispose();
   }
 
@@ -119,16 +118,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     return DiscloudLogOutputChannel.getInstance(this.context, name);
   }
 
-  protected _createOutputChannel(key: string) {
-    const output = window.createOutputChannel(key);
-    this.context.subscriptions.push(output);
-    this.outputChannels.set(key, output);
-    return output;
-  }
-
-  getOutputChannel(name: string, languageId?: string) {
-    const key = `${name}${languageId}`;
-    return this.outputChannels.get(key) ?? this._createOutputChannel(key);
+  getOutputChannel(name: string) {
+    return DiscloudOutputChannel.getInstance(this.context, name);
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
