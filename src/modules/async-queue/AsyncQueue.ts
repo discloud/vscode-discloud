@@ -11,7 +11,7 @@ export default class AsyncQueue {
   wait(key?: AsyncQueueKey) {
     const entity = this.#repository.push(key);
 
-    if (entity.index) return entity.promise;
+    if (entity.isNotFirst) return entity.promise;
 
     return Promise.resolve();
   }

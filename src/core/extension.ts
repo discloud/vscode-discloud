@@ -1,12 +1,14 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { type Disposable, type ExtensionContext, type LogOutputChannel, type OutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { type ExtensionContextId } from "../@enum";
 import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
 import AuthenticationProviderContainer from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import DiscloudLogOutputChannel from "../output/LogOutputChannel";
+import DiscloudOutputChannel from "../output/OutputChannel";
 import CustomDomainTreeDataProvider from "../providers/CustomDomainTreeDataProvider";
 import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
@@ -22,6 +24,13 @@ import TimerMap from "../structures/TimerMap";
 import VSUser from "../structures/VSUser";
 import { ConfigKeys } from "../utils/constants";
 import FileSystem from "../utils/FileSystem";
+
+const _workspaceIgnoreConfigKeys = Object.freeze([
+  ConfigKeys.appBackupDir,
+  ConfigKeys.appImportDir,
+  ConfigKeys.teamBackupDir,
+  ConfigKeys.teamImportDir,
+]);
 
 export default class ExtensionCore extends EventEmitter<Events> implements Disposable {
   constructor() {
@@ -44,7 +53,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly userAppTree: UserAppTreeDataProvider;
   declare readonly userTree: UserTreeDataProvider;
 
-  readonly outputChannels = new Map<string, OutputChannel>();
   readonly timers = new TimerMap();
   readonly user = new VSUser();
 
@@ -70,12 +78,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   }
 
   get workspaceIgnoreList() {
-    return [
-      ConfigKeys.appBackupDir,
-      ConfigKeys.appImportDir,
-      ConfigKeys.teamBackupDir,
-      ConfigKeys.teamImportDir,
-    ]
+    return _workspaceIgnoreConfigKeys
       .reduce<string[]>((acc, config) => {
         const data = this.config.get<string>(config);
         if (data) return acc.concat(normalize(data));
@@ -84,13 +87,16 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
       .concat("discloud", `${workspace.name}.zip`);
   }
 
+  async setContext(contextId: ExtensionContextId, ...values: any[]) {
+    await commands.executeCommand("setContext", contextId, ...values);
+  }
+
   debug(...args: Parameters<LogOutputChannel["debug"]>) {
     this.emit("debug", this, ...args);
   }
 
   dispose() {
     this.removeAllListeners();
-    this.outputChannels.clear();
     this.timers.dispose();
   }
 
@@ -112,16 +118,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     return DiscloudLogOutputChannel.getInstance(this.context, name);
   }
 
-  protected _createOutputChannel(key: string) {
-    const output = window.createOutputChannel(key);
-    this.context.subscriptions.push(output);
-    this.outputChannels.set(key, output);
-    return output;
-  }
-
-  getOutputChannel(name: string, languageId?: string) {
-    const key = `${name}${languageId}`;
-    return this.outputChannels.get(key) ?? this._createOutputChannel(key);
+  getOutputChannel(name: string) {
+    return DiscloudOutputChannel.getInstance(this.context, name);
   }
 
   async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
@@ -151,12 +149,8 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     }
   }
 
-  setContext(context: ExtensionContext) {
-    Object.defineProperties(this, { context: { value: context } });
-  }
-
   async activate(context: ExtensionContext = this.context) {
-    if (!this.context) this.setContext(context);
+    Object.defineProperties(this, { context: { value: context } });
 
     this.logger.debug("Activate: begin");
 

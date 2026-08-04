@@ -7,8 +7,7 @@ export default core;
 
 export async function activate(context: ExtensionContext) {
   await localize(context);
-  core.setContext(context);
-  await core.activate();
+  await core.activate(context);
 }
 
 // This method is called when your extension is deactivated

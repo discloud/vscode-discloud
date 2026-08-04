@@ -44,7 +44,7 @@ function defaultOptions(): Partial<StatusBarItemOptions> {
 
 export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   constructor(readonly core: ExtensionCore, data?: Partial<StatusBarItemOptions>) {
-    super(core.context, Object.assign({}, defaultOptions(), data));
+    super(core.context, Object.assign(defaultOptions(), data));
 
     if (workspace.workspaceFolders?.length) {
       this.show();
@@ -223,6 +223,14 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this.command = "discloud.login";
     this.text = t(textLoginKey);
     this.tooltip = t(tooltipLoginKey);
+  }
+
+  disableRateLimited() {
+    this.setRateLimited(false);
+  }
+
+  enableRateLimited() {
+    this.setRateLimited(true);
   }
 
   setRateLimited(limited?: boolean) {

@@ -9,46 +9,31 @@ export default abstract class DiscloudLogOutputChannel implements LogOutputChann
   }
 
   static getInstance(context: ExtensionContext, name: string) {
-    const instance = DiscloudLogOutputChannel._instances.get(name);
-
-    if (instance) {
-      instance._clearDisposeTimer();
+    const instance = DiscloudLogOutputChannel._instances.getOrInsertComputed(name, () => {
+      const channel = window.createOutputChannel(name, { log: true });
+      const instance = new _DiscloudLogOutputChannel(context, channel);
+      context.subscriptions.push(instance);
       return instance;
-    }
-
-    return new _DiscloudLogOutputChannel(context, name);
+    });
+    instance._clearDisposeTimer();
+    return instance;
   }
 
-  constructor(readonly context: ExtensionContext, name: string) {
-    const instance = DiscloudLogOutputChannel._instances.get(name);
+  constructor(
+    readonly context: ExtensionContext,
+    protected readonly _channel: LogOutputChannel,
+  ) { }
 
-    if (instance) {
-      instance._clearDisposeTimer();
-      return instance;
-    }
-
-    DiscloudLogOutputChannel._instances.set(name, this);
-    this._channel = window.createOutputChannel(name, { log: true });
-    context.subscriptions.push(this);
-  }
-
-  declare protected readonly _channel: LogOutputChannel;
   declare protected _disposeTimer: NodeJS.Timeout;
 
   /** @readonly */
-  get logLevel(): LogLevel {
-    return this._channel.logLevel;
-  }
+  get logLevel(): LogLevel { return this._channel.logLevel; }
 
   /** @readonly */
-  get name() {
-    return this._channel.name;
-  }
+  get name() { return this._channel.name; }
 
   /** @readonly */
-  get onDidChangeLogLevel(): Event<LogLevel> {
-    return this._channel.onDidChangeLogLevel;
-  }
+  get onDidChangeLogLevel(): Event<LogLevel> { return this._channel.onDidChangeLogLevel; }
 
   trace(message: string, ...args: any[]) {
     this._clearDisposeTimer();
@@ -111,7 +96,7 @@ export default abstract class DiscloudLogOutputChannel implements LogOutputChann
     this._clearDisposeTimer();
 
     if (typeof delay === "number") {
-      this._disposeTimer = setTimeout(() => this._dispose(), delay).unref();
+      this._disposeTimer = setTimeout(this._dispose.bind(this), delay).unref();
     } else {
       this._dispose();
     }

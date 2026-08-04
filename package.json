@@ -859,143 +859,143 @@
         {
           "command": "discloud.apps.backup",
           "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.commit",
           "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength && workspaceFolderCount"
+          "when": "view == discloudUserApps && discloudUserAppCount && workspaceFolderCount"
         },
         {
           "command": "discloud.apps.copy.id",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.delete",
           "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.import",
           "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.import",
           "group": "inline",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.apps.logs",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.logs",
           "group": "inline",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /^TreeItem/"
         },
         {
           "submenu": "discloud.apps.mods",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.profile.avatar",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.profile.name",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.ram",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.restart",
           "group": "0",
-          "when": "view == discloudUserApps && discloudAppLength"
+          "when": "view == discloudUserApps && discloudUserAppCount"
         },
         {
           "command": "discloud.apps.start",
           "group": "0",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /online\":false/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /online\":false/"
         },
         {
           "command": "discloud.apps.status",
           "group": "inline",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /^TreeItem/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.apps.stop",
           "group": "0",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /online\":true/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.apps.terminal",
           "group": "1",
-          "when": "view == discloudUserApps && discloudAppLength && viewItem =~ /online\":true/"
+          "when": "view == discloudUserApps && discloudUserAppCount && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.upload",
           "group": "inline",
-          "when": "view == discloudUserApps && !discloudAppLength && workspaceFolderCount"
+          "when": "view == discloudUserApps && !discloudUserAppCount && workspaceFolderCount"
         },
         {
           "command": "discloud.team.backup",
           "group": "1",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /backup_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.commit",
           "group": "1",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && workspaceFolderCount && viewItem =~ /commit_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && workspaceFolderCount && viewItem =~ /commit_app/"
         },
         {
           "command": "discloud.team.copy.id",
-          "when": "view == discloudTeamApps && discloudTeamAppLength"
+          "when": "view == discloudTeamApps && discloudTeamAppCount"
         },
         {
           "command": "discloud.team.import",
           "group": "1",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /backup_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.import",
           "group": "inline",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /^TreeItem/ && viewItem =~ /backup_app/"
         },
         {
           "command": "discloud.team.logs",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /logs_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.logs",
           "group": "inline",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /^TreeItem/ && viewItem =~ /logs_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /^TreeItem/ && viewItem =~ /logs_app/"
         },
         {
           "command": "discloud.team.ram",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /edit_ram/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /edit_ram/"
         },
         {
           "command": "discloud.team.restart",
           "group": "0",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /restart_app/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /restart_app/"
         },
         {
           "command": "discloud.team.start",
           "group": "0",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /start_app/ && viewItem =~ /online\":false/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /start_app/ && viewItem =~ /online\":false/"
         },
         {
           "command": "discloud.team.status",
           "group": "inline",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /^TreeItem/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /^TreeItem/"
         },
         {
           "command": "discloud.team.stop",
           "group": "0",
-          "when": "view == discloudTeamApps && discloudTeamAppLength && viewItem =~ /stop_app/ && viewItem =~ /online\":true/"
+          "when": "view == discloudTeamApps && discloudTeamAppCount && viewItem =~ /stop_app/ && viewItem =~ /online\":true/"
         },
         {
           "command": "discloud.user.copy.id",
@@ -1325,7 +1325,7 @@
     "bytes": "^3.1.2",
     "jose": "^6.2.8",
     "json-schema-library": "^11.6.2",
-    "ws": "^8.21.1",
+    "ws": "^8.21.2",
     "yocto-queue": "^1.2.2"
   },
   "devDependencies": {
@@ -1335,8 +1335,8 @@
     "@types/node": "24",
     "@types/vscode": "^1.125.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
+    "@typescript-eslint/eslint-plugin": "^8.66.0",
+    "@typescript-eslint/parser": "^8.66.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "esbuild": "^0.28.1",

@@ -1,10 +1,10 @@
-import { commands } from "vscode";
+import { ExtensionContextId } from "../@enum";
 import type ExtensionCore from "../core/extension";
 
 export default async function (core: ExtensionCore) {
   await Promise.all([
-    commands.executeCommand("setContext", "discloudAuthorized", true),
-    commands.executeCommand("setContext", "discloudUnauthorized", false),
+    core.setContext(ExtensionContextId.discloudAuthorized, true),
+    core.setContext(ExtensionContextId.discloudUnauthorized, false),
   ]);
 
   core.api.authorized = true;

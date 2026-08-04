@@ -4,33 +4,46 @@ import type { JSONSchema7 } from "json-schema";
 import { compileSchema, type SchemaNode } from "json-schema-library";
 import { parseEnv } from "util";
 import { type ExtensionContext, Position, Range, type TextDocument } from "vscode";
-import { MAX_LANGUAGE_PROVIDER_READ_LINES } from "../utils/constants";
+import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, MAX_LANGUAGE_PROVIDER_READ_LINES } from "../utils/constants";
 
-const STRING_BOOLEAN = new Set(["false", "true"]);
-const start = new Position(0, 0);
-const end = new Position(MAX_LANGUAGE_PROVIDER_READ_LINES, 0);
-const range = new Range(start, end);
+const _booleanAsString = new Set(["false", "true"]);
+const _start = new Position(0, 0);
+const _end = new Position(MAX_LANGUAGE_PROVIDER_READ_LINES, 0);
+const _range = new Range(_start, _end);
+const _noSchemaId: symbol = Symbol("No Schema");
 
 export default class BaseLanguageProvider {
   static readonly #schemas: Record<string, JSONSchema7> = {};
-  static readonly #drafts: Record<string, SchemaNode> = {};
-  declare readonly draft: SchemaNode;
-  declare readonly scopes: string[];
+  static readonly #drafts: Map<string | symbol, SchemaNode> = new Map();
 
   static async getSchemaFromPath(path: string) {
     return BaseLanguageProvider.#schemas[path] ??= JSON.parse(await readFile(path, "utf8"));
   }
 
+  static async startProviders(context: ExtensionContext) {
+    const path = context.asAbsolutePath(DISCLOUD_CONFIG_SCHEMA_FILE_NAME);
+
+    const schema = await BaseLanguageProvider.getSchemaFromPath(path);
+
+    const { default: CompletionItemProvider } = await import("./CompletionItemProvider");
+    const { default: LanguageConfigurationProvider } = await import("./LanguageConfigurationProvider");
+
+    new CompletionItemProvider(context, schema);
+    new LanguageConfigurationProvider(context, schema);
+  }
+
   constructor(readonly context: ExtensionContext, readonly schema: JSONSchema7) {
     this.scopes = Object.keys(this.schema.properties ?? {});
 
-    this.draft = schema.$id
-      ? BaseLanguageProvider.#drafts[schema.$id] ??= compileSchema(schema)
-      : compileSchema(schema);
+    this.draft = BaseLanguageProvider.#drafts
+      .getOrInsertComputed(schema.$id ?? _noSchemaId, () => compileSchema(schema));
   }
 
+  declare readonly draft: SchemaNode;
+  declare readonly scopes: string[];
+
   transformConfigToJSON(document: TextDocument) {
-    return this.#parseValues(parseEnv(document.getText(range)));
+    return this.#parseValues(parseEnv(document.getText(_range)));
   }
 
   validateJsonSchema(data: Record<any, any>) {
@@ -47,13 +60,13 @@ export default class BaseLanguageProvider {
     if (key in obj) obj[key] = obj[key].split(/\s*,\s*/g).filter(Boolean);
 
     key = DiscloudConfigScopes.AUTORESTART;
-    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
+    if (key in obj && _booleanAsString.has(obj[key])) obj[key] = obj[key] == "true";
 
     key = DiscloudConfigScopes.RAM;
     if (key in obj && obj[key]) obj[key] = Number(obj[key]);
 
     key = DiscloudConfigScopes.VLAN;
-    if (key in obj && STRING_BOOLEAN.has(obj[key])) obj[key] = obj[key] == "true";
+    if (key in obj && _booleanAsString.has(obj[key])) obj[key] = obj[key] == "true";
 
     return obj;
   }

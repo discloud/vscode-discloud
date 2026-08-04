@@ -1,7 +1,7 @@
 import { Routes, type ApiStatusApp, type BaseApiApp, type RESTGetApiAppStatusResult } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { commands, window, type ProviderResult, type TreeItem } from "vscode";
-import { type AppType } from "../@enum";
+import { window, type ProviderResult, type TreeItem } from "vscode";
+import { ExtensionContextId, type AppType } from "../@enum";
 import type { ApiVscodeApp } from "../@types";
 import type ExtensionCore from "../core/extension";
 import DisposableMap from "../structures/DisposableMap";
@@ -27,14 +27,6 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   protected readonly _views = new DisposableMap<AppType, AppTypeTreeItemView>();
-
-  protected _getView(type: AppType) {
-    let view = this._views.get(type);
-    if (view) return view;
-    view = new AppTypeTreeItemView(type);
-    this._views.set(type, view);
-    return view;
-  }
 
   protected _sort(children: Item[]) {
     const sort = this.core.config.get<string>(ConfigKeys.appSortBy);
@@ -158,7 +150,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   }
 
   refresh(data?: Item | Item[] | null) {
-    commands.executeCommand("setContext", "discloudAppLength", this.size);
+    this.core.setContext(ExtensionContextId.discloudUserAppCount, this.size);
     super.refresh(data);
   }
 
@@ -197,7 +189,8 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       const child = new UserAppTreeItem(data);
 
-      this._getView(child.type).set(child.appId, child);
+      this._views.getOrInsertComputed(child.type, () => new AppTypeTreeItemView(child.type))
+        .set(child.appId, child);
 
       this.children.set(child.appId, child);
 
