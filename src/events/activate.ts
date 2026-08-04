@@ -5,17 +5,23 @@ import type ExtensionCore from "../core/extension";
 import BaseLanguageProvider from "../language/BaseLanguageProvider";
 import { GlobalStorageKeys } from "../utils/constants";
 
+const _discloudAppSort = "discloud.app.sort";
+const _discloudTeamSort = "discloud.team.sort";
+const _discloudAppSeparateByType = "discloud.app.separate.by.type";
+const _discloudAppShowAvatarInsteadStatus = "discloud.app.show.avatar.instead.status";
+const _discloudStatusBarBehavior = "discloud.status.bar.behavior";
+
 export default async function (core: ExtensionCore, context: ExtensionContext) {
   queueMicrotask(() => BaseLanguageProvider.startProviders(context).catch(core.logger.error));
 
   const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
-    if (event.affectsConfiguration("discloud.app.sort")) return core.userAppTree.refresh();
+    if (event.affectsConfiguration(_discloudAppSort)) return core.userAppTree.refresh();
 
-    if (event.affectsConfiguration("discloud.team.sort")) return core.teamAppTree.refresh();
+    if (event.affectsConfiguration(_discloudTeamSort)) return core.teamAppTree.refresh();
 
-    if (event.affectsConfiguration("discloud.app.separate.by.type")) return core.userAppTree.refresh();
+    if (event.affectsConfiguration(_discloudAppSeparateByType)) return core.userAppTree.refresh();
 
-    if (event.affectsConfiguration("discloud.app.show.avatar.instead.status")) {
+    if (event.affectsConfiguration(_discloudAppShowAvatarInsteadStatus)) {
       for (const app of core.userAppTree.children.values()) {
         app._patch({});
       }
@@ -23,7 +29,7 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
       return core.userAppTree.refresh();
     }
 
-    if (event.affectsConfiguration("discloud.status.bar.behavior")) return core.statusBar.setDefault();
+    if (event.affectsConfiguration(_discloudStatusBarBehavior)) return core.statusBar.setDefault();
   });
 
   // Refresh extension when session was removed
@@ -83,14 +89,9 @@ async function migrateAuthenticationProvider(core: ExtensionCore) {
 
     oldSessionIdList[0] = newSessionId;
 
-    await Promise.all(promises);
-
-    await Promise.all([
+    await Promise.all(promises.concat(
       core.globalStorage.update(GlobalStorageKeys.sessionIdList, oldSessionIdList),
-    ]);
-
-    await Promise.all([
       core.globalStorage.delete("sessionIdList"),
-    ]);
+    ));
   }
 }

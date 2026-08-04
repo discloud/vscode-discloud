@@ -71,34 +71,42 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     if (!response.ok)
       throw await BaseAuthenticationError.fromStatusCode(response.status);
 
-    const body = await response.json() as RESTGetApiUserResult;
+    const body = await response.json().catch(() => null) as RESTGetApiUserResult | null;
 
     const account: AuthenticationSessionAccountInformation = {
-      id: body.user.userID ?? defaultSessionAccount.id,
+      id: body?.user.userID ?? defaultSessionAccount.id,
       label:
-        body.user.username ?? body.user.userID ?? defaultSessionAccount.label,
+        body?.user.username ?? body?.user.userID ?? defaultSessionAccount.label,
     };
+
+    const promises = [];
 
     const newSessionId = `${providerId}.${account.id}`;
 
     const oldSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
-    if (oldSessionId) {
-      sessionIdSet.delete(oldSessionId);
-      await Promise.all([
-        this.storage.update(oldSessionId, undefined),
-        this.secrets.delete(oldSessionId),
-      ]);
+
+    if (oldSessionId !== newSessionId) {
+      sessionIdSet.add(newSessionId);
+
+      if (oldSessionId) {
+        sessionIdSet.delete(oldSessionId);
+        promises.push(
+          this.storage.update(oldSessionId, undefined),
+          this.secrets.delete(oldSessionId),
+        );
+      }
+
+      promises.push(
+        this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
+        this.storage.update(GlobalStorageKeys.currentSessionId, newSessionId),
+      );
     }
 
-    sessionIdSet.add(newSessionId);
-
-    await Promise.all([
-      this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
+    await Promise.all(promises.concat(
       this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, providerId),
-      this.storage.update(GlobalStorageKeys.currentSessionId, newSessionId),
       this.storage.update(newSessionId, account),
       this.secrets.store(newSessionId, input),
-    ]);
+    ));
 
     const newSession = new DiscloudAuthenticationSession(newSessionId, input, account);
 
