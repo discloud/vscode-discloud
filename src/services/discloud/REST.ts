@@ -116,21 +116,20 @@ export default class REST extends EventEmitter {
     ));
 
     this.#remaining--;
-    let response: Response;
+    let response: Response | undefined;
     try {
       response = await fetch(url, config);
     } catch {
       this.core.emit("missingConnection", this.core);
       throw Error(t("missing.connection"));
     } finally {
-      if (inQueue) {
-        this.#queue.shift(processKey);
-      } else {
-        this.#noQueueProcesses.shift();
-      }
-    }
+      queueMicrotask(() => {
+        if (response) this.#resolveResponseHeaders(response.headers);
 
-    queueMicrotask(() => this.#resolveResponseHeaders(response.headers));
+        if (inQueue) { this.#queue.shift(processKey); }
+        else { this.#noQueueProcesses.shift(); }
+      });
+    }
 
     const responseBody = await this.#resolveResponseBody(response);
 
@@ -229,17 +228,16 @@ export default class REST extends EventEmitter {
     const Reset = parseInt(headers.get("ratelimit-reset")!);
     if (!isNaN(Limit)) this.#limit = Math.max(Limit, 0);
     if (!isNaN(Remaining)) this.#remaining = Math.max(Remaining, 0);
-    if (!isNaN(Reset)) {
-      this.#reset = Math.max(Reset, 0);
-      this.#initRateLimitResetTimer();
-    }
+    if (!isNaN(Reset)) this.#reset = Math.max(Reset, 0);
+
+    this.#initRateLimitResetTimer();
   }
 
-  #timer!: NodeJS.Timeout | null;
+  private _timer?: NodeJS.Timeout;
   #initRateLimitResetTimer() {
-    if (this.#timer) clearTimeout(this.#timer);
-    this.#timer = setTimeout(() => {
-      this.#timer = null;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      delete this._timer;
       this.#remaining = this.#limit;
     }, this.timeToReset).unref();
   }
