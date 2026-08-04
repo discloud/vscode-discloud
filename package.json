@@ -1325,7 +1325,7 @@
     "bytes": "^3.1.2",
     "jose": "^6.2.8",
     "json-schema-library": "^11.6.2",
-    "ws": "^8.21.1",
+    "ws": "^8.21.2",
     "yocto-queue": "^1.2.2"
   },
   "devDependencies": {
@@ -1335,8 +1335,8 @@
     "@types/node": "24",
     "@types/vscode": "^1.125.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
+    "@typescript-eslint/eslint-plugin": "^8.66.0",
+    "@typescript-eslint/parser": "^8.66.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "esbuild": "^0.28.1",
