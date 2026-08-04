@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.10
+
+- Correção para o aviso do rate limit ser disparado corretamente
+
 ## 2.29.9
 
 - Correção do timer do rate limit [#978](https://github.com/discloud/vscode-discloud/pull/978)
