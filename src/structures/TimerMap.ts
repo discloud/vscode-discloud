@@ -1,6 +1,6 @@
 import type { Disposable } from "vscode";
 
-const MAX_TIMER_DELAY = 2147483647;
+const _maxTimerDelay = 2147483647;
 
 export interface TimerMapOptions {
   /**
@@ -13,9 +13,9 @@ export interface TimerMapOptions {
   autoUnref?: boolean
 }
 
-export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> extends Map<K, V> implements Disposable {
+export default class TimerMap<K = keyof any, T extends NodeJS.Timeout = NodeJS.Timeout> extends Map<K, T> implements Disposable {
   constructor(
-    entries?: readonly (readonly [K, V])[] | Iterable<readonly [K, V]> | null,
+    entries?: readonly (readonly [K, T])[] | Iterable<readonly [K, T]> | null,
     options?: TimerMapOptions,
   ) {
     super(entries);
@@ -50,7 +50,7 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
     return this.get(key)?.refresh();
   }
 
-  set(key: K, timeout: V): this {
+  set(key: K, timeout: T): this {
     this.clearTimeout(key);
     return super.set(key, timeout);
   }
@@ -72,25 +72,28 @@ export default class TimerMap<K, V extends NodeJS.Timeout = NodeJS.Timeout> exte
   setTimeout(key: K, callback: () => void, delay: number = 1): void {
     this.clearTimeout(key);
 
-    if (delay > MAX_TIMER_DELAY) return this._autoRefresh(key, callback, delay);
+    if (delay > _maxTimerDelay) return this.#autoRefresh(key, callback, delay);
 
-    const timer = setTimeout(this._wrapCallback(key, callback), delay);
+    const timer = setTimeout(this.#wrapCallback(key, callback), delay);
+
     if (this.autoUnref) timer.unref();
-    super.set(key, timer as V);
+
+    super.set(key, timer as T);
   }
 
-  protected _autoRefresh(key: K, callback: () => void, delay: number) {
+  #autoRefresh(key: K, callback: () => void, delay: number) {
     const timer = setTimeout(() => {
-      delay -= MAX_TIMER_DELAY;
-      if (delay > MAX_TIMER_DELAY) return timer.refresh();
+      delay -= _maxTimerDelay;
+      if (delay > _maxTimerDelay) return timer.refresh();
       this.setTimeout(key, callback, delay);
-    }, MAX_TIMER_DELAY);
+    }, _maxTimerDelay);
 
     if (this.autoUnref) timer.unref();
-    super.set(key, timer as V);
+
+    super.set(key, timer as T);
   }
 
-  protected _wrapCallback(key: K, callback: () => void) {
+  #wrapCallback(key: K, callback: () => void) {
     return () => {
       super.delete(key);
       callback();
