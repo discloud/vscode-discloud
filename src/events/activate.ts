@@ -14,7 +14,7 @@ const _discloudStatusBarBehavior = "discloud.status.bar.behavior";
 export default async function (core: ExtensionCore, context: ExtensionContext) {
   queueMicrotask(() => BaseLanguageProvider.startProviders(context).catch(core.logger.error));
 
-  const disposableChangeConfiguration = workspace.onDidChangeConfiguration(event => {
+  workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration(_discloudAppSort)) return core.userAppTree.refresh();
 
     if (event.affectsConfiguration(_discloudTeamSort)) return core.teamAppTree.refresh();
@@ -30,18 +30,16 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
     }
 
     if (event.affectsConfiguration(_discloudStatusBarBehavior)) return core.statusBar.setDefault();
-  });
+  }, null, context.subscriptions);
 
   // Refresh extension when session was removed
-  const disposableAuthenticationEvent = core.auth.onDidChangeSessions(async (event) => {
+  core.auth.onDidChangeSessions(async (event) => {
     if (event.removed?.length) {
       const session = await core.auth.getSession();
       if (!session) core.emit("missingToken", core);
       return;
     }
-  });
-
-  context.subscriptions.push(disposableChangeConfiguration, disposableAuthenticationEvent);
+  }, null, context.subscriptions);
 
   core.logger.debug("Activate: done");
 

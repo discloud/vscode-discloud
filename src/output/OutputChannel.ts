@@ -8,9 +8,9 @@ export default abstract class DiscloudOutputChannel implements OutputChannel {
     DiscloudOutputChannel._instances.get(name)?.dispose(delay);
   }
 
-  static getInstance(context: ExtensionContext, name: string) {
+  static getInstance(context: ExtensionContext, name: string, languageId?: string) {
     const instance = DiscloudOutputChannel._instances.getOrInsertComputed(name, () => {
-      const channel = window.createOutputChannel(name);
+      const channel = window.createOutputChannel(name, languageId);
       const instance = new _DiscloudOutputChannel(context, channel);
       context.subscriptions.push(instance);
       return instance;

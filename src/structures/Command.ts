@@ -6,7 +6,7 @@ import type { CommandData, TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
 
 export interface CommandConstructor {
-  new(...args: any[]): Command
+  new(core: ExtensionCore): Command
 }
 
 export default abstract class Command {

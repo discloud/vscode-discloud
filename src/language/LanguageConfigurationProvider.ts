@@ -15,21 +15,22 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
     this.collection = languages.createDiagnosticCollection(this.schema.$id);
 
-    const disposableChange = workspace.onDidChangeTextDocument((event) => {
+    workspace.onDidChangeTextDocument((event) => {
       if (event.document.languageId === this.schema.$id) {
         this.checkDocument(event.document);
       }
-    });
+    }, null, context.subscriptions);
 
-    const disposableClose = workspace.onDidCloseTextDocument((document) => this.collection.delete(document.uri));
+    workspace.onDidCloseTextDocument((document) =>
+      this.collection.delete(document.uri), null, context.subscriptions);
 
-    const disposableOpen = workspace.onDidOpenTextDocument((document) => {
+    workspace.onDidOpenTextDocument((document) => {
       if (document.languageId === this.schema.$id) {
         this.checkDocument(document);
       }
-    });
+    }, null, context.subscriptions);
 
-    context.subscriptions.push(this.collection, disposableChange, disposableClose, disposableOpen);
+    context.subscriptions.push(this.collection);
 
     queueMicrotask(() => {
       for (let i = 0; i < workspace.textDocuments.length; i++) {
