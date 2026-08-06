@@ -142,11 +142,10 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
         return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
     }
 
-    if (!options.silent) {
-      if (options.token && options.token.isCancellationRequested) return;
-      const picked = await window.showWorkspaceFolderPick();
-      if (picked) return picked.uri;
-    }
+    if (options.silent || options.token?.isCancellationRequested) return;
+
+    const picked = await window.showWorkspaceFolderPick();
+    if (picked) return picked.uri;
   }
 
   async activate(context: ExtensionContext = this.context) {
