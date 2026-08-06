@@ -53,7 +53,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     }
 
     let lastWorkspaceFolder!: WorkspaceFolder | undefined;
-    const disposableChangeActiveTextEditor = window.onDidChangeActiveTextEditor(async (editor) => {
+    window.onDidChangeActiveTextEditor(async (editor) => {
       if (this._status !== Status.Regular) return;
 
       await sleep(100);
@@ -68,28 +68,22 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
 
       const folders = workspace.workspaceFolders;
       if (folders && folders.length > 1) await this.setDefault();
-    });
+    }, null, this.context.subscriptions);
 
-    const disposableOpenTextDocument = workspace.onDidOpenTextDocument((document) => {
+    workspace.onDidOpenTextDocument((document) => {
       if (this._status !== Status.Regular) return;
       if (lastWorkspaceFolder?.uri.fsPath === document.uri.fsPath) return;
       lastWorkspaceFolder = workspace.getWorkspaceFolder(document.uri);
       return this.setDefault(document.uri);
-    });
+    }, null, this.context.subscriptions);
 
-    const disposableChangeWorkspaceFolders = workspace.onDidChangeWorkspaceFolders(() => {
+    workspace.onDidChangeWorkspaceFolders(() => {
       if (this.core.workspaceAvailable) {
         this.show();
       } else {
         this.hide();
       }
-    });
-
-    core.context.subscriptions.push(
-      disposableChangeActiveTextEditor,
-      disposableOpenTextDocument,
-      disposableChangeWorkspaceFolders,
-    );
+    }, null, this.context.subscriptions);
   }
 
   protected _status!: Status;

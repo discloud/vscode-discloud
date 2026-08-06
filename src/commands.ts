@@ -148,7 +148,7 @@ function commandRegister(
             new Promise((_, reject) => token.onCancellationRequested((e) => {
               controller.abort(e);
               reject(e);
-            })),
+            }, null, core.context.subscriptions)),
             command.run({ progress, token, signal: controller.signal }, ...args),
           ]);
         });

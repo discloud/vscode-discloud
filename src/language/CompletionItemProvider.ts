@@ -23,7 +23,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     }, {
       provideCompletionItems: (document, position, token, _context) =>
         Promise.race([
-          new Promise<any>((_, reject) => token.onCancellationRequested(reject)),
+          new Promise<any>((_, reject) => token.onCancellationRequested(reject, null, context.subscriptions)),
           this.provideCompletionItems(document, position, token, _context),
         ]).catch(() => []),
     }, lineBreakSymbol, arraySeparator, assignSymbol, pathSeparator);
