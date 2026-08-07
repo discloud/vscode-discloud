@@ -3,8 +3,11 @@ import { readFile, writeFile } from "fs/promises";
 const ENCODING = "utf8";
 const INDENTATION = 2;
 const PACKAGE_PATH = "package.json";
+/** @type {keyof import("type-fest").PackageJson} */
 const PACKAGE_DEPENDENCY_KEYS = [
   "dependencies",
+  "bundleDependencies",
+  "bundledDependencies",
   "devDependencies",
   "optionalDependencies",
   "peerDependencies",
