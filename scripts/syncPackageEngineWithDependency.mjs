@@ -3,8 +3,11 @@ import { readFile, writeFile } from "fs/promises";
 const ENCODING = "utf8";
 const INDENTATION = 2;
 const PACKAGE_PATH = "package.json";
+/** @type {keyof import("type-fest").PackageJson} */
 const PACKAGE_DEPENDENCY_KEYS = [
   "dependencies",
+  "bundleDependencies",
+  "bundledDependencies",
   "devDependencies",
   "optionalDependencies",
   "peerDependencies",
@@ -25,7 +28,7 @@ const oldEngineVersion = packageJSON.engines[engine];
 
 let found = false, updated = false;
 for (const key of PACKAGE_DEPENDENCY_KEYS) {
-  if (!(dependency in packageJSON[key])) continue;
+  if (!(key in packageJSON) || !(dependency in packageJSON[key])) continue;
   found = true;
   if (oldEngineVersion === packageJSON[key][dependency]) break;
   packageJSON.engines[engine] = packageJSON[key][dependency];
