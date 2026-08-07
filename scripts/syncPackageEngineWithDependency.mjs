@@ -28,7 +28,7 @@ const oldEngineVersion = packageJSON.engines[engine];
 
 let found = false, updated = false;
 for (const key of PACKAGE_DEPENDENCY_KEYS) {
-  if (!(dependency in packageJSON[key])) continue;
+  if (!(key in packageJSON) || !(dependency in packageJSON[key])) continue;
   found = true;
   if (oldEngineVersion === packageJSON[key][dependency]) break;
   packageJSON.engines[engine] = packageJSON[key][dependency];
