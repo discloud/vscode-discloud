@@ -1,4 +1,5 @@
 import type { ExtensionContext } from "vscode";
+import "./@prototypes";
 import ExtensionCore from "./core/extension";
 import { localize } from "./localize";
 
