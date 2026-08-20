@@ -248,17 +248,17 @@
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
 "@hyperjump/json-schema-formats@^1.0.2":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@hyperjump/json-schema-formats/-/json-schema-formats-1.0.4.tgz#de55cfd8c3d04530df5050c05e0a10435cb3c2f6"
-  integrity sha512-EuP4W0jN1hnpoVF6zLtcTFs4pKyfq7dBkMli0WV7KgqKuLsdvQGEtXqJB7QT7AjXZRWeAlou5EyFAKK2xcN9iw==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@hyperjump/json-schema-formats/-/json-schema-formats-1.0.5.tgz#6ad36637046da894e3b9d5fa7c773594f407a90f"
+  integrity sha512-JHMa2YwBmHG7N1LD4sOKx3gfYJjXDiV1MRPIpN2huma/hTLMoCZ/cGe2tCQsfqD9KgjFaRO2mmXFlamwdN3/wQ==
   dependencies:
     "@hyperjump/uri" "^1.3.2"
     idn-hostname "^15.1.2"
 
 "@hyperjump/uri@^1.3.2":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@hyperjump/uri/-/uri-1.3.4.tgz#458d108d61451c9e38c7685eda22b7169e26abb0"
-  integrity sha512-aUVWwu2GtC/cU4DwdTM+b+5jjboM6wft6vNg1+7pUTk/nNRNaBYcYhaEnCir9eRLBbkcGPkiEO7XRUlcDkxj4Q==
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@hyperjump/uri/-/uri-1.3.5.tgz#1ba15cf88b72030800e42ad24922bbefa973264d"
+  integrity sha512-GxiCm6iMt2j74T00mo0hHnJT1hNVGZMcuja5Mi+YHyPZhltKT6pQXLIpc8tPPL5bWaB/8je5UJy8lZZ0+9mBKw==
 
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
@@ -349,9 +349,9 @@
   integrity sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==
 
 "@types/node@*":
-  version "26.1.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.1.2.tgz#da79708f1f9c6294f4cdec8f455a3032b028808a"
-  integrity sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==
+  version "26.2.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.2.0.tgz#5a4875a862fda8fdc57de8faa579bb81ecba1685"
+  integrity sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==
   dependencies:
     undici-types "~8.3.0"
 
@@ -362,10 +362,10 @@
   dependencies:
     undici-types "~7.18.0"
 
-"@types/vscode@^1.125.0":
-  version "1.125.0"
-  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.125.0.tgz#944755fe16fcaf15060899bf214556c7549e4cd6"
-  integrity sha512-0icm/ZQAaism87P0ekHqi4/Ju9du+Tm0RUW+y7vqRsxY2cY0FNRX1nAnaW7nT6npPt2tfHiheZ55Zm9UhqonFA==
+"@types/vscode@^1.134.0":
+  version "1.134.0"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.134.0.tgz#4525fbf5ca2e2bea98e60a768c5c36751258ccbf"
+  integrity sha512-NDEu0hg4sF7+vvFsADsktqUJ6f80LHSZvVK2Ovo1XiQ0/VHck1O3zst+ZZyVA/uvz6vo6LcuoqU2q48YMqOwWw==
 
 "@types/ws@^8.18.1":
   version "8.18.1"
@@ -537,9 +537,9 @@ ansi-regex@^5.0.1:
   integrity sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==
 
 ansi-regex@^6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-6.2.2.tgz#60216eea464d864597ce2832000738a0589650c1"
-  integrity sha512-Bq3SmSpyFHaWjPk8If9yc6svM8c56dB5BAtW4Qbw5jHTwwXXcTLoRMkpDJp6VL0XzlWaCHTXrkFURMYmD0sLqg==
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-6.3.0.tgz#247c8e7b70a1a43b10ce14c0226fcbf58e8815d5"
+  integrity sha512-WpDfL7NO6j7tH88IDBNVdUJxDh9nmCteAVW9dsep846XdwF4naCBK+/tGLX3KJgcpgMRXCFlTM2hKGoK9FsdrQ==
 
 ansi-styles@^3.2.1:
   version "3.2.1"
@@ -1224,9 +1224,9 @@ file-entry-cache@^8.0.0:
     flat-cache "^4.0.0"
 
 file-type@^22.0.1:
-  version "22.0.1"
-  resolved "https://registry.yarnpkg.com/file-type/-/file-type-22.0.1.tgz#0184dbd6b6353bb25eb21a0c413a23885b6d1818"
-  integrity sha512-ww5Mhre0EE+jmBvOXTmXAbEMuZE7uX4a3+oRCQFNj8w++g3ev913N6tXQz0XTXbueQ5TWQfm6BdaViEHHn8bhA==
+  version "22.0.2"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-22.0.2.tgz#a1dae5d38db379374ae475781822fb76936d5134"
+  integrity sha512-0H8TsCUGBLx+V5adH3EY52hTAcyLKbV1D4gq5cIOJ6DnQAHeV9Z2Hhuc5CoBX4YmvB2oL+JIC84z0qO7JsCoNw==
   dependencies:
     "@tokenizer/inflate" "^0.4.1"
     strtok3 "^10.3.5"
@@ -1497,9 +1497,9 @@ https-proxy-agent@^7.0.5:
     debug "4"
 
 idn-hostname@^15.1.2:
-  version "15.1.10"
-  resolved "https://registry.yarnpkg.com/idn-hostname/-/idn-hostname-15.1.10.tgz#beb825b8c6f8d6ef08de2ad19021a0bd8b404277"
-  integrity sha512-/mSXWRhVasTJ7Z4z18523rTA6CmStYN29yDt+oXi9fe1/M0SO2Un1BgUr3v28aAZG5hWicyUtIamC/juXt3nZQ==
+  version "15.1.11"
+  resolved "https://registry.yarnpkg.com/idn-hostname/-/idn-hostname-15.1.11.tgz#7d0d47847a1bf452887c3c415c1643c8cfd90046"
+  integrity sha512-sC54bmZeM9oK+vvyLwIWDJBt4JZ80ltuHfIHnmcK5JrqyHJyFfvO+BlRx4sb1V4KA/+3gcaCxRlegKF4vd+CIg==
   dependencies:
     punycode "^2.3.1"
 
