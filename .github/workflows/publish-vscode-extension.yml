@@ -2,7 +2,8 @@ name: Deploy Extension
 
 on:
   release:
-    types: [created]
+    types:
+      - created
 
 jobs:
   deploy:
@@ -12,22 +13,24 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: lts/*
+
       - run: yarn
 
       - name: "Create VSIX"
         id: createVSIX
         run: |
-          npx vsce@latest package
+          npx vsce@latest package ${{ github.event.release.prerelease && '--pre-release' || '' }}
           PKG=$(node -p "require('./package.json').name + '-' + require('./package.json').version")
           echo "vsixPath=$PKG.vsix" >> $GITHUB_OUTPUT
 
       - name: Upload .vsix to release
         if: ${{ steps.createVSIX.outputs.vsixPath }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ steps.createVSIX.outputs.vsixPath }}
+          prerelease: ${{ github.event.release.prerelease }}
           tag_name: ${{ github.ref_name }}
 
       - name: Publish to Open VSX Registry
