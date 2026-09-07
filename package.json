@@ -1333,7 +1333,7 @@
     "@types/bytes": "^3.1.6",
     "@types/mocha": "^10.0.10",
     "@types/node": "24",
-    "@types/vscode": "^1.134.0",
+    "@types/vscode": "^1.136.0",
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.69.0",
     "@typescript-eslint/parser": "^8.69.0",
