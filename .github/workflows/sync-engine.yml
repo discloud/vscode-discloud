@@ -31,13 +31,13 @@ jobs:
         run: git diff --quiet
 
       - name: Git config
-        if: steps.diff.outcome != 'failure'
+        if: steps.diff.outcome == 'failure'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit if changed
-        if: steps.diff.outcome != 'failure'
+        if: steps.diff.outcome == 'failure'
         continue-on-error: true
         run: |
           git add package.json
