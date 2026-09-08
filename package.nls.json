@@ -26,6 +26,7 @@
   "command.logout": "Logout Discloud",
   "command.logs": "Get app logs",
   "command.subdomain.refresh": "Refresh subdomain list",
+  "command.system.locale.load": "Load translations",
   "command.team.backup": "Backup team app",
   "command.team.commit": "Commit team app",
   "command.team.copy.id": "Copy team app ID",

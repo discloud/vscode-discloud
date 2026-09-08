@@ -28,12 +28,13 @@
   },
 	"extcmd": {
 		"body": [
-			"import { TaskData } from \"../@types\";",
+			"import type { TaskData } from \"../@types\";",
+			"import type ExtensionCore from \"../../../core/extension\";",
 			"import Command from \"../../structures/Command\";",
 			"",
 			"export default class extends Command {",
-			"\tconstructor() {",
-			"\t\t\tsuper();",
+			"\tconstructor(core: ExtensionCore) {",
+			"\t\t\tsuper(core);",
 			"\t}",
 			"",
 			"\tasync run(task: TaskData) {",
