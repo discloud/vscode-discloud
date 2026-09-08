@@ -49,78 +49,82 @@
     "commands": [
       {
         "command": "discloud.create.config",
-        "title": "%command.create.config%",
-        "icon": "$(gear)"
+        "icon": "$(gear)",
+        "title": "%command.create.config%"
       },
       {
         "command": "discloud.commit",
-        "title": "%command.commit%",
-        "icon": "$(git-commit)"
+        "icon": "$(git-commit)",
+        "title": "%command.commit%"
       },
       {
         "command": "discloud.login",
-        "title": "%command.login%",
-        "icon": "$(log-in)"
+        "icon": "$(log-in)",
+        "title": "%command.login%"
       },
       {
         "command": "discloud.logout",
-        "title": "%command.logout%",
-        "icon": "$(log-out)"
+        "icon": "$(log-out)",
+        "title": "%command.logout%"
       },
       {
         "command": "discloud.logs",
-        "title": "%command.logs%",
-        "icon": "$(console)"
+        "icon": "$(console)",
+        "title": "%command.logs%"
       },
       {
         "command": "discloud.upload",
-        "title": "%command.upload%",
-        "icon": "$(cloud-upload)"
+        "icon": "$(cloud-upload)",
+        "title": "%command.upload%"
+      },
+      {
+        "command": "discloud.system.locale.load",
+        "title": "%command.system.locale.load%"
       },
       {
         "command": "discloud.apps.backup",
-        "title": "%command.apps.backup%",
-        "icon": "$(cloud-download)"
+        "icon": "$(cloud-download)",
+        "title": "%command.apps.backup%"
       },
       {
         "command": "discloud.apps.commit",
-        "title": "%command.apps.commit%",
-        "icon": "$(git-commit)"
+        "icon": "$(git-commit)",
+        "title": "%command.apps.commit%"
       },
       {
         "command": "discloud.apps.copy.id",
-        "title": "%command.apps.copy.id%",
-        "icon": "$(clippy)"
+        "icon": "$(clippy)",
+        "title": "%command.apps.copy.id%"
       },
       {
         "command": "discloud.apps.delete",
-        "title": "%command.apps.delete%",
-        "icon": "$(trash)"
+        "icon": "$(trash)",
+        "title": "%command.apps.delete%"
       },
       {
         "command": "discloud.apps.import",
-        "title": "%command.apps.import%",
-        "icon": "$(cloud-download)"
+        "icon": "$(cloud-download)",
+        "title": "%command.apps.import%"
       },
       {
         "command": "discloud.apps.logs",
-        "title": "%command.apps.logs%",
-        "icon": "$(console)"
+        "icon": "$(console)",
+        "title": "%command.apps.logs%"
       },
       {
         "command": "discloud.apps.mods.add",
-        "title": "%command.apps.mods.add%",
-        "icon": "$(organization)"
+        "icon": "$(organization)",
+        "title": "%command.apps.mods.add%"
       },
       {
         "command": "discloud.apps.mods.edit",
-        "title": "%command.apps.mods.edit%",
-        "icon": "$(organization)"
+        "icon": "$(organization)",
+        "title": "%command.apps.mods.edit%"
       },
       {
         "command": "discloud.apps.mods.rem",
-        "title": "%command.apps.mods.rem%",
-        "icon": "$(organization)"
+        "icon": "$(organization)",
+        "title": "%command.apps.mods.rem%"
       },
       {
         "command": "discloud.apps.profile.avatar",
@@ -132,103 +136,103 @@
       },
       {
         "command": "discloud.apps.ram",
-        "title": "%command.apps.ram%",
-        "icon": "$(circuit-board)"
+        "icon": "$(circuit-board)",
+        "title": "%command.apps.ram%"
       },
       {
         "command": "discloud.apps.refresh",
-        "title": "%command.apps.refresh%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%command.apps.refresh%"
       },
       {
         "command": "discloud.apps.restart",
-        "title": "%command.apps.restart%",
-        "icon": "$(debug-restart)"
+        "icon": "$(debug-restart)",
+        "title": "%command.apps.restart%"
       },
       {
         "command": "discloud.apps.show.avatar.instead.status.always",
-        "title": "%show.avatar.instead.status.always.label%",
-        "icon": "$(account)"
+        "icon": "$(account)",
+        "title": "%show.avatar.instead.status.always.label%"
       },
       {
         "command": "discloud.apps.show.avatar.instead.status.never",
-        "title": "%show.avatar.instead.status.never.label%",
-        "icon": "$(close)"
+        "icon": "$(close)",
+        "title": "%show.avatar.instead.status.never.label%"
       },
       {
         "command": "discloud.apps.show.avatar.instead.status.when.online",
-        "title": "%show.avatar.instead.status.when.online.label%",
-        "icon": "$(cloud)"
+        "icon": "$(cloud)",
+        "title": "%show.avatar.instead.status.when.online.label%"
       },
       {
         "command": "discloud.apps.sort.by.none",
-        "title": "%sort.none.label%",
-        "icon": "$(list-unordered)"
+        "icon": "$(list-unordered)",
+        "title": "%sort.none.label%"
       },
       {
         "command": "discloud.apps.sort.by.id.asc",
-        "title": "%sort.id.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.id.asc.label%"
       },
       {
         "command": "discloud.apps.sort.by.id.desc",
-        "title": "%sort.id.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.id.desc.label%"
       },
       {
         "command": "discloud.apps.sort.by.memory.usage.asc",
-        "title": "%sort.memory.usage.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.memory.usage.asc.label%"
       },
       {
         "command": "discloud.apps.sort.by.memory.usage.desc",
-        "title": "%sort.memory.usage.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.memory.usage.desc.label%"
       },
       {
         "command": "discloud.apps.sort.by.name.asc",
-        "title": "%sort.name.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.name.asc.label%"
       },
       {
         "command": "discloud.apps.sort.by.name.desc",
-        "title": "%sort.name.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.name.desc.label%"
       },
       {
         "command": "discloud.apps.sort.by.started.asc",
-        "title": "%sort.started.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.started.asc.label%"
       },
       {
         "command": "discloud.apps.sort.by.started.desc",
-        "title": "%sort.started.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.started.desc.label%"
       },
       {
         "command": "discloud.apps.sort.online.activate",
-        "title": "%command.apps.sort.online.activate%",
-        "icon": "$(list-unordered)"
+        "icon": "$(list-unordered)",
+        "title": "%command.apps.sort.online.activate%"
       },
       {
         "command": "discloud.apps.sort.online.deactivate",
-        "title": "%command.apps.sort.online.deactivate%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%command.apps.sort.online.deactivate%"
       },
       {
         "command": "discloud.apps.start",
-        "title": "%command.apps.start%",
-        "icon": "$(debug-start)"
+        "icon": "$(debug-start)",
+        "title": "%command.apps.start%"
       },
       {
         "command": "discloud.apps.status",
-        "title": "%command.apps.status%",
-        "icon": "$(graph)"
+        "icon": "$(graph)",
+        "title": "%command.apps.status%"
       },
       {
         "command": "discloud.apps.stop",
-        "title": "%command.apps.stop%",
-        "icon": "$(debug-stop)"
+        "icon": "$(debug-stop)",
+        "title": "%command.apps.stop%"
       },
       {
         "command": "discloud.apps.terminal",
@@ -236,180 +240,139 @@
       },
       {
         "command": "discloud.domain.refresh",
-        "title": "%command.domain.refresh%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%command.domain.refresh%"
       },
       {
         "command": "discloud.subdomain.refresh",
-        "title": "%command.subdomain.refresh%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%command.subdomain.refresh%"
       },
       {
         "command": "discloud.team.backup",
-        "title": "%command.team.backup%",
-        "icon": "$(cloud-download)"
+        "icon": "$(cloud-download)",
+        "title": "%command.team.backup%"
       },
       {
         "command": "discloud.team.commit",
-        "title": "%command.team.commit%",
-        "icon": "$(git-commit)"
+        "icon": "$(git-commit)",
+        "title": "%command.team.commit%"
       },
       {
         "command": "discloud.team.copy.id",
-        "title": "%command.team.copy.id%",
-        "icon": "$(clippy)"
+        "icon": "$(clippy)",
+        "title": "%command.team.copy.id%"
       },
       {
         "command": "discloud.team.import",
-        "title": "%command.team.import%",
-        "icon": "$(edit)"
+        "icon": "$(edit)",
+        "title": "%command.team.import%"
       },
       {
         "command": "discloud.team.logs",
-        "title": "%command.team.logs%",
-        "icon": "$(console)"
+        "icon": "$(console)",
+        "title": "%command.team.logs%"
       },
       {
         "command": "discloud.team.ram",
-        "title": "%command.team.ram%",
-        "icon": "$(circuit-board)"
+        "icon": "$(circuit-board)",
+        "title": "%command.team.ram%"
       },
       {
         "command": "discloud.team.refresh",
-        "title": "%command.team.refresh%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%command.team.refresh%"
       },
       {
         "command": "discloud.team.restart",
-        "title": "%command.team.restart%",
-        "icon": "$(debug-restart)"
+        "icon": "$(debug-restart)",
+        "title": "%command.team.restart%"
       },
       {
         "command": "discloud.team.sort.by.none",
-        "title": "%sort.none.label%",
-        "icon": "$(list-unordered)"
+        "icon": "$(list-unordered)",
+        "title": "%sort.none.label%"
       },
       {
         "command": "discloud.team.sort.by.id.asc",
-        "title": "%sort.id.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.id.asc.label%"
       },
       {
         "command": "discloud.team.sort.by.id.desc",
-        "title": "%sort.id.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.id.desc.label%"
       },
       {
         "command": "discloud.team.sort.by.memory.usage.asc",
-        "title": "%sort.memory.usage.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.memory.usage.asc.label%"
       },
       {
         "command": "discloud.team.sort.by.memory.usage.desc",
-        "title": "%sort.memory.usage.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.memory.usage.desc.label%"
       },
       {
         "command": "discloud.team.sort.by.name.asc",
-        "title": "%sort.name.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.name.asc.label%"
       },
       {
         "command": "discloud.team.sort.by.name.desc",
-        "title": "%sort.name.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.name.desc.label%"
       },
       {
         "command": "discloud.team.sort.by.started.asc",
-        "title": "%sort.started.asc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.started.asc.label%"
       },
       {
         "command": "discloud.team.sort.by.started.desc",
-        "title": "%sort.started.desc.label%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%sort.started.desc.label%"
       },
       {
         "command": "discloud.team.sort.online.activate",
-        "title": "%command.team.sort.online.activate%",
-        "icon": "$(list-unordered)"
+        "icon": "$(list-unordered)",
+        "title": "%command.team.sort.online.activate%"
       },
       {
         "command": "discloud.team.sort.online.deactivate",
-        "title": "%command.team.sort.online.deactivate%",
-        "icon": "$(list-ordered)"
+        "icon": "$(list-ordered)",
+        "title": "%command.team.sort.online.deactivate%"
       },
       {
         "command": "discloud.team.start",
-        "title": "%command.team.start%",
-        "icon": "$(debug-start)"
+        "icon": "$(debug-start)",
+        "title": "%command.team.start%"
       },
       {
         "command": "discloud.team.status",
-        "title": "%command.team.status%",
-        "icon": "$(graph)"
+        "icon": "$(graph)",
+        "title": "%command.team.status%"
       },
       {
         "command": "discloud.team.stop",
-        "title": "%command.team.stop%",
-        "icon": "$(debug-stop)"
+        "icon": "$(debug-stop)",
+        "title": "%command.team.stop%"
       },
       {
         "command": "discloud.user.copy.id",
-        "title": "%command.user.copy.id%",
-        "icon": "$(clippy)"
+        "icon": "$(clippy)",
+        "title": "%command.user.copy.id%"
       },
       {
         "command": "discloud.user.set.locale",
-        "title": "%command.user.set.locale%",
-        "icon": "$(location)"
+        "icon": "$(location)",
+        "title": "%command.user.set.locale%"
       }
     ],
     "configuration": [
       {
-        "title": "Discloud",
         "properties": {
-          "discloud.debug": {
-            "type": "boolean",
-            "default": false
-          },
-          "discloud.token": {
-            "type": "string",
-            "deprecationMessage": "%config.deprecation.message%",
-            "markdownDescription": "%config.token.description%"
-          },
-          "discloud.users": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "token": {
-                  "type": "string"
-                }
-              }
-            },
-            "default": []
-          },
-          "discloud.upload.focus.logs": {
-            "title": "%config.upload.focus.logs.title%",
-            "type": "string",
-            "default": "always",
-            "enum": [
-              "always",
-              "errors",
-              "never"
-            ],
-            "enumItemLabels": [
-              "%config.upload.focus.logs.always.label%",
-              "%config.upload.focus.logs.errors.label%",
-              "%config.upload.focus.logs.never.label%"
-            ]
-          },
           "discloud.api.actions.strategy": {
-            "type": "string",
             "default": "socket",
             "enum": [
               "rest",
@@ -419,34 +382,34 @@
               "%config.api.actions.strategy.rest.label%",
               "%config.api.actions.strategy.socket.label%"
             ],
+            "markdownDescription": "%config.api.actions.strategy.description%",
             "title": "%config.api.actions.strategy.title%",
-            "markdownDescription": "%config.api.actions.strategy.description%"
+            "type": "string"
           },
           "discloud.app.backup.dir": {
-            "type": "string",
             "default": "discloud/backup",
+            "markdownDescription": "%config.app.backup.dir.description%",
             "title": "%config.app.backup.dir.title%",
-            "markdownDescription": "%config.app.backup.dir.description%"
+            "type": "string"
           },
           "discloud.app.import.dir": {
-            "type": "string",
             "default": "discloud/import",
+            "markdownDescription": "%config.app.import.dir.description%",
             "title": "%config.app.import.dir.title%",
-            "markdownDescription": "%config.app.import.dir.description%"
+            "type": "string"
           },
           "discloud.app.notification.status": {
-            "type": "boolean",
             "default": true,
+            "markdownDescription": "%config.app.notification.status.description%",
             "title": "%config.app.notification.status.title%",
-            "markdownDescription": "%config.app.notification.status.description%"
+            "type": "boolean"
           },
           "discloud.app.separate.by.type": {
-            "type": "boolean",
             "default": true,
-            "title": "%config.app.separate.by.type.title%"
+            "title": "%config.app.separate.by.type.title%",
+            "type": "boolean"
           },
           "discloud.app.show.avatar.instead.status": {
-            "type": "string",
             "default": "when.online",
             "enum": [
               "never",
@@ -458,11 +421,11 @@
               "%show.avatar.instead.status.when.online.label%",
               "%show.avatar.instead.status.always.label%"
             ],
+            "markdownDescription": "%config.app.show.avatar.instead.status.description%",
             "title": "%config.app.show.avatar.instead.status.title%",
-            "markdownDescription": "%config.app.show.avatar.instead.status.description%"
+            "type": "string"
           },
           "discloud.app.sort.by": {
-            "type": "string",
             "default": "none",
             "enum": [
               "none",
@@ -486,17 +449,21 @@
               "%sort.started.asc.label%",
               "%sort.started.desc.label%"
             ],
+            "markdownDescription": "%config.app.sort.by.description%",
             "title": "%config.app.sort.by.title%",
-            "markdownDescription": "%config.app.sort.by.description%"
+            "type": "string"
           },
           "discloud.app.sort.online": {
-            "type": "boolean",
             "default": true,
+            "markdownDescription": "%config.app.sort.online.description%",
             "title": "%config.app.sort.online.title%",
-            "markdownDescription": "%config.app.sort.online.description%"
+            "type": "boolean"
+          },
+          "discloud.debug": {
+            "default": false,
+            "type": "boolean"
           },
           "discloud.status.bar.behavior": {
-            "type": "string",
             "default": "logs",
             "enum": [
               "commit",
@@ -508,29 +475,29 @@
               "%command.logs%",
               "%command.upload%"
             ],
+            "markdownDescription": "%config.status.bar.behavior.description%",
             "title": "%config.status.bar.behavior.title%",
-            "markdownDescription": "%config.status.bar.behavior.description%"
-          },
-          "discloud.team.backup.dir": {
-            "type": "string",
-            "default": "discloud/backup",
-            "title": "%config.team.backup.dir.title%",
-            "markdownDescription": "%config.team.backup.dir.description%"
-          },
-          "discloud.team.import.dir": {
-            "type": "string",
-            "default": "discloud/import",
-            "title": "%config.team.import.dir.title%",
-            "markdownDescription": "%config.team.import.dir.description%"
+            "type": "string"
           },
           "discloud.team.app.notification.status": {
-            "type": "boolean",
             "default": true,
+            "markdownDescription": "%config.team.app.notification.status.description%",
             "title": "%config.team.app.notification.status.title%",
-            "markdownDescription": "%config.team.app.notification.status.description%"
+            "type": "boolean"
+          },
+          "discloud.team.backup.dir": {
+            "default": "discloud/backup",
+            "markdownDescription": "%config.team.backup.dir.description%",
+            "title": "%config.team.backup.dir.title%",
+            "type": "string"
+          },
+          "discloud.team.import.dir": {
+            "default": "discloud/import",
+            "markdownDescription": "%config.team.import.dir.description%",
+            "title": "%config.team.import.dir.title%",
+            "type": "string"
           },
           "discloud.team.sort.by": {
-            "type": "string",
             "default": "none",
             "enum": [
               "none",
@@ -554,50 +521,87 @@
               "%sort.started.asc.label%",
               "%sort.started.desc.label%"
             ],
+            "markdownDescription": "%config.team.sort.by.description%",
             "title": "%config.team.sort.by.title%",
-            "markdownDescription": "%config.team.sort.by.description%"
+            "type": "string"
           },
           "discloud.team.sort.online": {
-            "type": "boolean",
             "default": true,
+            "markdownDescription": "%config.team.sort.online.description%",
             "title": "%config.team.sort.online.title%",
-            "markdownDescription": "%config.team.sort.online.description%"
+            "type": "boolean"
+          },
+          "discloud.token": {
+            "deprecationMessage": "%config.deprecation.message%",
+            "markdownDescription": "%config.token.description%",
+            "type": "string"
+          },
+          "discloud.upload.focus.logs": {
+            "default": "always",
+            "enum": [
+              "always",
+              "errors",
+              "never"
+            ],
+            "enumItemLabels": [
+              "%config.upload.focus.logs.always.label%",
+              "%config.upload.focus.logs.errors.label%",
+              "%config.upload.focus.logs.never.label%"
+            ],
+            "title": "%config.upload.focus.logs.title%",
+            "type": "string"
+          },
+          "discloud.users": {
+            "default": [],
+            "items": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
           }
-        }
+        },
+        "title": "Discloud"
       }
     ],
     "grammars": [
       {
         "language": "discloud.config",
-        "scopeName": "source.discloud",
-        "path": "./syntaxes/dc.tmLanguage.json"
+        "path": "./syntaxes/dc.tmLanguage.json",
+        "scopeName": "source.discloud"
       },
       {
         "language": "discloudignore",
-        "scopeName": "text.discloudignore",
-        "path": "./syntaxes/di.tmLanguage.json"
+        "path": "./syntaxes/di.tmLanguage.json",
+        "scopeName": "text.discloudignore"
       }
     ],
     "languages": [
       {
-        "id": "discloudignore",
         "filenames": [
           ".discloudignore"
         ],
         "icon": {
           "dark": "resources/icons/discloud_icon.svg",
           "light": "resources/icons/discloud_icon.svg"
-        }
+        },
+        "id": "discloudignore"
       },
       {
-        "id": "discloud.config",
         "filenames": [
           "discloud.config"
         ],
         "icon": {
           "dark": "resources/icons/discloud_icon.svg",
           "light": "resources/icons/discloud_icon.svg"
-        }
+        },
+        "id": "discloud.config"
       }
     ],
     "menus": {
@@ -855,6 +859,130 @@
           "when": "discloudAuthorized"
         }
       ],
+      "discloud.apps.mods": [
+        {
+          "command": "discloud.apps.mods.add"
+        },
+        {
+          "command": "discloud.apps.mods.edit"
+        },
+        {
+          "command": "discloud.apps.mods.rem"
+        }
+      ],
+      "discloud.apps.show.avatar.instead.status": [
+        {
+          "command": "discloud.apps.show.avatar.instead.status.always",
+          "when": "config.discloud.app.show.avatar.instead.status != always"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.never",
+          "when": "config.discloud.app.show.avatar.instead.status != never"
+        },
+        {
+          "command": "discloud.apps.show.avatar.instead.status.when.online",
+          "when": "config.discloud.app.show.avatar.instead.status != when.online"
+        }
+      ],
+      "discloud.apps.sort.by": [
+        {
+          "command": "discloud.apps.sort.by.none",
+          "when": "config.discloud.app.sort.by != none"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.asc",
+          "when": "config.discloud.app.sort.by != id.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.id.desc",
+          "when": "config.discloud.app.sort.by != id.desc"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.asc",
+          "when": "config.discloud.app.sort.by != memory.usage.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.memory.usage.desc",
+          "when": "config.discloud.app.sort.by != memory.usage.desc"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.asc",
+          "when": "config.discloud.app.sort.by != name.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.name.desc",
+          "when": "config.discloud.app.sort.by != name.desc"
+        },
+        {
+          "command": "discloud.apps.sort.by.started.asc",
+          "when": "config.discloud.app.sort.by != started.asc"
+        },
+        {
+          "command": "discloud.apps.sort.by.started.desc",
+          "when": "config.discloud.app.sort.by != started.desc"
+        }
+      ],
+      "discloud.team.sort.by": [
+        {
+          "command": "discloud.team.sort.by.none",
+          "when": "config.discloud.team.sort.by != none"
+        },
+        {
+          "command": "discloud.team.sort.by.id.asc",
+          "when": "config.discloud.team.sort.by != id.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.id.desc",
+          "when": "config.discloud.team.sort.by != id.desc"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.asc",
+          "when": "config.discloud.team.sort.by != memory.usage.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.memory.usage.desc",
+          "when": "config.discloud.team.sort.by != memory.usage.desc"
+        },
+        {
+          "command": "discloud.team.sort.by.name.asc",
+          "when": "config.discloud.team.sort.by != name.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.name.desc",
+          "when": "config.discloud.team.sort.by != name.desc"
+        },
+        {
+          "command": "discloud.team.sort.by.started.asc",
+          "when": "config.discloud.team.sort.by != started.asc"
+        },
+        {
+          "command": "discloud.team.sort.by.started.desc",
+          "when": "config.discloud.team.sort.by != started.desc"
+        }
+      ],
+      "discloudsub": [
+        {
+          "command": "discloud.commit",
+          "group": "0",
+          "when": "workspaceFolderCount && discloudAuthorized"
+        },
+        {
+          "command": "discloud.create.config",
+          "group": "1",
+          "when": "workspaceFolderCount"
+        },
+        {
+          "command": "discloud.upload",
+          "group": "0",
+          "when": "workspaceFolderCount && discloudAuthorized"
+        }
+      ],
+      "explorer/context": [
+        {
+          "group": "1_workspace",
+          "submenu": "discloudsub"
+        }
+      ],
       "view/item/context": [
         {
           "command": "discloud.apps.backup",
@@ -1014,13 +1142,13 @@
       "view/title": [
         {
           "command": "discloud.upload",
-          "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthorized",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthorized"
         },
         {
           "command": "discloud.apps.refresh",
-          "when": "view == discloudUserApps && discloudAuthorized",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == discloudUserApps && discloudAuthorized"
         },
         {
           "submenu": "discloud.apps.show.avatar.instead.status",
@@ -1040,18 +1168,18 @@
         },
         {
           "command": "discloud.domain.refresh",
-          "when": "view == discloudDomains",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == discloudDomains"
         },
         {
           "command": "discloud.subdomain.refresh",
-          "when": "view == discloudSubdomains",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == discloudSubdomains"
         },
         {
           "command": "discloud.team.refresh",
-          "when": "view == discloudTeamApps",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == discloudTeamApps"
         },
         {
           "submenu": "discloud.team.sort.by",
@@ -1065,193 +1193,69 @@
           "command": "discloud.team.sort.online.deactivate",
           "when": "view == discloudTeamApps && config.discloud.team.sort.online"
         }
-      ],
-      "explorer/context": [
-        {
-          "submenu": "discloudsub",
-          "group": "1_workspace"
-        }
-      ],
-      "discloudsub": [
-        {
-          "command": "discloud.commit",
-          "when": "workspaceFolderCount && discloudAuthorized",
-          "group": "0"
-        },
-        {
-          "command": "discloud.create.config",
-          "when": "workspaceFolderCount",
-          "group": "1"
-        },
-        {
-          "command": "discloud.upload",
-          "when": "workspaceFolderCount && discloudAuthorized",
-          "group": "0"
-        }
-      ],
-      "discloud.apps.mods": [
-        {
-          "command": "discloud.apps.mods.add"
-        },
-        {
-          "command": "discloud.apps.mods.edit"
-        },
-        {
-          "command": "discloud.apps.mods.rem"
-        }
-      ],
-      "discloud.apps.show.avatar.instead.status": [
-        {
-          "command": "discloud.apps.show.avatar.instead.status.always",
-          "when": "config.discloud.app.show.avatar.instead.status != always"
-        },
-        {
-          "command": "discloud.apps.show.avatar.instead.status.never",
-          "when": "config.discloud.app.show.avatar.instead.status != never"
-        },
-        {
-          "command": "discloud.apps.show.avatar.instead.status.when.online",
-          "when": "config.discloud.app.show.avatar.instead.status != when.online"
-        }
-      ],
-      "discloud.apps.sort.by": [
-        {
-          "command": "discloud.apps.sort.by.none",
-          "when": "config.discloud.app.sort.by != none"
-        },
-        {
-          "command": "discloud.apps.sort.by.id.asc",
-          "when": "config.discloud.app.sort.by != id.asc"
-        },
-        {
-          "command": "discloud.apps.sort.by.id.desc",
-          "when": "config.discloud.app.sort.by != id.desc"
-        },
-        {
-          "command": "discloud.apps.sort.by.memory.usage.asc",
-          "when": "config.discloud.app.sort.by != memory.usage.asc"
-        },
-        {
-          "command": "discloud.apps.sort.by.memory.usage.desc",
-          "when": "config.discloud.app.sort.by != memory.usage.desc"
-        },
-        {
-          "command": "discloud.apps.sort.by.name.asc",
-          "when": "config.discloud.app.sort.by != name.asc"
-        },
-        {
-          "command": "discloud.apps.sort.by.name.desc",
-          "when": "config.discloud.app.sort.by != name.desc"
-        },
-        {
-          "command": "discloud.apps.sort.by.started.asc",
-          "when": "config.discloud.app.sort.by != started.asc"
-        },
-        {
-          "command": "discloud.apps.sort.by.started.desc",
-          "when": "config.discloud.app.sort.by != started.desc"
-        }
-      ],
-      "discloud.team.sort.by": [
-        {
-          "command": "discloud.team.sort.by.none",
-          "when": "config.discloud.team.sort.by != none"
-        },
-        {
-          "command": "discloud.team.sort.by.id.asc",
-          "when": "config.discloud.team.sort.by != id.asc"
-        },
-        {
-          "command": "discloud.team.sort.by.id.desc",
-          "when": "config.discloud.team.sort.by != id.desc"
-        },
-        {
-          "command": "discloud.team.sort.by.memory.usage.asc",
-          "when": "config.discloud.team.sort.by != memory.usage.asc"
-        },
-        {
-          "command": "discloud.team.sort.by.memory.usage.desc",
-          "when": "config.discloud.team.sort.by != memory.usage.desc"
-        },
-        {
-          "command": "discloud.team.sort.by.name.asc",
-          "when": "config.discloud.team.sort.by != name.asc"
-        },
-        {
-          "command": "discloud.team.sort.by.name.desc",
-          "when": "config.discloud.team.sort.by != name.desc"
-        },
-        {
-          "command": "discloud.team.sort.by.started.asc",
-          "when": "config.discloud.team.sort.by != started.asc"
-        },
-        {
-          "command": "discloud.team.sort.by.started.desc",
-          "when": "config.discloud.team.sort.by != started.desc"
-        }
       ]
     },
     "submenus": [
       {
-        "label": "Discloud",
-        "id": "discloudsub"
+        "id": "discloudsub",
+        "label": "Discloud"
       },
       {
-        "label": "%submenu.manage.mods%",
-        "id": "discloud.apps.mods"
+        "id": "discloud.apps.mods",
+        "label": "%submenu.manage.mods%"
       },
       {
-        "label": "%submenu.app.show.avatar.instead.status%",
-        "id": "discloud.apps.show.avatar.instead.status"
+        "id": "discloud.apps.show.avatar.instead.status",
+        "label": "%submenu.app.show.avatar.instead.status%"
       },
       {
-        "label": "%submenu.apps.sort.by%",
-        "id": "discloud.apps.sort.by"
+        "id": "discloud.apps.sort.by",
+        "label": "%submenu.apps.sort.by%"
       },
       {
-        "label": "%submenu.team.sort.by%",
-        "id": "discloud.team.sort.by"
+        "id": "discloud.team.sort.by",
+        "label": "%submenu.team.sort.by%"
       }
     ],
     "views": {
       "discloudActivityBar": [
         {
-          "type": "tree",
-          "id": "discloudUserApps",
           "icon": "resources/icons/discloud_icon.svg",
+          "id": "discloudUserApps",
           "name": "%view.apps.title%",
+          "type": "tree",
           "visibility": "visible",
           "when": "discloudAuthorized"
         },
         {
-          "type": "tree",
+          "icon": "resources/icons/discloud_icon.svg",
           "id": "discloudTeamApps",
-          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.team.title%",
+          "type": "tree",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
         },
         {
-          "type": "tree",
+          "icon": "resources/icons/discloud_icon.svg",
           "id": "discloudSubdomains",
-          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.subdomain.title%",
+          "type": "tree",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
         },
         {
-          "type": "tree",
+          "icon": "resources/icons/discloud_icon.svg",
           "id": "discloudDomains",
-          "icon": "resources/icons/discloud_icon.svg",
           "name": "%view.domain.title%",
+          "type": "tree",
           "visibility": "collapsed",
           "when": "discloudAuthorized"
         },
         {
-          "type": "tree",
-          "id": "discloudUser",
           "icon": "resources/icons/discloud_icon.svg",
+          "id": "discloudUser",
           "name": "%view.user.title%",
+          "type": "tree",
           "visibility": "collapsed"
         }
       ]
@@ -1259,47 +1263,47 @@
     "viewsContainers": {
       "activitybar": [
         {
+          "icon": "resources/icons/discloud_icon.svg",
           "id": "discloudActivityBar",
-          "title": "Discloud",
-          "icon": "resources/icons/discloud_icon.svg"
+          "title": "Discloud"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "discloudUserApps",
         "contents": "%welcome%",
+        "view": "discloudUserApps",
         "when": "!discloudAuthorized && !discloudUnauthorized"
       },
       {
-        "view": "discloudUser",
         "contents": "%welcome.token.missing%",
+        "view": "discloudUser",
         "when": "discloudInitialized && !discloudAuthorized && !discloudUnauthorized"
       },
       {
-        "view": "discloudUser",
         "contents": "%welcome.token.unauthorized%",
+        "view": "discloudUser",
         "when": "discloudUnauthorized"
       }
     ],
     "walkthroughs": [
       {
-        "id": "discloud",
-        "title": "%walkthroughs.title%",
         "description": "%walkthroughs.description%",
+        "id": "discloud",
         "steps": [
           {
-            "id": "login",
-            "title": "%walkthroughs.login.title%",
+            "completionEvents": [
+              "onContext:discloudAuthorized"
+            ],
             "description": "%walkthroughs.login.description%",
+            "id": "login",
             "media": {
               "markdown": "resources/walkthrough/bar.md"
             },
-            "completionEvents": [
-              "onContext:discloudAuthorized"
-            ]
+            "title": "%walkthroughs.login.title%"
           }
-        ]
+        ],
+        "title": "%walkthroughs.title%"
       }
     ]
   },
