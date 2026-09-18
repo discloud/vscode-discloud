@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.12
+
+- Aumento do limite de commit e upload para `1GB` [#1009](https://github.com/discloud/vscode-discloud/pull/1009)
+
 ## 2.29.11
 
 - Correção para um erro inesperado
