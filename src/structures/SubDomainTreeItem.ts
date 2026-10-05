@@ -1,18 +1,18 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState } from "vscode";
+import { type ExtensionContext, TreeItemCollapsibleState } from "vscode";
 import type { SubDomainTreeItemData } from "../@types";
 import core from "../extension";
-import { getIconName, getIconPath } from "../utils/utils";
+import { getIconName } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class SubDomainTreeItem extends BaseTreeItem<any> {
   declare subdomain: string;
   declare iconName: string;
 
-  constructor(public data: SubDomainTreeItemData) {
+  constructor(context: ExtensionContext, public data: SubDomainTreeItemData) {
     data.label ??= data.subdomain;
 
-    super(data.label, data.collapsibleState);
+    super(context, data.label, data.collapsibleState);
 
     this._patch(data);
   }
@@ -28,7 +28,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
     const app = core.userAppTree.children.get(this.subdomain);
 
     this.iconName = app?.iconName ?? getIconName(data) ?? this.iconName ?? "off";
-    this.iconPath = getIconPath(this.iconName);
+    this.iconPath = this.context.iconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 

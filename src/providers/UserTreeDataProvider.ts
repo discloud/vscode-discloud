@@ -22,13 +22,13 @@ export default class UserTreeDataProvider extends BaseTreeDataProvider<Item> {
   }
 
   add(user: ApiVscodeUser) {
-    this.children.set(`${user.userID}`, new UserTreeItem(user));
+    this.children.set(`${user.userID}`, new UserTreeItem(this.context, user));
     this.refresh();
   }
 
   set(user: ApiVscodeUser) {
     this.children.dispose();
-    this.children.set(`${user.userID}`, new UserTreeItem(user));
+    this.children.set(`${user.userID}`, new UserTreeItem(this.context, user));
     this.refresh();
   }
 }

@@ -1,4 +1,4 @@
-import type { Disposable, TreeItem } from "vscode";
+import type { Disposable, ExtensionContext, TreeItem } from "vscode";
 import { type AppType } from "../@enum";
 import type { TeamAppChildTreeItemData } from "../@types";
 import BaseChildTreeItem from "./BaseChildTreeItem";
@@ -11,8 +11,8 @@ export default class TeamAppChildTreeItem extends BaseChildTreeItem {
   type: AppType | null = null;
   online: boolean | null = null;
 
-  constructor(data: TeamAppChildTreeItemData) {
-    super(data.label, data.collapsibleState);
+  constructor(context: ExtensionContext, data: TeamAppChildTreeItemData) {
+    super(context, data.label, data.collapsibleState);
     this.iconName = data.iconName;
     this.appId = data.appId;
 

@@ -1,17 +1,17 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState } from "vscode";
+import { type ExtensionContext, TreeItemCollapsibleState } from "vscode";
 import type { CustomDomainTreeItemData } from "../@types";
-import { getIconName, getIconPath } from "../utils/utils";
+import { getIconName } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class CustomDomainTreeItem extends BaseTreeItem<any> {
   declare domain: string;
   declare iconName: string;
 
-  constructor(public data: CustomDomainTreeItemData) {
+  constructor(context: ExtensionContext, public data: CustomDomainTreeItemData) {
     data.label ??= data.domain;
 
-    super(data.label, data.collapsibleState);
+    super(context, data.label, data.collapsibleState);
 
     this._patch(data);
   }
@@ -25,7 +25,7 @@ export default class CustomDomainTreeItem extends BaseTreeItem<any> {
     this.label = data.domain ?? this.label;
 
     this.iconName = getIconName(data) ?? this.iconName ?? "off";
-    this.iconPath = getIconPath(this.iconName);
+    this.iconPath = this.context.iconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 

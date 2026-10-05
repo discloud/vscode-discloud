@@ -187,9 +187,9 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     } else {
       this.children.dispose(EMPTY_TREE_ITEM_ID);
 
-      const child = new UserAppTreeItem(data);
+      const child = new UserAppTreeItem(this.context, data);
 
-      this._views.getOrInsertComputed(child.type, () => new AppTypeTreeItemView(child.type))
+      this._views.getOrInsertComputed(child.type, () => new AppTypeTreeItemView(this.context, child.type))
         .set(child.appId, child);
 
       this.children.set(child.appId, child);
@@ -254,7 +254,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     this._views.dispose();
     this.children.dispose();
 
-    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem() as Item);
+    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem(this.context) as Item);
 
     this.refresh();
   }

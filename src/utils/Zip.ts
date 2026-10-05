@@ -2,22 +2,23 @@ import AdmZip from "adm-zip";
 import { FileType, workspace, type Uri } from "vscode";
 
 export default class Zip {
-  declare readonly zip: AdmZip;
-
   constructor(fileNameOrRawData?: string | Buffer, options?: Partial<AdmZip.InitOptions>) {
-    this.zip = new AdmZip(fileNameOrRawData, options);
+    this.#zip = new AdmZip(fileNameOrRawData, options);
   }
+
+  readonly #zip: AdmZip;
+  readonly #zipped = new Set<string>();
 
   async appendUriList(uriList: Uri[]) {
     if (!uriList?.length) return;
 
-    const zipped = new Set<string>();
-
     for (const uri of uriList) {
-      if (zipped.has(uri.fsPath)) continue;
+      const uriText = uri.toString();
+      if (this.#zipped.has(uriText)) continue;
+      this.#zipped.add(uriText);
 
-      const name = workspace.asRelativePath(uri, false);
-      if (!name) continue;
+      const filename = workspace.asRelativePath(uri, false);
+      if (!filename) continue;
 
       let fileStat;
       try { fileStat = await workspace.fs.stat(uri); }
@@ -25,21 +26,19 @@ export default class Zip {
 
       if (fileStat.type !== FileType.File) continue;
 
-      zipped.add(uri.fsPath);
-
       const arrayBuffer = await workspace.fs.readFile(uri);
 
       const buffer = Buffer.from(arrayBuffer);
 
-      this.zip.addFile(name, buffer);
+      this.#zip.addFile(filename, buffer);
     }
   }
 
   getBuffer() {
-    return this.zip.toBufferPromise();
+    return this.#zip.toBufferPromise();
   }
 
   writeZip(targetFileName?: string) {
-    return this.zip.writeZipPromise(targetFileName, { overwrite: true });
+    return this.#zip.writeZipPromise(targetFileName, { overwrite: true });
   }
 }
