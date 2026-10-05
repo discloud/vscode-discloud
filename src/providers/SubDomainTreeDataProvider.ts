@@ -24,7 +24,7 @@ export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<Item
     this.clean(data);
 
     for (const subdomain of data) {
-      this.children.set(subdomain, new SubDomainTreeItem({
+      this.children.set(subdomain, new SubDomainTreeItem(this.context, {
         label: subdomain,
         subdomain,
       }));

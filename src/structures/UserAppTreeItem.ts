@@ -1,20 +1,20 @@
 import { type ApiStatusApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
+import { TreeItemCollapsibleState, Uri, type ExtensionContext, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { ApiVscodeApp, UserAppChildTreeItemData, UserAppTreeItemData } from "../@types";
 import core from "../extension";
 import { ConfigKeys } from "../utils/constants";
-import { getIconName, getIconPath } from "../utils/utils";
+import { getIconName } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 import UserAppChildTreeItem from "./UserAppChildTreeItem";
 
 export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> {
-  constructor(public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
+  constructor(context: ExtensionContext, public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
 
-    super(data.label, data.collapsibleState);
+    super(context, data.label, data.collapsibleState);
 
     this.appId = data.appId ??= data.id;
 
@@ -61,7 +61,7 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = getIconPath(this.iconName);
+    this.iconPath = this.context.iconPath(this.iconName);
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
@@ -162,6 +162,6 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       return;
     }
 
-    this.children.set(id, new UserAppChildTreeItem(<UserAppChildTreeItemData>data));
+    this.children.set(id, new UserAppChildTreeItem(this.context, <UserAppChildTreeItemData>data));
   }
 }

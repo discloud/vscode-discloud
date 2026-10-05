@@ -15,11 +15,8 @@ export default class InputBox {
         if (!URL.canParse(value)) return options.prompt;
 
         let response;
-        try {
-          response = await fetch(value);
-        } catch {
-          return options.prompt;
-        }
+        try { response = await fetch(value); }
+        catch { return options.prompt; }
 
         if (!response.ok) return options.prompt;
 

@@ -1,22 +1,22 @@
 import { type ApiStatusApp, type ApiTeamApp, type BaseApiApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, type LogOutputChannel } from "vscode";
+import { TreeItemCollapsibleState, type ExtensionContext, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
 import core from "../extension";
 import lazy from "../utils/lazy";
-import { getIconName, getIconPath } from "../utils/utils";
+import { getIconName } from "../utils/utils";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
 const lazyAllModPermissions = lazy(() => ModPermissionsBF.All.toArray());
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  constructor(readonly data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp> & BaseApiApp) {
+  constructor(context: ExtensionContext, readonly data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
-    super(data.label, data.collapsibleState);
+    super(context, data.label, data.collapsibleState);
 
     this.appId = data.appId ??= data.id;
 
@@ -62,7 +62,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = getIconPath(this.iconName);
+    this.iconPath = this.context.iconPath(this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
@@ -130,7 +130,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         description: t("permissions"),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-        children: data.perms.map(perm => new TeamAppChildTreeItem({
+        children: data.perms.map(perm => new TeamAppChildTreeItem(this.context, {
           label: t(`permission.${perm}`),
           appId: this.appId,
           appType: this.type,
@@ -162,6 +162,6 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       return;
     }
 
-    this.children.set(id, new TeamAppChildTreeItem(<TeamAppChildTreeItemData>data));
+    this.children.set(id, new TeamAppChildTreeItem(this.context, <TeamAppChildTreeItemData>data));
   }
 }

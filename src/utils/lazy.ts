@@ -1,4 +1,4 @@
-export default function lazy<Value, Params extends unknown[] = unknown[]>(cb: (...args: Params) => Value): (...args: Params) => Value {
+export default function lazy<Value>(cb: () => Value): () => Value {
   let value: Value;
-  return (...args: Params) => value ??= cb(...args);
+  return () => value ??= cb();
 }

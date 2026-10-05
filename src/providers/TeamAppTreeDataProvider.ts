@@ -145,7 +145,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       if (returnBoolean) return false;
     } else {
-      const child = new TeamAppTreeItem(data);
+      const child = new TeamAppTreeItem(this.context, data);
 
       this.children.set(data.id, child);
 
@@ -228,7 +228,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   init() {
     this.children.dispose();
 
-    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem() as Item);
+    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem(this.context) as Item);
 
     this.refresh();
   }

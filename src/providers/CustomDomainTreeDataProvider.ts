@@ -24,7 +24,7 @@ export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<I
     this.clean(data);
 
     for (const domain of data) {
-      this.children.set(domain, new CustomDomainTreeItem({
+      this.children.set(domain, new CustomDomainTreeItem(this.context, {
         label: domain,
         domain,
       }));

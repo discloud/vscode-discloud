@@ -1,15 +1,3 @@
-import { join } from "path";
-import { Uri, type TreeItem } from "vscode";
-import core from "../extension";
-import { RESOURCES_DIR } from "./constants";
-
-export function getIconPath(iconName: string, iconExt = "svg"): TreeItem["iconPath"] {
-  return {
-    dark: Uri.file(core.context.asAbsolutePath(join(RESOURCES_DIR, "dark", `${iconName}.${iconExt}`))),
-    light: Uri.file(core.context.asAbsolutePath(join(RESOURCES_DIR, "light", `${iconName}.${iconExt}`))),
-  };
-}
-
 export function compareBooleans(a: boolean, b: boolean) {
   let i = 0;
   if (a) i--;

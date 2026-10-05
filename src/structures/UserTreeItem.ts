@@ -1,22 +1,21 @@
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, Uri } from "vscode";
+import { type ExtensionContext, TreeItemCollapsibleState, Uri } from "vscode";
 import type { ApiVscodeUser, UserTreeItemData } from "../@types";
 import BaseTreeItem from "./BaseTreeItem";
 import UserChildTreeItem from "./UserChildTreeItem";
 
 export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
-  iconName?: string;
-  readonly userID: string;
-
-  constructor(readonly data: Partial<UserTreeItemData> & ApiVscodeUser) {
+  constructor(context: ExtensionContext, readonly data: Partial<UserTreeItemData> & ApiVscodeUser) {
     data.label = data.userID;
 
-    super(data.label, data.collapsibleState);
+    super(context, data.label, data.collapsibleState);
 
     this.userID = data.userID;
 
     this._patch(data);
   }
+
+  readonly userID: string;
 
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
     if (!data) return this;
@@ -102,7 +101,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
     return this;
   }
 
-  private _addChild(id: string, data: UserTreeItemData) {
+  protected _addChild(id: string, data: UserTreeItemData) {
     const existing = this.children.get(id);
 
     if (existing) {
@@ -110,6 +109,6 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       return;
     }
 
-    this.children.set(id, new UserChildTreeItem(data));
+    this.children.set(id, new UserChildTreeItem(this.context, data));
   }
 }

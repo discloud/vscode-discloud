@@ -1,11 +1,11 @@
-import { TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { type ExtensionContext, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import type { BaseChildTreeItemData } from "../@types";
 
 export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
   readonly contextKey = "ChildTreeItem";
   contextValue = this.contextKey;
 
-  constructor(label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
+  constructor(readonly context: ExtensionContext, label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
   }
   [Symbol.dispose](): void {
