@@ -1090,7 +1090,7 @@ es-set-tostringtag@^2.1.0:
     has-tostringtag "^1.0.2"
     hasown "^2.0.2"
 
-es-to-primitive@^1.3.0:
+es-to-primitive@^1.3.0, es-to-primitive@^1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/es-to-primitive/-/es-to-primitive-1.3.4.tgz#0c854291cf0d7b439d6b9e5771ea837ffaf1f991"
   integrity sha512-yPDz7wqpg1/mmHLmS3tcfTfbw5f1eryXvyghYBffGdERwe+mV7ZcWzTR8LR17Kvqt3qfPurjlonmnq3MKXIOXw==
@@ -1239,9 +1239,9 @@ esutils@^2.0.2:
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
 fast-copy@^4.0.4:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/fast-copy/-/fast-copy-4.1.1.tgz#e39f2d403aa77a7e10628e3d8d4d8ed4b2ac5256"
-  integrity sha512-A4QTJmuiztpGtr6AMeJts9R4hbj2ZBUwtOaKrG6rw2y7t6+IaJKjz5M3XDs8BUznxDH43FVc6A0y/gWlMl4UtA==
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/fast-copy/-/fast-copy-4.1.2.tgz#9119c178a5f2aa568074cf21cd6823068fbfea15"
+  integrity sha512-DUHggaYcouhy5I1LacDJ+JDSqGlumVJP2EAi5Nwt1pWPeLpSvIjkrY+x4fsoI1/+GlTyq+DM9zdgWCFSfqNODA==
 
 fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
@@ -1257,6 +1257,11 @@ fast-levenshtein@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
+
+fast-uri@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-4.2.1.tgz#816fb0fd61f511adcc35aadbbc1bcbf656d9e72a"
+  integrity sha512-TmHQgewjHtMq1E5QKA0tOE0yeYGQs25KZC/ziJpubRtWI15W92e6vPFydWOeZBVROSHBYw/QhD9d5OefdD6LDg==
 
 fdir@^6.5.0:
   version "6.5.0"
@@ -1927,9 +1932,9 @@ js-yaml@^4.1.0:
     argparse "^2.0.1"
 
 js-yaml@^5.0.0:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.4.2.tgz#eebc7a57e0bbe1d6b6d9416a72e7463082c7da85"
-  integrity sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.4.3.tgz#4ae09e2145682daea9c91b4b1f0610de4c80c941"
+  integrity sha512-yzzNtgczwgoVHNigCyKTXcQJU4Y8t/ikU4UxXW0BvrLfHTGWZhsNcOT2s/a7vn81/4KqVnNmHjaUEPlvWnNwVw==
   dependencies:
     argparse "^2.0.1"
 
@@ -1938,16 +1943,16 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-library@^11.6.2:
-  version "11.6.2"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-11.6.2.tgz#f5d3647023b79cc213f75b7ba224ec633e5ee6fe"
-  integrity sha512-BwvoJfc6RNrYRxQ9AujaTMaLdQosdceRe0huKMnnIJa2b4QZlnmPgQm7iUMoyxS2ioTsTMVPWjuoqvFYF0HZ4Q==
+json-schema-library@^11.6.4:
+  version "11.6.4"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-11.6.4.tgz#3567a117b2c0a59fb7c57037535e38f91001f967"
+  integrity sha512-1qRwWB+JmQzWsVuwlv20GKKyz2DF1zfh5XcddjGE3KiqtoW+6mnBAOZvZCC2xx/msV94SSvdJRwkqClJhzV2zg==
   dependencies:
     "@hyperjump/json-schema-formats" "^1.0.2"
     "@sagold/json-pointer" "^7.2.1"
     fast-copy "^4.0.4"
     fast-deep-equal "^3.1.3"
-    uri-js "^4.4.1"
+    fast-uri "^4.2.1"
     valid-url "^1.0.9"
 
 json-schema-traverse@^0.4.1:
@@ -2902,11 +2907,12 @@ token-types@^6.1.1, token-types@^6.1.2:
     ieee754 "^1.2.1"
 
 traverse@>=0.2.4:
-  version "0.6.12"
-  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.12.tgz#ae9af2d2f4d8a66f9961b03af4d1707ea4e4ba47"
-  integrity sha512-Tjbnms5xJX4kWnl4ONBZtjHNTq4bsBPEi64eWns6XK+kctTafUlSBT+tQUBewIpjMhZM3weEyPK1R7Jb0RpSFg==
+  version "0.6.14"
+  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.14.tgz#664c14548c5b1e1b39ba70d5313d09e2da7a177f"
+  integrity sha512-CYRAVGfnSSe+4Wlof62oUH6y9fGwo0NNS84hMq76MTZtwXQU7Oqna9SgWfrCGj5JPUtHQudnIEt1BP7PInPkPQ==
   dependencies:
     define-data-property "^1.1.4"
+    es-to-primitive "^1.3.4"
     gopd "^1.2.0"
     typedarray.prototype.slice "^1.0.6"
     which-typed-array "^1.1.24"
@@ -3028,7 +3034,7 @@ undici-types@~8.9.0:
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-8.9.0.tgz#e240d97c8b5d85e5347ce73d25865c7906c1ec9f"
   integrity sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==
 
-uri-js@^4.2.2, uri-js@^4.4.1:
+uri-js@^4.2.2:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
