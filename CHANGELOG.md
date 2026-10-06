@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.14
+
+- Correção de um bug que quebrava as TreeViews
+
 ## 2.29.13
 
 - Aumento do limite de commit e upload para `1GB` [#1009](https://github.com/discloud/vscode-discloud/pull/1009)
