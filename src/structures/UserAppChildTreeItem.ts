@@ -1,6 +1,7 @@
 import { type ExtensionContext } from "vscode";
 import { type AppType } from "../@enum";
 import type { UserAppChildTreeItemData } from "../@types";
+import { getIconPath } from "../utils/vscode";
 import BaseChildTreeItem from "./BaseChildTreeItem";
 
 export default class UserAppChildTreeItem extends BaseChildTreeItem {
@@ -15,7 +16,7 @@ export default class UserAppChildTreeItem extends BaseChildTreeItem {
     this.appId = data.appId;
     this.type = data.appType;
     this.iconName = data.iconName;
-    this.iconPath = this.context.iconPath(this.iconName);
+    this.iconPath = getIconPath(this.context, this.iconName);
 
     this._patch(data);
   }

@@ -7,6 +7,7 @@ import type { ApiVscodeApp, UserAppChildTreeItemData, UserAppTreeItemData } from
 import core from "../extension";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName } from "../utils/utils";
+import { getIconPath } from "../utils/vscode";
 import BaseTreeItem from "./BaseTreeItem";
 import UserAppChildTreeItem from "./UserAppChildTreeItem";
 
@@ -61,7 +62,7 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = this.context.iconPath(this.iconName);
+    this.iconPath = getIconPath(this.context, this.iconName);
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
