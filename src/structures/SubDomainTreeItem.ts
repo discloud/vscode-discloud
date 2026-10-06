@@ -3,6 +3,7 @@ import { type ExtensionContext, TreeItemCollapsibleState } from "vscode";
 import type { SubDomainTreeItemData } from "../@types";
 import core from "../extension";
 import { getIconName } from "../utils/utils";
+import { getIconPath } from "../utils/vscode";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class SubDomainTreeItem extends BaseTreeItem<any> {
@@ -28,7 +29,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
     const app = core.userAppTree.children.get(this.subdomain);
 
     this.iconName = app?.iconName ?? getIconName(data) ?? this.iconName ?? "off";
-    this.iconPath = this.context.iconPath(this.iconName);
+    this.iconPath = getIconPath(this.context, this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 

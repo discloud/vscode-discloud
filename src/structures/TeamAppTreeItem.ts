@@ -7,6 +7,7 @@ import type { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
 import core from "../extension";
 import lazy from "../utils/lazy";
 import { getIconName } from "../utils/utils";
+import { getIconPath } from "../utils/vscode";
 import BaseTreeItem from "./BaseTreeItem";
 import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 
@@ -62,7 +63,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = this.context.iconPath(this.iconName);
+    this.iconPath = getIconPath(this.context, this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
