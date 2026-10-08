@@ -8,6 +8,7 @@ import type ExtensionCore from "../../core/extension";
 import Command from "../../structures/Command";
 import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import { ConfigKeys } from "../../utils/constants";
+import FileSystem from "../../utils/FileSystem";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -22,7 +23,7 @@ export default class extends Command {
   async run(task: TaskData, item: UserAppTreeItem) {
     const workspaceAvailable = this.core.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
-    if (workspaceAvailable) workspaceFolder = await this.core.getWorkspaceFolder({ token: task.token });
+    if (workspaceAvailable) workspaceFolder = await FileSystem.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) {
       workspaceFolder = await this.core.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));

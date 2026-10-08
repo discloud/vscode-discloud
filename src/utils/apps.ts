@@ -6,6 +6,7 @@ import type { VscodeProgressReporter } from "../@types";
 import type ExtensionCore from "../core/extension";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
+import FileSystem from "./FileSystem";
 
 interface AppPickerOptions {
   allowOtherAppTypes?: boolean
@@ -24,7 +25,7 @@ export async function pickApp(core: ExtensionCore, options: AppPickerOptions = {
 
   options.allowOtherAppTypes = true;
 
-  const workspaceFolder = await core.getWorkspaceFolder({
+  const workspaceFolder = await FileSystem.getWorkspaceFolder({
     allowReadSelectedPath: false,
     silent: true,
     token: options.token,
@@ -50,7 +51,7 @@ export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions & { 
 export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
 export function pickUserApp(core: ExtensionCore, options?: AppPickerOptions): Promise<UserAppTreeItem | undefined>
 export async function pickUserApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
-  const workspaceFolder = await core.getWorkspaceFolder({
+  const workspaceFolder = await FileSystem.getWorkspaceFolder({
     allowReadSelectedPath: false,
     silent: true,
     token: options.token,
@@ -152,7 +153,7 @@ export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions & { 
 export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
 export function pickTeamApp(core: ExtensionCore, options?: AppPickerOptions): Promise<TeamAppTreeItem | undefined>
 export async function pickTeamApp(core: ExtensionCore, options: AppPickerOptions = {}): Promise<unknown> {
-  const workspaceFolder = await core.getWorkspaceFolder({
+  const workspaceFolder = await FileSystem.getWorkspaceFolder({
     allowReadSelectedPath: false,
     silent: true,
     token: options.token,

@@ -21,7 +21,7 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: TeamAppTreeItem) {
-    const workspaceFolder = await this.core.getWorkspaceFolder({ token: task.token });
+    const workspaceFolder = await FileSystem.getWorkspaceFolder({ token: task.token });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     if (!await this.confirmAction())

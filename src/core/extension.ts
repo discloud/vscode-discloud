@@ -1,9 +1,9 @@
 import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, Uri, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, window, workspace } from "vscode";
 import { type ExtensionContextId } from "../@enum";
-import type { Events, GetWorkspaceFolderOptions, IGlobalStateStorage, TaskData } from "../@types";
+import type { Events, IGlobalStateStorage, TaskData } from "../@types";
 import AuthenticationProviderContainer from "../authentication/providers";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
@@ -23,7 +23,6 @@ import DiscloudStatusBarItem from "../structures/DiscloudStatusBarItem";
 import TimerMap from "../structures/TimerMap";
 import VSUser from "../structures/VSUser";
 import { ConfigKeys } from "../utils/constants";
-import FileSystem from "../utils/FileSystem";
 
 const _workspaceIgnoreConfigKeys = Object.freeze([
   ConfigKeys.appBackupDir,
@@ -141,32 +140,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
   getOutputChannel(name: string) {
     return DiscloudOutputChannel.getInstance(this.context, name);
-  }
-
-  async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
-    options ??= {};
-
-    if (options.uri instanceof Uri) {
-      const folder = workspace.getWorkspaceFolder(options.uri);
-      if (folder) return folder.uri;
-    }
-
-    const folders = workspace.workspaceFolders;
-    if (!folders?.length) return;
-    if (folders.length === 1) return folders[0].uri;
-
-    options.allowReadSelectedPath ??= true;
-
-    if (options.allowReadSelectedPath) {
-      const [filePath] = await FileSystem.readSelectedPath(false);
-      if (filePath && filePath !== ".")
-        return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
-    }
-
-    if (options.silent || options.token?.isCancellationRequested) return;
-
-    const picked = await window.showWorkspaceFolderPick();
-    if (picked) return picked.uri;
   }
 
   async activate() {

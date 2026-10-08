@@ -6,6 +6,7 @@ import type { TaskData } from "../../../@types";
 import type ExtensionCore from "../../../core/extension";
 import Command from "../../../structures/Command";
 import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
+import FileSystem from "../../../utils/FileSystem";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -35,7 +36,7 @@ export default class extends Command {
       if (response.status === "ok") {
         this.core.userAppTree.editRawApp(item.appId, <BaseApiApp>{ id: item.appId, name });
 
-        const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
+        const workspaceFolder = await FileSystem.getWorkspaceFolder({ silent: true });
 
         if (workspaceFolder) {
           const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
