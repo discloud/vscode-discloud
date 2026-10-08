@@ -14,7 +14,7 @@ import SubDomainTreeDataProvider from "../providers/SubDomainTreeDataProvider";
 import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserAppTreeDataProvider from "../providers/UserAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
-import REST from "../services/discloud/REST";
+import DiscloudApi from "../services/discloud/api";
 import { UserAgent } from "../services/discloud/UserAgent";
 import GlobalStateStorage from "../storage/globalState";
 import SecretStorageImpl from "../storage/secrets";
@@ -33,17 +33,38 @@ const _workspaceIgnoreConfigKeys = Object.freeze([
 ]);
 
 export default class ExtensionCore extends EventEmitter<Events> implements Disposable {
-  constructor() {
+  constructor(readonly context: ExtensionContext) {
     super({ captureRejections: true });
+
+    context.subscriptions.push(this);
+
+    this.globalStorage = new GlobalStateStorage(context.globalState);
+    this.workspaceStorage = new StateStorage(context.workspaceState);
+    this.secrets = new SecretStorageImpl(context.secrets);
+
+    this.auth = new AuthenticationProviderContainer(this);
+
+    this.statusBar = new DiscloudStatusBarItem(this);
+
+    const version = this.context.extension.packageJSON.version;
+
+    const userAgent = new UserAgent(version);
+
+    this.api = new DiscloudApi(this, { userAgent });
+
+    this.customDomainTree = new CustomDomainTreeDataProvider(this);
+    this.subDomainTree = new SubDomainTreeDataProvider(this);
+    this.teamAppTree = new TeamAppTreeDataProvider(this);
+    this.userAppTree = new UserAppTreeDataProvider(this);
+    this.userTree = new UserTreeDataProvider(this);
   }
 
   declare readonly auth: AuthenticationProviderContainer;
-  declare readonly context: ExtensionContext;
   declare readonly secrets: SecretStorage;
   declare readonly globalStorage: StateStorage & IGlobalStateStorage;
   declare readonly workspaceStorage: StateStorage;
 
-  declare readonly api: REST;
+  declare readonly api: DiscloudApi;
 
   declare readonly statusBar: DiscloudStatusBarItem;
 
@@ -54,7 +75,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   declare readonly userTree: UserTreeDataProvider;
 
   readonly timers = new TimerMap();
-  readonly user = new VSUser();
+  readonly user = new VSUser(this);
 
   get config() {
     return workspace.getConfiguration("discloud");
@@ -148,58 +169,14 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     if (picked) return picked.uri;
   }
 
-  async activate(context: ExtensionContext = this.context) {
-    Object.defineProperties(this, { context: { value: context } });
-
+  async activate() {
     this.logger.debug("Activate: begin");
 
-    const globalStorage = new GlobalStateStorage(context.globalState);
-
-    const workspaceStorage = new StateStorage(context.workspaceState);
-
-    const secrets = new SecretStorageImpl(context.secrets);
-
-    Object.defineProperties(this, {
-      globalStorage: { value: globalStorage },
-      workspaceStorage: { value: workspaceStorage },
-      secrets: { value: secrets },
-    });
-
-    const auth = new AuthenticationProviderContainer(this);
-
-    Object.defineProperties(this, { auth: { value: auth } });
-
-    const statusBarItem = new DiscloudStatusBarItem(this);
-
-    statusBarItem.setLoading();
-
-    Object.defineProperties(this, { statusBar: { value: statusBarItem } });
-
-    const version = context.extension.packageJSON.version;
-
-    const userAgent = new UserAgent(version);
-
-    const api = new REST(this, { userAgent });
-
-    Object.defineProperties(this, { api: { value: api } });
+    this.statusBar.setLoading();
 
     await loadEvents(this);
     await commandsRegister(this);
 
-    const customDomainTree = new CustomDomainTreeDataProvider(context);
-    const subDomainTree = new SubDomainTreeDataProvider(context);
-    const teamAppTree = new TeamAppTreeDataProvider(this);
-    const userAppTree = new UserAppTreeDataProvider(this);
-    const userTree = new UserTreeDataProvider(context);
-
-    Object.defineProperties(this, {
-      customDomainTree: { value: customDomainTree },
-      subDomainTree: { value: subDomainTree },
-      teamAppTree: { value: teamAppTree },
-      userAppTree: { value: userAppTree },
-      userTree: { value: userTree },
-    });
-
-    this.emit("activate", this, context);
+    this.emit("activate", this, this.context);
   }
 }

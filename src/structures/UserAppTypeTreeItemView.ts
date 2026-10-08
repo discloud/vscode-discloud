@@ -1,12 +1,13 @@
 import { t } from "@vscode/l10n";
-import { type ExtensionContext, TreeItemCollapsibleState } from "vscode";
+import { TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
+import type ExtensionCore from "../core/extension";
 import BaseTreeItem from "./BaseTreeItem";
 import type UserAppTreeItem from "./UserAppTreeItem";
 
 export default class AppTypeTreeItemView extends BaseTreeItem<UserAppTreeItem> {
-  constructor(context: ExtensionContext, readonly type: AppType) {
-    super(context, t(AppType[type]), TreeItemCollapsibleState.Expanded);
+  constructor(core: ExtensionCore, readonly type: AppType) {
+    super(core, t(AppType[type]), TreeItemCollapsibleState.Expanded);
     this.contextValue = this.contextKey;
   }
 

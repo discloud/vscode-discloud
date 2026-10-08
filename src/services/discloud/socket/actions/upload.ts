@@ -49,7 +49,7 @@ export async function socketUpload(core: ExtensionCore, task: TaskData, buffer: 
 
     logger.show(true);
 
-    const ws = new SocketClient<SocketEventUploadData>(url)
+    const ws = new SocketClient<SocketEventUploadData>(core, url)
       .once(SocketEvents.close, async (code, _reason) => {
         debug(SocketEvents.close, code);
 

@@ -13,7 +13,7 @@ type Item = TeamAppTreeItem
 
 export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> {
   constructor(readonly core: ExtensionCore) {
-    super(core.context, TreeViewIds.discloudTeamApps);
+    super(core, TreeViewIds.discloudTeamApps);
   }
 
   get size() {
@@ -145,7 +145,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
 
       if (returnBoolean) return false;
     } else {
-      const child = new TeamAppTreeItem(this.context, data);
+      const child = new TeamAppTreeItem(this.core, data);
 
       this.children.set(data.id, child);
 
@@ -228,7 +228,7 @@ export default class TeamAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   init() {
     this.children.dispose();
 
-    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem(this.context) as Item);
+    this.children.set(EMPTY_TREE_ITEM_ID, new EmptyAppListTreeItem(this.core) as Item);
 
     this.refresh();
   }

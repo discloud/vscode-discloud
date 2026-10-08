@@ -22,9 +22,7 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
     if (event.affectsConfiguration(_discloudAppSeparateByType)) return core.userAppTree.refresh();
 
     if (event.affectsConfiguration(_discloudAppShowAvatarInsteadStatus)) {
-      for (const app of core.userAppTree.children.values()) {
-        app._patch({});
-      }
+      for (const app of core.userAppTree.children.values()) app._patch({});
 
       return core.userAppTree.refresh();
     }
@@ -41,8 +39,6 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
     }
   }, null, context.subscriptions);
 
-  core.logger.debug("Activate: done");
-
   await migrateAuthenticationProvider(core);
 
   const session = await core.auth.getSession();
@@ -54,6 +50,8 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
   }
 
   await core.setContext(ExtensionContextId.discloudInitialized, true);
+
+  core.logger.debug("Activate: done");
 }
 
 async function migrateAuthenticationProvider(core: ExtensionCore) {

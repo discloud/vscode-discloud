@@ -1,14 +1,15 @@
 import { t } from "@vscode/l10n";
-import { type ExtensionContext, TreeItemCollapsibleState, Uri } from "vscode";
+import { TreeItemCollapsibleState, Uri } from "vscode";
 import type { ApiVscodeUser, UserTreeItemData } from "../@types";
+import type ExtensionCore from "../core/extension";
 import BaseTreeItem from "./BaseTreeItem";
 import UserChildTreeItem from "./UserChildTreeItem";
 
 export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
-  constructor(context: ExtensionContext, readonly data: Partial<UserTreeItemData> & ApiVscodeUser) {
+  constructor(core: ExtensionCore, readonly data: Partial<UserTreeItemData> & ApiVscodeUser) {
     data.label = data.userID;
 
-    super(context, data.label, data.collapsibleState);
+    super(core, data.label, data.collapsibleState);
 
     this.userID = data.userID;
 
@@ -109,6 +110,6 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
       return;
     }
 
-    this.children.set(id, new UserChildTreeItem(this.context, data));
+    this.children.set(id, new UserChildTreeItem(this.core.context, data));
   }
 }
