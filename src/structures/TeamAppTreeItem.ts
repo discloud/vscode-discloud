@@ -1,10 +1,10 @@
 import { type ApiStatusApp, type ApiTeamApp, type BaseApiApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage, ModPermissionsBF, type ModPermissionsResolvable } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, type ExtensionContext, type LogOutputChannel } from "vscode";
+import { TreeItemCollapsibleState, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 import lazy from "../utils/lazy";
 import { getIconName } from "../utils/utils";
 import { getIconPath } from "../utils/vscode";
@@ -14,10 +14,10 @@ import TeamAppChildTreeItem from "./TeamAppChildTreeItem";
 const lazyAllModPermissions = lazy(() => ModPermissionsBF.All.toArray());
 
 export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> {
-  constructor(context: ExtensionContext, readonly data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp> & BaseApiApp) {
+  constructor(core: ExtensionCore, readonly data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp> & BaseApiApp) {
     data.label ??= data.appId ?? data.id;
 
-    super(context, data.label, data.collapsibleState);
+    super(core, data.label, data.collapsibleState);
 
     this.appId = data.appId ??= data.id;
 
@@ -30,7 +30,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
 
   #output?: LogOutputChannel;
   get output() {
-    return this.#output ??= core.getLogOutputChannel(this.appId);
+    return this.#output ??= this.core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
@@ -63,7 +63,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = getIconPath(this.context, this.iconName);
+    this.iconPath = getIconPath(this.core.context, this.iconName);
 
     this.tooltip = t(`app.status.${this.iconName}`) + " - " + this.label;
 
@@ -131,7 +131,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
         description: t("permissions"),
         appId: this.appId,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-        children: data.perms.map(perm => new TeamAppChildTreeItem(this.context, {
+        children: data.perms.map(perm => new TeamAppChildTreeItem(this.core.context, {
           label: t(`permission.${perm}`),
           appId: this.appId,
           appType: this.type,
@@ -163,6 +163,6 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
       return;
     }
 
-    this.children.set(id, new TeamAppChildTreeItem(this.context, <TeamAppChildTreeItemData>data));
+    this.children.set(id, new TeamAppChildTreeItem(this.core.context, <TeamAppChildTreeItemData>data));
   }
 }

@@ -1,4 +1,4 @@
-import type { ExtensionContext } from "vscode";
+import type ExtensionCore from "../core/extension";
 import SubDomainTreeItem from "../structures/SubDomainTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -6,8 +6,8 @@ import BaseTreeDataProvider from "./BaseTreeDataProvider";
 type Item = SubDomainTreeItem
 
 export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<Item> {
-  constructor(context: ExtensionContext) {
-    super(context, TreeViewIds.discloudSubdomains);
+  constructor(core: ExtensionCore) {
+    super(core, TreeViewIds.discloudSubdomains);
   }
 
   private clean(data: string[]) {
@@ -24,7 +24,7 @@ export default class SubDomainTreeDataProvider extends BaseTreeDataProvider<Item
     this.clean(data);
 
     for (const subdomain of data) {
-      this.children.set(subdomain, new SubDomainTreeItem(this.context, {
+      this.children.set(subdomain, new SubDomainTreeItem(this.core, {
         label: subdomain,
         subdomain,
       }));

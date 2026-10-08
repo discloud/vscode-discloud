@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { type ClientRequestArgs } from "http";
 import type vscode from "vscode";
 import WebSocket from "ws";
-import core from "../../../extension";
+import type ExtensionCore from "../../../core/extension";
 import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_ABNORMAL_CLOSURE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import { SocketEvents } from "./enum/events";
 import BufferOverflowError from "./errors/BufferOverflow";
@@ -14,7 +14,7 @@ import type { BufferLike, OnProgressCallback, ProgressData, SocketEventsMap, Soc
 export default class SocketClient<Data extends Record<any, any> = Record<any, any>>
   extends EventEmitter<SocketEventsMap<Data>>
   implements vscode.Disposable, Disposable {
-  constructor(protected wsURL: URL, options?: SocketOptions) {
+  constructor(readonly core: ExtensionCore, protected wsURL: URL, options?: SocketOptions) {
     super({ captureRejections: true });
 
     if (options) {
@@ -197,10 +197,10 @@ export default class SocketClient<Data extends Record<any, any> = Record<any, an
   }
 
   async #resolveHeaders(headers: Record<string, string>) {
-    headers["api-token"] ??= (await core.api.getToken())!;
+    headers["api-token"] ??= (await this.core.api.getToken())!;
 
-    if (core.api.options.userAgent)
-      headers["User-Agent"] = core.api.options.userAgent.toString();
+    if (this.core.api.options.userAgent)
+      headers["User-Agent"] = this.core.api.options.userAgent.toString();
 
     return headers;
   }

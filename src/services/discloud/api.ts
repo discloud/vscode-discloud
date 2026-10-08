@@ -13,7 +13,7 @@ const _defaultRateLimitLimit = 60;
 const _minimumRateRemaining = 1;
 const _sInMs = 1_000;
 
-export default class REST extends EventEmitter {
+export default class DiscloudApi extends EventEmitter {
   constructor(readonly core: ExtensionCore, options?: Partial<RESTOptions>) {
     super({ captureRejections: true });
 

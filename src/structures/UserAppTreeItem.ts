@@ -1,10 +1,10 @@
 import { type ApiStatusApp } from "@discloudapp/api-types/v2";
 import { calculatePercentage } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { TreeItemCollapsibleState, Uri, type ExtensionContext, type LogOutputChannel } from "vscode";
+import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { ApiVscodeApp, UserAppChildTreeItemData, UserAppTreeItemData } from "../@types";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName } from "../utils/utils";
 import { getIconPath } from "../utils/vscode";
@@ -12,10 +12,10 @@ import BaseTreeItem from "./BaseTreeItem";
 import UserAppChildTreeItem from "./UserAppChildTreeItem";
 
 export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> {
-  constructor(context: ExtensionContext, public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
+  constructor(core: ExtensionCore, public readonly data: Partial<UserAppTreeItemData & ApiStatusApp> & ApiVscodeApp) {
     data.label ??= data.appId ?? data.id;
 
-    super(context, data.label, data.collapsibleState);
+    super(core, data.label, data.collapsibleState);
 
     this.appId = data.appId ??= data.id;
 
@@ -30,7 +30,7 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
 
   #output?: LogOutputChannel;
   get output() {
-    return this.#output ??= core.getLogOutputChannel(this.appId);
+    return this.#output ??= this.core.getLogOutputChannel(this.appId);
   }
 
   dispose() {
@@ -62,11 +62,11 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       this.label = this.type === AppType.bot ? `${data.name} (${this.appId})` : this.appId;
 
     this.iconName = getIconName(this.data) ?? "off";
-    this.iconPath = getIconPath(this.context, this.iconName);
+    this.iconPath = getIconPath(this.core.context, this.iconName);
 
     this.contextValue = `${this.contextKey}.${JSON.stringify(this.contextJSON)}`;
 
-    const showAvatar = core.config.get<string>(ConfigKeys.appShowAvatarInsteadStatus);
+    const showAvatar = this.core.config.get<string>(ConfigKeys.appShowAvatarInsteadStatus);
 
     switch (showAvatar) {
       case "always": {
@@ -163,6 +163,6 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
       return;
     }
 
-    this.children.set(id, new UserAppChildTreeItem(this.context, <UserAppChildTreeItemData>data));
+    this.children.set(id, new UserAppChildTreeItem(this.core.context, <UserAppChildTreeItemData>data));
   }
 }

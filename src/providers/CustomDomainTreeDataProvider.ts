@@ -1,4 +1,4 @@
-import type { ExtensionContext } from "vscode";
+import type ExtensionCore from "../core/extension";
 import CustomDomainTreeItem from "../structures/CustomDomainTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
@@ -6,8 +6,8 @@ import BaseTreeDataProvider from "./BaseTreeDataProvider";
 type Item = CustomDomainTreeItem;
 
 export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<Item> {
-  constructor(context: ExtensionContext) {
-    super(context, TreeViewIds.discloudDomains);
+  constructor(core: ExtensionCore) {
+    super(core, TreeViewIds.discloudDomains);
   }
 
   private clean(data: string[]) {
@@ -24,7 +24,7 @@ export default class CustomDomainTreeDataProvider extends BaseTreeDataProvider<I
     this.clean(data);
 
     for (const domain of data) {
-      this.children.set(domain, new CustomDomainTreeItem(this.context, {
+      this.children.set(domain, new CustomDomainTreeItem(this.core, {
         label: domain,
         domain,
       }));

@@ -1,9 +1,11 @@
 import { type RESTPutApiLocaleResult, Routes } from "@discloudapp/api-types/v2";
 import type { ApiVscodeApp, ApiVscodeUser, RESTGetApiVscode } from "../@types";
-import core from "../extension";
+import type ExtensionCore from "../core/extension";
 import { GlobalStorageKeys, ONE_MINUTE_IN_MILLISECONDS, TEN_SECONDS_IN_MILLISECONDS } from "../utils/constants";
 
 export default class VSUser implements ApiVscodeUser {
+  constructor(readonly core: ExtensionCore) { }
+
   readonly apps: string[] = [];
   readonly appsStatus: ApiVscodeApp[] = [];
   readonly appsTeam: string[] = [];
@@ -21,7 +23,7 @@ export default class VSUser implements ApiVscodeUser {
   #fetchTimestamp!: number;
 
   #upsertFetchTimestamp(currentTimestampValue: number) {
-    return core.globalStorage.upsert<number>(GlobalStorageKeys.fetchUserTimestamp, currentTimestampValue);
+    return this.core.globalStorage.upsert<number>(GlobalStorageKeys.fetchUserTimestamp, currentTimestampValue);
   }
 
   async fetch(isInternal?: boolean) {
@@ -33,12 +35,12 @@ export default class VSUser implements ApiVscodeUser {
     let cachedUser;
 
     if (!isDefinedFetchTimestamp) {
-      cachedUser = core.globalStorage.get<ApiVscodeUser>("user");
+      cachedUser = this.core.globalStorage.get<ApiVscodeUser>("user");
 
       if (cachedUser) {
         Object.assign(this, cachedUser);
 
-        core.emit("vscode", core, this);
+        this.core.emit("vscode", this.core, this);
 
         if (isFetchTimeLessThanOneMinuteAgo) return this;
       }
@@ -46,25 +48,25 @@ export default class VSUser implements ApiVscodeUser {
 
     if (!isInternal && isFetchTimeLessThanTenSecondsAgo) return this;
 
-    const method: keyof typeof core.api = isInternal ? "queueGet" : "get";
+    const method: keyof typeof this.core.api = isInternal ? "queueGet" : "get";
 
-    const response = await core.api[method]<RESTGetApiVscode>("/vscode");
+    const response = await this.core.api[method]<RESTGetApiVscode>("/vscode");
 
     if (!response) return this;
 
     if ("user" in response) {
-      await core.globalStorage.update("user", response.user);
+      await this.core.globalStorage.update("user", response.user);
 
       Object.assign(this, response.user);
 
-      core.emit("vscode", core, this);
+      this.core.emit("vscode", this.core, this);
     }
 
     return this;
   }
 
   async setLocale(locale: string) {
-    const response = await core.api.put<RESTPutApiLocaleResult>(Routes.locale(locale));
+    const response = await this.core.api.put<RESTPutApiLocaleResult>(Routes.locale(locale));
     if (!response) return null;
 
     if ("locale" in response)

@@ -51,7 +51,7 @@ export async function socketCommit(core: ExtensionCore, task: TaskData, buffer: 
 
     app.output.show(true);
 
-    const ws = new SocketClient<SocketEventUploadData>(url)
+    const ws = new SocketClient<SocketEventUploadData>(core, url)
       .once(SocketEvents.close, async (code, reason) => {
         debug(SocketEvents.close, code);
 
