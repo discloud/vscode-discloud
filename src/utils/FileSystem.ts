@@ -1,7 +1,16 @@
 import { dirname, join } from "path";
-import { commands, env, FileType, workspace, type CancellationToken, type Uri } from "vscode";
+import { commands, env, FileType, Uri, window, workspace, type CancellationToken } from "vscode";
+import type { GetWorkspaceFolderOptions } from "../@types";
 import { BLOCKED_FILES } from "./constants";
 import lazy from "./lazy";
+
+const _commentRegexp = /\s*#.*/g;
+const _dot = ".";
+const _emptyString = "";
+const _glob = "**";
+const _lineBreakRegexp = /[\r\n]+/;
+const _one = 1;
+const _zero = 0;
 
 const lazyDefaultBlockedFiles = lazy(() => Array.from(new Set(Object.values(BLOCKED_FILES).flat())));
 const lazyDefaultBlockedFilesPattern = lazy(() => `{${lazyDefaultBlockedFiles().join(",")}}`);
@@ -14,11 +23,6 @@ export interface FileSystemOptions {
 }
 
 export default class FileSystem {
-  declare readonly ignoreFile?: string;
-  readonly ignoreList = new Set<string>(lazyDefaultBlockedFiles());
-  readonly patterns = new Set("**");
-  readonly found: Uri[] = [];
-
   constructor(readonly options: FileSystemOptions = {}) {
     if (!options) options = {};
 
@@ -39,6 +43,11 @@ export default class FileSystem {
     }
   }
 
+  declare readonly ignoreFile?: string;
+  readonly ignoreList = new Set<string>(lazyDefaultBlockedFiles());
+  readonly patterns = new Set(_glob);
+  readonly found: Uri[] = [];
+
   get ignorePattern() {
     return `{${Array.from(this.ignoreList)}}`;
   }
@@ -58,7 +67,7 @@ export default class FileSystem {
     for (const pattern of this.patterns) {
       promises.push(
         workspace.findFiles(pattern, ignorePattern, undefined, token), // search a single file
-        workspace.findFiles(join(pattern, "**"), ignorePattern, undefined, token), // recursively search the directory
+        workspace.findFiles(join(pattern, _glob), ignorePattern, undefined, token), // recursively search the directory
       );
     }
 
@@ -99,7 +108,7 @@ export default class FileSystem {
 
     if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
 
-    const files = await workspace.findFiles(join("**", filename), ignoreList, undefined, token);
+    const files = await workspace.findFiles(join(_glob, filename), ignoreList, undefined, token);
 
     const result = new Set<string>();
 
@@ -113,8 +122,8 @@ export default class FileSystem {
       const fileBuffer = await workspace.fs.readFile(file);
 
       const patterns = fileBuffer.toString()
-        .replace(/\s*#.*/g, "")
-        .split(/[\r\n]+/);
+        .replace(_commentRegexp, _emptyString)
+        .split(_lineBreakRegexp);
 
       for (const pattern of patterns) {
         result.add(join(relativeFolder, pattern));
@@ -124,11 +133,37 @@ export default class FileSystem {
     return Array.from(result);
   }
 
+  static async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
+    options ??= {};
+
+    if (options.uri instanceof Uri) {
+      const folder = workspace.getWorkspaceFolder(options.uri);
+      if (folder) return folder.uri;
+    }
+
+    const folders = workspace.workspaceFolders;
+    if (!folders?.length) return;
+    if (folders.length === _one) return folders[_zero].uri;
+
+    options.allowReadSelectedPath ??= true;
+
+    if (options.allowReadSelectedPath) {
+      const [filePath] = await FileSystem.readSelectedPath(false);
+      if (filePath && filePath !== _dot)
+        return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
+    }
+
+    if (options.silent || options.token?.isCancellationRequested) return;
+
+    const picked = await window.showWorkspaceFolderPick();
+    if (picked) return picked.uri;
+  }
+
   static readSelectedPath(relative?: true): Promise<string[]>
   static readSelectedPath(relative: boolean): Promise<string[]>
   static async readSelectedPath(relative: boolean = true) {
     await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
     const copied = await env.clipboard.readText();
-    return copied.split(/[\r\n]+/);
+    return copied.split(_lineBreakRegexp);
   }
 }

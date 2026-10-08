@@ -8,6 +8,7 @@ import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../structures/UserAppTreeItem";
 import { pickApp } from "../utils/apps";
+import FileSystem from "../utils/FileSystem";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -21,7 +22,7 @@ export default class extends Command {
 
   async run(task: TaskData, item?: UserAppTreeItem | TeamAppTreeItem) {
     if (!item) {
-      const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
+      const workspaceFolder = await FileSystem.getWorkspaceFolder({ silent: true });
       if (workspaceFolder) {
         const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 

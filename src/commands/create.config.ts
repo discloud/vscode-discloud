@@ -4,6 +4,7 @@ import { Uri, workspace } from "vscode";
 import type ExtensionCore from "../core/extension";
 import WarningError from "../errors/warning";
 import Command from "../structures/Command";
+import FileSystem from "../utils/FileSystem";
 
 export default class extends Command {
   constructor(core: ExtensionCore) {
@@ -13,7 +14,7 @@ export default class extends Command {
   }
 
   async run() {
-    const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true });
+    const workspaceFolder = await FileSystem.getWorkspaceFolder({ silent: true });
     if (!workspaceFolder) throw Error(t("no.workspace.folder.found"));
 
     const findConfig = await workspace.findFiles(DiscloudConfig.filename, null, 1);

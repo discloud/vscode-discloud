@@ -6,6 +6,7 @@ import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type Works
 import type { StatusBarItemData, StatusBarItemOptions } from "../@types";
 import type ExtensionCore from "../core/extension";
 import { ConfigKeys } from "../utils/constants";
+import FileSystem from "../utils/FileSystem";
 import lazy from "../utils/lazy";
 import BaseStatusBarItem from "./BaseStatusBarItem";
 
@@ -153,7 +154,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   protected async _setConfigDefault(uri?: Uri) {
     if (this._status !== Status.Regular) return false;
 
-    const workspaceFolder = await this.core.getWorkspaceFolder({ silent: true, uri });
+    const workspaceFolder = await FileSystem.getWorkspaceFolder({ silent: true, uri });
 
     if (!workspaceFolder) return false;
 
