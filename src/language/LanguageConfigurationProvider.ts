@@ -8,7 +8,6 @@ import BaseLanguageProvider from "./BaseLanguageProvider";
 const _assignSymbol = "=";
 const _commentPattern = /\s*#.*$/;
 const _emptyString = "";
-const _negativeOne = -1;
 const _parentSegment = "..";
 
 const _lazyRange0000 = lazy(() => new Range(new Position(0, 0), new Position(0, 0)));
@@ -69,7 +68,7 @@ export default class LanguageConfigurationProvider extends BaseLanguageProvider 
 
       const errorIndex = result.errors.findIndex(e => e.data.key === key || e.data.pointer.endsWith(key));
 
-      if (errorIndex !== _negativeOne) {
+      if (errorIndex !== -1) {
         const error = result.errors.splice(errorIndex, 1)[0];
 
         diagnostics.push({
