@@ -23,8 +23,6 @@ enum Status {
   Limited,
 }
 
-const _loadingIconId = "$(loading~spin)";
-
 const _textCommittingKey = "status.text.committing";
 const _textLoadingKey = "status.text.loading";
 const _textLoginKey = "status.text.login";
@@ -51,11 +49,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   constructor(readonly core: ExtensionCore, data?: Partial<StatusBarItemOptions>) {
     super(core.context, Object.assign(defaultOptions(), data));
 
-    if (workspace.workspaceFolders?.length) {
-      this.show();
-    } else {
-      this.hide();
-    }
+    this.#toggleStatusBarVisibility();
 
     let lastWorkspaceFolder!: WorkspaceFolder | undefined;
     window.onDidChangeActiveTextEditor(async (editor) => {
@@ -71,8 +65,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
         return await this.setDefault(editor.document.uri);
       }
 
-      const folders = workspace.workspaceFolders;
-      if (folders && folders.length > 1) await this.setDefault();
+      if (this.#hasWorkspaceAvailable) await this.setDefault();
     }, null, this.context.subscriptions);
 
     workspace.onDidOpenTextDocument((document) => {
@@ -82,13 +75,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
       return this.setDefault(document.uri);
     }, null, this.context.subscriptions);
 
-    workspace.onDidChangeWorkspaceFolders(() => {
-      if (this.#hasWorkspaceAvailable) {
-        this.show();
-      } else {
-        this.hide();
-      }
-    }, null, this.context.subscriptions);
+    workspace.onDidChangeWorkspaceFolders((_event) =>
+      this.#toggleStatusBarVisibility(), null, this.context.subscriptions);
   }
 
   declare protected _status: Status;
@@ -98,6 +86,14 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   get loading() { return this._status === Status.Loading; }
 
   get #hasWorkspaceAvailable() { return Boolean(workspace.workspaceFolders?.length); }
+
+  #toggleStatusBarVisibility() {
+    if (this.#hasWorkspaceAvailable) {
+      this.show();
+    } else {
+      this.hide();
+    }
+  }
 
   async reset() {
     if (this.limited) return;
