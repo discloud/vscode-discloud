@@ -1,7 +1,3 @@
-import { type AuthenticationProvider, type AuthenticationSession, type AuthenticationSessionAccountInformation } from "vscode";
+import type { IAuthenticationProvider } from "./provider";
 
-export interface IPatAuthenticationProvider extends AuthenticationProvider {
-  clearSession(account?: AuthenticationSessionAccountInformation): Thenable<void>
-  getSession(account?: AuthenticationSessionAccountInformation): Thenable<AuthenticationSession | undefined>
-  validate(session: AuthenticationSession): Thenable<void>
-}
+export interface IPatAuthenticationProvider extends IAuthenticationProvider { }

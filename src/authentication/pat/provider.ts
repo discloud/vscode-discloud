@@ -1,6 +1,6 @@
 import { type RESTGetApiUserResult, RouteBases, Routes } from "@discloudapp/api-types/v2";
 import { t } from "@vscode/l10n";
-import { authentication, type AuthenticationProvider, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type EventEmitter, type SecretStorage, window } from "vscode";
+import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, type EventEmitter, type SecretStorage, window } from "vscode";
 import type { IGlobalStateStorage } from "../../@types";
 import { tokenIsDiscloudJwt } from "../../services/discloud/utils";
 import { GlobalStorageKeys } from "../../utils/constants";
@@ -16,7 +16,7 @@ const defaultSessionAccount: AuthenticationSessionAccountInformation = {
   label: "Unknown Discloud User",
 };
 
-export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider, AuthenticationProvider {
+export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
   constructor(
     protected readonly emitter: EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>,
     protected readonly secrets: SecretStorage,
@@ -185,8 +185,12 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     if (session) this.removeSession(session.id);
   }
 
-  async getSession(account?: AuthenticationSessionAccountInformation) {
+  getSession(account?: AuthenticationSessionAccountInformation) {
     return authentication.getSession(providerId, [], { account, silent: true });
+  }
+
+  async hasSession() {
+    return Boolean(await this.getSession());
   }
 
   async validate(session: AuthenticationSession) {
