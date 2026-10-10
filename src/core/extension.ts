@@ -4,7 +4,7 @@ import { normalize } from "path";
 import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, window, workspace } from "vscode";
 import { type ExtensionContextId } from "../@enum";
 import type { Events, IGlobalStateStorage, TaskData } from "../@types";
-import AuthenticationProviderContainer from "../authentication/providers";
+import AuthenticationProviderAdapter from "../authentication/adapter";
 import { commandsRegister } from "../commands";
 import { loadEvents } from "../events";
 import DiscloudLogOutputChannel from "../output/LogOutputChannel";
@@ -41,7 +41,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     this.workspaceStorage = new StateStorage(context.workspaceState);
     this.secrets = new SecretStorageImpl(context.secrets);
 
-    this.auth = new AuthenticationProviderContainer(this);
+    this.auth = new AuthenticationProviderAdapter(this);
 
     this.statusBar = new DiscloudStatusBarItem(this);
 
@@ -58,7 +58,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     this.userTree = new UserTreeDataProvider(this);
   }
 
-  declare readonly auth: AuthenticationProviderContainer;
+  declare readonly auth: AuthenticationProviderAdapter;
   declare readonly secrets: SecretStorage;
   declare readonly globalStorage: StateStorage & IGlobalStateStorage;
   declare readonly workspaceStorage: StateStorage;
