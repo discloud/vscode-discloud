@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.29.16
+
+- Pequenas melhorias e correções
+
 ## 2.29.15
 
 - Melhorias na inicialização
