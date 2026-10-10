@@ -3,13 +3,13 @@ import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation } from "vscode";
 import type { TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
+import AppPicker from "../dialogs/AppPicker";
 import { socketCommit } from "../services/discloud/socket/actions/commit";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../structures/UserAppTreeItem";
 import FileSystem from "../utils/FileSystem";
 import Zip from "../utils/Zip";
-import { pickApp } from "../utils/apps";
 import { ApiActionsStrategy, ConfigKeys } from "../utils/constants";
 
 export default class extends Command {
@@ -33,7 +33,8 @@ export default class extends Command {
 
     this.core.statusBar.setCommitting();
 
-    const item = await pickApp(this.core, { token: task.token });
+    const appPicker = new AppPicker(this.core);
+    const item = await appPicker.pickApp({ token: task.token });
     if (!item) throw Error(t("missing.appid"));
 
     task.progress.report({ increment: 30, message: t("files.checking") });

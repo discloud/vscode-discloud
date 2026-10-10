@@ -239,13 +239,13 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
     this.editRawApp(appId, response.apps);
   }
 
-  async fetch() {
+  async fetch(isInternal?: boolean) {
     await window.withProgress({
       location: { viewId: this.viewId },
       title: t("refreshing"),
     }, async () => {
       this.core.statusBar.setLoading();
-      await this.core.user.fetch(true);
+      await this.core.user.fetch(isInternal);
       this.core.statusBar.reset();
     });
   }

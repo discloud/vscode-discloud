@@ -6,7 +6,7 @@ import { AuthenticationProviderId } from "./enum/providers";
 import type { IAuthenticationProvider } from "./interfaces/provider";
 import DiscloudPatAuthenticationProvider from "./providers/pat";
 
-export default class AuthenticationProviderAdapter implements IAuthenticationProvider {
+export default class DiscloudAuthenticationProvider implements IAuthenticationProvider {
   constructor(
     readonly core: ExtensionCore,
   ) {
