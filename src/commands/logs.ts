@@ -4,10 +4,10 @@ import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
 import type { TaskData } from "../@types";
 import type ExtensionCore from "../core/extension";
+import AppPicker from "../dialogs/AppPicker";
 import Command from "../structures/Command";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../structures/UserAppTreeItem";
-import { pickApp } from "../utils/apps";
 import FileSystem from "../utils/FileSystem";
 
 export default class extends Command {
@@ -32,7 +32,8 @@ export default class extends Command {
 
         if (!item) throw Error(t("missing.appid"));
       } else {
-        item = await pickApp(this.core, {
+        const appPicker = new AppPicker(this.core);
+        item = await appPicker.pickApp({
           noCached: true,
           throwOnCancel: true,
           token: task.token,
