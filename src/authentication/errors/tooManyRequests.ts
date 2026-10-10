@@ -1,11 +1,5 @@
-import BaseAuthenticationError from "./base";
-
-export default class TooManyRequestsError extends BaseAuthenticationError {
+export default class TooManyRequestsError {
   static readonly code = 429;
 
   readonly name = "Too Many Requests";
-
-  constructor() {
-    super();
-  }
 }

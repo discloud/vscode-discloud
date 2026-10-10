@@ -1,12 +1,12 @@
-export default class BaseAuthenticationError extends Error {
-  static async fromStatusCode(statusCode: number) {
-    const { default: UnauthorizedError } = await import("./unauthorized");
-    const { default: NotFoundError } = await import("./notFound");
-    const { default: TooManyRequestsError } = await import("./tooManyRequests");
-    const { default: InternalServerError } = await import("./internalServer");
-    const { default: BadGatewayError } = await import("./badGateway");
-    const { default: UnknownError } = await import("./unknown");
+import BadGatewayError from "./badGateway";
+import InternalServerError from "./internalServer";
+import NotFoundError from "./notFound";
+import TooManyRequestsError from "./tooManyRequests";
+import UnauthorizedError from "./unauthorized";
+import UnknownError from "./unknown";
 
+export default abstract class BaseAuthenticationError {
+  static async fromStatusCode(statusCode: number) {
     switch (statusCode) {
       case UnauthorizedError.code:
         return new UnauthorizedError();

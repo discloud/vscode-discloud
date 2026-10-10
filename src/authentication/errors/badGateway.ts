@@ -1,11 +1,5 @@
-import BaseAuthenticationError from "./base";
-
-export default class BadGatewayError extends BaseAuthenticationError {
+export default class BadGatewayError {
   static readonly code = 502;
 
   readonly name = "Bad Gateway";
-
-  constructor() {
-    super();
-  }
 }
