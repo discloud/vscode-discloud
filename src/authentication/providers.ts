@@ -1,12 +1,13 @@
 import { t } from "@vscode/l10n";
-import { authentication, type AuthenticationProvider, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter } from "vscode";
+import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter } from "vscode";
 import type ExtensionCore from "../core/extension";
 import { GlobalStorageKeys } from "../utils/constants";
 import { AuthenticationProviderId } from "./enum/providers";
 import type { IPatAuthenticationProvider } from "./interfaces/pat";
+import { type IAuthenticationProvider } from "./interfaces/provider";
 import DiscloudPatAuthenticationProvider from "./pat/provider";
 
-export default class AuthenticationProviderContainer implements AuthenticationProvider {
+export default class AuthenticationProviderContainer implements IAuthenticationProvider {
   constructor(
     readonly core: ExtensionCore,
   ) {
@@ -63,12 +64,16 @@ export default class AuthenticationProviderContainer implements AuthenticationPr
     return this._pat.removeSession(sessionId);
   }
 
+  clearSession(account?: AuthenticationSessionAccountInformation): Thenable<void> {
+    return this._pat.clearSession(account);
+  }
+
   getSession(account?: AuthenticationSessionAccountInformation): Thenable<AuthenticationSession | undefined> {
     return this._pat.getSession(account);
   }
 
-  clearSession(account?: AuthenticationSessionAccountInformation): Thenable<void> {
-    return this._pat.clearSession(account);
+  hasSession() {
+    return this._pat.hasSession();
   }
 
   validate(session: AuthenticationSession) {

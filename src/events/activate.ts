@@ -14,7 +14,7 @@ const _discloudStatusBarBehavior = "discloud.status.bar.behavior";
 export default async function (core: ExtensionCore, context: ExtensionContext) {
   queueMicrotask(() => BaseLanguageProvider.startProviders(context).catch(core.logger.error));
 
-  workspace.onDidChangeConfiguration(event => {
+  workspace.onDidChangeConfiguration(async function (event) {
     if (event.affectsConfiguration(_discloudAppSort)) return core.userAppTree.refresh();
 
     if (event.affectsConfiguration(_discloudTeamSort)) return core.teamAppTree.refresh();
@@ -31,20 +31,16 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
   }, null, context.subscriptions);
 
   // Refresh extension when session was removed
-  core.auth.onDidChangeSessions(async (event) => {
-    if (event.removed?.length) {
-      const session = await core.auth.getSession();
-      if (!session) core.emit("missingToken", core);
-      return;
-    }
+  core.auth.onDidChangeSessions(async function (event) {
+    if (event.removed?.length && !await core.auth.hasSession()) core.emit("missingToken", core);
   }, null, context.subscriptions);
 
   await migrateAuthenticationProvider(core);
 
-  const session = await core.auth.getSession();
+  const maybeSession = await core.auth.getSession();
 
-  if (session) {
-    await commands.executeCommand("discloud.login", session);
+  if (maybeSession) {
+    await commands.executeCommand("discloud.login", maybeSession);
   } else {
     core.statusBar.reset();
   }
