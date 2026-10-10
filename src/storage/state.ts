@@ -5,14 +5,22 @@ export default class StateStorage implements vscode.Memento {
     protected readonly state: vscode.Memento,
   ) { }
 
-  keys() {
-    return this.state.keys();
+  delete(key: string) {
+    return this.state.update(key, undefined);
   }
 
   get<T>(key: string): T | undefined;
   get<T>(key: string, defaultValue: T): T;
   get<T>(key: string, defaultValue?: T) {
     return this.state.get<T>(key, defaultValue!);
+  }
+
+  keys() {
+    return this.state.keys();
+  }
+
+  update<T>(key: string, value: T) {
+    return this.state.update(key, value);
   }
 
   /**
@@ -30,13 +38,5 @@ export default class StateStorage implements vscode.Memento {
     await this.state.update(key, currentValue);
     if (typeof cached === typeof currentValue) return cached;
     return currentValue;
-  }
-
-  update<T>(key: string, value: T) {
-    return this.state.update(key, value);
-  }
-
-  delete(key: string) {
-    return this.state.update(key, undefined);
   }
 }

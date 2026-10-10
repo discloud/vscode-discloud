@@ -3,11 +3,10 @@ import { authentication, type AuthenticationProviderAuthenticationSessionsChange
 import type ExtensionCore from "../core/extension";
 import { GlobalStorageKeys } from "../utils/constants";
 import { AuthenticationProviderId } from "./enum/providers";
-import type { IPatAuthenticationProvider } from "./interfaces/pat";
-import { type IAuthenticationProvider } from "./interfaces/provider";
-import DiscloudPatAuthenticationProvider from "./pat/provider";
+import type { IAuthenticationProvider } from "./interfaces/provider";
+import DiscloudPatAuthenticationProvider from "./providers/pat";
 
-export default class AuthenticationProviderContainer implements IAuthenticationProvider {
+export default class AuthenticationProviderAdapter implements IAuthenticationProvider {
   constructor(
     readonly core: ExtensionCore,
   ) {
@@ -15,6 +14,7 @@ export default class AuthenticationProviderContainer implements IAuthenticationP
 
     for (let i = 0; i < providerIds.length; i++) {
       const providerId = providerIds[i];
+
       core.context.subscriptions.push(
         authentication.registerAuthenticationProvider(
           providerId,
@@ -29,37 +29,38 @@ export default class AuthenticationProviderContainer implements IAuthenticationP
     core.context.subscriptions.push(this._emitter);
   }
 
-  protected readonly _pat: IPatAuthenticationProvider;
+  declare protected readonly _pat: IAuthenticationProvider;
 
   protected readonly _emitter = new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
-  /** @override {@link AuthenticationSession} */
+  /** @override {@link AuthenticationProvider} */
   get onDidChangeSessions() { return this._emitter.event; }
 
+  protected get _globalStorage() { return this.core.globalStorage; }
+
   protected _getCurrentAuthenticationProviderId() {
-    return this.core.globalStorage.get<AuthenticationProviderId>(GlobalStorageKeys.currentAutenticationProviderId);
+    return this._globalStorage.get<AuthenticationProviderId>(GlobalStorageKeys.currentAutenticationProviderId);
   }
 
   protected _getCurrentSessionId() {
-    return this.core.globalStorage.get<string>(GlobalStorageKeys.currentSessionId);
+    return this._globalStorage.get<string>(GlobalStorageKeys.currentSessionId);
   }
 
   protected _getCurrentSessionAccount(): AuthenticationSessionAccountInformation | undefined {
     const sessionId = this._getCurrentSessionId();
-    if (!sessionId) return;
-    return this.core.globalStorage.get(sessionId);
+    if (sessionId) return this._globalStorage.get(sessionId);
   }
 
-  /** @override {@link AuthenticationSession} */
+  /** @override {@link AuthenticationProvider} */
   createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession> {
     return this._pat.createSession(scopes, options);
   }
 
-  /** @override {@link AuthenticationSession} */
+  /** @override {@link AuthenticationProvider} */
   getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]> {
     return this._pat.getSessions(scopes, options);
   }
 
-  /** @override {@link AuthenticationSession} */
+  /** @override {@link AuthenticationProvider} */
   removeSession(sessionId: string): Thenable<void> {
     return this._pat.removeSession(sessionId);
   }

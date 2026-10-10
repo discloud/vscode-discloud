@@ -7,16 +7,16 @@ import { GlobalStorageKeys } from "../../utils/constants";
 import { AuthenticationProviderId } from "../enum/providers";
 import BaseAuthenticationError from "../errors/base";
 import UnauthorizedError from "../errors/unauthorized";
-import { type IPatAuthenticationProvider } from "../interfaces/pat";
+import type { IAuthenticationProvider } from "../interfaces/provider";
 import DiscloudAuthenticationSession from "../session";
 
-const providerId = AuthenticationProviderId.discloud;
-const defaultSessionAccount: AuthenticationSessionAccountInformation = {
+const _providerId = AuthenticationProviderId.discloud;
+const _defaultSessionAccount: AuthenticationSessionAccountInformation = {
   id: "Unknown Discloud User ID",
   label: "Unknown Discloud User",
 };
 
-export default class DiscloudPatAuthenticationProvider implements IPatAuthenticationProvider {
+export default class DiscloudPatAuthenticationProvider implements IAuthenticationProvider {
   constructor(
     protected readonly emitter: EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>,
     protected readonly secrets: SecretStorage,
@@ -25,12 +25,12 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
 
   get onDidChangeSessions() { return this.emitter.event; }
 
-  get #sessionIdList() {
+  #getSessionIdList() {
     return this.storage.get<string[]>(GlobalStorageKeys.sessionIdList, []);
   }
 
-  get #sessionIdSet() {
-    return new Set(this.#sessionIdList);
+  #getSessionIdSet() {
+    return new Set(this.#getSessionIdList());
   }
 
   protected _fire(data: Partial<AuthenticationProviderAuthenticationSessionsChangeEvent>): void;
@@ -41,7 +41,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   /** @override {@link AuthenticationProvider} */
   createSession(scopes: readonly string[], options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession>;
   async createSession(_scopes: readonly string[], _options: AuthenticationProviderSessionOptions) {
-    const sessionIdSet = this.#sessionIdSet;
+    const sessionIdSet = this.#getSessionIdSet();
 
     const currentTokens = new Set<string>();
     for (const sessionId of sessionIdSet) {
@@ -74,27 +74,27 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     const body = await response.json().catch(() => null) as RESTGetApiUserResult | null;
 
     const account: AuthenticationSessionAccountInformation = {
-      id: body?.user.userID ?? defaultSessionAccount.id,
-      label:
-        body?.user.username ?? body?.user.userID ?? defaultSessionAccount.label,
+      id: body?.user.userID ?? _defaultSessionAccount.id,
+      label: body?.user.username ?? body?.user.userID ?? _defaultSessionAccount.label,
     };
 
     const promises = [];
 
-    const newSessionId = `${providerId}.${account.id}`;
+    const newSessionId = `${_providerId}.${account.id}`;
 
     const oldSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
 
     if (oldSessionId !== newSessionId) {
-      sessionIdSet.add(newSessionId);
-
       if (oldSessionId) {
         sessionIdSet.delete(oldSessionId);
+
         promises.push(
           this.storage.update(oldSessionId, undefined),
           this.secrets.delete(oldSessionId),
         );
       }
+
+      sessionIdSet.add(newSessionId);
 
       promises.push(
         this.storage.update(GlobalStorageKeys.sessionIdList, Array.from(sessionIdSet)),
@@ -102,11 +102,13 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
       );
     }
 
-    await Promise.all(promises.concat(
-      this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, providerId),
+    promises.push(
+      this.storage.update(GlobalStorageKeys.currentAutenticationProviderId, _providerId),
       this.storage.update(newSessionId, account),
       this.secrets.store(newSessionId, input),
-    ));
+    );
+
+    await Promise.all(promises);
 
     const newSession = new DiscloudAuthenticationSession(newSessionId, input, account);
 
@@ -118,10 +120,10 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   /** @override {@link AuthenticationProvider} */
   getSessions(scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions): Thenable<AuthenticationSession[]>;
   async getSessions(_scopes: readonly string[] | undefined, options: AuthenticationProviderSessionOptions) {
-    const sessionIdList = this.#sessionIdList;
+    const sessionIdList = this.#getSessionIdList();
     const sessionIdSet = new Set(sessionIdList);
 
-    const sessions: DiscloudAuthenticationSession[] = [];
+    const sessions: AuthenticationSession[] = [];
 
     for (const sessionId of sessionIdSet) {
       const secret = await this.secrets.get(sessionId);
@@ -131,7 +133,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
       }
 
       const account: AuthenticationSessionAccountInformation =
-        this.storage.get(sessionId) ?? defaultSessionAccount;
+        this.storage.get(sessionId) ?? _defaultSessionAccount;
 
       if (options.account && options.account.id !== account.id) continue;
 
@@ -153,13 +155,13 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
     if (!secret) return;
 
     const account: AuthenticationSessionAccountInformation =
-      this.storage.get(sessionId) ?? defaultSessionAccount;
+      this.storage.get(sessionId) ?? _defaultSessionAccount;
 
     const session = new DiscloudAuthenticationSession(sessionId, secret, account);
 
     const currentSessionId = this.storage.get<string>(GlobalStorageKeys.currentSessionId);
 
-    const sessionIdSet = this.#sessionIdSet;
+    const sessionIdSet = this.#getSessionIdSet();
     sessionIdSet.delete(sessionId);
 
     const promises: Thenable<void>[] = [
@@ -186,7 +188,7 @@ export default class DiscloudPatAuthenticationProvider implements IPatAuthentica
   }
 
   getSession(account?: AuthenticationSessionAccountInformation) {
-    return authentication.getSession(providerId, [], { account, silent: true });
+    return authentication.getSession(_providerId, [], { account, silent: true });
   }
 
   async hasSession() {
