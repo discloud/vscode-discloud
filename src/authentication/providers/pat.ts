@@ -69,7 +69,7 @@ export default class DiscloudPatAuthenticationProvider implements IAuthenticatio
     const response = await fetch(url, { headers: { "api-token": input } });
 
     if (!response.ok)
-      throw await BaseAuthenticationError.fromStatusCode(response.status);
+      throw BaseAuthenticationError.fromStatusCode(response.status);
 
     const body = await response.json().catch(() => null) as RESTGetApiUserResult | null;
 

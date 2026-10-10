@@ -6,7 +6,7 @@ import UnauthorizedError from "./unauthorized";
 import UnknownError from "./unknown";
 
 export default abstract class BaseAuthenticationError {
-  static async fromStatusCode(statusCode: number) {
+  static fromStatusCode(statusCode: number) {
     switch (statusCode) {
       case UnauthorizedError.code:
         return new UnauthorizedError();
