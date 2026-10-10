@@ -1,7 +1,7 @@
 import { DiscloudConfigScopes } from "@discloudapp/api-types/v2";
-import { DiscloudConfig, ModPermissionsFlags } from "@discloudapp/util";
+import { DiscloudConfig, type ModPermissionsResolvable } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
-import { window, type CancellationToken, type QuickPickItem, type Uri } from "vscode";
+import { window, type CancellationToken, type IconPath, type QuickPickItem, type Uri } from "vscode";
 import type { VscodeProgressReporter } from "../@types";
 import type ExtensionCore from "../core/extension";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
@@ -12,6 +12,7 @@ interface AppPickerOptions {
   denyOtherAppTypes?: boolean
   noCached?: boolean
   progress?: VscodeProgressReporter
+  requiredModPermissions?: ModPermissionsResolvable
   throwOnCancel?: boolean
   token?: CancellationToken
   uri?: Uri
@@ -163,16 +164,16 @@ export default class AppPicker {
     const apps: QuickPickItem[] = [];
 
     for (const app of this.core.teamAppTree.children.values()) {
-      if (app.permissions.has(ModPermissionsFlags.commit_app)) {
-        apps.push({
-          description: app.appId,
-          iconPath: app.iconPath as Uri,
-          label: [
-            app.data.name,
-            app.online ? t("online") : t("offline"),
-          ].join(" - "),
-        });
-      }
+      if (options.requiredModPermissions !== undefined && !app.permissions.has(options.requiredModPermissions)) continue;
+
+      apps.push({
+        description: app.appId,
+        iconPath: app.iconPath as IconPath,
+        label: [
+          app.data.name,
+          app.online ? t("online") : t("offline"),
+        ].join(" - "),
+      });
     }
 
     const userAppsSize = this.core.userAppTree.size;

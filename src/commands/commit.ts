@@ -1,4 +1,5 @@
 import { type RESTPutApiAppCommitResult, Routes } from "@discloudapp/api-types/v2";
+import { ModPermissionsFlags } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation } from "vscode";
 import type { TaskData } from "../@types";
@@ -34,7 +35,12 @@ export default class extends Command {
     this.core.statusBar.setCommitting();
 
     const appPicker = new AppPicker(this.core);
-    const item = await appPicker.pickApp({ token: task.token });
+
+    const item = await appPicker.pickApp({
+      requiredModPermissions: ModPermissionsFlags.commit_app,
+      token: task.token,
+    });
+
     if (!item) throw Error(t("missing.appid"));
 
     task.progress.report({ increment: 30, message: t("files.checking") });
