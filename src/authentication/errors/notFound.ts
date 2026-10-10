@@ -1,11 +1,5 @@
-import BaseAuthenticationError from "./base";
-
-export default class NotFoundError extends BaseAuthenticationError {
+export default class NotFoundError {
   static readonly code = 404;
 
   readonly name = "Not Found";
-
-  constructor() {
-    super();
-  }
 }

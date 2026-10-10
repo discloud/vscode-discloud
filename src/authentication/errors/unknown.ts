@@ -1,9 +1,5 @@
-import BaseAuthenticationError from "./base";
-
-export default class UnknownError extends BaseAuthenticationError {
+export default class UnknownError {
   readonly name = "Unknown";
 
-  constructor(readonly code: number) {
-    super();
-  }
+  constructor(readonly code: number) { }
 }
