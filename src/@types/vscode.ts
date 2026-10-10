@@ -9,7 +9,7 @@ type ProgressTask = Parameters<VscodeWindowType["withProgress"]>[1]
 
 export type ProgressTaskParameters = Parameters<ProgressTask>
 
-export type CreateStatusBarItemOptions = Parameters<VscodeWindowType["createStatusBarItem"]>
+export type CreateStatusBarItemOptions = Readonly<Parameters<VscodeWindowType["createStatusBarItem"]>>
 
 export type StatusBarItemOptions = OmitFunction<StatusBarItem>
 
