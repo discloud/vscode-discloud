@@ -3,7 +3,7 @@ import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
 import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
-import type { StatusBarItemData, StatusBarItemOptions } from "../@types";
+import type { StatusBarItemOptions } from "../@types";
 import type ExtensionCore from "../core/extension";
 import { ConfigKeys } from "../utils/constants";
 import FileSystem from "../utils/FileSystem";
@@ -19,20 +19,24 @@ enum EMOJIS {
 enum Status {
   Regular,
   Acting,
+  Loading,
   Limited,
 }
 
-const textCommittingKey = "status.text.committing";
-const textLoadingKey = "status.text.loading";
-const textLoginKey = "status.text.login";
-const textRatelimitedKey = "status.text.ratelimited";
-const textUploadKey = "status.text.upload";
-const textUploadingKey = "status.text.uploading";
-const tooltipLoginKey = "status.tooltip.login";
-const tooltipRatelimitedKey = "status.tooltip.ratelimited";
-const tooltipUploadKey = "status.tooltip.upload";
+const _loadingIconId = "$(loading~spin)";
 
-const lazyWarningBackgroundColor = lazy(() => new ThemeColor("statusBarItem.warningBackground"));
+const _textCommittingKey = "status.text.committing";
+const _textLoadingKey = "status.text.loading";
+const _textLoginKey = "status.text.login";
+const _textRatelimitedKey = "status.text.ratelimited";
+const _textUploadKey = "status.text.upload";
+const _textUploadingKey = "status.text.uploading";
+
+const _tooltipLoginKey = "status.tooltip.login";
+const _tooltipRatelimitedKey = "status.tooltip.ratelimited";
+const _tooltipUploadKey = "status.tooltip.upload";
+
+const _lazyWarningBackgroundColor = lazy(() => new ThemeColor("statusBarItem.warningBackground"));
 
 function defaultOptions(): Partial<StatusBarItemOptions> {
   return {
@@ -79,7 +83,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     }, null, this.context.subscriptions);
 
     workspace.onDidChangeWorkspaceFolders(() => {
-      if (this.core.workspaceAvailable) {
+      if (this.#hasWorkspaceAvailable) {
         this.show();
       } else {
         this.hide();
@@ -87,25 +91,20 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     }, null, this.context.subscriptions);
   }
 
-  protected _status!: Status;
+  declare protected _status: Status;
 
-  get limited() {
-    return this.text === t(textRatelimitedKey);
-  }
+  get limited() { return this._status === Status.Limited; }
 
-  #loading = "$(loading~spin)";
-  get loading() {
-    return this.data.text.includes(this.#loading);
-  }
+  get loading() { return this._status === Status.Loading; }
 
-  async reset(data: Partial<StatusBarItemData> = this.originalData) {
+  get #hasWorkspaceAvailable() { return Boolean(workspace.workspaceFolders?.length); }
+
+  async reset() {
     if (this.limited) return;
 
-    this._status = Status.Regular;
+    super.reset();
 
-    super.reset(data);
-
-    if (await this.core.auth.getSession()) {
+    if (await this.core.auth.hasSession()) {
       this.setDefault();
     } else {
       this.setLogin();
@@ -118,37 +117,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = t(textCommittingKey);
+    this.text = t(_textCommittingKey);
     this.tooltip = undefined;
-  }
-
-  protected async _findConfigApp() {
-    const folders = workspace.workspaceFolders;
-
-    if (!folders?.length || folders.length === 1) return;
-
-    const files = await workspace.findFiles(DiscloudConfig.filename);
-
-    let app;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      const fileBuffer = await workspace.fs.readFile(file);
-
-      if (!fileBuffer.length) continue;
-
-      const dConfig = new DiscloudConfig(file.fsPath, fileBuffer.toString());
-
-      const ID = dConfig.get(DiscloudConfigScopes.ID);
-
-      if (!ID) continue;
-
-      app = this.core.userAppTree.children.get(ID) ?? this.core.teamAppTree.children.get(ID);
-
-      if (app && (app.label || app.data.name || app.data.description)) break;
-    }
-
-    return app;
   }
 
   protected async _setConfigDefault(uri?: Uri) {
@@ -205,10 +175,10 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
   setLoading() {
     if (this.limited) return;
 
-    this._status = Status.Acting;
+    this._status = Status.Loading;
 
     this.command = undefined;
-    this.text = t(textLoadingKey);
+    this.text = t(_textLoadingKey);
     this.tooltip = undefined;
   }
 
@@ -216,8 +186,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.login";
-    this.text = t(textLoginKey);
-    this.tooltip = t(tooltipLoginKey);
+    this.text = t(_textLoginKey);
+    this.tooltip = t(_tooltipLoginKey);
   }
 
   disableRateLimited() {
@@ -233,11 +203,11 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
       if (limited) {
         this._status = Status.Limited;
         this.command = undefined;
-        this.backgroundColor = lazyWarningBackgroundColor();
-        this.text = t(textRatelimitedKey);
-        this.tooltip = t(tooltipRatelimitedKey);
+        this.backgroundColor = _lazyWarningBackgroundColor();
+        this.text = t(_textRatelimitedKey);
+        this.tooltip = t(_tooltipRatelimitedKey);
       } else {
-        this.text = this.originalData.text;
+        this._status = Status.Regular;
         this.reset();
       }
     } else {
@@ -255,8 +225,8 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     if (this.limited) return;
 
     this.command = "discloud.upload";
-    this.text = t(textUploadKey);
-    this.tooltip = t(tooltipUploadKey);
+    this.text = t(_textUploadKey);
+    this.tooltip = t(_tooltipUploadKey);
   }
 
   setUploading() {
@@ -265,7 +235,7 @@ export default class DiscloudStatusBarItem extends BaseStatusBarItem {
     this._status = Status.Acting;
 
     this.command = undefined;
-    this.text = t(textUploadingKey);
+    this.text = t(_textUploadingKey);
     this.tooltip = undefined;
   }
 }

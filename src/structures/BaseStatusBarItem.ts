@@ -2,30 +2,30 @@ import { window, type ExtensionContext, type StatusBarItem } from "vscode";
 import type { CreateStatusBarItemOptions, StatusBarItemData, StatusBarItemOptions } from "../@types";
 
 export default abstract class BaseStatusBarItem implements StatusBarItem {
-  protected readonly originalData: StatusBarItemData;
-  readonly data: StatusBarItem;
-
   constructor(readonly context: ExtensionContext, data: Partial<StatusBarItemOptions>) {
     context.subscriptions.push(this);
 
-    const options = data.id ? [data.id, data.alignment, data.priority] : [data.alignment, data.priority];
-    this.data = window.createStatusBarItem(...options as CreateStatusBarItemOptions);
+    const options = data.id ? [data.id, data.alignment, data.priority] as const : [data.alignment, data.priority] as const;
+    this.item = window.createStatusBarItem(...options as CreateStatusBarItemOptions);
 
-    this.originalData = {
-      accessibilityInformation: this.data.accessibilityInformation,
-      backgroundColor: this.data.backgroundColor,
-      color: this.data.color,
-      command: this.data.command,
-      name: this.data.name,
-      text: this.data.text,
-      tooltip: this.data.tooltip,
+    this.defaults = {
+      accessibilityInformation: this.item.accessibilityInformation,
+      backgroundColor: this.item.backgroundColor,
+      color: this.item.color,
+      command: this.item.command,
+      name: this.item.name,
+      text: this.item.text,
+      tooltip: this.item.tooltip,
     };
 
     this.set(data);
   }
 
-  reset(data: Partial<StatusBarItemData> = this.originalData) {
-    this.set(data);
+  declare protected readonly defaults: StatusBarItemData;
+  declare protected readonly item: StatusBarItem;
+
+  reset() {
+    this.set(this.defaults);
   }
 
   set(data: Partial<StatusBarItemData>) {
@@ -38,70 +38,39 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
     if (data.tooltip !== undefined) this.tooltip = data.tooltip;
   }
 
-  get accessibilityInformation() {
-    return this.data.accessibilityInformation;
-  }
-  set accessibilityInformation(accessibilityInformation) {
-    this.data.accessibilityInformation = accessibilityInformation;
-  }
-  /** @readonly */
-  get alignment() {
-    return this.data.alignment;
-  }
-  get backgroundColor() {
-    return this.data.backgroundColor;
-  }
-  set backgroundColor(backgroundColor) {
-    this.data.backgroundColor = backgroundColor;
-  }
-  get color() {
-    return this.data.color;
-  }
-  set color(color) {
-    this.data.color = color;
-  }
-  get command() {
-    return this.data.command;
-  }
-  set command(command) {
-    this.data.command = command;
-  }
-  /** @readonly */
-  get id() {
-    return this.data.id;
-  }
-  get name() {
-    return this.data.name;
-  }
-  set name(name) {
-    this.data.name = name;
-  }
-  /** @readonly */
-  get priority() {
-    return this.data.priority;
-  }
-  get text() {
-    return this.data.text;
-  }
-  set text(text) {
-    this.data.text = text;
-  }
-  get tooltip() {
-    return this.data.tooltip;
-  }
-  set tooltip(tooltip) {
-    this.data.tooltip = tooltip;
-  }
+  get accessibilityInformation() { return this.item.accessibilityInformation; }
+  set accessibilityInformation(accessibilityInformation) { this.item.accessibilityInformation = accessibilityInformation; }
 
-  dispose() {
-    this.data.dispose();
-  }
+  /** @readonly */
+  get alignment() { return this.item.alignment; }
 
-  hide() {
-    this.data.hide();
-  }
+  get backgroundColor() { return this.item.backgroundColor; }
+  set backgroundColor(backgroundColor) { this.item.backgroundColor = backgroundColor; }
 
-  show() {
-    this.data.show();
-  }
+  get color() { return this.item.color; }
+  set color(color) { this.item.color = color; }
+
+  get command() { return this.item.command; }
+  set command(command) { this.item.command = command; }
+
+  /** @readonly */
+  get id() { return this.item.id; }
+
+  get name() { return this.item.name; }
+  set name(name) { this.item.name = name; }
+
+  /** @readonly */
+  get priority() { return this.item.priority; }
+
+  get text() { return this.item.text; }
+  set text(text) { this.item.text = text; }
+
+  get tooltip() { return this.item.tooltip; }
+  set tooltip(tooltip) { this.item.tooltip = tooltip; }
+
+  dispose() { this.item.dispose(); }
+
+  hide() { this.item.hide(); }
+
+  show() { this.item.show(); }
 }
