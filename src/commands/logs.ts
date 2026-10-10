@@ -1,5 +1,5 @@
 import { DiscloudConfigScopes, type RESTGetApiAppLogResult, Routes } from "@discloudapp/api-types/v2";
-import { DiscloudConfig } from "@discloudapp/util";
+import { DiscloudConfig, ModPermissionsFlags } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { ProgressLocation } from "vscode";
 import type { TaskData } from "../@types";
@@ -23,6 +23,7 @@ export default class extends Command {
   async run(task: TaskData, item?: UserAppTreeItem | TeamAppTreeItem) {
     if (!item) {
       const workspaceFolder = await FileSystem.getWorkspaceFolder({ silent: true });
+
       if (workspaceFolder) {
         const dConfig = await DiscloudConfig.fromPath(workspaceFolder.fsPath);
 
@@ -33,8 +34,10 @@ export default class extends Command {
         if (!item) throw Error(t("missing.appid"));
       } else {
         const appPicker = new AppPicker(this.core);
+
         item = await appPicker.pickApp({
           noCached: true,
+          requiredModPermissions: ModPermissionsFlags.logs_app,
           throwOnCancel: true,
           token: task.token,
         });
