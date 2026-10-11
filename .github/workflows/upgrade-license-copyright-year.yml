@@ -1,4 +1,4 @@
-name: Upgrade Copyright Year
+name: Upgrade License Copyright Year
 
 permissions:
   contents: write
@@ -8,7 +8,7 @@ on:
     - cron: "0 0 2 1 *"
 
 jobs:
-  copyright:
+  upgrade-license-copyright-year:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Sync engine version
-        run: node scripts/upgradeCopyrightYear.mjs
+      - name: Upgrade License Copyright Year
+        run: node scripts/upgradeLicenseCopyrightYear.mjs
 
       - name: Git diff
         id: diff
@@ -35,16 +35,16 @@ jobs:
       - name: Git push in new branch
         if: steps.diff.outcome == 'failure'
         run: |
-          git checkout -b chore/copyright-year
+          git checkout -b chore/upgrade-license-copyright-year
           git add LICENSE
-          git commit -m "chore: upgrade copyright year"
-          git push --set-upstream origin chore/copyright-year
+          git commit -m "chore: upgrade license copyright year"
+          git push --set-upstream origin chore/upgrade-license-copyright-year
 
       - name: Git create & merge pull request
         if: steps.diff.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create -t "chore: upgrade copyright year" -b " "
+          gh pr create -t "chore: upgrade license copyright year" -b " "
           gh pr merge -ds
 
