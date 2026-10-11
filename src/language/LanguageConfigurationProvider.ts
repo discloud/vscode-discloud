@@ -10,7 +10,8 @@ const _commentPattern = /\s*#.*$/;
 const _emptyString = "";
 const _parentSegment = "..";
 
-const _lazyRange0000 = lazy(() => new Range(new Position(0, 0), new Position(0, 0)));
+const _lazyPosition00 = lazy(() => new Position(0, 0));
+const _lazyRange0000 = lazy(() => new Range(_lazyPosition00(), _lazyPosition00()));
 
 export default class LanguageConfigurationProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
