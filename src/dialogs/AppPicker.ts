@@ -31,9 +31,7 @@ export default class AppPicker {
       uri: options.uri,
     });
 
-    if (!workspaceFolder) return;
-
-    return await DiscloudConfig.fromPath(workspaceFolder.fsPath);
+    if (workspaceFolder) return await DiscloudConfig.fromPath(workspaceFolder.fsPath);
   }
 
   async #getWorkspaceConfigId(options: AppPickerOptions = {}) {
