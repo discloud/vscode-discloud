@@ -9,7 +9,7 @@ import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import FileSystem from "../utils/FileSystem";
 
 interface AppPickerOptions {
-  denyOtherAppTypes?: boolean
+  allowOtherAppTypes?: boolean
   noCached?: boolean
   progress?: VscodeProgressReporter
   requiredModPermissions?: ModPermissionsResolvable
@@ -41,7 +41,6 @@ export default class AppPicker {
     return dConfig?.get(DiscloudConfigScopes.ID);
   }
 
-  pickApp(options?: AppPickerOptions & { denyOtherAppTypes: false }): Promise<UserAppTreeItem | undefined>
   pickApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
   pickApp(options?: AppPickerOptions): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
   async pickApp(options: AppPickerOptions = {}) {
@@ -58,8 +57,8 @@ export default class AppPicker {
   }
 
   pickUserApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem>
-  pickUserApp(options?: AppPickerOptions & { denyOtherAppTypes: false, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
-  pickUserApp(options?: AppPickerOptions & { denyOtherAppTypes: false }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
+  pickUserApp(options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
+  pickUserApp(options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
   pickUserApp(options?: AppPickerOptions): Promise<UserAppTreeItem | undefined>
   async pickUserApp(options: AppPickerOptions = {}) {
     const ID = await this.#getWorkspaceConfigId(options);
@@ -92,7 +91,7 @@ export default class AppPicker {
         return this.pickUserApp(options);
       }
 
-      if (options.denyOtherAppTypes || !teamAppsSize)
+      if (!options.allowOtherAppTypes || !teamAppsSize)
         throw new Error(t("no.apps.found.to.choose"));
 
       return this.pickTeamApp(options);
@@ -118,7 +117,7 @@ export default class AppPicker {
 
     if (hasApp && apps.length > 1) items.splice(1, items.length, { label: moreAppsLabel });
 
-    if (!options.denyOtherAppTypes && teamAppsSize) items.push({ label: seeOtherAppTypesLabel });
+    if (options.allowOtherAppTypes && teamAppsSize) items.push({ label: seeOtherAppTypesLabel });
 
     let picked: QuickPickItem | undefined;
     do {
@@ -148,8 +147,8 @@ export default class AppPicker {
   }
 
   pickTeamApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<TeamAppTreeItem>
-  pickTeamApp(options?: AppPickerOptions & { denyOtherAppTypes: false, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
-  pickTeamApp(options?: AppPickerOptions & { denyOtherAppTypes: false }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
+  pickTeamApp(options?: AppPickerOptions & { allowOtherAppTypes: true, throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
+  pickTeamApp(options?: AppPickerOptions & { allowOtherAppTypes: true }): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
   pickTeamApp(options?: AppPickerOptions): Promise<TeamAppTreeItem | undefined>
   async pickTeamApp(options: AppPickerOptions = {}) {
     const ID = await this.#getWorkspaceConfigId(options);
@@ -184,7 +183,7 @@ export default class AppPicker {
         return this.pickTeamApp(options);
       }
 
-      if (options.denyOtherAppTypes || !userAppsSize)
+      if (!options.allowOtherAppTypes || !userAppsSize)
         throw new Error(t("no.apps.found.to.choose"));
 
       return this.pickUserApp(options);
@@ -210,7 +209,7 @@ export default class AppPicker {
 
     if (hasApp && apps.length > 1) items.splice(1, items.length, { label: moreAppsLabel });
 
-    if (!options.denyOtherAppTypes && userAppsSize) items.push({ label: seeOtherAppTypesLabel });
+    if (options.allowOtherAppTypes && userAppsSize) items.push({ label: seeOtherAppTypesLabel });
 
     let picked: QuickPickItem | undefined;
     do {
