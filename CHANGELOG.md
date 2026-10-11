@@ -6,6 +6,10 @@ Seja Bem-Vindo a nossa página e atualização da Extensão da Discloud. Aqui vo
 
 ---
 
+## 2.30.0
+
+- Adicionado um botão para fazer login na view do usuário
+
 ## 2.29.19
 
 - Correção nos requisitos do diálogo para escolher um app de equipe nos comandos `commit` e `logs` [#1042](https://github.com/discloud/vscode-discloud/pull/1042)
