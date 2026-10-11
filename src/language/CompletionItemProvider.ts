@@ -1,16 +1,21 @@
 import { type JSONSchema7, type JSONSchema7Definition, type JSONSchema7Type } from "json-schema";
 import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, TextEdit, Uri, workspace, type CancellationToken, type CompletionContext, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
+import lazy from "../utils/lazy";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
-const assignSymbol = "=";
-const arraySeparator = ",";
-const arraySeparatorRegexp = /(^,+|,{2,})/;
-const comment = "# https://docs.discloud.com/en/discloud.config";
-const commentPattern = /\s*#.*$/;
-const emptyString = "";
-const lineBreakSymbol = "\n";
-const pathSeparator = "/";
-const pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
+const _assignSymbol = "=";
+const _arraySeparator = ",";
+const _arraySeparatorRegexp = /(^,+|,{2,})/;
+const _comment = "# https://docs.discloud.com/en/discloud.config";
+const _commentPattern = /\s*#.*$/;
+const _emptyString = "";
+const _lineBreakSymbol = "\n";
+const _parentPathSegment = "..";
+const _pathSeparator = "/";
+const _pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
+
+const _lazyCompletionItemFalse = lazy(() => new CompletionItem("false", CompletionItemKind.Keyword));
+const _lazyCompletionItemTrue = lazy(() => new CompletionItem("true", CompletionItemKind.Keyword));
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
@@ -26,7 +31,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
           new Promise<any>((_, reject) => token.onCancellationRequested(reject, null, context.subscriptions)),
           this.provideCompletionItems(document, position, token, _context),
         ]).catch(() => []),
-    }, lineBreakSymbol, arraySeparator, assignSymbol, pathSeparator);
+    }, _lineBreakSymbol, _arraySeparator, _assignSymbol, _pathSeparator);
 
     this.context.subscriptions.push(disposable);
   }
@@ -36,18 +41,18 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
 
     if (!position.character) {
       return this.scopes
-        .map(scope => new CompletionItem(`${scope}${assignSymbol}`, CompletionItemKind.Value))
-        .concat(new CompletionItem(comment, CompletionItemKind.Reference));
+        .map(scope => new CompletionItem(`${scope}${_assignSymbol}`, CompletionItemKind.Value))
+        .concat(new CompletionItem(_comment, CompletionItemKind.Reference));
     }
 
     const line = document.lineAt(position);
-    const text = line.text.replace(commentPattern, emptyString);
+    const text = line.text.replace(_commentPattern, _emptyString);
 
-    const [key, value] = text.split(assignSymbol);
+    const [key, value] = text.split(_assignSymbol);
     const startValueIndex = key.length + 1;
 
     const textUntilCharacterPosition = text.substring(0, position.character);
-    const [_, valueUntilCharacterPosition] = textUntilCharacterPosition.split(assignSymbol);
+    const [_, valueUntilCharacterPosition] = textUntilCharacterPosition.split(_assignSymbol);
 
     const data = this.transformConfigToJSON(document);
 
@@ -104,14 +109,15 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 
   parseSchemaBoolean(_: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
-    const itemFalse = new CompletionItem("false", CompletionItemKind.Keyword);
-    const itemTrue = new CompletionItem("true", CompletionItemKind.Keyword);
+    const itemFalse = _lazyCompletionItemFalse();
+    const itemTrue = _lazyCompletionItemTrue();
 
     if (replaceValue) {
       const range = new Range(
         new Position(options.position.line, options.startValueIndex),
         new Position(options.position.line, options.line.text.length),
       );
+
       itemFalse.range = range;
       itemTrue.range = range;
     }
@@ -146,7 +152,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (Array.isArray(schema))
       return schema.flatMap(value => this.parseSchemaType(value, options, replaceValue));
 
-    const data: CompletionItem[] = [];
+    const items: CompletionItem[] = [];
 
     switch (typeof schema) {
       case "boolean":
@@ -160,39 +166,39 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
             new Position(options.position.line, options.text.length),
           );
 
-          data.push(item);
+          items.push(item);
           break;
         }
 
         const additionalTextEdits: TextEdit[] = [];
 
-        for (const r of getMultipleSeparators(options.value, arraySeparatorRegexp)) {
+        for (const r of getMultipleSeparators(options.value, _arraySeparatorRegexp)) {
           additionalTextEdits.push(
             new TextEdit(
               new Range(
                 new Position(options.position.line, options.startValueIndex + r.index),
                 new Position(options.position.line, options.startValueIndex + r.index + r.length),
               ),
-              r.index === 0 ? emptyString : arraySeparator,
+              r.index === 0 ? _emptyString : _arraySeparator,
             ),
           );
         }
 
         item.additionalTextEdits = additionalTextEdits;
 
-        const startIndex = options.valueUntilCharacterPosition.lastIndexOf(arraySeparator) + 1;
-        const endIndex = Math.max(options.value.indexOf(arraySeparator, startIndex), 0) || options.value.length;
+        const startIndex = options.valueUntilCharacterPosition.lastIndexOf(_arraySeparator) + 1;
+        const endIndex = Math.max(options.value.indexOf(_arraySeparator, startIndex), 0) || options.value.length;
 
         item.range = new Range(
           new Position(options.position.line, options.startValueIndex + startIndex),
           new Position(options.position.line, options.startValueIndex + endIndex),
         );
 
-        data.push(item);
+        items.push(item);
         break;
     }
 
-    return data;
+    return items;
   }
 
   parseSchemaNumber(schema: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
@@ -233,8 +239,8 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
     if (typeof schema.format === "string") {
       switch (schema.format) {
         case "uri-reference":
-          const startIndex = options.valueUntilCharacterPosition.lastIndexOf(pathSeparator) + 1;
-          const endIndex = Math.max(options.value.indexOf(pathSeparator, startIndex), 0) || options.value.length;
+          const startIndex = options.valueUntilCharacterPosition.lastIndexOf(_pathSeparator) + 1;
+          const endIndex = Math.max(options.value.indexOf(_pathSeparator, startIndex), 0) || options.value.length;
 
           const startPositionIndex = options.startValueIndex + startIndex;
           const endPositionIndex = options.startValueIndex + endIndex;
@@ -243,35 +249,33 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
           const actual = options.value.substring(startIndex, endIndex);
           const after = options.value.substring(endIndex);
 
-          const rootUri = Uri.joinPath(options.document.uri, "..");
+          const rootUri = Uri.joinPath(options.document.uri, _parentPathSegment);
           const targetUri = Uri.joinPath(rootUri, directory);
 
           const additionalTextEdits: TextEdit[] = [];
 
-          for (const r of getMultipleSeparators(options.value, pathSeparatorRegexp)) {
+          for (const r of getMultipleSeparators(options.value, _pathSeparatorRegexp)) {
             additionalTextEdits.push(
               new TextEdit(
                 new Range(
                   new Position(options.position.line, options.startValueIndex + r.index),
                   new Position(options.position.line, options.startValueIndex + r.index + r.length),
                 ),
-                r.index === 0 ? emptyString : pathSeparator,
+                r.index === 0 ? _emptyString : _pathSeparator,
               ),
             );
           }
 
-          const data: CompletionItem[] = [];
+          const items: CompletionItem[] = [];
 
           for (const [filename, fileType] of await safeReadDirectory(targetUri)) {
             const type = fileTypeAsCompletionItemKind[fileType];
 
             const item = new CompletionItem(filename, type);
 
-            const isDirectory = fileType === FileType.Directory;
-
             item.additionalTextEdits = additionalTextEdits;
 
-            item.sortText = `${!isDirectory}${filename}`;
+            item.sortText = `${fileType !== FileType.Directory}${filename}`;
             item.insertText = filename;
 
             const start = new Position(options.position.line, startPositionIndex);
@@ -282,7 +286,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
                 new Position(options.position.line, endPositionIndex),
               );
 
-              data.push(item);
+              items.push(item);
 
               continue;
             }
@@ -308,10 +312,10 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
               );
             }
 
-            data.push(item);
+            items.push(item);
           }
 
-          return data;
+          return items;
       }
     }
 
@@ -319,15 +323,14 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 }
 
-function* getMultipleSeparators(value: string, sepRegexp: RegExp): Generator<MultiplePathSeparatorsResult, void, void> {
-  let baseIndex = 0;
-  let mached = sepRegexp.exec(value);
-  while (mached !== null) {
-    const val = mached[1];
-    yield { index: baseIndex + mached.index, length: val.length, value: val };
-    baseIndex += val.length;
-    value = value.replace(val, emptyString);
-    mached = sepRegexp.exec(value);
+function* getMultipleSeparators(text: string, sepRegexp: RegExp): Generator<MultiplePathSeparatorsResult> {
+  let index = 0;
+  let mached: RegExpExecArray | null;
+  while ((mached = sepRegexp.exec(text)) !== null) {
+    const value = mached[1];
+    yield { index: index + mached.index, length: value.length, value };
+    index += value.length;
+    text = text.replace(value, _emptyString);
   }
 }
 
