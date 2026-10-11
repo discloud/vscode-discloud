@@ -41,6 +41,7 @@ export default class AppPicker {
     return dConfig?.get(DiscloudConfigScopes.ID);
   }
 
+  pickApp(options?: AppPickerOptions & { allowOtherAppTypes: false }): Promise<never>
   pickApp(options?: AppPickerOptions & { throwOnCancel: true }): Promise<UserAppTreeItem | TeamAppTreeItem>
   pickApp(options?: AppPickerOptions): Promise<UserAppTreeItem | TeamAppTreeItem | undefined>
   async pickApp(options: AppPickerOptions = {}) {
