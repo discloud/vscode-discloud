@@ -1,6 +1,5 @@
 import { type JSONSchema7, type JSONSchema7Definition, type JSONSchema7Type } from "json-schema";
 import { CompletionItem, CompletionItemKind, FileType, languages, Position, Range, TextEdit, Uri, workspace, type CancellationToken, type CompletionContext, type ExtensionContext, type TextDocument, type TextLine } from "vscode";
-import lazy from "../utils/lazy";
 import BaseLanguageProvider from "./BaseLanguageProvider";
 
 const _assignSymbol = "=";
@@ -13,9 +12,6 @@ const _lineBreakSymbol = "\n";
 const _parentPathSegment = "..";
 const _pathSeparator = "/";
 const _pathSeparatorRegexp = /(^[\\/]+|[\\/]{2,})/;
-
-const _lazyCompletionItemFalse = lazy(() => new CompletionItem("false", CompletionItemKind.Keyword));
-const _lazyCompletionItemTrue = lazy(() => new CompletionItem("true", CompletionItemKind.Keyword));
 
 export default class CompletionItemProvider extends BaseLanguageProvider {
   constructor(context: ExtensionContext, schema: JSONSchema7) {
@@ -109,8 +105,8 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
   }
 
   parseSchemaBoolean(_: JSONSchema7, options: ParseSchemaOptions, replaceValue?: boolean) {
-    const itemFalse = _lazyCompletionItemFalse();
-    const itemTrue = _lazyCompletionItemTrue();
+    const itemFalse = new CompletionItem("false", CompletionItemKind.Keyword);
+    const itemTrue = new CompletionItem("true", CompletionItemKind.Keyword);
 
     if (replaceValue) {
       const range = new Range(
