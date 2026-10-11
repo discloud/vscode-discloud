@@ -4,9 +4,7 @@ import UserTreeItem from "../structures/UserTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";
 
-type Item = UserTreeItem
-
-export default class UserTreeDataProvider extends BaseTreeDataProvider<Item> {
+export default class UserTreeDataProvider extends BaseTreeDataProvider<UserTreeItem> {
   constructor(core: ExtensionCore) {
     super(core, TreeViewIds.discloudUser);
   }
