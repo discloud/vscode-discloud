@@ -5,12 +5,15 @@ import { compileSchema, type SchemaNode } from "json-schema-library";
 import { parseEnv } from "util";
 import { type ExtensionContext, Position, Range, type TextDocument } from "vscode";
 import { DISCLOUD_CONFIG_SCHEMA_FILE_NAME, MAX_LANGUAGE_PROVIDER_READ_LINES } from "../utils/constants";
+import lazy from "../utils/lazy";
 
-const _booleanAsString = new Set(["false", "true"]);
-const _start = new Position(0, 0);
-const _end = new Position(MAX_LANGUAGE_PROVIDER_READ_LINES, 0);
-const _range = new Range(_start, _end);
 const _noSchemaId: symbol = Symbol("No Schema");
+const _true = "true";
+
+const _lazyBooleanAsString = lazy(() => new Set(["false", "true"]));
+const _lazyStart = lazy(() => new Position(0, 0));
+const _lazyEnd = lazy(() => new Position(MAX_LANGUAGE_PROVIDER_READ_LINES, 0));
+const _lazyRange = lazy(() => new Range(_lazyStart(), _lazyEnd()));
 
 export default class BaseLanguageProvider {
   static readonly #schemas: Record<string, JSONSchema7> = {};
@@ -43,7 +46,7 @@ export default class BaseLanguageProvider {
   declare readonly scopes: string[];
 
   transformConfigToJSON(document: TextDocument) {
-    return this.#parseValues(parseEnv(document.getText(_range)));
+    return this.#parseValues(parseEnv(document.getText(_lazyRange())));
   }
 
   validateJsonSchema(data: Record<any, any>) {
@@ -60,13 +63,13 @@ export default class BaseLanguageProvider {
     if (key in obj) obj[key] = obj[key].split(/\s*,\s*/g).filter(Boolean);
 
     key = DiscloudConfigScopes.AUTORESTART;
-    if (key in obj && _booleanAsString.has(obj[key])) obj[key] = obj[key] == "true";
+    if (key in obj && _lazyBooleanAsString().has(obj[key])) obj[key] = obj[key] == _true;
 
     key = DiscloudConfigScopes.RAM;
     if (key in obj && obj[key]) obj[key] = Number(obj[key]);
 
     key = DiscloudConfigScopes.VLAN;
-    if (key in obj && _booleanAsString.has(obj[key])) obj[key] = obj[key] == "true";
+    if (key in obj && _lazyBooleanAsString().has(obj[key])) obj[key] = obj[key] == _true;
 
     return obj;
   }
