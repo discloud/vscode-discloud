@@ -68,7 +68,7 @@ async function migrateAuthenticationProvider(core: ExtensionCore) {
       core.globalStorage.update(GlobalStorageKeys.currentAutenticationProviderId, newSessionId),
       core.globalStorage.update(GlobalStorageKeys.currentSessionId, newSessionId),
       core.globalStorage.update(newSessionId, account),
-      core.globalStorage.update(oldSessionId, undefined),
+      core.globalStorage.delete(oldSessionId),
     );
 
     const secret = await core.secrets.get(oldSessionId);
@@ -81,9 +81,11 @@ async function migrateAuthenticationProvider(core: ExtensionCore) {
 
     oldSessionIdList[0] = newSessionId;
 
-    await Promise.all(promises.concat(
+    promises.push(
       core.globalStorage.update(GlobalStorageKeys.sessionIdList, oldSessionIdList),
       core.globalStorage.delete("sessionIdList"),
-    ));
+    );
+
+    await Promise.all(promises);
   }
 }

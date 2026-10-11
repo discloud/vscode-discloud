@@ -14,7 +14,7 @@ export default async function (core: ExtensionCore, oldApp: TeamAppTreeItem, new
       t("your.team.app.is.now", {
         app: `${newApp.data.name} (${newApp.appId})`,
       }),
-      newApp.online ? "Online" : "Offline",
+      t(newApp.online ? "online" : "offline"),
     ].join(" "));
   }
 
