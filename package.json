@@ -1141,6 +1141,11 @@
       ],
       "view/title": [
         {
+          "command": "discloud.login",
+          "group": "navigation",
+          "when": "view == discloudUser"
+        },
+        {
           "command": "discloud.upload",
           "group": "navigation",
           "when": "view == discloudUserApps && workspaceFolderCount && discloudAuthorized"
