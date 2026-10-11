@@ -1,0 +1,50 @@
+name: Upgrade Copyright Year
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 2 1 *"
+
+jobs:
+  copyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Sync engine version
+        run: node scripts/upgradeCopyrightYear.mjs
+
+      - name: Git diff
+        id: diff
+        continue-on-error: true
+        run: git diff --quiet
+
+      - name: Git config
+        if: steps.diff.outcome == 'failure'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Git push in new branch
+        if: steps.diff.outcome == 'failure'
+        run: |
+          git checkout -b chore/copyright-year
+          git add LICENSE
+          git commit -m "chore: upgrade copyright year"
+          git push --set-upstream origin chore/copyright-year
+
+      - name: Git create & merge pull request
+        if: steps.diff.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create -t "chore: upgrade copyright year" -b " "
+          gh pr merge -ds
+
