@@ -8,6 +8,7 @@ import AsyncQueue from "../../modules/async-queue";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";
 import type { InternalRequestData, RequestData, RESTOptions, RouteLike } from "./types";
+import UserAgent from "./UserAgent";
 
 const _defaultRateLimitLimit = 60;
 const _minimumRateRemaining = 1;
@@ -18,15 +19,17 @@ export default class DiscloudApi extends EventEmitter {
     super({ captureRejections: true });
 
     this.options = options ?? {};
+
+    this.options.userAgent ??= new UserAgent(this.core.context);
   }
 
   declare readonly options: Partial<RESTOptions>;
   readonly #queue = new AsyncQueue();
   authorized: boolean = true;
 
-  #limit = _defaultRateLimitLimit;
-  #remaining = _defaultRateLimitLimit;
-  #reset = _defaultRateLimitLimit;
+  #limit: number = _defaultRateLimitLimit;
+  #remaining: number = _defaultRateLimitLimit;
+  #reset: number = _defaultRateLimitLimit;
   #time!: number;
 
   get baseURL() { return RouteBases.api; }

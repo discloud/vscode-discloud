@@ -1,6 +1,7 @@
 import type { LogOutputChannel } from "vscode";
 import type { RateLimitData } from "../../@types";
 import type { RequestMethod } from "./enum";
+import type UserAgent from "./UserAgent";
 
 export type RouteLike = `/${string}`
 
@@ -13,7 +14,7 @@ export interface RESTEvents {
 }
 
 export interface RESTOptions {
-  userAgent: string | { toString(): string }
+  userAgent: string | UserAgent | { toString(): string }
 }
 
 export interface RequestData {

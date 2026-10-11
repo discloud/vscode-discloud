@@ -15,7 +15,6 @@ import TeamAppTreeDataProvider from "../providers/TeamAppTreeDataProvider";
 import UserAppTreeDataProvider from "../providers/UserAppTreeDataProvider";
 import UserTreeDataProvider from "../providers/UserTreeDataProvider";
 import DiscloudApi from "../services/discloud/api";
-import { UserAgent } from "../services/discloud/UserAgent";
 import GlobalStateStorage from "../storage/globalState";
 import SecretStorageImpl from "../storage/secrets";
 import StateStorage from "../storage/state";
@@ -37,6 +36,9 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
     context.subscriptions.push(this);
 
+    this.timers = new TimerMap();
+    this.user = new VSUser(this);
+
     this.globalStorage = new GlobalStateStorage(context.globalState);
     this.workspaceStorage = new StateStorage(context.workspaceState);
     this.secrets = new SecretStorageImpl(context.secrets);
@@ -45,11 +47,7 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
 
     this.statusBar = new DiscloudStatusBarItem(this);
 
-    const version = this.context.extension.packageJSON.version;
-
-    const userAgent = new UserAgent(version);
-
-    this.api = new DiscloudApi(this, { userAgent });
+    this.api = new DiscloudApi(this);
 
     this.customDomainTree = new CustomDomainTreeDataProvider(this);
     this.subDomainTree = new SubDomainTreeDataProvider(this);
@@ -58,23 +56,23 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     this.userTree = new UserTreeDataProvider(this);
   }
 
-  declare readonly auth: DiscloudAuthenticationProvider;
-  declare readonly secrets: SecretStorage;
-  declare readonly globalStorage: StateStorage & IGlobalStateStorage;
-  declare readonly workspaceStorage: StateStorage;
+  readonly auth: DiscloudAuthenticationProvider;
+  readonly secrets: SecretStorage;
+  readonly globalStorage: StateStorage & IGlobalStateStorage;
+  readonly workspaceStorage: StateStorage;
 
-  declare readonly api: DiscloudApi;
+  readonly api: DiscloudApi;
 
-  declare readonly statusBar: DiscloudStatusBarItem;
+  readonly statusBar: DiscloudStatusBarItem;
 
-  declare readonly customDomainTree: CustomDomainTreeDataProvider;
-  declare readonly subDomainTree: SubDomainTreeDataProvider;
-  declare readonly teamAppTree: TeamAppTreeDataProvider;
-  declare readonly userAppTree: UserAppTreeDataProvider;
-  declare readonly userTree: UserTreeDataProvider;
+  readonly customDomainTree: CustomDomainTreeDataProvider;
+  readonly subDomainTree: SubDomainTreeDataProvider;
+  readonly teamAppTree: TeamAppTreeDataProvider;
+  readonly userAppTree: UserAppTreeDataProvider;
+  readonly userTree: UserTreeDataProvider;
 
-  readonly timers = new TimerMap();
-  readonly user = new VSUser(this);
+  readonly timers: TimerMap;
+  readonly user: VSUser;
 
   get config() {
     return workspace.getConfiguration("discloud");

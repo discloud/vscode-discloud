@@ -1,18 +1,19 @@
 import { arch, platform, release, type } from "os";
+import type { ExtensionContext } from "vscode";
 
-export class UserAgent {
-  constructor(readonly version: string, readonly prefix?: string) {
-    this.prefix ??= "vscode";
-  }
+function _osProperties() { return `(${type()} ${_osRelease()}; ${platform()}; ${arch()})`; }
 
-  #lazyGetUserAgent() {
-    const osRelease = release().split?.(".").slice(0, 2).join(".") ?? release();
-    return `${this.prefix}/${this.version} (${type()} ${osRelease}; ${platform()}; ${arch()})`;
-  }
+function _osRelease() { return release().split?.(".").slice(0, 2).join(".") ?? release(); }
 
+export default class UserAgent {
+  constructor(readonly context: ExtensionContext) { }
+
+  readonly prefix: string = "vscode";
   #userAgent!: string;
 
-  toString() {
-    return this.#userAgent ??= this.#lazyGetUserAgent();
-  }
+  #getUserAgent() { return `${this.prefix}/${this.version} ${_osProperties()}`; }
+
+  get version() { return this.context.extension.packageJSON.version; }
+
+  toString() { return this.#userAgent ??= this.#getUserAgent(); }
 }
