@@ -54,8 +54,8 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     return this.data.type ?? null;
   }
 
-  _patch(data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp>): this {
-    if (!data) return this;
+  protected _patch(data: Partial<TeamAppTreeItemData & ApiTeamApp & ApiStatusApp>): this {
+    if (data == null) return this;
 
     super._patch(data);
 
@@ -159,6 +159,7 @@ export default class TeamAppTreeItem extends BaseTreeItem<TeamAppChildTreeItem> 
     const existing = this.children.get(id);
 
     if (existing) {
+      // @ts-expect-error ts(2445)
       existing._patch(data);
       return;
     }

@@ -8,10 +8,7 @@ import type UserAppTreeItem from "./UserAppTreeItem";
 export default class AppTypeTreeItemView extends BaseTreeItem<UserAppTreeItem> {
   constructor(core: ExtensionCore, readonly type: AppType) {
     super(core, t(AppType[type]), TreeItemCollapsibleState.Expanded);
-    this.contextValue = this.contextKey;
   }
-
-  readonly contextKey = "TreeView";
 
   dispose(): void;
   dispose(key: string): boolean;

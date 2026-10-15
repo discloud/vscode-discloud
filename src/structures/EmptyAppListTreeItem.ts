@@ -10,7 +10,7 @@ export default class EmptyAppListTreeItem extends TreeItem {
   constructor(readonly core: ExtensionCore) {
     super(t("no.app.found"));
 
-    this.iconPath = getIconPath(this.core.context, EMPTY_TREE_ITEM_ID);
+    this.iconPath = getIconPath(core.context, EMPTY_TREE_ITEM_ID);
   }
 
   readonly contextValue = _emptyContextValue;

@@ -7,9 +7,6 @@ import { getIconPath } from "../utils/vscode";
 import BaseTreeItem from "./BaseTreeItem";
 
 export default class CustomDomainTreeItem extends BaseTreeItem<any> {
-  declare domain: string;
-  declare iconName: string;
-
   constructor(core: ExtensionCore, public data: CustomDomainTreeItemData) {
     data.label ??= data.domain;
 
@@ -17,6 +14,9 @@ export default class CustomDomainTreeItem extends BaseTreeItem<any> {
 
     this._patch(data);
   }
+
+  declare domain: string;
+  declare iconName: string;
 
   protected _patch(data: Partial<CustomDomainTreeItemData>): this {
     if (!data) return this;

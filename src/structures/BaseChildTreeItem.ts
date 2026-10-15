@@ -1,26 +1,23 @@
-import { type ExtensionContext, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
+import { type Disposable, type ExtensionContext, TreeItem, type TreeItemCollapsibleState, type TreeItemLabel } from "vscode";
 import type { BaseChildTreeItemData } from "../@types";
 
-export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
-  readonly contextKey = "ChildTreeItem";
-  contextValue = this.contextKey;
+const _defaultContextJSON: Record<any, any> = {};
 
+export default abstract class BaseChildTreeItem extends TreeItem implements Disposable {
   constructor(readonly context: ExtensionContext, label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
-  }
-  [Symbol.dispose](): void {
-    throw new Error("Method not implemented.");
+    this.contextValue = this.contextKey;
   }
 
-  get contextJSON(): Record<any, any> {
-    return {};
-  }
+  readonly contextKey: string = "ChildTreeItem";
+
+  get contextJSON(): Record<any, any> { return _defaultContextJSON; }
 
   dispose() { }
 
   protected _patch(data: Partial<BaseChildTreeItemData>): this;
   protected _patch(data: Partial<BaseChildTreeItemData>) {
-    if (!data) return this;
+    if (data == null) return this;
 
     if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;
 

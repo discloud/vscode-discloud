@@ -28,8 +28,8 @@ export default class UserAppChildTreeItem extends BaseChildTreeItem {
     };
   }
 
-  _patch(data: Partial<UserAppChildTreeItemData>) {
-    if (!data) return this;
+  protected _patch(data: Partial<UserAppChildTreeItemData>) {
+    if (data == null) return this;
 
     super._patch(data);
 

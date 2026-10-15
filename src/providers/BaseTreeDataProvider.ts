@@ -7,7 +7,7 @@ export default abstract class BaseTreeDataProvider<V extends BaseTreeItem<any>, 
   constructor(readonly core: ExtensionCore, readonly viewId: string) {
     const disposable = window.registerTreeDataProvider(viewId, this);
 
-    this.core.context.subscriptions.push(disposable, this._onDidChangeTreeData, this.children);
+    core.context.subscriptions.push(disposable, this._onDidChangeTreeData, this.children);
   }
 
   protected readonly _onDidChangeTreeData = new EventEmitter<V | V[] | null | void>();

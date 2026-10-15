@@ -50,8 +50,8 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
     return this.data.online;
   }
 
-  _patch(data: Partial<UserAppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
-    if (!data) return this;
+  protected _patch(data: Partial<UserAppTreeItemData & ApiVscodeApp & ApiStatusApp>): this {
+    if (data == null) return this;
 
     super._patch(data);
 
@@ -159,6 +159,7 @@ export default class UserAppTreeItem extends BaseTreeItem<UserAppChildTreeItem> 
     const existing = this.children.get(id);
 
     if (existing) {
+      // @ts-expect-error ts(2445)
       existing._patch(data);
       return;
     }

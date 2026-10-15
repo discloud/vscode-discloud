@@ -18,7 +18,7 @@ export default class UserAppTreeDataProvider extends BaseTreeDataProvider<Item> 
   constructor(readonly core: ExtensionCore) {
     super(core, TreeViewIds.discloudUserApps);
 
-    this.core.context.subscriptions.push(this._views);
+    core.context.subscriptions.push(this._views);
   }
 
   get size() {
