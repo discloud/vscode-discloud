@@ -21,11 +21,11 @@ export default class extends Command {
   }
 
   async run(task: TaskData, item: UserAppTreeItem) {
-    const workspaceAvailable = this.core.workspaceAvailable;
+    const workspaceAvailable = FileSystem.workspaceAvailable;
     let workspaceFolder: Uri | undefined;
     if (workspaceAvailable) workspaceFolder = await FileSystem.getWorkspaceFolder();
     if (!workspaceFolder) {
-      workspaceFolder = await this.core.getFolderDialog(task);
+      workspaceFolder = await FileSystem.getFolderDialog(task);
       if (!workspaceFolder) throw Error(t("no.folder.found"));
     }
 

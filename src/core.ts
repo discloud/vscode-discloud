@@ -1,9 +1,8 @@
-import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { normalize } from "path";
-import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, window, workspace } from "vscode";
+import { commands, type Disposable, type ExtensionContext, type LogOutputChannel, type SecretStorage, workspace } from "vscode";
 import { type ExtensionContextId } from "./@enum";
-import type { Events, IGlobalStateStorage, TaskData } from "./@types";
+import type { Events, IGlobalStateStorage } from "./@types";
 import DiscloudAuthenticationProvider from "./authentication/provider";
 import { commandsRegister } from "./commands";
 import { loadEvents } from "./events";
@@ -86,19 +85,11 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     return this.getLogOutputChannel("Discloud");
   }
 
-  get singleWorkspaceFolder() {
-    const folders = workspace.workspaceFolders;
-    if (folders?.length === 1) return folders[0].uri;
-  }
-
-  get workspaceAvailable() {
-    return Boolean(workspace.workspaceFolders?.length);
-  }
-
   get workspaceIgnoreList() {
+    const config = this.config;
     return _workspaceIgnoreConfigKeys
-      .reduce<string[]>((acc, config) => {
-        const data = this.config.get<string>(config);
+      .reduce<string[]>((acc, configName) => {
+        const data = config.get<string>(configName);
         if (data) return acc.concat(normalize(data));
         return acc;
       }, [])
@@ -116,20 +107,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   dispose() {
     this.removeAllListeners();
     this.timers.dispose();
-  }
-
-  async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
-    task?.progress.report({ increment: -1, message: t("folder.get.one") });
-
-    const uris = await window.showOpenDialog({
-      canSelectFolders: true,
-      title,
-      openLabel,
-    });
-
-    if (uris?.length) task?.progress.report({ message: t("folder.selected") });
-
-    return uris?.at(0);
   }
 
   getLogOutputChannel(name: string) {

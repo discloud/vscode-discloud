@@ -1,6 +1,7 @@
+import { t } from "@vscode/l10n";
 import { dirname, join } from "path";
 import { commands, env, FileType, Uri, window, workspace, type CancellationToken } from "vscode";
-import type { GetWorkspaceFolderOptions } from "../@types";
+import type { GetWorkspaceFolderOptions, TaskData } from "../@types";
 import { BLOCKED_FILES } from "./constants";
 import lazy from "./lazy";
 
@@ -23,6 +24,95 @@ export interface FileSystemOptions {
 }
 
 export default class FileSystem {
+  static get singleWorkspaceFolder() {
+    const folders = workspace.workspaceFolders;
+    if (folders?.length === 1) return folders[0].uri;
+  }
+
+  static get workspaceAvailable() {
+    return Boolean(workspace.workspaceFolders?.length);
+  }
+
+  static async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
+    task?.progress.report({ increment: -1, message: t("folder.get.one") });
+
+    const uris = await window.showOpenDialog({
+      canSelectFolders: true,
+      title,
+      openLabel,
+    });
+
+    if (uris?.length) task?.progress.report({ message: t("folder.selected") });
+
+    return uris?.at(0);
+  }
+
+  static async findIgnoreFile(filename: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
+    if (!ignoreList) ignoreList = lazyDefaultBlockedFilesPattern();
+
+    if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
+
+    if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
+
+    const files = await workspace.findFiles(join(_glob, filename), ignoreList, undefined, token);
+
+    const result = new Set<string>();
+
+    for (const file of files) {
+      const stat = await workspace.fs.stat(file);
+
+      if (stat.type !== FileType.File || !stat.size) return [];
+
+      const relativeFolder = dirname(workspace.asRelativePath(file, false));
+
+      const fileBuffer = await workspace.fs.readFile(file);
+
+      const patterns = fileBuffer.toString()
+        .replace(_commentRegexp, _emptyString)
+        .split(_lineBreakRegexp);
+
+      for (const pattern of patterns) {
+        result.add(join(relativeFolder, pattern));
+      }
+    }
+
+    return Array.from(result);
+  }
+
+  static async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
+    options ??= {};
+
+    if (options.uri instanceof Uri) {
+      const folder = workspace.getWorkspaceFolder(options.uri);
+      if (folder) return folder.uri;
+    }
+
+    const folders = workspace.workspaceFolders;
+    if (!folders?.length) return;
+    if (folders.length === _one) return folders[_zero].uri;
+
+    options.allowReadSelectedPath ??= true;
+
+    if (options.allowReadSelectedPath) {
+      const [filePath] = await FileSystem.readSelectedPath(false);
+      if (filePath && filePath !== _dot)
+        return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
+    }
+
+    if (options.silent || options.token?.isCancellationRequested) return;
+
+    const picked = await window.showWorkspaceFolderPick();
+    if (picked) return picked.uri;
+  }
+
+  static readSelectedPath(relative?: true): Promise<string[]>
+  static readSelectedPath(relative: boolean): Promise<string[]>
+  static async readSelectedPath(relative: boolean = true) {
+    await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
+    const copied = await env.clipboard.readText();
+    return copied.split(_lineBreakRegexp);
+  }
+
   constructor(readonly options: FileSystemOptions = {}) {
     if (!options) options = {};
 
@@ -99,71 +189,5 @@ export default class FileSystem {
     for (const file of files) {
       this.patterns.add(file);
     }
-  }
-
-  static async findIgnoreFile(filename: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
-    if (!ignoreList) ignoreList = lazyDefaultBlockedFilesPattern();
-
-    if (ignoreList instanceof Set) ignoreList = Array.from(ignoreList);
-
-    if (Array.isArray(ignoreList)) ignoreList = `{${ignoreList}}`;
-
-    const files = await workspace.findFiles(join(_glob, filename), ignoreList, undefined, token);
-
-    const result = new Set<string>();
-
-    for (const file of files) {
-      const stat = await workspace.fs.stat(file);
-
-      if (stat.type !== FileType.File || !stat.size) return [];
-
-      const relativeFolder = dirname(workspace.asRelativePath(file, false));
-
-      const fileBuffer = await workspace.fs.readFile(file);
-
-      const patterns = fileBuffer.toString()
-        .replace(_commentRegexp, _emptyString)
-        .split(_lineBreakRegexp);
-
-      for (const pattern of patterns) {
-        result.add(join(relativeFolder, pattern));
-      }
-    }
-
-    return Array.from(result);
-  }
-
-  static async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
-    options ??= {};
-
-    if (options.uri instanceof Uri) {
-      const folder = workspace.getWorkspaceFolder(options.uri);
-      if (folder) return folder.uri;
-    }
-
-    const folders = workspace.workspaceFolders;
-    if (!folders?.length) return;
-    if (folders.length === _one) return folders[_zero].uri;
-
-    options.allowReadSelectedPath ??= true;
-
-    if (options.allowReadSelectedPath) {
-      const [filePath] = await FileSystem.readSelectedPath(false);
-      if (filePath && filePath !== _dot)
-        return workspace.getWorkspaceFolder(Uri.file(filePath))?.uri;
-    }
-
-    if (options.silent || options.token?.isCancellationRequested) return;
-
-    const picked = await window.showWorkspaceFolderPick();
-    if (picked) return picked.uri;
-  }
-
-  static readSelectedPath(relative?: true): Promise<string[]>
-  static readSelectedPath(relative: boolean): Promise<string[]>
-  static async readSelectedPath(relative: boolean = true) {
-    await commands.executeCommand(relative ? "copyRelativeFilePath" : "copyFilePath");
-    const copied = await env.clipboard.readText();
-    return copied.split(_lineBreakRegexp);
   }
 }
