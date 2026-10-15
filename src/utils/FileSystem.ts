@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { dirname, join } from "path";
-import { commands, env, FileType, Uri, window, workspace, type CancellationToken } from "vscode";
+import { commands, env, FileType, Uri, window, workspace, type CancellationToken, type OpenDialogOptions } from "vscode";
 import type { GetWorkspaceFolderOptions, TaskData } from "../@types";
 import { BLOCKED_FILES } from "./constants";
 import lazy from "./lazy";
@@ -23,6 +23,8 @@ export interface FileSystemOptions {
   ignoreList?: string[]
 }
 
+export type OpenFolderDialogOptions = Omit<OpenDialogOptions, "canSelectFiles" | "canSelectFolders" | "canSelectMany">
+
 export default class FileSystem {
   static get singleWorkspaceFolder() {
     const folders = workspace.workspaceFolders;
@@ -31,20 +33,6 @@ export default class FileSystem {
 
   static get workspaceAvailable() {
     return Boolean(workspace.workspaceFolders?.length);
-  }
-
-  static async getFolderDialog(task?: TaskData | null, title?: string, openLabel?: string) {
-    task?.progress.report({ increment: -1, message: t("folder.get.one") });
-
-    const uris = await window.showOpenDialog({
-      canSelectFolders: true,
-      title,
-      openLabel,
-    });
-
-    if (uris?.length) task?.progress.report({ message: t("folder.selected") });
-
-    return uris?.at(0);
   }
 
   static async findIgnoreFile(filename: string, ignoreList?: string | string[] | Set<string>, token?: CancellationToken) {
@@ -77,6 +65,21 @@ export default class FileSystem {
     }
 
     return Array.from(result);
+  }
+
+  static async getFolderDialog(task?: TaskData | null, options?: OpenFolderDialogOptions) {
+    task?.progress.report({ increment: -1, message: t("folder.get.one") });
+
+    const uris = await window.showOpenDialog({
+      canSelectFiles: false,
+      canSelectFolders: true,
+      canSelectMany: false,
+      ...options,
+    });
+
+    if (uris?.length) task?.progress.report({ message: t("folder.selected") });
+
+    return uris?.at(0);
   }
 
   static async getWorkspaceFolder(options?: GetWorkspaceFolderOptions | null): Promise<Uri | undefined> {
