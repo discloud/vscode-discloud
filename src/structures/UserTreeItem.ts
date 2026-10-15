@@ -19,7 +19,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
   readonly userID: string;
 
   protected _patch(data: Partial<UserTreeItemData & ApiVscodeUser>): this {
-    if (!data) return this;
+    if (data == null) return this;
 
     if (data.avatar)
       try { this.iconPath = Uri.parse(data.avatar); } catch { }
@@ -106,6 +106,7 @@ export default class UserTreeItem extends BaseTreeItem<UserChildTreeItem> {
     const existing = this.children.get(id);
 
     if (existing) {
+      // @ts-expect-error ts(2445)
       existing._patch(data);
       return;
     }

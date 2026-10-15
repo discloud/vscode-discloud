@@ -19,7 +19,7 @@ export default class SubDomainTreeItem extends BaseTreeItem<any> {
   }
 
   protected _patch(data: Partial<SubDomainTreeItemData>): this {
-    if (!data) return this;
+    if (data == null) return this;
 
     super._patch(data);
 

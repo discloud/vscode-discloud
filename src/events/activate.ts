@@ -22,8 +22,8 @@ export default async function (core: ExtensionCore, context: ExtensionContext) {
     if (event.affectsConfiguration(_discloudAppSeparateByType)) return core.userAppTree.refresh();
 
     if (event.affectsConfiguration(_discloudAppShowAvatarInsteadStatus)) {
+      // @ts-expect-error ts(2445)
       for (const app of core.userAppTree.children.values()) app._patch({});
-
       return core.userAppTree.refresh();
     }
 

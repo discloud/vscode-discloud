@@ -13,8 +13,8 @@ export default class UserChildTreeItem extends BaseChildTreeItem {
 
   readonly userID: string;
 
-  _patch(data: Partial<UserTreeItemData>) {
-    if (!data) return this;
+  protected _patch(data: Partial<UserTreeItemData>) {
+    if (data == null) return this;
 
     super._patch(data);
 

@@ -24,9 +24,7 @@ export default abstract class BaseStatusBarItem implements StatusBarItem {
   declare protected readonly defaults: StatusBarItemData;
   declare protected readonly item: StatusBarItem;
 
-  reset() {
-    this.set(this.defaults);
-  }
+  reset() { this.set(this.defaults); }
 
   set(data: Partial<StatusBarItemData>) {
     if (data.accessibilityInformation !== undefined) this.accessibilityInformation = data.accessibilityInformation;

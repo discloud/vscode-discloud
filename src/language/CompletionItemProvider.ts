@@ -29,7 +29,7 @@ export default class CompletionItemProvider extends BaseLanguageProvider {
         ]).catch(() => []),
     }, _lineBreakSymbol, _arraySeparator, _assignSymbol, _pathSeparator);
 
-    this.context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable);
   }
 
   async provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext) {

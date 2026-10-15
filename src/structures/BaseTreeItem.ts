@@ -2,18 +2,22 @@ import { TreeItem, type Disposable, type TreeItemCollapsibleState, type TreeItem
 import type ExtensionCore from "../core";
 import DisposableMap from "./DisposableMap";
 
+const _defaultContextJSON: Record<any, any> = {};
+
 export default abstract class BaseTreeItem<T extends TreeItem & Disposable> extends TreeItem implements Disposable {
   constructor(readonly core: ExtensionCore, label: string | TreeItemLabel, collapsibleState?: TreeItemCollapsibleState) {
     super(label, collapsibleState);
     this.contextValue = this.contextKey;
   }
 
-  readonly children = new DisposableMap<string, T>();
-  declare readonly data: unknown;
   readonly contextKey: string = "TreeItem";
+  declare readonly data: unknown;
+  readonly children = new DisposableMap<string, T>();
 
-  get contextJSON(): Record<any, any> {
-    return {};
+  get contextJSON(): Record<any, any> { return _defaultContextJSON; }
+
+  protected _upgradeContextValue() {
+    this.contextValue = this.contextKey;
   }
 
   dispose() {
@@ -26,7 +30,7 @@ export default abstract class BaseTreeItem<T extends TreeItem & Disposable> exte
 
   protected _patch(data: unknown): this;
   protected _patch(data: any): this {
-    if (!data) return this;
+    if (data == null) return this;
 
     Object.assign(<any>this.data, data);
 

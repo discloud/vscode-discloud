@@ -20,7 +20,7 @@ export default class DiscloudApi extends EventEmitter {
 
     this.options = options ?? {};
 
-    this.options.userAgent ??= new UserAgent(this.core.context);
+    this.options.userAgent ??= new UserAgent(core.context);
   }
 
   declare readonly options: Partial<RESTOptions>;

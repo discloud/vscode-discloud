@@ -26,8 +26,8 @@ export default class TeamAppChildTreeItem extends BaseChildTreeItem {
     };
   }
 
-  _patch(data: Partial<TeamAppChildTreeItemData>) {
-    if (!data) return this;
+  protected _patch(data: Partial<TeamAppChildTreeItemData>) {
+    if (data == null) return this;
 
     super._patch(data);
 
