@@ -3,7 +3,7 @@ import { t } from "@vscode/l10n";
 import { EventEmitter } from "events";
 import { constants } from "http2";
 import { window } from "vscode";
-import type ExtensionCore from "../../core/extension";
+import type ExtensionCore from "../../core";
 import AsyncQueue from "../../modules/async-queue";
 import { RequestMethod } from "./enum";
 import DiscloudAPIError from "./errors/api";

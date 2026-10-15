@@ -3,7 +3,7 @@ import { authentication, window, type AuthenticationSession } from "vscode";
 import type { TaskData } from "../@types";
 import AuthenticationProviderPicker from "../authentication/dialogs/AuthenticationProviderPicker";
 import UnauthorizedError from "../authentication/errors/unauthorized";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import Command from "../structures/Command";
 
 export default class extends Command {

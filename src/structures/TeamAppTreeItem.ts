@@ -4,7 +4,7 @@ import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { TeamAppChildTreeItemData, TeamAppTreeItemData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import lazy from "../utils/lazy";
 import { getIconName } from "../utils/utils";
 import { getIconPath } from "../utils/vscode";

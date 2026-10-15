@@ -1,5 +1,5 @@
 import { EventEmitter, type ProviderResult, type TreeDataProvider, type TreeItem, window } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import type BaseTreeItem from "../structures/BaseTreeItem";
 import DisposableMap from "../structures/DisposableMap";
 

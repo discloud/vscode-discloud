@@ -1,5 +1,5 @@
 import type { Events, IEventModule } from "./@types";
-import type ExtensionCore from "./core/extension";
+import type ExtensionCore from "./core";
 
 export async function loadEvents(core: ExtensionCore) {
   await Promise.all([

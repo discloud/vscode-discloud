@@ -1,4 +1,4 @@
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import type VSUser from "../structures/VSUser";
 
 export default async function (core: ExtensionCore, user: VSUser) {

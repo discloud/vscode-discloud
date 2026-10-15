@@ -1,4 +1,4 @@
-import type ExtensionCore from "../../core/extension";
+import type ExtensionCore from "../../core";
 import Command from "../../structures/Command";
 
 export default class extends Command {

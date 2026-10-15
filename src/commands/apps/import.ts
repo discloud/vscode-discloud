@@ -4,7 +4,7 @@ import AdmZip from "adm-zip";
 import { existsSync } from "fs";
 import { ProgressLocation, Uri, commands, window, workspace } from "vscode";
 import type { TaskData } from "../../@types";
-import type ExtensionCore from "../../core/extension";
+import type ExtensionCore from "../../core";
 import Command from "../../structures/Command";
 import type UserAppTreeItem from "../../structures/UserAppTreeItem";
 import { ConfigKeys } from "../../utils/constants";

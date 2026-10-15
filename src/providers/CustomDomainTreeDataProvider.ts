@@ -1,4 +1,4 @@
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import CustomDomainTreeItem from "../structures/CustomDomainTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";

@@ -1,5 +1,5 @@
 import type { AuthenticationSessionAccountInformation } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import Command from "../structures/Command";
 import type UserTreeItem from "../structures/UserTreeItem";
 

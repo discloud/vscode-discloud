@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import { ConfigKeys } from "../utils/constants";
 

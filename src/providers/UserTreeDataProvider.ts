@@ -1,5 +1,5 @@
 import type { ApiVscodeUser } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import UserTreeItem from "../structures/UserTreeItem";
 import { TreeViewIds } from "../utils/constants";
 import BaseTreeDataProvider from "./BaseTreeDataProvider";

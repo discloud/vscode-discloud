@@ -4,7 +4,7 @@ import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState, Uri, type LogOutputChannel } from "vscode";
 import { AppType } from "../@enum";
 import type { ApiVscodeApp, UserAppChildTreeItemData, UserAppTreeItemData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { ConfigKeys } from "../utils/constants";
 import { getIconName } from "../utils/utils";
 import { getIconPath } from "../utils/vscode";

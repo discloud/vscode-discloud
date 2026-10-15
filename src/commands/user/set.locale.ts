@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { CancellationError, commands, window } from "vscode";
 import type { TaskData } from "../../@types";
-import type ExtensionCore from "../../core/extension";
+import type ExtensionCore from "../../core";
 import DiscloudAPIError from "../../services/discloud/errors/api";
 import Command from "../../structures/Command";
 

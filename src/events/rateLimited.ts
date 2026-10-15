@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { window } from "vscode";
 import type { RateLimitData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 
 const eventName = "rateLimited";
 const _sInMs = 1_000;

@@ -3,7 +3,7 @@ import { t } from "@vscode/l10n";
 import { window, type ProviderResult, type TreeItem } from "vscode";
 import { ExtensionContextId, type AppType } from "../@enum";
 import type { ApiVscodeApp } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import DisposableMap from "../structures/DisposableMap";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import UserAppTreeItem from "../structures/UserAppTreeItem";

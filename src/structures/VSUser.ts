@@ -1,6 +1,6 @@
 import { type RESTPutApiLocaleResult, Routes } from "@discloudapp/api-types/v2";
 import type { ApiVscodeApp, ApiVscodeUser, RESTGetApiVscode } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { GlobalStorageKeys, ONE_MINUTE_IN_MILLISECONDS, TEN_SECONDS_IN_MILLISECONDS } from "../utils/constants";
 
 export default class VSUser implements ApiVscodeUser {

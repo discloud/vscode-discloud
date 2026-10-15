@@ -1,5 +1,5 @@
 import type { CancellationToken, ExtensionContext, LogOutputChannel, ProgressOptions, TreeItem, Uri } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import type BaseChildTreeItem from "../structures/BaseChildTreeItem";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";

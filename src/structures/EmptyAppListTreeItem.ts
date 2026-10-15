@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { type IconPath, TreeItem } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { EMPTY_TREE_ITEM_ID } from "../utils/constants";
 import { getIconPath } from "../utils/vscode";
 

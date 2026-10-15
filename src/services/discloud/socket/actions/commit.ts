@@ -4,7 +4,7 @@ import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import type { TaskData } from "../../../../@types";
-import type ExtensionCore from "../../../../core/extension";
+import type ExtensionCore from "../../../../core";
 import type TeamAppTreeItem from "../../../../structures/TeamAppTreeItem";
 import UserAppTreeItem from "../../../../structures/UserAppTreeItem";
 import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";

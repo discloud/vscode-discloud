@@ -3,7 +3,7 @@ import { t } from "@vscode/l10n";
 import { stripVTControlCharacters } from "util";
 import { window, type LogOutputChannel, type QuickPickItem } from "vscode";
 import type { CommandData, TaskData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 
 export interface CommandConstructor {
   new(core: ExtensionCore): Command

@@ -5,7 +5,7 @@ import bytes from "bytes";
 import { stripVTControlCharacters } from "util";
 import { window } from "vscode";
 import type { TaskData } from "../../../../@types";
-import type ExtensionCore from "../../../../core/extension";
+import type ExtensionCore from "../../../../core";
 import { ConfigKeys, UploadFocusLogs } from "../../../../utils/constants";
 import { MAX_FILE_SIZE } from "../../constants";
 import SocketClient from "../client";

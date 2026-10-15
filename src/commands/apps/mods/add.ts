@@ -3,7 +3,7 @@ import { ModPermissionsBF } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation, type QuickPickItem, window } from "vscode";
 import type { TaskData } from "../../../@types";
-import type ExtensionCore from "../../../core/extension";
+import type ExtensionCore from "../../../core";
 import Command from "../../../structures/Command";
 import type UserAppTreeItem from "../../../structures/UserAppTreeItem";
 

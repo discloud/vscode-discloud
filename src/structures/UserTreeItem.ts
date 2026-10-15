@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState, Uri } from "vscode";
 import type { ApiVscodeUser, UserTreeItemData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import BaseTreeItem from "./BaseTreeItem";
 import UserChildTreeItem from "./UserChildTreeItem";
 

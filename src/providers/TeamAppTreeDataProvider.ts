@@ -2,7 +2,7 @@ import { Routes, type ApiStatusApp, type ApiTeamApp, type BaseApiApp, type RESTG
 import { t } from "@vscode/l10n";
 import { window, type ProviderResult, type TreeItem } from "vscode";
 import { ExtensionContextId } from "../@enum";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import EmptyAppListTreeItem from "../structures/EmptyAppListTreeItem";
 import TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import { ConfigKeys, EMPTY_TREE_ITEM_ID, SortBy, TreeViewIds } from "../utils/constants";
