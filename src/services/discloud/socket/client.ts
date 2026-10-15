@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { type ClientRequestArgs } from "http";
 import type vscode from "vscode";
 import WebSocket from "ws";
-import type ExtensionCore from "../../../core/extension";
+import type ExtensionCore from "../../../core";
 import { DEFAULT_CHUNK_SIZE, MAX_FILE_SIZE, NETWORK_UNREACHABLE_CODE, SOCKET_ABNORMAL_CLOSURE, SOCKET_UNAUTHORIZED_CODE } from "../constants";
 import { SocketEvents } from "./enum/events";
 import BufferOverflowError from "./errors/BufferOverflow";

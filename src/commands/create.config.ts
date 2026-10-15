@@ -1,7 +1,7 @@
 import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { Uri, workspace } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import WarningError from "../errors/warning";
 import Command from "../structures/Command";
 import FileSystem from "../utils/FileSystem";

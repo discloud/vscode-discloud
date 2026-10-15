@@ -1,5 +1,5 @@
 import { ExtensionContextId } from "../@enum";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 
 export default async function (core: ExtensionCore) {
   await Promise.all([

@@ -4,7 +4,7 @@ import { t } from "@vscode/l10n";
 import { setTimeout as sleep } from "timers/promises";
 import { StatusBarAlignment, ThemeColor, type Uri, window, workspace, type WorkspaceFolder } from "vscode";
 import type { StatusBarItemOptions } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { ConfigKeys } from "../utils/constants";
 import FileSystem from "../utils/FileSystem";
 import lazy from "../utils/lazy";

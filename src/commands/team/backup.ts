@@ -4,7 +4,7 @@ import { existsSync } from "fs";
 import { basename } from "path";
 import { ProgressLocation, Uri, window, workspace } from "vscode";
 import type { TaskData } from "../../@types";
-import type ExtensionCore from "../../core/extension";
+import type ExtensionCore from "../../core";
 import Command from "../../structures/Command";
 import type TeamAppTreeItem from "../../structures/TeamAppTreeItem";
 import { ConfigKeys } from "../../utils/constants";

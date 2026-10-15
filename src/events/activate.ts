@@ -1,7 +1,7 @@
 import { type AuthenticationSessionAccountInformation, commands, type ExtensionContext, workspace } from "vscode";
 import { ExtensionContextId } from "../@enum";
 import { AuthenticationProviderId } from "../authentication/enum/providers";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import BaseLanguageProvider from "../language/BaseLanguageProvider";
 import { GlobalStorageKeys } from "../utils/constants";
 

@@ -1,7 +1,7 @@
 import { t } from "@vscode/l10n";
 import { TreeItemCollapsibleState } from "vscode";
 import { AppType } from "../@enum";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import BaseTreeItem from "./BaseTreeItem";
 import type UserAppTreeItem from "./UserAppTreeItem";
 

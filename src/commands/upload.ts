@@ -3,7 +3,7 @@ import { DiscloudConfig } from "@discloudapp/util";
 import { t } from "@vscode/l10n";
 import { CancellationError, ProgressLocation, Uri } from "vscode";
 import type { TaskData } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { socketUpload } from "../services/discloud/socket/actions/upload";
 import Command from "../structures/Command";
 import FileSystem from "../utils/FileSystem";

@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { commands, window } from "vscode";
-import type ExtensionCore from "./core/extension";
+import type ExtensionCore from "./core";
 import type Command from "./structures/Command";
 import type { CommandConstructor } from "./structures/Command";
 

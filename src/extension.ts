@@ -1,6 +1,6 @@
 import { type ExtensionContext } from "vscode";
 import "./@prototypes";
-import ExtensionCore from "./core/extension";
+import ExtensionCore from "./core";
 import { localize } from "./localize";
 
 export async function activate(context: ExtensionContext) {

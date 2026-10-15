@@ -1,6 +1,6 @@
 import { t } from "@vscode/l10n";
 import { authentication, type AuthenticationProviderAuthenticationSessionsChangeEvent, type AuthenticationProviderSessionOptions, type AuthenticationSession, type AuthenticationSessionAccountInformation, EventEmitter } from "vscode";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import { GlobalStorageKeys } from "../utils/constants";
 import { AuthenticationProviderId } from "./enum/providers";
 import type { IAuthenticationProvider } from "./interfaces/provider";

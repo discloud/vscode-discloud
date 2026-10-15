@@ -3,7 +3,7 @@ import { DiscloudConfig, type ModPermissionsResolvable } from "@discloudapp/util
 import { t } from "@vscode/l10n";
 import { window, type CancellationToken, type IconPath, type QuickPickItem, type Uri } from "vscode";
 import type { VscodeProgressReporter } from "../@types";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 import type TeamAppTreeItem from "../structures/TeamAppTreeItem";
 import type UserAppTreeItem from "../structures/UserAppTreeItem";
 import FileSystem from "../utils/FileSystem";

@@ -1,5 +1,5 @@
 import { format } from "util";
-import type ExtensionCore from "../core/extension";
+import type ExtensionCore from "../core";
 
 export default async function (core: ExtensionCore, message: string, ...args: any[]) {
   if (core.isDebug) core.logger.appendLine(format(message, ...args));

@@ -1,5 +1,5 @@
 import type { TaskData } from "../../../@types";
-import type ExtensionCore from "../../../core/extension";
+import type ExtensionCore from "../../../core";
 import { localize } from "../../../localize";
 import Command from "../../../structures/Command";
 
