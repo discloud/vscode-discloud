@@ -2,6 +2,7 @@ name: Upgrade License Copyright Year
 
 permissions:
   contents: write
+  pull-requests: write
 
 on:
   schedule:
@@ -47,4 +48,3 @@ jobs:
         run: |
           gh pr create -t "chore: upgrade license copyright year" -b " "
           gh pr merge -ds
-
