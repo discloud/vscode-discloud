@@ -1328,9 +1328,9 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.6.1",
     "bytes": "^3.1.2",
-    "jose": "^6.2.14",
+    "jose": "^6.2.15",
     "json-schema-library": "^11.6.16",
-    "ws": "^8.22.0",
+    "ws": "^8.22.1",
     "yocto-queue": "^1.2.2"
   },
   "devDependencies": {
@@ -1345,8 +1345,8 @@
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "esbuild": "^0.28.2",
-    "eslint": "^10.13.0",
-    "globals": "^17.13.0",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
     "mocha": "^12.0.3",
     "npm-run-all": "^4.1.5",
     "type-fest": "^5.10.0",
