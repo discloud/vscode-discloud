@@ -1925,10 +1925,10 @@ jackspeak@^3.1.2:
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
 
-jose@^6.2.15:
-  version "6.2.15"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.15.tgz#b1016c7e0a33d711bffc25598526b62d57730a27"
-  integrity sha512-qdF6ewcZARtef63fJ9AKKZPgxw+t7USH6HLXYcD4CrdmSvDp79rpJSPFEKc90QBeGS63u1KQtN2MZQHC0yDIzA==
+jose@^6.2.16:
+  version "6.2.16"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.16.tgz#11fd1900f82468404655da57bebd00f9f7456656"
+  integrity sha512-4LSJpbuBuPdGrONCdZUy0xnxtLf8eEz+EY0SMXdHQEBU7bgUHDVblU/JAjryv3wID9/LK7/YuwFwq+AQNfMscQ==
 
 js-yaml@^4.1.0:
   version "4.3.2"
