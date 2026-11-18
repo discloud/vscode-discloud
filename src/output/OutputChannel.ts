@@ -12,7 +12,6 @@ export default abstract class DiscloudOutputChannel implements OutputChannel {
     const instance = DiscloudOutputChannel._instances.getOrInsertComputed(name, () => {
       const channel = window.createOutputChannel(name, languageId);
       const instance = new _DiscloudOutputChannel(context, channel);
-      context.subscriptions.push(instance);
       return instance;
     });
     instance._clearDisposeTimer();
@@ -22,7 +21,9 @@ export default abstract class DiscloudOutputChannel implements OutputChannel {
   constructor(
     readonly context: ExtensionContext,
     protected readonly _channel: OutputChannel,
-  ) { }
+  ) {
+    context.subscriptions.push(this);
+  }
 
   declare protected _disposeTimer: NodeJS.Timeout;
 

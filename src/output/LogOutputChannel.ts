@@ -12,7 +12,6 @@ export default abstract class DiscloudLogOutputChannel implements LogOutputChann
     const instance = DiscloudLogOutputChannel._instances.getOrInsertComputed(name, () => {
       const channel = window.createOutputChannel(name, { log: true });
       const instance = new _DiscloudLogOutputChannel(context, channel);
-      context.subscriptions.push(instance);
       return instance;
     });
     instance._clearDisposeTimer();
@@ -22,7 +21,9 @@ export default abstract class DiscloudLogOutputChannel implements LogOutputChann
   constructor(
     readonly context: ExtensionContext,
     protected readonly _channel: LogOutputChannel,
-  ) { }
+  ) {
+    context.subscriptions.push(this);
+  }
 
   declare protected _disposeTimer: NodeJS.Timeout;
 
