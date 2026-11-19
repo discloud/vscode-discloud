@@ -22,6 +22,12 @@ import TimerMap from "./structures/TimerMap";
 import VSUser from "./structures/VSUser";
 import { ConfigKeys } from "./utils/constants";
 
+const _activateEventName = "activate";
+const _debugEventName = "debug";
+const _extensionId = "discloud";
+const _extensionName = "Discloud";
+const _setContextCommandId = "setContext";
+
 const _workspaceIgnoreConfigKeys = Object.freeze([
   ConfigKeys.appBackupDir,
   ConfigKeys.appImportDir,
@@ -73,35 +79,29 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
   readonly timers: TimerMap;
   readonly user: VSUser;
 
-  get config() {
-    return workspace.getConfiguration("discloud");
-  }
+  get config() { return workspace.getConfiguration(_extensionId); }
 
-  get isDebug() {
-    return Boolean(this.config.get<boolean>(ConfigKeys.debug));
-  }
+  get isDebug() { return Boolean(this.config.get<boolean>(ConfigKeys.debug)); }
 
-  get logger() {
-    return this.getLogOutputChannel("Discloud");
-  }
+  get logger() { return this.getLogOutputChannel(_extensionName); }
 
   get workspaceIgnoreList() {
     const config = this.config;
     return _workspaceIgnoreConfigKeys
       .reduce<string[]>((acc, configName) => {
         const data = config.get<string>(configName);
-        if (data) return acc.concat(normalize(data));
+        if (data) acc.push(normalize(data));
         return acc;
       }, [])
-      .concat("discloud", `${workspace.name}.zip`);
+      .concat(_extensionId, `${workspace.name}.zip`);
   }
 
   async setContext(contextId: ExtensionContextId, ...values: any[]) {
-    await commands.executeCommand("setContext", contextId, ...values);
+    await commands.executeCommand<void>(_setContextCommandId, contextId, ...values);
   }
 
   debug(...args: Parameters<LogOutputChannel["debug"]>) {
-    this.emit("debug", this, ...args);
+    this.emit(_debugEventName, this, ...args);
   }
 
   dispose() {
@@ -125,6 +125,6 @@ export default class ExtensionCore extends EventEmitter<Events> implements Dispo
     await loadEvents(this);
     await commandsRegister(this);
 
-    this.emit("activate", this, this.context);
+    this.emit(_activateEventName, this, this.context);
   }
 }
