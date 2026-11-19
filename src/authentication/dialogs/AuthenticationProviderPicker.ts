@@ -4,13 +4,16 @@ import lazy from "../../utils/lazy";
 import { AuthenticationProviderId } from "../enum/providers";
 import { authenticationProviderData } from "../utils/constants";
 
+const _minimumAmountForMultipleProviders = 2;
+
 const lazyAuthenticationProviderIds = lazy(() => Object.values(AuthenticationProviderId));
 
 export default abstract class AuthenticationProviderPicker {
-  static async pick() {
+  static async pick(): Promise<AuthenticationProviderId | undefined> {
     const AuthenticationProviderIds = lazyAuthenticationProviderIds();
 
-    if (AuthenticationProviderIds.length < 2) return AuthenticationProviderIds[0];
+    if (AuthenticationProviderIds.length < _minimumAmountForMultipleProviders) 
+      return AuthenticationProviderId.discloud;
 
     const items: QuickPickItem[] = [];
 
@@ -26,6 +29,6 @@ export default abstract class AuthenticationProviderPicker {
 
     const result = await window.showQuickPick(items, { ignoreFocusOut: true });
 
-    return result?.description as AuthenticationProviderId | undefined;
+    return result?.description as AuthenticationProviderId;
   }
 }
