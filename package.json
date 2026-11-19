@@ -1328,9 +1328,9 @@
     "@vscode/l10n": "^0.0.18",
     "adm-zip": "^0.6.1",
     "bytes": "^3.1.2",
-    "jose": "^6.2.17",
+    "jose": "^6.2.18",
     "json-schema-library": "^11.6.16",
-    "ws": "^8.22.1",
+    "ws": "^8.23.0",
     "yocto-queue": "^1.2.2"
   },
   "devDependencies": {
@@ -1340,8 +1340,8 @@
     "@types/node": "^24",
     "@types/vscode": "^1.146.0",
     "@types/ws": "^8.18.2",
-    "@typescript-eslint/eslint-plugin": "^8.72.2",
-    "@typescript-eslint/parser": "^8.72.2",
+    "@typescript-eslint/eslint-plugin": "^8.73.0",
+    "@typescript-eslint/parser": "^8.73.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
     "esbuild": "^0.28.2",
@@ -1349,7 +1349,7 @@
     "globals": "^17.14.0",
     "mocha": "^12.0.3",
     "npm-run-all": "^4.1.5",
-    "type-fest": "^5.10.0",
+    "type-fest": "^6.0.3",
     "typescript": "^6.0.3"
   }
 }
